@@ -30,8 +30,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [formData, setFormData] = useState<FormData>({
-    email: "",
-    password: "",
+    email: "andres.miranda@inmobiliariahuertas.com",
+    password: "Huertas2025",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +59,7 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/dashboard");
+      router.push("/");
       router.refresh();
     } catch {
       setError("Ocurrió un error al intentar iniciar sesión");

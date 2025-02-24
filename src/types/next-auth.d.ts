@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { DefaultSession, DefaultUser } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import { View } from "./user.types";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -14,29 +15,14 @@ declare module "next-auth" {
       lastName: string;
       fullName: string;
       document: string;
+      photo: string;
+
       role: {
         id: number;
         code: string;
         name: string;
       };
-      views: {
-        id: number;
-        code: string;
-        name: string;
-        icon: string;
-        url: null | string;
-        order: number;
-        metadata: null;
-        children: {
-          id: number;
-          code: string;
-          name: string;
-          icon: string;
-          url: string;
-          order: number;
-          metadata: null;
-        }[];
-      }[];
+      views: View[];
     } & DefaultSession["user"];
   }
 
@@ -49,29 +35,13 @@ declare module "next-auth" {
     lastName: string;
     fullName: string;
     document: string;
+    photo: string;
     role: {
       id: number;
       code: string;
       name: string;
     };
-    views: {
-      id: number;
-      code: string;
-      name: string;
-      icon: string;
-      url: null | string;
-      order: number;
-      metadata: null;
-      children: {
-        id: number;
-        code: string;
-        name: string;
-        icon: string;
-        url: string;
-        order: number;
-        metadata: null;
-      }[];
-    }[];
+    views: View[];
   }
 }
 
@@ -86,30 +56,14 @@ declare module "next-auth/jwt" {
       firstName: string;
       lastName: string;
       fullName: string;
+      photo: string;
       document: string;
       role: {
         id: number;
         code: string;
         name: string;
       };
-      views: {
-        id: number;
-        code: string;
-        name: string;
-        icon: string;
-        url: null | string;
-        order: number;
-        metadata: null;
-        children: {
-          id: number;
-          code: string;
-          name: string;
-          icon: string;
-          url: string;
-          order: number;
-          metadata: null;
-        }[];
-      }[];
+      views: View[];
     };
     error?: string;
   }

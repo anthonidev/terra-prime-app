@@ -1,113 +1,261 @@
 @import "tailwindcss";
-
 @plugin "tailwindcss-animate";
-
 @custom-variant dark (&:is(.dark *));
 
 :root {
   /* Base */
-  --background: hsl(225, 25%, 99%);
-  --foreground: hsl(225, 24%, 12%);
+  --background: hsl(220, 25%, 97%);
+  --foreground: hsl(220, 25%, 15%);
+
+  /* Layout - UI Elements */
+  --layout-sidebar: hsl(220, 45%, 20%);
+  --layout-sidebar-foreground: hsl(220, 25%, 97%);
+  --layout-topbar: hsl(220, 45%, 98%);
+  --layout-topbar-foreground: hsl(220, 25%, 15%);
+  --layout-content: hsl(220, 25%, 97%);
+  --layout-footer: hsl(220, 45%, 20%);
+  --layout-footer-foreground: hsl(220, 25%, 97%);
 
   /* Card */
-  --card: hsl(225, 25%, 99%);
-  --card-foreground: hsl(225, 24%, 12%);
+  --card: hsl(220, 45%, 98%);
+  --card-foreground: hsl(220, 25%, 15%);
+  --card-hover: hsl(220, 45%, 96%);
+  --card-active: hsl(220, 45%, 94%);
 
   /* Popover */
-  --popover: hsl(225, 25%, 99%);
-  --popover-foreground: hsl(225, 24%, 12%);
+  --popover: hsl(220, 45%, 98%);
+  --popover-foreground: hsl(220, 25%, 15%);
 
-  /* Primary - Azul-violeta profundo */
-  --primary: hsl(235, 45%, 25%);
-  --primary-foreground: hsl(225, 25%, 98%);
+  /* Primary - Professional Blue */
+  --primary: hsl(220, 65%, 35%);
+  --primary-foreground: hsl(220, 25%, 97%);
+  --primary-hover: hsl(220, 65%, 30%);
+  --primary-active: hsl(220, 65%, 25%);
 
-  /* Secondary - Dorado suave */
-  --secondary: hsl(45, 35%, 95%);
-  --secondary-foreground: hsl(235, 45%, 25%);
+  /* Secondary - Light Blue */
+  --secondary: hsl(220, 35%, 94%);
+  --secondary-foreground: hsl(220, 65%, 35%);
+  --secondary-hover: hsl(220, 35%, 90%);
+  --secondary-active: hsl(220, 35%, 85%);
+
+  /* Navigation */
+  --nav-item: transparent;
+  --nav-item-foreground: hsl(220, 25%, 97%);
+  --nav-item-hover: hsl(220, 45%, 25%);
+  --nav-item-active: hsl(220, 65%, 45%);
+  --nav-item-selected: hsl(220, 45%, 30%);
 
   /* Muted */
-  --muted: hsl(225, 20%, 96%);
-  --muted-foreground: hsl(235, 15%, 45%);
+  --muted: hsl(220, 25%, 94%);
+  --muted-foreground: hsl(220, 15%, 45%);
 
-  /* Accent - Dorado cálido */
-  --accent: hsl(45, 40%, 92%);
-  --accent-foreground: hsl(45, 45%, 25%);
+  /* Accent - Complementary Blue */
+  --accent: hsl(200, 65%, 94%);
+  --accent-foreground: hsl(220, 65%, 35%);
 
   /* Destructive */
   --destructive: hsl(0, 65%, 55%);
   --destructive-foreground: hsl(0, 0%, 98%);
 
   /* Borders & Inputs */
-  --border: hsl(225, 25%, 92%);
-  --input: hsl(225, 25%, 92%);
-  --ring: hsl(235, 45%, 25%);
+  --border: hsl(220, 25%, 90%);
+  --input: hsl(220, 25%, 90%);
+  --ring: hsl(220, 65%, 35%);
 
-  /* Charts - Paleta elegante */
-  --chart-1: hsl(235, 45%, 35%);
-  --chart-2: hsl(45, 45%, 45%);
-  --chart-3: hsl(225, 40%, 45%);
-  --chart-4: hsl(275, 35%, 45%);
-  --chart-5: hsl(195, 40%, 45%);
+  /* Estados de propiedades */
+  --property-available: hsl(220, 65%, 45%);
+  --property-rented: hsl(200, 65%, 45%);
+  --property-sold: hsl(240, 65%, 45%);
+  --property-maintenance: hsl(210, 65%, 45%);
 
-  --radius: 0.6rem;
+  /* Indicadores */
+  --indicator-low: hsl(220, 65%, 45%);
+  --indicator-medium: hsl(200, 65%, 45%);
+  --indicator-high: hsl(240, 65%, 45%);
+
+  /* Charts - Professional Blue Palette */
+  --chart-1: hsl(220, 65%, 45%);
+  --chart-2: hsl(200, 65%, 45%);
+  --chart-3: hsl(240, 65%, 45%);
+  --chart-4: hsl(210, 65%, 45%);
+  --chart-5: hsl(230, 65%, 45%);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+
+  /* Radios */
+  --radius: 0.4rem;
+
+  /* Table - Base */
+  --table-header: hsl(220, 25%, 94%);
+  --table-header-foreground: hsl(220, 25%, 15%);
+  --table-row: hsl(220, 45%, 98%);
+  --table-row-foreground: hsl(220, 25%, 15%);
+  --table-row-alternate: hsl(220, 25%, 97%);
+  --table-border: hsl(220, 25%, 90%);
+
+  /* Table - Interactive States */
+  --table-row-hover: hsl(220, 45%, 96%);
+  --table-row-selected: hsl(220, 65%, 97%);
+  --table-row-selected-foreground: hsl(220, 65%, 35%);
+
+  /* Table - Sort & Filter */
+  --table-sort-indicator: hsl(220, 65%, 35%);
+  --table-filter-background: hsl(220, 45%, 98%);
+  --table-filter-border: hsl(220, 25%, 90%);
+
+  /* Table - Loading & Empty States */
+  --table-loading-background: hsl(220, 25%, 97%);
+  --table-empty-background: hsl(220, 25%, 97%);
+  --table-empty-foreground: hsl(220, 15%, 45%);
 }
 
 .dark {
   /* Base */
-  --background: hsl(225, 24%, 8%);
-  --foreground: hsl(225, 25%, 98%);
+  --background: hsl(220, 25%, 8%);
+  --foreground: hsl(220, 25%, 97%);
+
+  /* Layout */
+  --layout-sidebar: hsl(220, 25%, 12%);
+  --layout-sidebar-foreground: hsl(220, 25%, 97%);
+  --layout-topbar: hsl(220, 25%, 12%);
+  --layout-topbar-foreground: hsl(220, 25%, 97%);
+  --layout-content: hsl(220, 25%, 8%);
+  --layout-footer: hsl(220, 25%, 12%);
+  --layout-footer-foreground: hsl(220, 25%, 97%);
 
   /* Card */
-  --card: hsl(225, 24%, 8%);
-  --card-foreground: hsl(225, 25%, 98%);
+  --card: hsl(220, 25%, 12%);
+  --card-foreground: hsl(220, 25%, 97%);
+  --card-hover: hsl(220, 25%, 15%);
+  --card-active: hsl(220, 25%, 18%);
 
   /* Popover */
-  --popover: hsl(225, 24%, 8%);
-  --popover-foreground: hsl(225, 25%, 98%);
+  --popover: hsl(220, 25%, 12%);
+  --popover-foreground: hsl(220, 25%, 97%);
 
-  /* Primary - Azul-violeta brillante */
-  --primary: hsl(235, 60%, 75%);
-  --primary-foreground: hsl(225, 24%, 8%);
+  /* Primary - Bright Professional Blue */
+  --primary: hsl(220, 85%, 65%);
+  --primary-foreground: hsl(220, 25%, 8%);
+  --primary-hover: hsl(220, 85%, 60%);
+  --primary-active: hsl(220, 85%, 55%);
 
   /* Secondary */
-  --secondary: hsl(235, 30%, 15%);
-  --secondary-foreground: hsl(45, 70%, 75%);
+  --secondary: hsl(220, 30%, 20%);
+  --secondary-foreground: hsl(220, 85%, 65%);
+  --secondary-hover: hsl(220, 30%, 25%);
+  --secondary-active: hsl(220, 30%, 30%);
+
+  /* Navigation */
+  --nav-item: transparent;
+  --nav-item-foreground: hsl(220, 25%, 97%);
+  --nav-item-hover: hsl(220, 25%, 20%);
+  --nav-item-active: hsl(220, 85%, 65%);
+  --nav-item-selected: hsl(220, 25%, 25%);
 
   /* Muted */
-  --muted: hsl(225, 25%, 15%);
-  --muted-foreground: hsl(225, 20%, 70%);
+  --muted: hsl(220, 25%, 20%);
+  --muted-foreground: hsl(220, 20%, 70%);
 
-  /* Accent - Dorado oscuro */
-  --accent: hsl(45, 35%, 20%);
-  --accent-foreground: hsl(45, 70%, 75%);
+  /* Accent */
+  --accent: hsl(200, 35%, 20%);
+  --accent-foreground: hsl(220, 85%, 65%);
 
   /* Destructive */
-  --destructive: hsl(0, 62.8%, 40%);
+  --destructive: hsl(0, 65%, 45%);
   --destructive-foreground: hsl(0, 0%, 98%);
 
   /* Borders & Inputs */
-  --border: hsl(225, 30%, 15%);
-  --input: hsl(225, 30%, 15%);
-  --ring: hsl(235, 60%, 75%);
+  --border: hsl(220, 30%, 20%);
+  --input: hsl(220, 30%, 20%);
+  --ring: hsl(220, 85%, 65%);
+
+  /* Estados de propiedades */
+  --property-available: hsl(220, 85%, 65%);
+  --property-rented: hsl(200, 85%, 65%);
+  --property-sold: hsl(240, 85%, 65%);
+  --property-maintenance: hsl(210, 85%, 65%);
+
+  /* Indicadores */
+  --indicator-low: hsl(220, 85%, 65%);
+  --indicator-medium: hsl(200, 85%, 65%);
+  --indicator-high: hsl(240, 85%, 65%);
 
   /* Charts */
-  --chart-1: hsl(235, 70%, 65%);
-  --chart-2: hsl(45, 80%, 65%);
-  --chart-3: hsl(225, 65%, 60%);
-  --chart-4: hsl(275, 60%, 65%);
-  --chart-5: hsl(195, 65%, 60%);
+  --chart-1: hsl(220, 85%, 65%);
+  --chart-2: hsl(200, 85%, 65%);
+  --chart-3: hsl(240, 85%, 65%);
+  --chart-4: hsl(210, 85%, 65%);
+  --chart-5: hsl(230, 85%, 65%);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+
+  /* Table - Base */
+  --table-header: hsl(220, 25%, 15%);
+  --table-header-foreground: hsl(220, 25%, 97%);
+  --table-row: hsl(220, 25%, 12%);
+  --table-row-foreground: hsl(220, 25%, 97%);
+  --table-row-alternate: hsl(220, 25%, 10%);
+  --table-border: hsl(220, 30%, 20%);
+
+  /* Table - Interactive States */
+  --table-row-hover: hsl(220, 25%, 15%);
+  --table-row-selected: hsl(220, 85%, 25%);
+  --table-row-selected-foreground: hsl(220, 85%, 65%);
+
+  /* Table - Sort & Filter */
+  --table-sort-indicator: hsl(220, 85%, 65%);
+  --table-filter-background: hsl(220, 25%, 12%);
+  --table-filter-border: hsl(220, 30%, 20%);
+
+  /* Table - Loading & Empty States */
+  --table-loading-background: hsl(220, 25%, 12%);
+  --table-empty-background: hsl(220, 25%, 12%);
+  --table-empty-foreground: hsl(220, 20%, 70%);
 }
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* Layout */
+  --color-layout-sidebar: var(--layout-sidebar);
+  --color-layout-sidebar-foreground: var(--layout-sidebar-foreground);
+  --color-layout-topbar: var(--layout-topbar);
+  --color-layout-topbar-foreground: var(--layout-topbar-foreground);
+  --color-layout-content: var(--layout-content);
+  --color-layout-footer: var(--layout-footer);
+  --color-layout-footer-foreground: var(--layout-footer-foreground);
+
+  /* Estados de UI */
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+  --color-card-hover: var(--card-hover);
+  --color-card-active: var(--card-active);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-active: var(--secondary-active);
+
+  /* Navegación */
+  --color-nav-item: var(--nav-item);
+  --color-nav-item-foreground: var(--nav-item-foreground);
+  --color-nav-item-hover: var(--nav-item-hover);
+  --color-nav-item-active: var(--nav-item-active);
+  --color-nav-item-selected: var(--nav-item-selected);
+
+  /* Estados y utilidades */
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
@@ -117,17 +265,53 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  /* Estados de propiedades */
+  --color-property-available: var(--property-available);
+  --color-property-rented: var(--property-rented);
+  --color-property-sold: var(--property-sold);
+  --color-property-maintenance: var(--property-maintenance);
+
+  /* Indicadores */
+  --color-indicator-low: var(--indicator-low);
+  --color-indicator-medium: var(--indicator-medium);
+  --color-indicator-high: var(--indicator-high);
+
+  /* Charts */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-}
 
+  /* Shadows */
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  /* Radios */
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Table */
+  --color-table-header: var(--table-header);
+  --color-table-header-foreground: var(--table-header-foreground);
+  --color-table-row: var(--table-row);
+  --color-table-row-foreground: var(--table-row-foreground);
+  --color-table-row-alternate: var(--table-row-alternate);
+  --color-table-border: var(--table-border);
+  --color-table-row-hover: var(--table-row-hover);
+  --color-table-row-selected: var(--table-row-selected);
+  --color-table-row-selected-foreground: var(--table-row-selected-foreground);
+  --color-table-sort-indicator: var(--table-sort-indicator);
+  --color-table-filter-background: var(--table-filter-background);
+  --color-table-filter-border: var(--table-filter-border);
+  --color-table-loading-background: var(--table-loading-background);
+  --color-table-empty-background: var(--table-empty-background);
+  --color-table-empty-foreground: var(--table-empty-foreground);
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;
