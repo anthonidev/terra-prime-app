@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
       if (tokenData.exp < currentTimestamp) {
         try {
           const response = await fetch(
-            `${process.env.API_BACKENDL_URL}/api/auth/refresh-token`,
+            `${process.env.API_BACKENDL_URL}/api/auth/refresh`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
