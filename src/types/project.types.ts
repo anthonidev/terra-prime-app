@@ -1,3 +1,5 @@
+import { PaginatedMeta } from "./user.types";
+
 // Interfaces relacionadas con la validación de Excel
 export interface ExcelValidationResponse {
     isValid: boolean;
@@ -28,79 +30,88 @@ export interface Lot {
     status: string;
 }
 
-// Interfaces para los proyectos una vez creados
-export interface Project {
-    id: string;
-    name: string;
-    description?: string;
-    currency: string;
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-    totalLots: number;
-    totalArea: number;
-    totalValue: number;
-}
-
-export interface ProjectList {
+export interface ProjectListItemDto {
     id: string;
     name: string;
     currency: string;
     isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-    totalLots: number;
-    totalArea: number;
-    totalValue: number;
+    logo: string | null;
+    stageCount: number;
+    blockCount: number;
+    lotCount: number;
+    activeLotCount: number;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
-export interface PaginatedProjects {
-    items: ProjectList[];
-    meta: PaginatedMeta;
+export interface ProjectListResponseDto {
+    projects: ProjectListItemDto[];
+    total: number;
 }
 
-export interface PaginatedMeta {
-    totalItems: number;
-    itemsPerPage: number;
-    totalPages: number;
-    currentPage: number;
-}
-
-// Interfaces para las operaciones CRUD
-export interface CreateProjectDto {
-    name: string;
-    description?: string;
-    currency: string;
-    isActive?: boolean;
-}
-
-export interface UpdateProjectDto {
-    name?: string;
-    description?: string;
-    currency?: string;
-    isActive?: boolean;
-}
-
-// Interfaces para operaciones con lotes
-export interface ProjectLot {
+export interface BlockDetailDto {
     id: string;
-    stage: string;
-    block: string;
-    lot: string;
+    name: string;
+    isActive: boolean;
+    lotCount: number;
+    activeLots: number;
+    reservedLots: number;
+    soldLots: number;
+    inactiveLots: number;
+}
+
+export interface StageDetailDto {
+    id: string;
+    name: string;
+    isActive: boolean;
+    blocks: BlockDetailDto[];
+}
+
+export interface ProjectDetailDto {
+    id: string;
+    name: string;
+    currency: string;
+    isActive: boolean;
+    logo: string | null;
+    logoPublicId: string | null;
+    stages: StageDetailDto[];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface LotResponseDto {
+    id: string;
+    name: string;
     area: number;
     lotPrice: number;
     urbanizationPrice: number;
     totalPrice: number;
     status: string;
-    projectId: string;
-    createdAt: string;
-    updatedAt: string;
+    blockId: string;
+    blockName: string;
+    stageId: string;
+    stageName: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
-export interface GetProjectsParams {
-    search?: string;
-    isActive?: boolean;
+
+export interface PaginatedLotsResponseDto {
+    items: LotResponseDto[];
+    meta: PaginatedMeta;
+}
+export enum LotStatus {
+    ACTIVE = 'Activo',
+    INACTIVE = 'Inactivo',
+    SOLD = 'Vendido',
+    RESERVED = 'Separado',
+}
+export interface ProjectLotsFilterParams {
     page?: number;
     limit?: number;
-    order?: "ASC" | "DESC";
+    order?: 'ASC' | 'DESC';
+    stageId?: string;
+    blockId?: string;
+    status?: LotStatus;
+    search?: string;
 }

@@ -1,13 +1,8 @@
 "use server";
 
 import { httpClient } from "@/lib/api/http-client";
-import { ExcelValidationResponse, ProjectData } from "@/types/project.types";
+import { ExcelValidationResponse, PaginatedLotsResponseDto, ProjectData, ProjectDetailDto, ProjectListResponseDto, ProjectLotsFilterParams } from "@/types/project.types";
 
-/**
- * Valida un archivo Excel para la creación de un proyecto
- * @param formData - FormData que contiene el archivo Excel
- * @returns Respuesta de validación
- */
 export async function validateProjectExcel(
     formData: FormData
 ): Promise<ExcelValidationResponse> {
@@ -23,11 +18,6 @@ export async function validateProjectExcel(
     }
 }
 
-/**
- * Crea un proyecto a partir de los datos validados
- * @param projectData - Datos del proyecto validados
- * @returns Proyecto creado
- */
 export async function createBulkProject(projectData: ProjectData): Promise<any> {
     try {
         return await httpClient<any>("/api/projects/bulk-create", {
@@ -35,6 +25,72 @@ export async function createBulkProject(projectData: ProjectData): Promise<any> 
             body: { "projectData": projectData },
         });
     } catch (error) {
+        throw error;
+    }
+}
+
+
+export async function getProjects(): Promise<ProjectListResponseDto> {
+    try {
+        const response = await httpClient<ProjectListResponseDto>("/api/projects", {
+            method: "GET",
+        });
+
+        const projectsWithDates = response.projects.map((project) => ({
+            ...project,
+            createdAt: new Date(project.createdAt),
+            updatedAt: new Date(project.updatedAt),
+        }));
+
+        return {
+            projects: projectsWithDates,
+            total: response.total,
+        };
+    } catch (error) {
+        console.error("Error al obtener proyectos:", error);
+        throw error;
+    }
+}
+
+export async function getProjectDetail(id: string): Promise<ProjectDetailDto> {
+    try {
+        const response = await httpClient<ProjectDetailDto>(`/api/projects/${id}`, {
+            method: "GET",
+        });
+
+        return {
+            ...response,
+            createdAt: new Date(response.createdAt),
+            updatedAt: new Date(response.updatedAt),
+        };
+    } catch (error) {
+        console.error(`Error al obtener detalle del proyecto ${id}:`, error);
+        throw error;
+    }
+}
+
+export async function getProjectLots(
+    projectId: string,
+    params?: Record<string, unknown> | undefined
+): Promise<PaginatedLotsResponseDto> {
+    try {
+        const response = await httpClient<PaginatedLotsResponseDto>(`/api/projects/${projectId}/lots`, {
+            method: "GET",
+            params,
+        });
+
+        const itemsWithDates = response.items.map(lot => ({
+            ...lot,
+            createdAt: new Date(lot.createdAt),
+            updatedAt: new Date(lot.updatedAt),
+        }));
+
+        return {
+            items: itemsWithDates,
+            meta: response.meta,
+        };
+    } catch (error) {
+        console.error(`Error al obtener lotes del proyecto ${projectId}:`, error);
         throw error;
     }
 }
