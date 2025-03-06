@@ -1,30 +1,24 @@
 "use client";
-
 import { useTheme } from "next-themes";
 import React, { useEffect, useState } from "react";
 import { Sun, Moon } from "lucide-react";
 import { motion } from "framer-motion";
-
 const ThemeSwitch = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
     setMounted(true);
   }, []);
-
   if (!mounted) return null;
-
   const isDark = theme === "dark";
-
   return (
     <div
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className="group relative flex h-8 w-16 cursor-pointer items-center rounded-full p-1 transition-all duration-500"
     >
-      {/* Fondo con gradiente animado */}
+      {}
       <div className="absolute inset-0 rounded-full  transition-all duration-500 bg-gray-300 dark:bg-gray-900">
-        {/* Estrellas en modo oscuro */}
+        {}
         <div className="absolute inset-0 transition-opacity duration-500 dark:opacity-100 opacity-0">
           {[...Array(6)].map((_, i) => (
             <motion.span
@@ -47,8 +41,7 @@ const ThemeSwitch = () => {
           ))}
         </div>
       </div>
-
-      {/* Thumb con efectos */}
+      {}
       <motion.div
         className="absolute left-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-white to-blue-50 shadow-lg dark:from-gray-900 dark:to-gray-800 transition-colors duration-500"
         animate={{
@@ -60,7 +53,7 @@ const ThemeSwitch = () => {
           rotate: { duration: 0.5 },
         }}
       >
-        {/* Contenedor de iconos con efectos */}
+        {}
         <motion.div
           animate={{
             scale: [1, 1.2, 1],
@@ -75,8 +68,7 @@ const ThemeSwitch = () => {
             <Sun className="h-4 w-4 text-yellow-500 transition-transform" />
           )}
         </motion.div>
-
-        {/* Efecto de brillo */}
+        {}
         <motion.div
           className="absolute inset-0 rounded-full bg-white"
           animate={{
@@ -89,13 +81,11 @@ const ThemeSwitch = () => {
           }}
         />
       </motion.div>
-
-      {/* Efecto hover */}
+      {}
       <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
       </div>
     </div>
   );
 };
-
 export default ThemeSwitch;

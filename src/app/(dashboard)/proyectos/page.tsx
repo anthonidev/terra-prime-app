@@ -1,5 +1,4 @@
 "use client";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,13 +24,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-
+import Image from "next/image";
 export default function ProyectoPage() {
   const [projects, setProjects] = useState<ProjectListItemDto[]>([]);
   const [totalProjects, setTotalProjects] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const fetchProjects = useCallback(async () => {
     try {
       setLoading(true);
@@ -46,11 +44,9 @@ export default function ProyectoPage() {
       setLoading(false);
     }
   }, []);
-
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
-
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("es-ES", {
       day: "2-digit",
@@ -58,7 +54,6 @@ export default function ProyectoPage() {
       year: "numeric",
     }).format(date);
   };
-
   if (loading) {
     return (
       <div className="container py-8">
@@ -99,7 +94,6 @@ export default function ProyectoPage() {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className="container py-8">
@@ -116,7 +110,6 @@ export default function ProyectoPage() {
       </div>
     );
   }
-
   return (
     <div className="container py-8">
       <div className="mb-6">
@@ -125,7 +118,6 @@ export default function ProyectoPage() {
           Gestiona todos los proyectos inmobiliarios
         </p>
       </div>
-
       <div className="flex justify-between items-center mb-6">
         <Badge variant="outline" className="text-sm px-3 py-1">
           Total: {totalProjects}{" "}
@@ -138,9 +130,7 @@ export default function ProyectoPage() {
           </Button>
         </Link>
       </div>
-
       <Separator className="mb-6" />
-
       {projects.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-lg border">
           <MapPin className="mx-auto h-12 w-12 text-muted-foreground/30 mb-4" />
@@ -168,13 +158,12 @@ export default function ProyectoPage() {
                 className="block h-full"
               >
                 <Card className="h-full hover:shadow-md transition-all duration-200 hover:border-primary/50 overflow-hidden">
-                  {/* Colored header based on status */}
+                  {}
                   <div
                     className={`h-2 w-full ${
                       project.isActive ? "bg-primary" : "bg-muted-foreground"
                     }`}
                   />
-
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-center">
                       <CardTitle className="text-lg line-clamp-1">
@@ -193,12 +182,13 @@ export default function ProyectoPage() {
                         : "Dólares ($)"}
                     </CardDescription>
                   </CardHeader>
-
                   <CardContent className="pb-4">
                     <div className="flex items-center gap-3 mb-3">
                       {project.logo ? (
                         <div className="h-12 w-12 flex items-center justify-center p-1 rounded bg-secondary/50">
-                          <img
+                          <Image
+                            width={40}
+                            height={40}
                             src={project.logo}
                             alt={`Logo de ${project.name}`}
                             className="max-h-10 max-w-10 object-contain"
@@ -209,7 +199,6 @@ export default function ProyectoPage() {
                           <Building2 className="h-6 w-6 text-muted-foreground" />
                         </div>
                       )}
-
                       <div className="flex-1 flex flex-col gap-1">
                         <div className="flex items-center text-sm text-muted-foreground">
                           <Building2 className="h-4 w-4 mr-1" />
@@ -221,7 +210,6 @@ export default function ProyectoPage() {
                         </div>
                       </div>
                     </div>
-
                     <div className="flex justify-between text-sm border-t pt-3">
                       <div className="flex items-center">
                         <div>
@@ -242,7 +230,6 @@ export default function ProyectoPage() {
                       </div>
                     </div>
                   </CardContent>
-
                   <CardFooter className="pt-0 border-t">
                     <Button
                       variant="ghost"

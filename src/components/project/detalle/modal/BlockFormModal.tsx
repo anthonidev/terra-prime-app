@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,8 +30,6 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { BlockDetailDto, StageDetailDto } from "@/types/project.types";
 import { AlertCircle, Building2, Grid } from "lucide-react";
-
-// Esquema de validación con zod
 const blockSchema = z.object({
   name: z
     .string()
@@ -47,9 +44,7 @@ const blockSchema = z.object({
     required_error: "Debe seleccionar una etapa",
   }),
 });
-
 type BlockFormValues = z.infer<typeof blockSchema>;
-
 interface BlockFormModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -67,7 +62,6 @@ interface BlockFormModalProps {
   ) => Promise<void>;
   error: string | null;
 }
-
 export default function BlockFormModal({
   isOpen,
   onClose,
@@ -80,7 +74,6 @@ export default function BlockFormModal({
 }: BlockFormModalProps) {
   const isEditMode = !!block;
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-
   const form = useForm<BlockFormValues>({
     resolver: zodResolver(blockSchema),
     defaultValues: {
@@ -89,7 +82,6 @@ export default function BlockFormModal({
       stageId: block?.stageId || preselectedStageId || "",
     },
   });
-
   React.useEffect(() => {
     if (isOpen) {
       form.reset({
@@ -99,7 +91,6 @@ export default function BlockFormModal({
       });
     }
   }, [block, form, isOpen, preselectedStageId]);
-
   const onSubmit = async (values: BlockFormValues) => {
     setIsSubmitting(true);
     try {
@@ -125,7 +116,6 @@ export default function BlockFormModal({
       setIsSubmitting(false);
     }
   };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
@@ -144,7 +134,6 @@ export default function BlockFormModal({
             )}
           </DialogTitle>
         </DialogHeader>
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {error && (
@@ -153,7 +142,6 @@ export default function BlockFormModal({
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-
             <FormField
               control={form.control}
               name="name"
@@ -167,7 +155,6 @@ export default function BlockFormModal({
                 </FormItem>
               )}
             />
-
             {!isEditMode && (
               <FormField
                 control={form.control}
@@ -198,7 +185,6 @@ export default function BlockFormModal({
                 )}
               />
             )}
-
             <FormField
               control={form.control}
               name="isActive"
@@ -219,7 +205,6 @@ export default function BlockFormModal({
                 </FormItem>
               )}
             />
-
             <DialogFooter className="gap-2 sm:gap-0">
               <Button
                 type="button"
@@ -233,8 +218,8 @@ export default function BlockFormModal({
                 {isSubmitting
                   ? "Guardando..."
                   : isEditMode
-                  ? "Actualizar"
-                  : "Crear"}
+                    ? "Actualizar"
+                    : "Crear"}
               </Button>
             </DialogFooter>
           </form>

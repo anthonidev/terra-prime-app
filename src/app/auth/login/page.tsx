@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -19,12 +18,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Building2, KeyRound, Mail, AlertCircle } from "lucide-react";
 import ThemeSwitch from "@/components/common/ThemeSwich";
 import BackgroundPattern from "@/components/common/BackgroundPattern";
-
 interface FormData {
   email: string;
   password: string;
 }
-
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
@@ -33,7 +30,6 @@ export default function LoginPage() {
     email: "andres.miranda@inmobiliariahuertas.com",
     password: "Huertas2025",
   });
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -41,24 +37,20 @@ export default function LoginPage() {
       [name]: value,
     }));
   };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
     try {
       const result = await signIn("credentials", {
         redirect: false,
         email: formData.email,
         password: formData.password,
       });
-
       if (result?.error) {
         setError("Credenciales inválidas");
         return;
       }
-
       router.push("/");
       router.refresh();
     } catch {
@@ -67,15 +59,13 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-
   return (
     <main className="min-h-screen flex items-center justify-center relative overflow-hidden bg-background">
-      {/* Fondo con efecto suave */}
+      {}
       <BackgroundPattern />
-
-      {/* Main container */}
+      {}
       <div className="w-full max-w-4xl mx-4 md:mx-auto grid md:grid-cols-2 gap-8 items-center relative">
-        {/* Welcome section */}
+        {}
         <motion.div
           className="hidden md:flex flex-col space-y-8 p-8"
           initial={{ opacity: 0, x: -20 }}
@@ -117,8 +107,7 @@ export default function LoginPage() {
             <ThemeSwitch />
           </motion.div>
         </motion.div>
-
-        {/* Login form */}
+        {}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -133,7 +122,6 @@ export default function LoginPage() {
                 Ingresa tus credenciales para acceder al sistema
               </CardDescription>
             </CardHeader>
-
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <motion.div
@@ -157,7 +145,6 @@ export default function LoginPage() {
                     />
                   </div>
                 </motion.div>
-
                 <motion.div
                   className="space-y-2"
                   initial={{ opacity: 0, y: 10 }}
@@ -178,7 +165,6 @@ export default function LoginPage() {
                     />
                   </div>
                 </motion.div>
-
                 {error && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -203,7 +189,6 @@ export default function LoginPage() {
                     </Alert>
                   </motion.div>
                 )}
-
                 <motion.div
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
@@ -225,7 +210,6 @@ export default function LoginPage() {
                 </motion.div>
               </form>
             </CardContent>
-
             <CardFooter className="text-center">
               <p className="text-sm text-muted-foreground w-full">
                 ¿Olvidaste tu contraseña? Por favor, ponte en contacto con el

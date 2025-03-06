@@ -8,12 +8,10 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Control, FieldErrors, FieldValues, Path } from "react-hook-form";
-
 interface Option {
   value: string;
   label: string;
 }
-
 interface FormSelectFieldProps<TFormValues extends FieldValues> {
   name: Path<TFormValues>;
   label: string;
@@ -24,7 +22,6 @@ interface FormSelectFieldProps<TFormValues extends FieldValues> {
   errors: FieldErrors<TFormValues>;
   disabled?: boolean;
 }
-
 const FormSelectField = <TFormValues extends FieldValues>({
   name,
   label,
@@ -89,5 +86,4 @@ const FormSelectField = <TFormValues extends FieldValues>({
     />
   );
 };
-
 export default FormSelectField;

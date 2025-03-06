@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import React from "react";
 import { Control, FieldErrors, FieldValues, Path } from "react-hook-form";
-
 interface FormInputFieldProps<TFormValues extends FieldValues> {
   name: Path<TFormValues>;
   label: string;
@@ -19,7 +18,6 @@ interface FormInputFieldProps<TFormValues extends FieldValues> {
   control: Control<TFormValues>;
   errors: FieldErrors<TFormValues>;
 }
-
 const FormInputField = <TFormValues extends FieldValues>({
   name,
   label,
@@ -66,5 +64,4 @@ const FormInputField = <TFormValues extends FieldValues>({
     />
   );
 };
-
 export default FormInputField;

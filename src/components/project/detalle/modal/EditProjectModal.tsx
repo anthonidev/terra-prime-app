@@ -1,9 +1,8 @@
 import { ProjectDetailDto, UpdateProjectDto } from "@/types/project.types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { AlertCircle, Building2, Upload, X } from "lucide-react";
-
+import Image from "next/image";
 const projectSchema = z.object({
   name: z
     .string()
@@ -37,21 +36,18 @@ const projectSchema = z.object({
     }),
   isActive: z.boolean().default(true),
 });
-
 type ProjectFormValues = z.infer<typeof projectSchema>;
-
 interface EditProjectModalProps {
   project: ProjectDetailDto | null;
   isOpen: boolean;
   onClose: () => void;
   onUpdate: (
     data: UpdateProjectDto,
-    logoFile?: File | null
+    logoFile?: File | null,
   ) => Promise<ProjectDetailDto | null>;
   isUpdating: boolean;
   error: string | null;
 }
-
 export default function EditProjectModal({
   project,
   isOpen,
@@ -62,10 +58,9 @@ export default function EditProjectModal({
 }: EditProjectModalProps) {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(
-    project?.logo || null
+    project?.logo || null,
   );
   const [removeCurrentLogo, setRemoveCurrentLogo] = useState(false);
-
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
@@ -73,8 +68,7 @@ export default function EditProjectModal({
       isActive: project?.isActive ?? true,
     },
   });
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (project) {
       form.reset({
         name: project.name,
@@ -84,7 +78,13 @@ export default function EditProjectModal({
       setRemoveCurrentLogo(false);
     }
   }, [project, form]);
-
+  useEffect(() => {
+    return () => {
+      if (logoPreview && logoPreview.startsWith("blob:")) {
+        URL.revokeObjectURL(logoPreview);
+      }
+    };
+  }, [logoPreview]);
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -101,48 +101,40 @@ export default function EditProjectModal({
         });
         return;
       }
-
       if (file.size > 2 * 1024 * 1024) {
         form.setError("root", {
           message: "La imagen no puede superar los 2MB",
         });
         return;
       }
-
       if (logoPreview && logoPreview.startsWith("blob:")) {
         URL.revokeObjectURL(logoPreview);
       }
-
       setLogoFile(file);
       setLogoPreview(URL.createObjectURL(file));
       setRemoveCurrentLogo(false);
     }
   };
-
   const handleRemoveLogo = () => {
     if (logoPreview && logoPreview.startsWith("blob:")) {
       URL.revokeObjectURL(logoPreview);
     }
-
     setLogoFile(null);
     setLogoPreview(null);
     setRemoveCurrentLogo(true);
     const fileInput = document.getElementById("logo-input") as HTMLInputElement;
     if (fileInput) fileInput.value = "";
   };
-
   const handleCancelRemoveLogo = () => {
     setRemoveCurrentLogo(false);
     setLogoPreview(project?.logo || null);
   };
-
   const onSubmit = async (values: ProjectFormValues) => {
     try {
       const updateData: UpdateProjectDto = {
         name: values.name,
         isActive: values.isActive,
       };
-
       const updated = await onUpdate(updateData, logoFile);
       if (updated) {
         if (logoPreview && logoPreview.startsWith("blob:")) {
@@ -155,17 +147,7 @@ export default function EditProjectModal({
       console.error("Error al actualizar el proyecto:", error);
     }
   };
-
   if (!project) return null;
-
-  React.useEffect(() => {
-    return () => {
-      if (logoPreview && logoPreview.startsWith("blob:")) {
-        URL.revokeObjectURL(logoPreview);
-      }
-    };
-  }, [logoPreview]);
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md md:max-w-lg">
@@ -175,7 +157,6 @@ export default function EditProjectModal({
             Editar Proyecto
           </DialogTitle>
         </DialogHeader>
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {error && (
@@ -184,7 +165,6 @@ export default function EditProjectModal({
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-
             <FormField
               control={form.control}
               name="name"
@@ -198,7 +178,6 @@ export default function EditProjectModal({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="isActive"
@@ -219,17 +198,16 @@ export default function EditProjectModal({
                 </FormItem>
               )}
             />
-
             <Separator />
-
             <div className="space-y-3">
               <FormLabel>Logo del proyecto</FormLabel>
-
               <div className="flex items-start gap-3">
                 <div className="w-24 h-24 border rounded-md flex items-center justify-center overflow-hidden bg-secondary/30">
                   {logoPreview ? (
                     <div className="relative h-full w-full">
-                      <img
+                      <Image
+                        width={96}
+                        height={96}
                         src={logoPreview}
                         alt="Logo vista previa"
                         className="object-contain h-full w-full p-2"
@@ -262,7 +240,6 @@ export default function EditProjectModal({
                     <Building2 className="h-8 w-8 text-muted-foreground" />
                   )}
                 </div>
-
                 <div className="flex-1">
                   <div className="flex flex-col gap-2">
                     <label
@@ -286,9 +263,7 @@ export default function EditProjectModal({
                 </div>
               </div>
             </div>
-
             <FormMessage />
-
             <DialogFooter className="gap-2 sm:gap-0">
               <Button
                 type="button"

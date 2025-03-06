@@ -1,5 +1,4 @@
 "use client";
-
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,29 +20,24 @@ import {
 import { Lot, ProjectData } from "@/types/project.types";
 import { Building2, Calculator, CheckCircle2, Landmark } from "lucide-react";
 import React from "react";
-
 interface ReviewStepProps {
   projectData: ProjectData;
   isCreating: boolean;
   createProject: () => Promise<void>;
   resetUpload: () => void;
 }
-
 const ReviewStep: React.FC<ReviewStepProps> = ({
   projectData,
   isCreating,
   createProject,
   resetUpload,
 }) => {
-  // Calcula totales para mostrar en el resumen
   const totalLots = projectData.lots.length;
   const totalArea = projectData.lots.reduce((sum, lot) => sum + lot.area, 0);
   const totalValue = projectData.lots.reduce(
     (sum, lot) => sum + lot.lotPrice + lot.urbanizationPrice,
-    0
+    0,
   );
-
-  // Formatea valores monetarios
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("es-PE", {
       style: "currency",
@@ -51,7 +45,6 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
       minimumFractionDigits: 2,
     }).format(value);
   };
-
   return (
     <div className="space-y-6">
       <Alert
@@ -65,8 +58,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
           confirma la creación del proyecto.
         </AlertDescription>
       </Alert>
-
-      {/* Resumen del proyecto */}
+      {}
       <ProjectSummaryCards
         projectName={projectData.name}
         totalLots={totalLots}
@@ -75,14 +67,12 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
         currency={projectData.currency}
         formatCurrency={formatCurrency}
       />
-
-      {/* Tabla de lotes */}
+      {}
       <LotsTable
         lots={projectData.lots}
         totalLots={totalLots}
         formatCurrency={formatCurrency}
       />
-
       <div className="flex justify-end space-x-4">
         <Button variant="outline" onClick={resetUpload}>
           Cancelar
@@ -98,7 +88,6 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
     </div>
   );
 };
-
 interface ProjectSummaryCardsProps {
   projectName: string;
   totalLots: number;
@@ -107,7 +96,6 @@ interface ProjectSummaryCardsProps {
   currency: string;
   formatCurrency: (value: number) => string;
 }
-
 const ProjectSummaryCards: React.FC<ProjectSummaryCardsProps> = ({
   projectName,
   totalLots,
@@ -130,7 +118,6 @@ const ProjectSummaryCards: React.FC<ProjectSummaryCardsProps> = ({
           </div>
         </CardContent>
       </Card>
-
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -149,7 +136,6 @@ const ProjectSummaryCards: React.FC<ProjectSummaryCardsProps> = ({
           </div>
         </CardContent>
       </Card>
-
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -166,13 +152,11 @@ const ProjectSummaryCards: React.FC<ProjectSummaryCardsProps> = ({
     </div>
   );
 };
-
 interface LotsTableProps {
   lots: Lot[];
   totalLots: number;
   formatCurrency: (value: number) => string;
 }
-
 const LotsTable: React.FC<LotsTableProps> = ({
   lots,
   totalLots,
@@ -235,5 +219,4 @@ const LotsTable: React.FC<LotsTableProps> = ({
     </Card>
   );
 };
-
 export default ReviewStep;

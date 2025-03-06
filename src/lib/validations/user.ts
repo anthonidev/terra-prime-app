@@ -1,5 +1,4 @@
 import * as z from "zod";
-
 export const createUserSchema = z.object({
   email: z
     .string()
@@ -38,5 +37,4 @@ export const createUserSchema = z.object({
     .transform((val) => Number(val)),
   isActive: z.boolean().default(true),
 });
-
 export type CreateUserFormData = z.infer<typeof createUserSchema>;

@@ -1,6 +1,5 @@
 import React from "react";
 import UsersTable from "@/components/users/UsersTable";
-
 export default function Usuarios() {
   return (
     <div className="container py-8">

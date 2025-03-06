@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight, ListFilter } from "lucide-react";
 import { PaginatedUsers } from "@/types/user.types";
-
 interface UsersTablePaginationProps {
   data: PaginatedUsers;
   currentPage: number;
@@ -16,7 +15,6 @@ interface UsersTablePaginationProps {
   itemsPerPage: number;
   onItemsPerPageChange: (value: number) => void;
 }
-
 export function UsersTablePagination({
   data,
   currentPage,
@@ -53,7 +51,6 @@ export function UsersTablePagination({
           </span>
         </div>
       </div>
-
       <div className="flex items-center space-x-4">
         <Button
           variant="outline"
@@ -65,7 +62,6 @@ export function UsersTablePagination({
           <ChevronLeft className="mr-2 h-4 w-4" />
           Anterior
         </Button>
-
         <div className="flex items-center text-sm">
           <span className="text-muted-foreground">
             Página{" "}
@@ -76,7 +72,6 @@ export function UsersTablePagination({
             </span>
           </span>
         </div>
-
         <Button
           variant="outline"
           size="sm"

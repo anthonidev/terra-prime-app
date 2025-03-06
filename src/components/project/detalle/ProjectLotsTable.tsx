@@ -20,7 +20,6 @@ import {
   Search,
 } from "lucide-react";
 import LotActions from "./LotActions";
-
 interface ProjectLotsTableProps {
   lots: LotResponseDto[];
   isLoading: boolean;
@@ -32,7 +31,6 @@ interface ProjectLotsTableProps {
   onCreateLot: (blockId?: string) => void;
   onEditLot: (lot: LotResponseDto) => void;
 }
-
 export default function ProjectLotsTable({
   lots,
   isLoading,
@@ -52,7 +50,6 @@ export default function ProjectLotsTable({
     });
     return formatter.format(amount);
   };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Activo":
@@ -67,13 +64,11 @@ export default function ProjectLotsTable({
         return "default";
     }
   };
-
   const getResultsRange = () => {
     const start = (currentPage - 1) * pageSize + 1;
     const end = Math.min(start + pageSize - 1, totalItems);
     return `${start}-${end} de ${totalItems}`;
   };
-
   if (isLoading) {
     return (
       <Card>
@@ -97,7 +92,6 @@ export default function ProjectLotsTable({
       </Card>
     );
   }
-
   if (!lots.length) {
     return (
       <Card>
@@ -124,14 +118,12 @@ export default function ProjectLotsTable({
       </Card>
     );
   }
-
   const currency =
     lots[0]?.totalPrice > 0
       ? lots[0].totalPrice > lots[0].lotPrice + lots[0].urbanizationPrice
         ? "USD"
         : "PEN"
       : "PEN";
-
   return (
     <Card>
       <CardHeader className="pb-3 border-b flex justify-between items-center">
@@ -170,8 +162,6 @@ export default function ProjectLotsTable({
               </TableHeader>
               <TableBody>
                 {lots.map((lot, index) => {
-                  const currencySymbol = currency === "PEN" ? "S/" : "$";
-
                   return (
                     <motion.tr
                       key={lot.id}
@@ -236,8 +226,7 @@ export default function ProjectLotsTable({
               </TableBody>
             </Table>
           </div>
-
-          {/* Paginación */}
+          {}
           <div className="flex items-center justify-between px-4 py-3 bg-card/60 border-t">
             <div className="text-sm text-muted-foreground">
               Mostrando {getResultsRange()}

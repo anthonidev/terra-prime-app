@@ -1,13 +1,10 @@
 "use client";
-
 import React from "react";
 import { ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
 interface UploadProgressProps {
   currentStep: "upload" | "review" | "success";
 }
-
 const UploadProgress: React.FC<UploadProgressProps> = ({ currentStep }) => {
   return (
     <div className="flex items-center text-sm text-muted-foreground">
@@ -31,5 +28,4 @@ const UploadProgress: React.FC<UploadProgressProps> = ({ currentStep }) => {
     </div>
   );
 };
-
 export default UploadProgress;

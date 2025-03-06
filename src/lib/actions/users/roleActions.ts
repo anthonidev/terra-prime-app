@@ -1,8 +1,6 @@
 "use server";
-
 import { httpClient } from "@/lib/api/http-client";
 import { Role } from "@/types/user.types";
-
 export async function getRoles(): Promise<Role[]> {
   try {
     return await httpClient<Role[]>("/api/users/roles");

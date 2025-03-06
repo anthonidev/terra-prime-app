@@ -1,5 +1,4 @@
 "use server";
-
 import { httpClient } from "@/lib/api/http-client";
 import {
   ExcelValidationResponse,
@@ -8,9 +7,8 @@ import {
   ProjectDetailDto,
   ProjectListResponseDto,
 } from "@/types/project.types";
-
 export async function validateProjectExcel(
-  formData: FormData
+  formData: FormData,
 ): Promise<ExcelValidationResponse> {
   try {
     return await httpClient<ExcelValidationResponse>(
@@ -19,19 +17,18 @@ export async function validateProjectExcel(
         method: "POST",
         body: formData,
         skipJsonStringify: true,
-      }
+      },
     );
   } catch (error) {
     console.error("Error en validateProjectExcel:", error);
     throw error;
   }
 }
-
 export async function createBulkProject(
-  projectData: ProjectData
-): Promise<any> {
+  projectData: ProjectData,
+): Promise<unknown> {
   try {
-    return await httpClient<any>("/api/projects/bulk-create", {
+    return await httpClient("/api/projects/bulk-create", {
       method: "POST",
       body: { projectData: projectData },
     });
@@ -39,19 +36,16 @@ export async function createBulkProject(
     throw error;
   }
 }
-
 export async function getProjects(): Promise<ProjectListResponseDto> {
   try {
     const response = await httpClient<ProjectListResponseDto>("/api/projects", {
       method: "GET",
     });
-
     const projectsWithDates = response.projects.map((project) => ({
       ...project,
       createdAt: new Date(project.createdAt),
       updatedAt: new Date(project.updatedAt),
     }));
-
     return {
       projects: projectsWithDates,
       total: response.total,
@@ -61,13 +55,11 @@ export async function getProjects(): Promise<ProjectListResponseDto> {
     throw error;
   }
 }
-
 export async function getProjectDetail(id: string): Promise<ProjectDetailDto> {
   try {
     const response = await httpClient<ProjectDetailDto>(`/api/projects/${id}`, {
       method: "GET",
     });
-
     return {
       ...response,
       createdAt: new Date(response.createdAt),
@@ -78,10 +70,9 @@ export async function getProjectDetail(id: string): Promise<ProjectDetailDto> {
     throw error;
   }
 }
-
 export async function getProjectLots(
   projectId: string,
-  params?: Record<string, unknown> | undefined
+  params?: Record<string, unknown> | undefined,
 ): Promise<PaginatedLotsResponseDto> {
   try {
     const response = await httpClient<PaginatedLotsResponseDto>(
@@ -89,15 +80,13 @@ export async function getProjectLots(
       {
         method: "GET",
         params,
-      }
+      },
     );
-
     const itemsWithDates = response.items.map((lot) => ({
       ...lot,
       createdAt: new Date(lot.createdAt),
       updatedAt: new Date(lot.updatedAt),
     }));
-
     return {
       items: itemsWithDates,
       meta: response.meta,
@@ -107,12 +96,10 @@ export async function getProjectLots(
     throw error;
   }
 }
-
 interface UpdateProjectWithImageOptions {
   id: string;
   formData: FormData;
 }
-
 export async function updateProjectWithImage({
   id,
   formData,
@@ -124,9 +111,8 @@ export async function updateProjectWithImage({
         method: "PATCH",
         body: formData,
         skipJsonStringify: true,
-      }
+      },
     );
-
     return {
       ...response,
       createdAt: new Date(response.createdAt),

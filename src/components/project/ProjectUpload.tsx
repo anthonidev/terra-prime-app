@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Card,
   CardContent,
@@ -15,7 +14,6 @@ import ReviewStep from "./ReviewStep";
 import SuccessStep from "./SuccessStep";
 import UploadProgress from "./UploadProgress";
 import UploadStep from "./UploadStep";
-
 const ProjectUpload: React.FC = () => {
   const {
     file,
@@ -33,7 +31,6 @@ const ProjectUpload: React.FC = () => {
     setFile,
     setValidationResult,
   } = useProjectUpload();
-
   return (
     <Card className="w-full">
       <CardHeader>
@@ -72,7 +69,6 @@ const ProjectUpload: React.FC = () => {
                 setValidationResult={setValidationResult}
               />
             )}
-
             {currentStep === "review" && validationResult?.data && (
               <ReviewStep
                 projectData={validationResult.data}
@@ -81,7 +77,6 @@ const ProjectUpload: React.FC = () => {
                 resetUpload={resetUpload}
               />
             )}
-
             {currentStep === "success" && (
               <SuccessStep
                 resetUpload={resetUpload}
@@ -94,5 +89,4 @@ const ProjectUpload: React.FC = () => {
     </Card>
   );
 };
-
 export default ProjectUpload;

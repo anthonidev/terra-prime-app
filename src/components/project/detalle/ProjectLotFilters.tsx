@@ -22,7 +22,6 @@ import {
   Search,
 } from "lucide-react";
 import { useState } from "react";
-
 interface ProjectLotFiltersProps {
   projectDetail: ProjectDetailDto | null;
   currentFilters: Record<string, unknown>;
@@ -30,7 +29,6 @@ interface ProjectLotFiltersProps {
   onReset: () => void;
   isLoading: boolean;
 }
-
 export default function ProjectLotFilters({
   projectDetail,
   currentFilters,
@@ -39,19 +37,16 @@ export default function ProjectLotFilters({
   isLoading,
 }: ProjectLotFiltersProps) {
   const [searchValue, setSearchValue] = useState<string>(
-    (currentFilters.search as string) || ""
+    (currentFilters.search as string) || "",
   );
-
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onFilterChange({ search: searchValue || undefined });
   };
-
   const handleStageChange = (value: string) => {
     if (value === "all") {
-      const { stageId, blockId, ...restFilters } = { ...currentFilters };
       onFilterChange({
-        ...restFilters,
+        ...currentFilters,
         stageId: undefined,
         blockId: undefined,
       });
@@ -60,56 +55,44 @@ export default function ProjectLotFilters({
         ...currentFilters,
         stageId: value,
       };
-
       if (currentFilters.blockId) {
         const blockBelongsToStage = projectDetail?.stages
           .find((stage) => stage.id === value)
           ?.blocks.some((block) => block.id === currentFilters.blockId);
-
         if (!blockBelongsToStage) {
           delete newFilters.blockId;
         }
       }
-
       onFilterChange(newFilters);
     }
   };
-
   const handleBlockChange = (value: string) => {
     if (value === "all") {
-      const { blockId, ...restFilters } = { ...currentFilters };
       onFilterChange({
-        ...restFilters,
+        ...currentFilters,
         blockId: undefined,
       });
     } else {
       onFilterChange({ ...currentFilters, blockId: value });
     }
   };
-
   const handleStatusChange = (value: string) => {
     if (value === "all") {
-      const { status, ...restFilters } = { ...currentFilters };
-
       onFilterChange({
-        ...restFilters,
+        ...currentFilters,
         status: undefined,
       });
     } else {
       onFilterChange({ ...currentFilters, status: value });
     }
   };
-
   const getAvailableBlocks = () => {
     if (!projectDetail) return [];
-
-    let blocks: { id: string; name: string; stageName: string }[] = [];
-
+    const blocks: { id: string; name: string; stageName: string }[] = [];
     if (currentFilters.stageId) {
       const selectedStage = projectDetail.stages.find(
-        (stage) => stage.id === currentFilters.stageId
+        (stage) => stage.id === currentFilters.stageId,
       );
-
       if (selectedStage) {
         selectedStage.blocks.forEach((block) => {
           blocks.push({
@@ -130,14 +113,11 @@ export default function ProjectLotFilters({
         });
       });
     }
-
     return blocks.sort(
       (a, b) =>
-        a.stageName.localeCompare(b.stageName) || a.name.localeCompare(b.name)
+        a.stageName.localeCompare(b.stageName) || a.name.localeCompare(b.name),
     );
   };
-
-  // Contar cuántos filtros activos hay
   const getActiveFiltersCount = () => {
     let count = 0;
     if (currentFilters.search) count++;
@@ -146,10 +126,8 @@ export default function ProjectLotFilters({
     if (currentFilters.status) count++;
     return count;
   };
-
   const activeFiltersCount = getActiveFiltersCount();
   const hasActiveFilters = activeFiltersCount > 0;
-
   if (isLoading) {
     return (
       <Card className="bg-card/60 shadow-sm">
@@ -168,7 +146,6 @@ export default function ProjectLotFilters({
       </Card>
     );
   }
-
   return (
     <Card className="bg-card/60 shadow-sm">
       <div className="px-3 py-1 flex justify-between items-center border-b">
@@ -238,7 +215,6 @@ export default function ProjectLotFilters({
               </button>
             </form>
           </div>
-
           <div className="space-y-1">
             <div className="flex items-center justify-between">
               <Label
@@ -278,7 +254,6 @@ export default function ProjectLotFilters({
               </SelectContent>
             </Select>
           </div>
-
           <div className="space-y-1">
             <div className="flex items-center justify-between">
               <Label
@@ -318,7 +293,6 @@ export default function ProjectLotFilters({
               </SelectContent>
             </Select>
           </div>
-
           <div className="space-y-1">
             <div className="flex items-center justify-between">
               <Label

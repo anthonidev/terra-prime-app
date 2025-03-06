@@ -14,11 +14,9 @@ import {
 } from "@/types/project.types";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-
 interface UseProjectProps {
   projectId: string;
 }
-
 interface UseProjectReturn {
   projectDetail: ProjectDetailDto | null;
   lots: LotResponseDto[];
@@ -29,24 +27,19 @@ interface UseProjectReturn {
   isLoadingLots: boolean;
   isUpdating: boolean;
   error: string | null;
-
   filters: Record<string, unknown>;
-
   fetchProjectDetail: () => Promise<void>;
   fetchProjectLots: (newFilters?: Record<string, unknown>) => Promise<void>;
   setFilters: (newFilters: Record<string, unknown>) => void;
   setPage: (page: number) => void;
   resetFilters: () => void;
-
   updateProject: (
     data: UpdateProjectDto,
     logoFile?: File | null
   ) => Promise<ProjectDetailDto | null>;
-
   getLotsByStage: (stageId: string) => LotResponseDto[];
   getLotsByBlock: (blockId: string) => LotResponseDto[];
   getLotsByStatus: (status: LotStatus) => LotResponseDto[];
-
   createProjectStage: (data: {
     name: string;
     isActive?: boolean;
@@ -55,7 +48,6 @@ interface UseProjectReturn {
     stageId: string,
     data: { name?: string; isActive?: boolean }
   ) => Promise<void>;
-
   createProjectBlock: (data: {
     name: string;
     isActive?: boolean;
@@ -65,7 +57,6 @@ interface UseProjectReturn {
     blockId: string,
     data: { name?: string; isActive?: boolean }
   ) => Promise<void>;
-
   createProjectLot: (data: {
     name: string;
     area: number;
@@ -74,7 +65,6 @@ interface UseProjectReturn {
     status?: LotStatus;
     blockId: string;
   }) => Promise<void>;
-
   updateProjectLot: (
     lotId: string,
     data: {
@@ -86,7 +76,6 @@ interface UseProjectReturn {
     }
   ) => Promise<void>;
 }
-
 export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
   const [projectDetail, setProjectDetail] = useState<ProjectDetailDto | null>(
     null
@@ -104,7 +93,6 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
     limit: 10,
     order: "DESC",
   });
-
   const fetchProjectDetail = useCallback(async () => {
     try {
       setIsLoadingDetail(true);
@@ -118,14 +106,11 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
       setIsLoadingDetail(false);
     }
   }, [projectId]);
-
   const fetchProjectLots = useCallback(
     async (newFilters?: Record<string, unknown>) => {
       try {
         setIsLoadingLots(true);
-
         const currentFilters = newFilters || filters;
-
         const lotsData = await getProjectLots(projectId, currentFilters);
         setLots(lotsData.items);
         setTotalLots(lotsData.meta.totalItems);
@@ -140,7 +125,6 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
     },
     [projectId, filters]
   );
-
   const setFilters = useCallback((newFilters: Record<string, unknown>) => {
     setFiltersState((prev) => ({
       ...prev,
@@ -148,14 +132,12 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
       page: 1,
     }));
   }, []);
-
   const setPage = useCallback((page: number) => {
     setFiltersState((prev) => ({
       ...prev,
       page,
     }));
   }, []);
-
   const resetFilters = useCallback(() => {
     setFiltersState({
       page: 1,
@@ -163,7 +145,6 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
       order: "DESC",
     });
   }, []);
-
   const updateProject = useCallback(
     async (
       data: UpdateProjectDto,
@@ -173,13 +154,10 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         setError("ID de proyecto no válido");
         return null;
       }
-
       setIsUpdating(true);
       setError(null);
-
       try {
         const formData = new FormData();
-
         Object.entries(data).forEach(([key, value]) => {
           if (key === "name" || key === "isActive") {
             if (typeof value === "boolean") {
@@ -189,28 +167,22 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
             }
           }
         });
-
         if (logoFile) {
           formData.append("logo", logoFile);
         }
-
         const updatedProject = await updateProjectWithImage({
           id: projectId,
           formData,
         });
-
         setProjectDetail(updatedProject);
-
         toast.success("Proyecto actualizado correctamente");
         return updatedProject;
       } catch (error) {
         console.error("Error al actualizar el proyecto:", error);
-
         const errorMessage =
           error instanceof Error
             ? error.message
             : "Error al actualizar el proyecto";
-
         setError(errorMessage);
         toast.error(errorMessage);
         return null;
@@ -220,51 +192,42 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
     },
     [projectId]
   );
-
   const getLotsByStage = useCallback(
     (stageId: string) => lots.filter((lot) => lot.stageId === stageId),
     [lots]
   );
-
   const getLotsByBlock = useCallback(
     (blockId: string) => lots.filter((lot) => lot.blockId === blockId),
     [lots]
   );
-
   const getLotsByStatus = useCallback(
     (status: LotStatus) => lots.filter((lot) => lot.status === status),
     [lots]
   );
-
   useEffect(() => {
     fetchProjectDetail();
   }, [fetchProjectDetail]);
-
   useEffect(() => {
     fetchProjectLots();
   }, [fetchProjectLots, filters]);
-
   const createProjectStage = useCallback(
     async (data: { name: string; isActive?: boolean }): Promise<void> => {
       if (!projectId) {
         setError("ID de proyecto no válido");
         return;
       }
-
       try {
         setError(null);
         await createStage({
           ...data,
           projectId,
         });
-
         toast.success("Etapa creada correctamente");
         await fetchProjectDetail();
       } catch (error) {
         console.error("Error al crear la etapa:", error);
         const errorMessage =
           error instanceof Error ? error.message : "Error al crear la etapa";
-
         setError(errorMessage);
         toast.error(errorMessage);
       }
@@ -280,11 +243,9 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         setError("ID de etapa no válido");
         return;
       }
-
       try {
         setError(null);
         await updateStage(stageId, data);
-
         toast.success("Etapa actualizada correctamente");
         await fetchProjectDetail();
       } catch (error) {
@@ -293,14 +254,12 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
           error instanceof Error
             ? error.message
             : "Error al actualizar la etapa";
-
         setError(errorMessage);
         toast.error(errorMessage);
       }
     },
     [fetchProjectDetail]
   );
-
   const createProjectBlock = useCallback(
     async (data: {
       name: string;
@@ -311,25 +270,21 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         setError("ID de etapa no válido");
         return;
       }
-
       try {
         setError(null);
         await createBlock(data);
-
         toast.success("Manzana creada correctamente");
         await fetchProjectDetail();
       } catch (error) {
         console.error("Error al crear la manzana:", error);
         const errorMessage =
           error instanceof Error ? error.message : "Error al crear la manzana";
-
         setError(errorMessage);
         toast.error(errorMessage);
       }
     },
     [fetchProjectDetail]
   );
-
   const updateProjectBlock = useCallback(
     async (
       blockId: string,
@@ -339,12 +294,9 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         setError("ID de manzana no válido");
         return;
       }
-
       try {
         setError(null);
         await updateBlock(blockId, data);
-
-        // Refrescar los datos del proyecto tras actualizar la manzana
         toast.success("Manzana actualizada correctamente");
         await fetchProjectDetail();
       } catch (error) {
@@ -353,7 +305,6 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
           error instanceof Error
             ? error.message
             : "Error al actualizar la manzana";
-
         setError(errorMessage);
         toast.error(errorMessage);
       }
@@ -373,11 +324,9 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         setError("ID de manzana no válido");
         return;
       }
-
       try {
         setError(null);
         await createLot(data);
-
         toast.success("Lote creado correctamente");
         await fetchProjectDetail();
         await fetchProjectLots();
@@ -385,14 +334,12 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         console.error("Error al crear el lote:", error);
         const errorMessage =
           error instanceof Error ? error.message : "Error al crear el lote";
-
         setError(errorMessage);
         toast.error(errorMessage);
       }
     },
     [fetchProjectDetail, fetchProjectLots]
   );
-
   const updateProjectLot = useCallback(
     async (
       lotId: string,
@@ -408,11 +355,9 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         setError("ID de lote no válido");
         return;
       }
-
       try {
         setError(null);
         await updateLot(lotId, data);
-
         toast.success("Lote actualizado correctamente");
         await fetchProjectDetail();
         await fetchProjectLots();
@@ -422,7 +367,6 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
           error instanceof Error
             ? error.message
             : "Error al actualizar el lote";
-
         setError(errorMessage);
         toast.error(errorMessage);
       }
@@ -440,24 +384,19 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
     isUpdating,
     error,
     filters,
-
     fetchProjectDetail,
     fetchProjectLots,
     setFilters,
     setPage,
     resetFilters,
     updateProject,
-
     getLotsByStage,
     getLotsByBlock,
     getLotsByStatus,
-
     createProjectStage,
     updateProjectStage,
-
     createProjectBlock,
     updateProjectBlock,
-
     createProjectLot,
     updateProjectLot,
   };

@@ -15,7 +15,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-
 const ICON_MAPPING = {
   profile: User,
   project: FileText,
@@ -23,17 +22,14 @@ const ICON_MAPPING = {
   user: Users,
   lead: Home,
 };
-
 type Props = {
   item: View;
   isCollapsed: boolean;
   isNested?: boolean;
 };
-
 const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const Icon = ICON_MAPPING[item.icon as keyof typeof ICON_MAPPING] || Home;
-
   const LinkContent = () => (
     <motion.div
       className={cn(
@@ -60,7 +56,6 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
       </AnimatePresence>
     </motion.div>
   );
-
   if (item.children?.length > 0) {
     const TriggerContent = () => (
       <div
@@ -81,7 +76,6 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
         )}
       </div>
     );
-
     return (
       <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
         {isCollapsed ? (
@@ -144,7 +138,6 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
       </Collapsible>
     );
   }
-
   const linkClassName = cn(
     "flex w-full p-2 rounded-lg hover:bg-nav-item-hover transition-colors",
     isCollapsed ? "justify-center" : "items-center gap-3",
@@ -153,7 +146,6 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
       "": isCollapsed,
     }
   );
-
   const LinkWrapper = ({ children }: { children: React.ReactNode }) => (
     <motion.div
       whileHover={{ x: isCollapsed ? 0 : 4 }}
@@ -163,7 +155,6 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
       {children}
     </motion.div>
   );
-
   const MainContent = () => (
     <LinkWrapper>
       {item.url ? (
@@ -177,7 +168,6 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
       )}
     </LinkWrapper>
   );
-
   return isCollapsed ? (
     <TooltipProvider>
       <Tooltip>
@@ -203,5 +193,4 @@ const SidebarLink = ({ item, isCollapsed, isNested = false }: Props) => {
     <MainContent />
   );
 };
-
 export default SidebarLink;

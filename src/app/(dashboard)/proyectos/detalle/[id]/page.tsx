@@ -1,5 +1,4 @@
 "use client";
-
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -7,7 +6,6 @@ import { useProject } from "@/hooks/project/useProjectReturn";
 import { motion } from "framer-motion";
 import { notFound, useParams } from "next/navigation";
 import { useState } from "react";
-
 import ProjectDetailHeader from "@/components/project/detalle/ProjectDetailHeader";
 import ProjectLotFilters from "@/components/project/detalle/ProjectLotFilters";
 import ProjectLotsTable from "@/components/project/detalle/ProjectLotsTable";
@@ -21,7 +19,6 @@ import {
   LotResponseDto,
   StageDetailDto,
 } from "@/types/project.types";
-
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState("info");
@@ -31,20 +28,17 @@ export default function ProjectDetailPage() {
   );
   const [isStageModalOpen, setIsStageModalOpen] = useState(false);
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
-
   const [selectedBlock, setSelectedBlock] = useState<BlockDetailDto | null>(
     null
   );
   const [selectedStageIdForBlock, setSelectedStageIdForBlock] = useState<
     string | undefined
   >(undefined);
-
   const [selectedBlockIdForLot, setSelectedBlockIdForLot] = useState<
     string | undefined
   >(undefined);
   const [selectedLot, setSelectedLot] = useState<LotResponseDto | null>(null);
   const [isLotModalOpen, setIsLotModalOpen] = useState(false);
-
   const {
     projectDetail,
     lots,
@@ -67,19 +61,15 @@ export default function ProjectDetailPage() {
     createProjectLot,
     updateProjectLot,
   } = useProject({ projectId: params.id });
-
   if (!isLoadingDetail && !projectDetail && !error) {
     notFound();
   }
-
   const handleOpenEditModal = () => {
     setIsEditModalOpen(true);
   };
-
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
   };
-
   const containerAnimation = {
     hidden: { opacity: 0 },
     show: {
@@ -87,39 +77,32 @@ export default function ProjectDetailPage() {
       transition: { staggerChildren: 0.1 },
     },
   };
-
   const itemAnimation = {
     hidden: { opacity: 0, y: 10 },
     show: { opacity: 1, y: 0 },
   };
-
   const handleOpenCreateStageModal = () => {
     setSelectedStage(null);
     setIsStageModalOpen(true);
   };
-
   const handleOpenEditStageModal = (stage: StageDetailDto) => {
     setSelectedStage(stage);
     setIsStageModalOpen(true);
   };
-
   const handleCloseStageModal = () => {
     setIsStageModalOpen(false);
     setSelectedStage(null);
   };
-
   const handleOpenCreateBlockModal = (stageId?: string) => {
     setSelectedBlock(null);
     setSelectedStageIdForBlock(stageId);
     setIsBlockModalOpen(true);
   };
-
   const handleOpenEditBlockModal = (block: BlockDetailDto) => {
     setSelectedBlock(block);
     setSelectedStageIdForBlock(undefined);
     setIsBlockModalOpen(true);
   };
-
   const handleCloseBlockModal = () => {
     setIsBlockModalOpen(false);
     setSelectedBlock(null);
@@ -130,13 +113,11 @@ export default function ProjectDetailPage() {
     setSelectedBlockIdForLot(blockId);
     setIsLotModalOpen(true);
   };
-
   const handleOpenEditLotModal = (lot: LotResponseDto) => {
     setSelectedLot(lot);
     setSelectedBlockIdForLot(undefined);
     setIsLotModalOpen(true);
   };
-
   const handleCloseLotModal = () => {
     setIsLotModalOpen(false);
     setSelectedLot(null);
@@ -165,9 +146,7 @@ export default function ProjectDetailPage() {
             onEditClick={handleOpenEditModal}
           />
         )}
-
         <Separator className="my-6" />
-
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
           <div className="flex items-center justify-between mb-1">
             <TabsList className="grid w-full sm:w-auto grid-cols-2 sm:inline-flex">
@@ -185,7 +164,6 @@ export default function ProjectDetailPage() {
               </TabsTrigger>
             </TabsList>
           </div>
-
           <TabsContent value="info" className="mt-3 space-y-4">
             {isLoadingDetail ? (
               <motion.div
@@ -216,7 +194,6 @@ export default function ProjectDetailPage() {
               </motion.div>
             )}
           </TabsContent>
-
           <TabsContent value="lots" className="mt-3 space-y-4">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -231,7 +208,6 @@ export default function ProjectDetailPage() {
                 isLoading={isLoadingDetail}
               />
             </motion.div>
-
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -252,7 +228,6 @@ export default function ProjectDetailPage() {
           </TabsContent>
         </Tabs>
       </motion.div>
-
       {projectDetail && (
         <EditProjectModal
           project={projectDetail}
@@ -263,7 +238,6 @@ export default function ProjectDetailPage() {
           error={error}
         />
       )}
-
       <StageFormModal
         isOpen={isStageModalOpen}
         onClose={handleCloseStageModal}
@@ -272,7 +246,6 @@ export default function ProjectDetailPage() {
         onUpdateStage={updateProjectStage}
         error={error}
       />
-
       {projectDetail && (
         <BlockFormModal
           isOpen={isBlockModalOpen}

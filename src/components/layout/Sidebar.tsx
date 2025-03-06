@@ -10,14 +10,12 @@ import {
   SheetTitle,
 } from "../ui/sheet";
 import SidebarContent from "./SidebarContent";
-
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-
   return (
     <>
-      {/* Versión móvil */}
+      {}
       <AnimatePresence>
         <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
           <SheetTrigger asChild>
@@ -41,8 +39,7 @@ const Sidebar = () => {
           </SheetContent>
         </Sheet>
       </AnimatePresence>
-
-      {/* Versión desktop */}
+      {}
       <div className="hidden lg:block">
         <SidebarContent
           isCollapsed={isCollapsed}
@@ -53,5 +50,4 @@ const Sidebar = () => {
     </>
   );
 };
-
 export default Sidebar;

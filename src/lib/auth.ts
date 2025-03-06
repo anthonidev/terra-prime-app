@@ -1,6 +1,5 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -23,9 +22,7 @@ export const authOptions: NextAuthOptions = {
               }),
             }
           );
-
           const data = await res.json();
-
           if (res.ok && data.user) {
             return {
               ...data.user,
@@ -60,11 +57,8 @@ export const authOptions: NextAuthOptions = {
           },
         };
       }
-
-      // Verificar si el token ha expirado
       const currentTimestamp = Math.floor(Date.now() / 1000);
       const tokenData = JSON.parse(atob(token.accessToken.split(".")[1]));
-
       if (tokenData.exp < currentTimestamp) {
         try {
           const response = await fetch(
@@ -75,9 +69,7 @@ export const authOptions: NextAuthOptions = {
               body: JSON.stringify({ refreshToken: token.refreshToken }),
             }
           );
-
           const data = await response.json();
-
           if (response.ok) {
             token.accessToken = data.accessToken;
             token.refreshToken = data.refreshToken;
@@ -87,7 +79,6 @@ export const authOptions: NextAuthOptions = {
           return { ...token, error: "RefreshAccessTokenError" };
         }
       }
-
       return token;
     },
     async session({ session, token }) {
@@ -107,6 +98,6 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 24 horas
+    maxAge: 24 * 60 * 60, 
   },
 };

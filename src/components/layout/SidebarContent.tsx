@@ -9,13 +9,11 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import SidebarLink from "./SidebarLink";
-
 type Props = {
   isCollapsed: boolean;
   setIsCollapsed: (value: boolean) => void;
   isMobile?: boolean;
 };
-
 const SidebarContent = ({
   isCollapsed,
   setIsCollapsed,
@@ -23,9 +21,7 @@ const SidebarContent = ({
 }: Props) => {
   const { data: session } = useSession();
   const user = session?.user;
-
   if (!user) return null;
-
   return (
     <motion.div
       initial={false}
@@ -38,7 +34,7 @@ const SidebarContent = ({
       }}
       className="flex flex-col h-full border-r border-border bg-layout-sidebar text-layout-sidebar-foreground"
     >
-      {/* Logo & Toggle */}
+      {}
       <div className="flex items-center justify-between p-3 border-b border-border">
         <motion.span
           initial={false}
@@ -66,8 +62,7 @@ const SidebarContent = ({
           </motion.button>
         )}
       </div>
-
-      {/* User Info */}
+      {}
       <div className="p-4 border-b border-border">
         <div className="flex items-center gap-3">
           {isCollapsed ? (
@@ -136,8 +131,7 @@ const SidebarContent = ({
           </motion.div>
         </div>
       </div>
-
-      {/* Navigation */}
+      {}
       <nav className="flex-1 overflow-y-auto p-4">
         <motion.div
           className="space-y-2"
@@ -148,8 +142,7 @@ const SidebarContent = ({
           ))}
         </motion.div>
       </nav>
-
-      {/* Footer Actions */}
+      {}
       <motion.div className="p-4 border-t border-border space-y-2">
         {isCollapsed ? (
           <TooltipProvider>
@@ -187,5 +180,4 @@ const SidebarContent = ({
     </motion.div>
   );
 };
-
 export default SidebarContent;

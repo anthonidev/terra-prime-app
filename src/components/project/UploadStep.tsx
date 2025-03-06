@@ -1,5 +1,4 @@
 "use client";
-
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +18,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { ValidationError } from "@/types/project.types";
+import {
+  ExcelValidationResponse,
+  ValidationError,
+} from "@/types/project.types";
 import { motion } from "framer-motion";
 import {
   AlertCircle,
@@ -29,7 +31,6 @@ import {
   X,
 } from "lucide-react";
 import React from "react";
-
 interface UploadStepProps {
   file: File | null;
   setFile: (file: File | null) => void;
@@ -42,9 +43,8 @@ interface UploadStepProps {
     isValid: boolean;
     errors?: ValidationError[];
   } | null;
-  setValidationResult: (result: any) => void;
+  setValidationResult: (result: ExcelValidationResponse | null) => void;
 }
-
 const UploadStep: React.FC<UploadStepProps> = ({
   file,
   setFile,
@@ -62,7 +62,7 @@ const UploadStep: React.FC<UploadStepProps> = ({
         className={cn(
           "border-2 border-dashed rounded-lg p-12 flex flex-col items-center justify-center text-center",
           "hover:border-primary/50 transition-colors",
-          "bg-muted/20"
+          "bg-muted/20",
         )}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
@@ -78,7 +78,6 @@ const UploadStep: React.FC<UploadStepProps> = ({
             O haz clic para seleccionar un archivo. El archivo debe seguir el
             formato de la plantilla.
           </p>
-
           <div className="relative mt-4 w-full">
             <Input
               id="file-upload"
@@ -100,7 +99,6 @@ const UploadStep: React.FC<UploadStepProps> = ({
           </a>
         </div>
       </div>
-
       {file && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -133,13 +131,11 @@ const UploadStep: React.FC<UploadStepProps> = ({
           </div>
         </motion.div>
       )}
-
       {validationResult &&
         !validationResult.isValid &&
         validationResult.errors && (
           <ValidationErrorsDisplay errors={validationResult.errors} />
         )}
-
       <div className="flex justify-end space-x-4">
         <Button
           disabled={!file || isValidating}
@@ -152,11 +148,9 @@ const UploadStep: React.FC<UploadStepProps> = ({
     </div>
   );
 };
-
 interface ValidationErrorsDisplayProps {
   errors: ValidationError[];
 }
-
 const ValidationErrorsDisplay: React.FC<ValidationErrorsDisplayProps> = ({
   errors,
 }) => {
@@ -170,7 +164,6 @@ const ValidationErrorsDisplay: React.FC<ValidationErrorsDisplayProps> = ({
           inténtalo de nuevo.
         </AlertDescription>
       </Alert>
-
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Errores encontrados</CardTitle>
@@ -202,5 +195,4 @@ const ValidationErrorsDisplay: React.FC<ValidationErrorsDisplayProps> = ({
     </motion.div>
   );
 };
-
 export default UploadStep;

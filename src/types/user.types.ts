@@ -3,7 +3,6 @@ export interface Profile {
   accessToken: string;
   refreshToken: string;
 }
-
 export interface User {
   id: string;
   email: string;
@@ -15,13 +14,11 @@ export interface User {
   role: Role;
   views: View[];
 }
-
 export interface Role {
   id: number;
   code: string;
   name: string;
 }
-
 export interface View {
   id: number;
   code: string;
@@ -32,9 +29,6 @@ export interface View {
   metadata: null;
   children: View[];
 }
-
-//--------------------------------------------------
-
 export interface UserList {
   id: string;
   email: string;
@@ -47,7 +41,6 @@ export interface UserList {
   updatedAt: string;
   role: Role;
 }
-
 export interface GetUsersParams {
   search?: string;
   isActive?: boolean;
@@ -55,7 +48,6 @@ export interface GetUsersParams {
   limit?: number;
   order?: "ASC" | "DESC";
 }
-
 export interface PaginatedMeta {
   totalItems: number;
   itemsPerPage: number;
@@ -66,8 +58,6 @@ export interface PaginatedUsers {
   items: UserList[];
   meta: PaginatedMeta;
 }
-
-//--------------------------------------------------
 export interface CreateUserDto {
   email: string;
   password: string;
@@ -78,7 +68,6 @@ export interface CreateUserDto {
   roleId: number;
   isActive?: boolean;
 }
-
 export interface UpdateUserDto
   extends Omit<Partial<CreateUserDto>, "document"> {
   password?: string;

@@ -22,7 +22,6 @@ import { useUsersTable } from "@/hooks/useUsersTable";
 import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import { CreateUserModal } from "./CreateUserModal";
-
 export default function UsersTable() {
   const [selectedUser, setSelectedUser] = useState<UserList | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -44,22 +43,18 @@ export default function UsersTable() {
     handleUpdateUser,
     handleCreateUser,
   } = useUsersTable();
-
   const handleEdit = (user: UserList) => {
     setSelectedUser(user);
   };
-
   const handleCloseModals = () => {
     setSelectedUser(null);
     setIsCreateModalOpen(false);
   };
-
   const table = useReactTable({
     data: data?.items || [],
     columns: columns(handleEdit),
     getCoreRowModel: getCoreRowModel(),
   });
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -71,7 +66,6 @@ export default function UsersTable() {
           order={order}
           onOrderChange={handleOrderChange}
         />
-
         <Button
           onClick={() => setIsCreateModalOpen(true)}
           className="bg-primary text-primary-foreground hover:bg-primary-hover"
@@ -80,7 +74,6 @@ export default function UsersTable() {
           Nuevo Usuario
         </Button>
       </div>
-
       <div className="rounded-md border border-border">
         <Table>
           <TableHeader>
@@ -148,7 +141,6 @@ export default function UsersTable() {
           </TableBody>
         </Table>
       </div>
-
       {data && (
         <UsersTablePagination
           data={data}
@@ -158,7 +150,6 @@ export default function UsersTable() {
           onItemsPerPageChange={handleItemsPerPageChange}
         />
       )}
-
       {selectedUser && (
         <UpdateUserModal
           user={selectedUser}

@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 interface UsersTableFiltersProps {
   search: string;
   onSearchChange: (value: string) => void;
@@ -16,7 +15,6 @@ interface UsersTableFiltersProps {
   order: "ASC" | "DESC";
   onOrderChange: (value: "ASC" | "DESC") => void;
 }
-
 export function UsersTableFilters({
   search,
   onSearchChange,
@@ -36,7 +34,6 @@ export function UsersTableFilters({
           className="pl-9 bg-background border-input"
         />
       </div>
-
       <Select
         value={isActive === undefined ? "all" : isActive.toString()}
         onValueChange={(value) => {
@@ -55,7 +52,6 @@ export function UsersTableFilters({
           <SelectItem value="false">Inactivos</SelectItem>
         </SelectContent>
       </Select>
-
       <Select
         value={order}
         onValueChange={(value: "ASC" | "DESC") => onOrderChange(value)}

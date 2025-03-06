@@ -1,12 +1,10 @@
 "use server";
-
 import { httpClient } from "@/lib/api/http-client";
 import {
   CreateStageDto,
   StageDetailDto,
   UpdateStageDto,
 } from "@/types/project.types";
-
 export async function createStage(
   data: CreateStageDto
 ): Promise<StageDetailDto> {
@@ -15,14 +13,12 @@ export async function createStage(
       method: "POST",
       body: data,
     });
-
     return response;
   } catch (error) {
     console.error("Error al crear la etapa:", error);
     throw error;
   }
 }
-
 export async function updateStage(
   id: string,
   data: UpdateStageDto
@@ -32,7 +28,6 @@ export async function updateStage(
       method: "PATCH",
       body: data,
     });
-
     return response;
   } catch (error) {
     console.error(`Error al actualizar la etapa ${id}:`, error);

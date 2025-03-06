@@ -1,4 +1,3 @@
-// src/hooks/useUsersTable.ts
 import { useState, useCallback, useEffect } from "react";
 import {
   PaginatedUsers,
@@ -14,22 +13,18 @@ import {
 } from "@/lib/actions/users/userActions";
 import { getRoles } from "@/lib/actions/users/roleActions";
 import { toast } from "sonner";
-
 interface UseUsersTableProps {
   initialPage?: number;
   initialLimit?: number;
 }
-
 interface MutationState {
   loading: boolean;
   error: Error | null;
 }
-
 export function useUsersTable({
   initialPage = 1,
   initialLimit = 10,
 }: UseUsersTableProps = {}) {
-  // Estados existentes para la tabla
   const [data, setData] = useState<PaginatedUsers | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -39,12 +34,10 @@ export function useUsersTable({
   const [order, setOrder] = useState<"ASC" | "DESC">("DESC");
   const [roles, setRoles] = useState<Role[]>([]);
   const [rolesLoading, setRolesLoading] = useState(true);
-  // Estados para mutaciones
   const [mutationState, setMutationState] = useState<MutationState>({
     loading: false,
     error: null,
   });
-
   const fetchRoles = useCallback(async () => {
     try {
       setRolesLoading(true);
@@ -56,7 +49,6 @@ export function useUsersTable({
       setRolesLoading(false);
     }
   }, []);
-  // Fetch usuarios
   const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
@@ -74,46 +66,38 @@ export function useUsersTable({
       setLoading(false);
     }
   }, [search, currentPage, itemsPerPage, isActive, order]);
-
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
   useEffect(() => {
     fetchRoles();
   }, [fetchRoles]);
-  // Handlers existentes
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-
   const handleItemsPerPageChange = (value: number) => {
     setItemsPerPage(value);
     setCurrentPage(1);
   };
-
   const handleSearchChange = (value: string) => {
     setSearch(value);
     setCurrentPage(1);
   };
-
   const handleIsActiveChange = (value: boolean | undefined) => {
     setIsActive(value);
     setCurrentPage(1);
   };
-
   const handleOrderChange = (value: "ASC" | "DESC") => {
     setOrder(value);
     setCurrentPage(1);
   };
-
-  // Nuevas funciones para mutaciones
   const handleCreateUser = async (
     userData: CreateUserDto
   ): Promise<UserList> => {
     setMutationState({ loading: true, error: null });
     try {
       const newUser = await createUser(userData);
-      await fetchUsers(); // Refrescar la tabla después de crear
+      await fetchUsers(); 
       toast.success("Usuario creado correctamente");
       return newUser;
     } catch (error) {
@@ -125,7 +109,6 @@ export function useUsersTable({
       setMutationState((prev) => ({ ...prev, loading: false }));
     }
   };
-
   const handleUpdateUser = async (
     id: string,
     userData: UpdateUserDto
@@ -134,7 +117,7 @@ export function useUsersTable({
     try {
       const updatedUser = await updateUser(id, userData);
       toast.success("Usuario actualizado correctamente");
-      await fetchUsers(); // Refrescar la tabla después de actualizar
+      await fetchUsers(); 
       return updatedUser;
     } catch (error) {
       const err =
@@ -147,9 +130,7 @@ export function useUsersTable({
       setMutationState((prev) => ({ ...prev, loading: false }));
     }
   };
-
   return {
-    // Estado de la tabla
     data,
     loading,
     search,
@@ -157,25 +138,17 @@ export function useUsersTable({
     itemsPerPage,
     isActive,
     order,
-
     roles,
     rolesLoading,
-    // Estado de mutaciones
     mutationLoading: mutationState.loading,
     mutationError: mutationState.error,
-
-    // Handlers de la tabla
     handlePageChange,
     handleItemsPerPageChange,
     handleSearchChange,
     handleIsActiveChange,
     handleOrderChange,
-
-    // Handlers de mutaciones
     handleCreateUser,
     handleUpdateUser,
-
-    // Acciones
     refresh: fetchUsers,
   };
 }

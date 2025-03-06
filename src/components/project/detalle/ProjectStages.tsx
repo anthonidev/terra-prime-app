@@ -12,7 +12,6 @@ import { motion } from "framer-motion";
 import { Building2, Layers, Plus } from "lucide-react";
 import BlockActions from "./BlockActions";
 import StageActions from "./StageActions";
-
 interface ProjectStagesProps {
   stages: StageDetailDto[];
   onCreateStage: () => void;
@@ -20,7 +19,6 @@ interface ProjectStagesProps {
   onCreateBlock: (stageId?: string) => void;
   onEditBlock: (block: BlockDetailDto) => void;
 }
-
 export default function ProjectStages({
   stages,
   onCreateStage,
@@ -50,7 +48,6 @@ export default function ProjectStages({
       </motion.div>
     );
   }
-
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -60,12 +57,10 @@ export default function ProjectStages({
       },
     },
   };
-
   const item = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 },
   };
-
   return (
     <motion.div
       className="space-y-6"
@@ -80,8 +75,7 @@ export default function ProjectStages({
           <StageActions onCreateClick={onCreateStage} />
         </div>
       </div>
-
-      {stages.map((stage, index) => (
+      {stages.map((stage) => (
         <motion.div key={stage.id} variants={item}>
           <Card
             className={!stage.isActive ? "opacity-90 border-border/50" : ""}
@@ -133,7 +127,6 @@ export default function ProjectStages({
                       sold: (block.soldLots / total) * 100,
                       inactive: (block.inactiveLots / total) * 100,
                     };
-
                     return (
                       <motion.div
                         key={block.id}
@@ -169,14 +162,12 @@ export default function ProjectStages({
                             />
                           </div>
                         </div>
-
                         <div className="mb-3 text-sm text-muted-foreground flex items-center gap-1">
                           <span>
                             {block.lotCount}{" "}
                             {block.lotCount === 1 ? "Lote" : "Lotes"}
                           </span>
                         </div>
-
                         <div className="h-3 flex rounded-full overflow-hidden bg-secondary/50">
                           {percentages.active > 0 && (
                             <div
@@ -207,8 +198,7 @@ export default function ProjectStages({
                             />
                           )}
                         </div>
-
-                        {/* Leyenda de colores */}
+                        {}
                         <div className="flex flex-wrap gap-x-4 gap-y-2 mt-3 text-xs">
                           <div className="flex items-center">
                             <div className="w-2.5 h-2.5 rounded-full bg-green-500 mr-1.5" />

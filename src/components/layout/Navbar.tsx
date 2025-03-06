@@ -1,5 +1,4 @@
 "use client";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,13 +10,11 @@ import { Bell, Calendar } from "lucide-react";
 import { useState } from "react";
 import ThemeSwitch from "../common/ThemeSwich";
 import { Separator } from "@/components/ui/separator";
-
 const Navbar = () => {
   const [notifications] = useState([
     { id: 1, text: "Nueva propiedad agregada", time: "Hace 5 min" },
     { id: 2, text: "Actualización de proyecto", time: "Hace 30 min" },
   ]);
-
   const formatDate = () => {
     return new Intl.DateTimeFormat("es-ES", {
       weekday: "long",
@@ -26,14 +23,13 @@ const Navbar = () => {
       day: "numeric",
     }).format(new Date());
   };
-
   return (
     <motion.nav
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       className=" border-b border-border bg-layout-topbar text-layout-topbar-foreground px-6 flex items-center justify-between shadow-sm p-3"
     >
-      {/* Fecha */}
+      {}
       <div className="flex items-center space-x-4">
         <motion.div
           initial={{ opacity: 0 }}
@@ -45,10 +41,9 @@ const Navbar = () => {
           {formatDate()}
         </motion.div>
       </div>
-
-      {/* Acciones */}
+      {}
       <div className="flex items-center gap-4">
-        {/* Notificaciones */}
+        {}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <motion.button
@@ -105,14 +100,11 @@ const Navbar = () => {
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-
         <Separator orientation="vertical" className="h-6 bg-border" />
-
-        {/* Selector de Tema */}
+        {}
         <ThemeSwitch />
       </div>
     </motion.nav>
   );
 };
-
 export default Navbar;

@@ -1,8 +1,5 @@
-/* eslint-disable */
 import { DefaultSession, DefaultUser } from "next-auth";
-import { JWT } from "next-auth/jwt";
 import { View } from "./user.types";
-
 declare module "next-auth" {
   interface Session extends DefaultSession {
     accessToken: string;
@@ -16,7 +13,6 @@ declare module "next-auth" {
       fullName: string;
       document: string;
       photo: string;
-
       role: {
         id: number;
         code: string;
@@ -25,7 +21,6 @@ declare module "next-auth" {
       views: View[];
     } & DefaultSession["user"];
   }
-
   interface User extends DefaultUser {
     accessToken: string;
     refreshToken: string;
@@ -44,7 +39,6 @@ declare module "next-auth" {
     views: View[];
   }
 }
-
 declare module "next-auth/jwt" {
   interface JWT {
     accessToken: string;

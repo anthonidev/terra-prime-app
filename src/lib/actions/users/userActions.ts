@@ -1,5 +1,4 @@
 "use server";
-
 import {
   CreateUserDto,
   PaginatedUsers,
@@ -7,7 +6,6 @@ import {
   UserList,
 } from "@/types/user.types";
 import { httpClient } from "@/lib/api/http-client";
-
 export async function createUser(data: CreateUserDto): Promise<UserList> {
   try {
     return await httpClient<UserList>("/api/users", {
@@ -19,7 +17,6 @@ export async function createUser(data: CreateUserDto): Promise<UserList> {
     throw error;
   }
 }
-
 export async function updateUser(
   id: string,
   data: UpdateUserDto
@@ -34,7 +31,6 @@ export async function updateUser(
     throw error;
   }
 }
-
 export async function getUsers(
   params?: Record<string, unknown> | undefined
 ): Promise<PaginatedUsers> {

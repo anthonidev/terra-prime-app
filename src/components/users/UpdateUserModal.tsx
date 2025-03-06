@@ -18,7 +18,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import FormInputField from "../common/form/FormInputField";
 import FormSelectField from "../common/form/FormSelectField";
-
 interface UpdateUserModalProps {
   user: UserList;
   isOpen: boolean;
@@ -27,7 +26,6 @@ interface UpdateUserModalProps {
   roles: Role[];
   rolesLoading?: boolean;
 }
-
 const updateUserSchema = z.object({
   firstName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
   lastName: z.string().min(2, "El apellido debe tener al menos 2 caracteres"),
@@ -35,9 +33,7 @@ const updateUserSchema = z.object({
   isActive: z.boolean(),
   roleId: z.string().min(1, "Debe seleccionar un rol"),
 });
-
 type UpdateUserFormData = z.infer<typeof updateUserSchema>;
-
 export function UpdateUserModal({
   user,
   isOpen,
@@ -47,7 +43,6 @@ export function UpdateUserModal({
   rolesLoading = false,
 }: UpdateUserModalProps) {
   const [error, setError] = useState<string | null>(null);
-
   const form = useForm<UpdateUserFormData>({
     resolver: zodResolver(updateUserSchema),
     defaultValues: {
@@ -58,7 +53,6 @@ export function UpdateUserModal({
       roleId: user.role.id.toString(),
     },
   });
-
   const onSubmit = async (data: UpdateUserFormData) => {
     try {
       setError(null);
@@ -70,7 +64,6 @@ export function UpdateUserModal({
       );
     }
   };
-
   const formFields = [
     {
       name: "firstName",
@@ -92,17 +85,14 @@ export function UpdateUserModal({
       icon: <Mail />,
     },
   ] as const;
-
   const roleOptions = roles.map((role) => ({
     value: role.id.toString(),
     label: role.name,
   }));
-
   const statusOptions = [
     { value: "true", label: "Activo" },
     { value: "false", label: "Inactivo" },
   ];
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-h-[80vh] flex flex-col w-screen max-w-[900px] p-6">
@@ -112,9 +102,7 @@ export function UpdateUserModal({
             Editar Usuario
           </DialogTitle>
         </DialogHeader>
-
         <Separator className="my-4" />
-
         {error && (
           <Alert
             variant="destructive"
@@ -126,7 +114,6 @@ export function UpdateUserModal({
             </AlertDescription>
           </Alert>
         )}
-
         <ScrollArea className="flex-1 overflow-y-auto pr-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -140,7 +127,6 @@ export function UpdateUserModal({
                       errors={form.formState.errors}
                     />
                   ))}
-
                   <FormSelectField<UpdateUserFormData>
                     name="isActive"
                     label="Estado"
@@ -150,7 +136,6 @@ export function UpdateUserModal({
                     control={form.control}
                     errors={form.formState.errors}
                   />
-
                   <FormSelectField<UpdateUserFormData>
                     name="roleId"
                     label="Rol"
@@ -169,7 +154,6 @@ export function UpdateUserModal({
             </form>
           </Form>
         </ScrollArea>
-
         <DialogFooter className="gap-3 pt-4">
           <Button
             variant="outline"

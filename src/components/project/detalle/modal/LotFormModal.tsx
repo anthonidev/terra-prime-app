@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,7 +33,6 @@ import {
   StageDetailDto,
 } from "@/types/project.types";
 import { AlertCircle, MapPin } from "lucide-react";
-
 const lotSchema = z.object({
   name: z
     .string()
@@ -61,9 +59,7 @@ const lotSchema = z.object({
     required_error: "Debe seleccionar una manzana",
   }),
 });
-
 type LotFormValues = z.infer<typeof lotSchema>;
-
 interface LotFormModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -90,7 +86,6 @@ interface LotFormModalProps {
   ) => Promise<void>;
   error: string | null;
 }
-
 export default function LotFormModal({
   isOpen,
   onClose,
@@ -103,7 +98,6 @@ export default function LotFormModal({
 }: LotFormModalProps) {
   const isEditMode = !!lot;
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-
   const blockOptions = React.useMemo(() => {
     const options: {
       id: string;
@@ -111,7 +105,6 @@ export default function LotFormModal({
       stageId: string;
       stageName: string;
     }[] = [];
-
     stages.forEach((stage) => {
       stage.blocks.forEach((block) => {
         options.push({
@@ -122,13 +115,11 @@ export default function LotFormModal({
         });
       });
     });
-
     return options.sort(
       (a, b) =>
         a.stageName.localeCompare(b.stageName) || a.name.localeCompare(b.name)
     );
   }, [stages]);
-
   const form = useForm<LotFormValues>({
     resolver: zodResolver(lotSchema),
     defaultValues: {
@@ -140,7 +131,6 @@ export default function LotFormModal({
       blockId: lot?.blockId || preselectedBlockId || "",
     },
   });
-
   React.useEffect(() => {
     if (isOpen) {
       form.reset({
@@ -153,7 +143,6 @@ export default function LotFormModal({
       });
     }
   }, [lot, form, isOpen, preselectedBlockId]);
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("es-PE", {
       style: "currency",
@@ -161,7 +150,6 @@ export default function LotFormModal({
       minimumFractionDigits: 2,
     }).format(amount);
   };
-
   const calculateTotal = React.useCallback(
     (lotPrice?: number, urbanizationPrice?: number) => {
       const price = lotPrice || form.getValues("lotPrice") || 0;
@@ -171,7 +159,6 @@ export default function LotFormModal({
     },
     [form]
   );
-
   const onSubmit = async (values: LotFormValues) => {
     setIsSubmitting(true);
     try {
@@ -203,7 +190,6 @@ export default function LotFormModal({
       setIsSubmitting(false);
     }
   };
-
   const getBlockAndStageName = (blockId: string) => {
     const block = blockOptions.find((b) => b.id === blockId);
     if (block) {
@@ -211,7 +197,6 @@ export default function LotFormModal({
     }
     return "Manzana no encontrada";
   };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md md:max-w-lg">
@@ -230,7 +215,6 @@ export default function LotFormModal({
             )}
           </DialogTitle>
         </DialogHeader>
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {error && (
@@ -239,7 +223,6 @@ export default function LotFormModal({
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-
             <FormField
               control={form.control}
               name="name"
@@ -253,7 +236,6 @@ export default function LotFormModal({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="area"
@@ -273,7 +255,6 @@ export default function LotFormModal({
                 </FormItem>
               )}
             />
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -294,7 +275,6 @@ export default function LotFormModal({
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="urbanizationPrice"
@@ -315,7 +295,6 @@ export default function LotFormModal({
                 )}
               />
             </div>
-
             <div className="bg-secondary/30 p-3 rounded-md">
               <div className="text-sm text-muted-foreground">Precio total:</div>
               <div className="text-lg font-semibold">
@@ -327,7 +306,6 @@ export default function LotFormModal({
                 )}
               </div>
             </div>
-
             <FormField
               control={form.control}
               name="status"
@@ -355,7 +333,6 @@ export default function LotFormModal({
                 </FormItem>
               )}
             />
-
             {!isEditMode && (
               <FormField
                 control={form.control}
@@ -386,7 +363,6 @@ export default function LotFormModal({
                 )}
               />
             )}
-
             {isEditMode && lot && (
               <div className="bg-primary/10 p-3 rounded-md">
                 <div className="text-sm text-muted-foreground">Ubicación:</div>
@@ -395,7 +371,6 @@ export default function LotFormModal({
                 </div>
               </div>
             )}
-
             <DialogFooter className="gap-2 sm:gap-0 pt-2">
               <Button
                 type="button"
@@ -409,8 +384,8 @@ export default function LotFormModal({
                 {isSubmitting
                   ? "Guardando..."
                   : isEditMode
-                  ? "Actualizar"
-                  : "Crear"}
+                    ? "Actualizar"
+                    : "Crear"}
               </Button>
             </DialogFooter>
           </form>

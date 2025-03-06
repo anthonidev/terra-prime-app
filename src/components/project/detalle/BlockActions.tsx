@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { BlockDetailDto, StageDetailDto } from "@/types/project.types";
 import { Building2, Edit, Plus } from "lucide-react";
-
 interface BlockActionsProps {
   onCreateClick: (stageId?: string) => void;
   onEditClick?: (block: BlockDetailDto) => void;
@@ -9,7 +8,6 @@ interface BlockActionsProps {
   stage?: StageDetailDto;
   variant?: "default" | "minimal" | "stage";
 }
-
 export default function BlockActions({
   onCreateClick,
   onEditClick,
@@ -30,7 +28,6 @@ export default function BlockActions({
       </Button>
     );
   }
-
   if (variant === "stage" && stage) {
     return (
       <Button
@@ -46,7 +43,6 @@ export default function BlockActions({
       </Button>
     );
   }
-
   return (
     <Button
       variant="outline"

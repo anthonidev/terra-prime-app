@@ -1,15 +1,12 @@
 "use client";
-
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
 import React from "react";
-
 interface SuccessStepProps {
   resetUpload: () => void;
   goToProjectsList: () => void;
 }
-
 const SuccessStep: React.FC<SuccessStepProps> = ({
   resetUpload,
   goToProjectsList,
@@ -24,7 +21,6 @@ const SuccessStep: React.FC<SuccessStepProps> = ({
           proyectos o crear otro proyecto.
         </AlertDescription>
       </Alert>
-
       <div className="flex justify-end space-x-4">
         <Button variant="outline" onClick={goToProjectsList}>
           Ver lista de proyectos
@@ -39,5 +35,4 @@ const SuccessStep: React.FC<SuccessStepProps> = ({
     </div>
   );
 };
-
 export default SuccessStep;

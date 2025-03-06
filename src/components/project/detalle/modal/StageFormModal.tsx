@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +23,6 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { StageDetailDto } from "@/types/project.types";
 import { AlertCircle, Building2, Layers } from "lucide-react";
-
 const stageSchema = z.object({
   name: z
     .string()
@@ -36,9 +34,7 @@ const stageSchema = z.object({
     }),
   isActive: z.boolean().default(true),
 });
-
 type StageFormValues = z.infer<typeof stageSchema>;
-
 interface StageFormModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -50,7 +46,6 @@ interface StageFormModalProps {
   ) => Promise<void>;
   error: string | null;
 }
-
 export default function StageFormModal({
   isOpen,
   onClose,
@@ -61,7 +56,6 @@ export default function StageFormModal({
 }: StageFormModalProps) {
   const isEditMode = !!stage;
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-
   const form = useForm<StageFormValues>({
     resolver: zodResolver(stageSchema),
     defaultValues: {
@@ -69,7 +63,6 @@ export default function StageFormModal({
       isActive: stage?.isActive ?? true,
     },
   });
-
   React.useEffect(() => {
     if (isOpen) {
       form.reset({
@@ -78,7 +71,6 @@ export default function StageFormModal({
       });
     }
   }, [stage, form, isOpen]);
-
   const onSubmit = async (values: StageFormValues) => {
     setIsSubmitting(true);
     try {
@@ -97,7 +89,6 @@ export default function StageFormModal({
       setIsSubmitting(false);
     }
   };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
@@ -116,7 +107,6 @@ export default function StageFormModal({
             )}
           </DialogTitle>
         </DialogHeader>
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {error && (
@@ -125,7 +115,6 @@ export default function StageFormModal({
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-
             <FormField
               control={form.control}
               name="name"
@@ -139,7 +128,6 @@ export default function StageFormModal({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="isActive"
@@ -160,7 +148,6 @@ export default function StageFormModal({
                 </FormItem>
               )}
             />
-
             <DialogFooter className="gap-2 sm:gap-0">
               <Button
                 type="button"
@@ -174,8 +161,8 @@ export default function StageFormModal({
                 {isSubmitting
                   ? "Guardando..."
                   : isEditMode
-                  ? "Actualizar"
-                  : "Crear"}
+                    ? "Actualizar"
+                    : "Crear"}
               </Button>
             </DialogFooter>
           </form>

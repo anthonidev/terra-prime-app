@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { BlockDetailDto, LotResponseDto } from "@/types/project.types";
 import { Edit, MapPin, Plus } from "lucide-react";
-
 interface LotActionsProps {
   onCreateClick: (blockId?: string) => void;
   onEditClick?: (lot: LotResponseDto) => void;
@@ -9,7 +8,6 @@ interface LotActionsProps {
   block?: BlockDetailDto;
   variant?: "default" | "minimal" | "block" | "table-header" | "table-cell";
 }
-
 export default function LotActions({
   onCreateClick,
   onEditClick,
@@ -30,7 +28,6 @@ export default function LotActions({
       </Button>
     );
   }
-
   if (variant === "table-cell" && lot && onEditClick) {
     return (
       <Button
@@ -44,7 +41,6 @@ export default function LotActions({
       </Button>
     );
   }
-
   if (variant === "block" && block) {
     return (
       <Button
@@ -60,7 +56,6 @@ export default function LotActions({
       </Button>
     );
   }
-
   if (variant === "table-header") {
     return (
       <Button
@@ -74,7 +69,6 @@ export default function LotActions({
       </Button>
     );
   }
-
   return (
     <Button
       variant="outline"

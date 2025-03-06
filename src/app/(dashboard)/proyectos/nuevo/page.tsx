@@ -1,6 +1,5 @@
 import ProjectUpload from "@/components/project/ProjectUpload";
 import React from "react";
-
 export default function NuevoProyecto() {
   return (
     <div className="container py-8">

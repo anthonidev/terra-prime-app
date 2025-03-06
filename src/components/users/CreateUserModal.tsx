@@ -25,7 +25,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import FormInputField from "../common/form/FormInputField";
 import FormSelectField from "../common/form/FormSelectField";
-
 interface CreateUserModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -33,7 +32,6 @@ interface CreateUserModalProps {
   roles: Role[];
   rolesLoading?: boolean;
 }
-
 export function CreateUserModal({
   isOpen,
   onClose,
@@ -52,9 +50,7 @@ export function CreateUserModal({
       isActive: true,
     },
   });
-
   const [error, setError] = useState<string | null>(null);
-
   const onSubmit = async (data: CreateUserFormData) => {
     try {
       setError(null);
@@ -65,7 +61,6 @@ export function CreateUserModal({
       setError(err instanceof Error ? err.message : "Error al crear usuario");
     }
   };
-
   const formFields = [
     {
       name: "firstName",
@@ -100,12 +95,10 @@ export function CreateUserModal({
       icon: <KeyRound />,
     },
   ] as const;
-
   const roleOptions = roles.map((role) => ({
     value: role.id.toString(),
     label: role.name,
   }));
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-h-[80vh] flex flex-col max-w-2xl w-full">
@@ -115,9 +108,7 @@ export function CreateUserModal({
             Crear Nuevo Usuario
           </DialogTitle>
         </DialogHeader>
-
         <Separator className="my-4" />
-
         {error && (
           <Alert
             variant="destructive"
@@ -129,7 +120,6 @@ export function CreateUserModal({
             </AlertDescription>
           </Alert>
         )}
-
         <ScrollArea className="flex-1 overflow-y-auto pr-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -143,7 +133,6 @@ export function CreateUserModal({
                       errors={form.formState.errors}
                     />
                   ))}
-
                   <FormSelectField<CreateUserFormData>
                     name="roleId"
                     label="Rol"
@@ -162,7 +151,6 @@ export function CreateUserModal({
             </form>
           </Form>
         </ScrollArea>
-
         <DialogFooter className="gap-3 pt-4">
           <Button
             variant="outline"
