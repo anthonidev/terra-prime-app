@@ -2,15 +2,16 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Calendar, Building2, Layers, ChevronLeft, MoreHorizontal } from "lucide-react";
+import { Calendar, Building2, Layers, ChevronLeft, MoreHorizontal, Edit } from "lucide-react";
 import Link from "next/link";
 import { ProjectDetailDto } from "@/types/project.types";
 
 interface ProjectDetailHeaderProps {
   project: ProjectDetailDto | null;
+  onEditClick: () => void; 
 }
 
-export default function ProjectDetailHeader({ project }: ProjectDetailHeaderProps) {
+export default function ProjectDetailHeader({ project, onEditClick }: ProjectDetailHeaderProps) {
   if (!project) return null;
 
   const formatDate = (date: Date) => {
@@ -54,9 +55,16 @@ export default function ProjectDetailHeader({ project }: ProjectDetailHeaderProp
           </Button>
         </Link>
         <div className="flex items-center gap-2">
-          <Link href={`/proyectos/editar/${project.id}`}>
-            <Button variant="outline" size="sm">Editar</Button>
-          </Link>
+          {/* Reemplazamos el Link por un Button */}
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={onEditClick}
+            className="flex items-center gap-1"
+          >
+            <Edit className="h-4 w-4" />
+            Editar
+          </Button>
           <Button variant="ghost" size="icon">
             <MoreHorizontal className="h-4 w-4" />
           </Button>

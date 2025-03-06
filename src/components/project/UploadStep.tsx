@@ -2,20 +2,32 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { ValidationError } from "@/types/project.types";
 import { motion } from "framer-motion";
-import { AlertCircle, File, FileSpreadsheet, UploadCloud, X } from "lucide-react";
+import {
+  AlertCircle,
+  File,
+  FileSpreadsheet,
+  UploadCloud,
+  X,
+} from "lucide-react";
 import React from "react";
 
 interface UploadStepProps {
@@ -42,7 +54,7 @@ const UploadStep: React.FC<UploadStepProps> = ({
   handleDrop,
   handleDragOver,
   validationResult,
-  setValidationResult
+  setValidationResult,
 }) => {
   return (
     <div className="space-y-6">
@@ -59,11 +71,14 @@ const UploadStep: React.FC<UploadStepProps> = ({
           <div className="mb-4 p-3 rounded-full bg-primary/10">
             <UploadCloud className="h-10 w-10 text-primary" />
           </div>
-          <h3 className="text-lg font-medium mb-2">Arrastra tu archivo Excel aquí</h3>
+          <h3 className="text-lg font-medium mb-2">
+            Arrastra tu archivo Excel aquí
+          </h3>
           <p className="text-sm text-muted-foreground mb-4">
-            O haz clic para seleccionar un archivo. El archivo debe seguir el formato de la plantilla.
+            O haz clic para seleccionar un archivo. El archivo debe seguir el
+            formato de la plantilla.
           </p>
-          
+
           <div className="relative mt-4 w-full">
             <Input
               id="file-upload"
@@ -76,7 +91,10 @@ const UploadStep: React.FC<UploadStepProps> = ({
               Seleccionar archivo
             </Button>
           </div>
-          <a href="/templates/project-template.xlsx" className="text-primary text-sm mt-4 flex items-center">
+          <a
+            href="/templates/project-template.xlsx"
+            className="text-primary text-sm mt-4 flex items-center"
+          >
             <FileSpreadsheet className="h-4 w-4 mr-1" />
             Descargar plantilla
           </a>
@@ -116,9 +134,11 @@ const UploadStep: React.FC<UploadStepProps> = ({
         </motion.div>
       )}
 
-      {validationResult && !validationResult.isValid && validationResult.errors && (
-        <ValidationErrorsDisplay errors={validationResult.errors} />
-      )}
+      {validationResult &&
+        !validationResult.isValid &&
+        validationResult.errors && (
+          <ValidationErrorsDisplay errors={validationResult.errors} />
+        )}
 
       <div className="flex justify-end space-x-4">
         <Button
@@ -137,20 +157,20 @@ interface ValidationErrorsDisplayProps {
   errors: ValidationError[];
 }
 
-const ValidationErrorsDisplay: React.FC<ValidationErrorsDisplayProps> = ({ errors }) => {
+const ValidationErrorsDisplay: React.FC<ValidationErrorsDisplayProps> = ({
+  errors,
+}) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-    >
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
       <Alert variant="destructive" className="mb-4">
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Error de validación</AlertTitle>
         <AlertDescription>
-          Se encontraron errores en el archivo. Por favor, corrígelos e inténtalo de nuevo.
+          Se encontraron errores en el archivo. Por favor, corrígelos e
+          inténtalo de nuevo.
         </AlertDescription>
       </Alert>
-      
+
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Errores encontrados</CardTitle>

@@ -1,14 +1,27 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
 import { LotStatus, ProjectDetailDto } from "@/types/project.types";
-import { Activity, Building2, Filter, FilterX, Layers, Search } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  Activity,
+  Building2,
+  Filter,
+  FilterX,
+  Layers,
+  Search,
+} from "lucide-react";
+import { useState } from "react";
 
 interface ProjectLotFiltersProps {
   projectDetail: ProjectDetailDto | null;
@@ -23,7 +36,7 @@ export default function ProjectLotFilters({
   currentFilters,
   onFilterChange,
   onReset,
-  isLoading
+  isLoading,
 }: ProjectLotFiltersProps) {
   const [searchValue, setSearchValue] = useState<string>(
     (currentFilters.search as string) || ""
@@ -33,90 +46,94 @@ export default function ProjectLotFilters({
     e.preventDefault();
     onFilterChange({ search: searchValue || undefined });
   };
-  
+
   const handleStageChange = (value: string) => {
     if (value === "all") {
       const { stageId, blockId, ...restFilters } = { ...currentFilters };
       onFilterChange({
         ...restFilters,
         stageId: undefined,
-        blockId: undefined
+        blockId: undefined,
       });
     } else {
-      const newFilters: Record<string, unknown> = { ...currentFilters, stageId: value };
-      
+      const newFilters: Record<string, unknown> = {
+        ...currentFilters,
+        stageId: value,
+      };
+
       if (currentFilters.blockId) {
         const blockBelongsToStage = projectDetail?.stages
-          .find(stage => stage.id === value)?.blocks
-          .some(block => block.id === currentFilters.blockId);
-        
+          .find((stage) => stage.id === value)
+          ?.blocks.some((block) => block.id === currentFilters.blockId);
+
         if (!blockBelongsToStage) {
           delete newFilters.blockId;
         }
       }
-      
+
       onFilterChange(newFilters);
     }
   };
-  
+
   const handleBlockChange = (value: string) => {
     if (value === "all") {
       const { blockId, ...restFilters } = { ...currentFilters };
       onFilterChange({
         ...restFilters,
-        blockId: undefined
+        blockId: undefined,
       });
     } else {
       onFilterChange({ ...currentFilters, blockId: value });
     }
   };
-  
+
   const handleStatusChange = (value: string) => {
     if (value === "all") {
       const { status, ...restFilters } = { ...currentFilters };
-       
+
       onFilterChange({
         ...restFilters,
-        status: undefined
+        status: undefined,
       });
     } else {
       onFilterChange({ ...currentFilters, status: value });
     }
   };
-  
+
   const getAvailableBlocks = () => {
     if (!projectDetail) return [];
-    
+
     let blocks: { id: string; name: string; stageName: string }[] = [];
-    
+
     if (currentFilters.stageId) {
       const selectedStage = projectDetail.stages.find(
-        stage => stage.id === currentFilters.stageId
+        (stage) => stage.id === currentFilters.stageId
       );
-      
+
       if (selectedStage) {
-        selectedStage.blocks.forEach(block => {
+        selectedStage.blocks.forEach((block) => {
           blocks.push({
             id: block.id,
             name: block.name,
-            stageName: selectedStage.name
+            stageName: selectedStage.name,
           });
         });
       }
     } else {
-      projectDetail.stages.forEach(stage => {
-        stage.blocks.forEach(block => {
+      projectDetail.stages.forEach((stage) => {
+        stage.blocks.forEach((block) => {
           blocks.push({
             id: block.id,
             name: block.name,
-            stageName: stage.name
+            stageName: stage.name,
           });
         });
       });
     }
-    
-    return blocks.sort((a, b) => 
-      a.stageName.localeCompare(b.stageName) || a.name.localeCompare(b.name)
+
+    return blocks.sort(
+      (a, b) =>
+        a.stageName.localeCompare(b.stageName) || a.name.localeCompare(b.name)
     );
   };
 
@@ -159,8 +176,8 @@ export default function ProjectLotFilters({
           <Filter className="h-4 w-4 text-primary" />
           <h3 className="font-medium text-sm">Filtros de lotes</h3>
           {hasActiveFilters && (
-            <Badge 
-              variant="outline" 
+            <Badge
+              variant="outline"
               className="ml-1 px-1.5 py-0 h-5 text-xs bg-secondary/30 hover:bg-secondary/50"
             >
               {activeFiltersCount}
@@ -168,9 +185,9 @@ export default function ProjectLotFilters({
           )}
         </div>
         {hasActiveFilters && (
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onReset}
             className="text-xs h-7 px-2 text-muted-foreground hover:text-destructive"
           >
@@ -180,7 +197,7 @@ export default function ProjectLotFilters({
         )}
       </div>
       <CardContent className="py-1 px-3">
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-3 gap-y-2"
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
@@ -188,15 +205,20 @@ export default function ProjectLotFilters({
         >
           <div className="space-y-1">
             <div className="flex items-center justify-between">
-              <Label htmlFor="search" className="text-xs font-medium text-muted-foreground mb-0.5">
+              <Label
+                htmlFor="search"
+                className="text-xs font-medium text-muted-foreground mb-0.5"
+              >
                 Buscar Lote
               </Label>
-              {currentFilters.search as string && (
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-4 w-4 p-0" 
-                  onClick={() => onFilterChange({ ...currentFilters, search: undefined })}
+              {(currentFilters.search as string) && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 p-0"
+                  onClick={() =>
+                    onFilterChange({ ...currentFilters, search: undefined })
+                  }
                 >
                   <FilterX className="h-3 w-3 text-muted-foreground" />
                 </Button>
@@ -211,20 +233,25 @@ export default function ProjectLotFilters({
                 className="pl-7 h-8 text-sm"
               />
               <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-              <button type="submit" className="sr-only">Buscar</button>
+              <button type="submit" className="sr-only">
+                Buscar
+              </button>
             </form>
           </div>
 
           <div className="space-y-1">
             <div className="flex items-center justify-between">
-              <Label htmlFor="stage-filter" className="text-xs font-medium text-muted-foreground mb-0.5">
+              <Label
+                htmlFor="stage-filter"
+                className="text-xs font-medium text-muted-foreground mb-0.5"
+              >
                 Etapa
               </Label>
-              {currentFilters.stageId as string && (
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-4 w-4 p-0" 
+              {(currentFilters.stageId as string) && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 p-0"
                   onClick={() => handleStageChange("all")}
                 >
                   <FilterX className="h-3 w-3 text-muted-foreground" />
@@ -243,7 +270,7 @@ export default function ProjectLotFilters({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todas las etapas</SelectItem>
-                {projectDetail?.stages.map(stage => (
+                {projectDetail?.stages.map((stage) => (
                   <SelectItem key={stage.id} value={stage.id}>
                     {stage.name}
                   </SelectItem>
@@ -254,14 +281,17 @@ export default function ProjectLotFilters({
 
           <div className="space-y-1">
             <div className="flex items-center justify-between">
-              <Label htmlFor="block-filter" className="text-xs font-medium text-muted-foreground mb-0.5">
+              <Label
+                htmlFor="block-filter"
+                className="text-xs font-medium text-muted-foreground mb-0.5"
+              >
                 Manzana
               </Label>
-              {currentFilters.blockId as string && (
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-4 w-4 p-0" 
+              {(currentFilters.blockId as string) && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 p-0"
                   onClick={() => handleBlockChange("all")}
                 >
                   <FilterX className="h-3 w-3 text-muted-foreground" />
@@ -280,7 +310,7 @@ export default function ProjectLotFilters({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todas las manzanas</SelectItem>
-                {getAvailableBlocks().map(block => (
+                {getAvailableBlocks().map((block) => (
                   <SelectItem key={block.id} value={block.id}>
                     {block.stageName} - {block.name}
                   </SelectItem>
@@ -291,14 +321,17 @@ export default function ProjectLotFilters({
 
           <div className="space-y-1">
             <div className="flex items-center justify-between">
-              <Label htmlFor="status-filter" className="text-xs font-medium text-muted-foreground mb-0.5">
+              <Label
+                htmlFor="status-filter"
+                className="text-xs font-medium text-muted-foreground mb-0.5"
+              >
                 Estado
               </Label>
-              {currentFilters.status as string && (
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-4 w-4 p-0" 
+              {(currentFilters.status as string) && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 p-0"
                   onClick={() => handleStatusChange("all")}
                 >
                   <FilterX className="h-3 w-3 text-muted-foreground" />

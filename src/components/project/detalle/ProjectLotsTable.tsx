@@ -1,12 +1,25 @@
-import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { LotResponseDto } from "@/types/project.types";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Eye, Layers, Search } from "lucide-react";
-import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  Search,
+} from "lucide-react";
+import LotActions from "./LotActions";
 
 interface ProjectLotsTableProps {
   lots: LotResponseDto[];
@@ -16,6 +29,8 @@ interface ProjectLotsTableProps {
   totalPages: number;
   pageSize: number;
   onPageChange: (page: number) => void;
+  onCreateLot: (blockId?: string) => void;
+  onEditLot: (lot: LotResponseDto) => void;
 }
 
 export default function ProjectLotsTable({
@@ -25,29 +40,31 @@ export default function ProjectLotsTable({
   currentPage,
   totalPages,
   pageSize,
-  onPageChange
+  onPageChange,
+  onCreateLot,
+  onEditLot,
 }: ProjectLotsTableProps) {
   const formatCurrency = (amount: number, currency: string) => {
-    const formatter = new Intl.NumberFormat('es-PE', {
-      style: 'currency',
-      currency: currency === 'PEN' ? 'PEN' : 'USD',
-      minimumFractionDigits: 2
+    const formatter = new Intl.NumberFormat("es-PE", {
+      style: "currency",
+      currency: currency === "PEN" ? "PEN" : "USD",
+      minimumFractionDigits: 2,
     });
     return formatter.format(amount);
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Activo':
-        return 'default';
-      case 'Inactivo':
-        return 'secondary';
-      case 'Vendido':
-        return 'destructive';
-      case 'Separado':
-        return 'default';
+      case "Activo":
+        return "default";
+      case "Inactivo":
+        return "secondary";
+      case "Vendido":
+        return "destructive";
+      case "Separado":
+        return "default";
       default:
-        return 'default';
+        return "default";
     }
   };
 
@@ -84,16 +101,19 @@ export default function ProjectLotsTable({
   if (!lots.length) {
     return (
       <Card>
-        <CardHeader className="pb-3">
+        <CardHeader className="pb-3 flex justify-between items-center">
           <CardTitle className="text-md">Lotes del Proyecto</CardTitle>
+          <LotActions variant="table-header" onCreateClick={onCreateLot} />
         </CardHeader>
         <CardContent>
           <div className="py-8 text-center bg-card/50 rounded-md border">
             <Search className="h-10 w-10 mx-auto text-muted-foreground/30 mb-3" />
-            <p className="text-muted-foreground mb-4">No se encontraron lotes con los filtros seleccionados.</p>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <p className="text-muted-foreground mb-4">
+              No se encontraron lotes con los filtros seleccionados.
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => onPageChange(1)}
               className="mx-auto"
             >
@@ -105,18 +125,23 @@ export default function ProjectLotsTable({
     );
   }
 
-  const currency = lots[0]?.totalPrice > 0 ? 
-    (lots[0].totalPrice > lots[0].lotPrice + lots[0].urbanizationPrice ? 'USD' : 'PEN') : 'PEN';
+  const currency =
+    lots[0]?.totalPrice > 0
+      ? lots[0].totalPrice > lots[0].lotPrice + lots[0].urbanizationPrice
+        ? "USD"
+        : "PEN"
+      : "PEN";
 
   return (
     <Card>
-      <CardHeader className="pb-3 border-b">
-        <CardTitle className="text-md flex items-center gap-2">
-          <span>Lotes del Proyecto</span>
+      <CardHeader className="pb-3 border-b flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <CardTitle className="text-md">Lotes del Proyecto</CardTitle>
           <Badge variant="outline" className="ml-2 text-xs font-normal">
-            {totalItems} {totalItems === 1 ? 'resultado' : 'resultados'}
+            {totalItems} {totalItems === 1 ? "resultado" : "resultados"}
           </Badge>
-        </CardTitle>
+        </div>
+        <LotActions variant="table-header" onCreateClick={onCreateLot} />
       </CardHeader>
       <CardContent className="p-0">
         <div className="relative">
@@ -125,18 +150,28 @@ export default function ProjectLotsTable({
               <TableHeader className="bg-card/60 sticky top-0 z-10">
                 <TableRow>
                   <TableHead className="font-medium">Ubicación</TableHead>
-                  <TableHead className="font-medium text-right">Área (m²)</TableHead>
-                  <TableHead className="font-medium text-right">Precio Lote</TableHead>
-                  <TableHead className="font-medium text-right">Precio Urb.</TableHead>
-                  <TableHead className="font-medium text-right">Precio Total</TableHead>
+                  <TableHead className="font-medium text-right">
+                    Área (m²)
+                  </TableHead>
+                  <TableHead className="font-medium text-right">
+                    Precio Lote
+                  </TableHead>
+                  <TableHead className="font-medium text-right">
+                    Precio Urb.
+                  </TableHead>
+                  <TableHead className="font-medium text-right">
+                    Precio Total
+                  </TableHead>
                   <TableHead className="font-medium">Estado</TableHead>
-                  <TableHead className="font-medium text-right">Acciones</TableHead>
+                  <TableHead className="font-medium text-right">
+                    Acciones
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {lots.map((lot, index) => {
-                  const currencySymbol = currency === 'PEN' ? 'S/' : '$';
-                
+                  const currencySymbol = currency === "PEN" ? "S/" : "$";
+
                   return (
                     <motion.tr
                       key={lot.id}
@@ -145,24 +180,30 @@ export default function ProjectLotsTable({
                       transition={{ delay: index * 0.03 }}
                       className="group hover:bg-accent/30"
                     >
-                     <TableCell>
-  <div className="flex items-center gap-2">
-    <div className="flex items-center justify-center min-w-10 h-8 rounded-md bg-primary/10 text-primary font-medium">
-      {lot.name}
-    </div>
-    <div className="flex flex-col justify-center">
-      <div className="text-xs text-muted-foreground">
-        Etapa: <span className="font-medium">{lot.stageName}</span>
-      </div>
-      <div className="text-xs text-muted-foreground">
-        Mz: <span className="font-medium">{lot.blockName}</span>
-      </div>
-    </div>
-  </div>
-</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center justify-center min-w-10 h-8 rounded-md bg-primary/10 text-primary font-medium">
+                            {lot.name}
+                          </div>
+                          <div className="flex flex-col justify-center">
+                            <div className="text-xs text-muted-foreground">
+                              Etapa:{" "}
+                              <span className="font-medium">
+                                {lot.stageName}
+                              </span>
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              Mz:{" "}
+                              <span className="font-medium">
+                                {lot.blockName}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </TableCell>
                       <TableCell className="text-right">
-                        {typeof lot.area === 'number' 
-                          ? lot.area.toFixed(2) 
+                        {typeof lot.area === "number"
+                          ? lot.area.toFixed(2)
                           : Number(lot.area).toFixed(2)}
                       </TableCell>
                       <TableCell className="text-right font-medium">
@@ -175,14 +216,19 @@ export default function ProjectLotsTable({
                         {formatCurrency(lot.totalPrice, currency)}
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getStatusColor(lot.status)}>{lot.status}</Badge>
+                        <Badge variant={getStatusColor(lot.status)}>
+                          {lot.status}
+                        </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Link href={`/lotes/${lot.id}`}>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </Link>
+                        <div className="flex justify-end items-center space-x-1">
+                          <LotActions
+                            variant="table-cell"
+                            lot={lot}
+                            onCreateClick={onCreateLot}
+                            onEditClick={onEditLot}
+                          />
+                        </div>
                       </TableCell>
                     </motion.tr>
                   );

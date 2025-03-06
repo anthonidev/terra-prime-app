@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
-import { CheckCircle2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { CheckCircle2 } from "lucide-react";
+import React from "react";
 
 interface SuccessStepProps {
   resetUpload: () => void;
@@ -12,7 +12,7 @@ interface SuccessStepProps {
 
 const SuccessStep: React.FC<SuccessStepProps> = ({
   resetUpload,
-  goToProjectsList
+  goToProjectsList,
 }) => {
   return (
     <div className="space-y-6">
@@ -20,7 +20,8 @@ const SuccessStep: React.FC<SuccessStepProps> = ({
         <CheckCircle2 className="h-4 w-4 text-primary" />
         <AlertTitle>Proyecto creado correctamente</AlertTitle>
         <AlertDescription>
-          El proyecto ha sido creado con éxito. Puedes verlo en la lista de proyectos o crear otro proyecto.
+          El proyecto ha sido creado con éxito. Puedes verlo en la lista de
+          proyectos o crear otro proyecto.
         </AlertDescription>
       </Alert>
 

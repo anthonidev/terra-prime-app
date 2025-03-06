@@ -1,0 +1,49 @@
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Plus, Edit, Layers } from 'lucide-react';
+import { StageDetailDto } from '@/types/project.types';
+
+interface StageActionsProps {
+  onCreateClick: () => void;
+  onEditClick?: (stage: StageDetailDto) => void;
+  stage?: StageDetailDto;
+  variant?: 'default' | 'minimal';
+}
+
+/**
+ * Componente para mostrar botones de acciones relacionadas con etapas
+ */
+export default function StageActions({ 
+  onCreateClick, 
+  onEditClick, 
+  stage,
+  variant = 'default'
+}: StageActionsProps) {
+  if (variant === 'minimal' && stage && onEditClick) {
+    // Versión mínima (solo botón de editar para etapas existentes)
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8"
+        onClick={() => onEditClick(stage)}
+        title="Editar etapa"
+      >
+        <Edit className="h-4 w-4" />
+      </Button>
+    );
+  }
+  
+  // Versión completa (crear nueva etapa)
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      className="flex items-center gap-1"
+      onClick={onCreateClick}
+    >
+      <Plus className="h-4 w-4" />
+      <span>Nueva Etapa</span>
+    </Button>
+  );
+}

@@ -1,5 +1,5 @@
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 import { createApiUrl } from ".";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -10,7 +10,7 @@ interface FetchOptions {
   params?: Record<string, unknown>;
   cache?: RequestCache;
   contentType?: string;
-  skipJsonStringify?: boolean; // Nueva opción para omitir la serialización JSON
+  skipJsonStringify?: boolean;
 }
 
 export async function httpClient<T>(
@@ -21,7 +21,7 @@ export async function httpClient<T>(
     params,
     cache = "no-store",
     contentType = "application/json",
-    skipJsonStringify = false // Por defecto, serializamos a JSON
+    skipJsonStringify = false,
   }: FetchOptions = {}
 ): Promise<T> {
   const session = await getServerSession(authOptions);
@@ -29,33 +29,28 @@ export async function httpClient<T>(
 
   const queryParams = params
     ? new URLSearchParams(
-      Object.entries(params)
-        .filter(([, value]) => value !== undefined)
-        .map(([key, value]) => [key, String(value)])
-    )
+        Object.entries(params)
+          .filter(([, value]) => value !== undefined)
+          .map(([key, value]) => [key, String(value)])
+      )
     : undefined;
 
   const url = createApiUrl(endpoint, queryParams);
 
-  // Preparamos las cabeceras
   const headers: HeadersInit = {
     Authorization: `Bearer ${session.accessToken}`,
   };
 
-  // Solo agregamos Content-Type si no es FormData, ya que FormData establece su propio boundary
   if (!(body instanceof FormData)) {
     headers["Content-Type"] = contentType;
   }
 
-  // Preparamos el cuerpo de la petición según el tipo
   let requestBody: BodyInit | undefined;
 
   if (body !== undefined) {
     if (skipJsonStringify || body instanceof FormData) {
-      // Si es FormData o si se pide explícitamente no serializar, enviamos tal cual
       requestBody = body as BodyInit;
     } else {
-      // En otro caso, serializamos a JSON
       requestBody = JSON.stringify(body);
     }
   }

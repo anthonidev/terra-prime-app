@@ -2,13 +2,27 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { getProjects } from "@/lib/actions/projects/projectActions";
 import { ProjectListItemDto } from "@/types/project.types";
 import { motion } from "framer-motion";
-import { Building2, Calendar, ChevronRight, Layers, MapPin, Plus } from "lucide-react";
+import {
+  Building2,
+  Calendar,
+  ChevronRight,
+  Layers,
+  MapPin,
+  Plus,
+} from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
@@ -41,7 +55,7 @@ export default function ProyectoPage() {
     return new Intl.DateTimeFormat("es-ES", {
       day: "2-digit",
       month: "2-digit",
-      year: "numeric"
+      year: "numeric",
     }).format(date);
   };
 
@@ -91,8 +105,8 @@ export default function ProyectoPage() {
       <div className="container py-8">
         <div className="bg-destructive/10 border border-destructive/30 rounded-md p-4 mb-6">
           <p className="text-destructive">{error}</p>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="mt-2"
             onClick={() => fetchProjects()}
           >
@@ -114,7 +128,8 @@ export default function ProyectoPage() {
 
       <div className="flex justify-between items-center mb-6">
         <Badge variant="outline" className="text-sm px-3 py-1">
-          Total: {totalProjects} {totalProjects === 1 ? 'proyecto' : 'proyectos'}
+          Total: {totalProjects}{" "}
+          {totalProjects === 1 ? "proyecto" : "proyectos"}
         </Badge>
         <Link href="/proyectos/nuevo">
           <Button className="bg-primary text-primary-foreground hover:bg-primary-hover">
@@ -129,7 +144,9 @@ export default function ProyectoPage() {
       {projects.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-lg border">
           <MapPin className="mx-auto h-12 w-12 text-muted-foreground/30 mb-4" />
-          <p className="text-muted-foreground mb-4">No hay proyectos disponibles.</p>
+          <p className="text-muted-foreground mb-4">
+            No hay proyectos disponibles.
+          </p>
           <Link href="/proyectos/nuevo">
             <Button className="bg-primary text-primary-foreground hover:bg-primary-hover">
               <Plus className="mr-2 h-4 w-4" />
@@ -146,18 +163,23 @@ export default function ProyectoPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
             >
-              <Link href={`/proyectos/detalle/${project.id}`} className="block h-full">
+              <Link
+                href={`/proyectos/detalle/${project.id}`}
+                className="block h-full"
+              >
                 <Card className="h-full hover:shadow-md transition-all duration-200 hover:border-primary/50 overflow-hidden">
                   {/* Colored header based on status */}
-                  <div 
+                  <div
                     className={`h-2 w-full ${
                       project.isActive ? "bg-primary" : "bg-muted-foreground"
                     }`}
                   />
-                  
+
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-center">
-                      <CardTitle className="text-lg line-clamp-1">{project.name}</CardTitle>
+                      <CardTitle className="text-lg line-clamp-1">
+                        {project.name}
+                      </CardTitle>
                       <Badge
                         variant={project.isActive ? "default" : "secondary"}
                         className="text-xs"
@@ -166,7 +188,9 @@ export default function ProyectoPage() {
                       </Badge>
                     </div>
                     <CardDescription>
-                      {project.currency === 'PEN' ? 'Soles (S/)' : 'Dólares ($)'}
+                      {project.currency === "PEN"
+                        ? "Soles (S/)"
+                        : "Dólares ($)"}
                     </CardDescription>
                   </CardHeader>
 
@@ -174,9 +198,9 @@ export default function ProyectoPage() {
                     <div className="flex items-center gap-3 mb-3">
                       {project.logo ? (
                         <div className="h-12 w-12 flex items-center justify-center p-1 rounded bg-secondary/50">
-                          <img 
-                            src={project.logo} 
-                            alt={`Logo de ${project.name}`} 
+                          <img
+                            src={project.logo}
+                            alt={`Logo de ${project.name}`}
                             className="max-h-10 max-w-10 object-contain"
                           />
                         </div>
@@ -185,7 +209,7 @@ export default function ProyectoPage() {
                           <Building2 className="h-6 w-6 text-muted-foreground" />
                         </div>
                       )}
-                      
+
                       <div className="flex-1 flex flex-col gap-1">
                         <div className="flex items-center text-sm text-muted-foreground">
                           <Building2 className="h-4 w-4 mr-1" />
@@ -197,13 +221,19 @@ export default function ProyectoPage() {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="flex justify-between text-sm border-t pt-3">
                       <div className="flex items-center">
                         <div>
-                          <span className="text-xs text-muted-foreground mr-1">Lotes:</span>
-                          <span className="font-medium">{project.activeLotCount}</span>
-                          <span className="text-xs text-muted-foreground/70">/{project.lotCount}</span>
+                          <span className="text-xs text-muted-foreground mr-1">
+                            Lotes:
+                          </span>
+                          <span className="font-medium">
+                            {project.activeLotCount}
+                          </span>
+                          <span className="text-xs text-muted-foreground/70">
+                            /{project.lotCount}
+                          </span>
                         </div>
                       </div>
                       <div className="flex items-center text-xs text-muted-foreground">
@@ -212,11 +242,11 @@ export default function ProyectoPage() {
                       </div>
                     </div>
                   </CardContent>
-                  
+
                   <CardFooter className="pt-0 border-t">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="w-full justify-between text-sm hover:text-primary"
                     >
                       Ver detalles

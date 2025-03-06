@@ -1,17 +1,20 @@
 "use client";
 
-import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useProjectUpload } from "@/hooks/project/useProjectUpload";
-import UploadProgress from "./UploadProgress";
-import UploadStep from "./UploadStep";
+import { AnimatePresence, motion } from "framer-motion";
+import React from "react";
 import ReviewStep from "./ReviewStep";
 import SuccessStep from "./SuccessStep";
-
-// Componentes refactorizados
-
+import UploadProgress from "./UploadProgress";
+import UploadStep from "./UploadStep";
 
 const ProjectUpload: React.FC = () => {
   const {
@@ -29,7 +32,6 @@ const ProjectUpload: React.FC = () => {
     goToProjectsList,
     setFile,
     setValidationResult,
-    
   } = useProjectUpload();
 
   return (
@@ -37,7 +39,9 @@ const ProjectUpload: React.FC = () => {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-xl">Importar proyecto desde Excel</CardTitle>
+            <CardTitle className="text-xl">
+              Importar proyecto desde Excel
+            </CardTitle>
             <CardDescription>
               Sube un archivo Excel con los datos de tu proyecto y lotes
             </CardDescription>
