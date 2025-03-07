@@ -107,7 +107,7 @@ export function RoleDistributionChart() {
         )}
       </CardHeader>
       <CardContent className="flex-1 py-0">
-        <div className="h-[220px] w-full">
+        <div className="h-[300px] w-full">
           {error ? (
             <div className="flex items-center justify-center h-full">
               <p className="text-destructive">{error}</p>
