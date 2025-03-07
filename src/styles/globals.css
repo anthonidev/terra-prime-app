@@ -1,224 +1,222 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 @custom-variant dark (&:is(.dark *));
-
 :root {
   /* Base */
-  --background: hsl(220, 25%, 97%);
-  --foreground: hsl(220, 25%, 15%);
+  --background: hsl(210, 20%, 98%);
+  --foreground: hsl(224, 25%, 25%);
 
   /* Layout - UI Elements */
-  --layout-sidebar: hsl(220, 45%, 20%);
-  --layout-sidebar-foreground: hsl(220, 25%, 97%);
-  --layout-topbar: hsl(220, 45%, 98%);
-  --layout-topbar-foreground: hsl(220, 25%, 15%);
-  --layout-content: hsl(220, 25%, 97%);
-  --layout-footer: hsl(220, 45%, 20%);
-  --layout-footer-foreground: hsl(220, 25%, 97%);
+  --layout-sidebar: hsl(224, 35%, 18%);
+  --layout-sidebar-foreground: hsl(0, 0%, 100%);
+  --layout-topbar: hsl(0, 0%, 100%);
+  --layout-topbar-foreground: hsl(224, 25%, 25%);
+  --layout-content: hsl(210, 20%, 98%);
+  --layout-footer: hsl(224, 35%, 18%);
+  --layout-footer-foreground: hsl(0, 0%, 100%);
 
   /* Card */
-  --card: hsl(220, 45%, 98%);
-  --card-foreground: hsl(220, 25%, 15%);
-  --card-hover: hsl(220, 45%, 96%);
-  --card-active: hsl(220, 45%, 94%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(224, 25%, 25%);
+  --card-hover: hsl(210, 20%, 98%);
+  --card-active: hsl(210, 20%, 96%);
 
   /* Popover */
-  --popover: hsl(220, 45%, 98%);
-  --popover-foreground: hsl(220, 25%, 15%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(224, 25%, 25%);
 
-  /* Primary - Professional Blue */
-  --primary: hsl(220, 65%, 35%);
-  --primary-foreground: hsl(220, 25%, 97%);
-  --primary-hover: hsl(220, 65%, 30%);
-  --primary-active: hsl(220, 65%, 25%);
+  /* Primary - Elegante Azul Índigo */
+  --primary: hsl(240, 55%, 50%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --primary-hover: hsl(240, 55%, 45%);
+  --primary-active: hsl(240, 55%, 40%);
 
-  /* Secondary - Light Blue */
-  --secondary: hsl(220, 35%, 94%);
-  --secondary-foreground: hsl(220, 65%, 35%);
-  --secondary-hover: hsl(220, 35%, 90%);
-  --secondary-active: hsl(220, 35%, 85%);
+  /* Secondary - Gris Suave */
+  --secondary: hsl(216, 16%, 94%);
+  --secondary-foreground: hsl(240, 55%, 50%);
+  --secondary-hover: hsl(216, 16%, 90%);
+  --secondary-active: hsl(216, 16%, 86%);
 
   /* Navigation */
   --nav-item: transparent;
-  --nav-item-foreground: hsl(220, 25%, 97%);
-  --nav-item-hover: hsl(220, 45%, 25%);
-  --nav-item-active: hsl(220, 65%, 45%);
-  --nav-item-selected: hsl(220, 45%, 30%);
+  --nav-item-foreground: hsl(0, 0%, 100%);
+  --nav-item-hover: hsl(224, 35%, 24%);
+  --nav-item-active: hsl(240, 55%, 60%);
+  --nav-item-selected: hsl(224, 35%, 28%);
 
   /* Muted */
-  --muted: hsl(220, 25%, 94%);
-  --muted-foreground: hsl(220, 15%, 45%);
+  --muted: hsl(216, 16%, 94%);
+  --muted-foreground: hsl(224, 12%, 50%);
 
-  /* Accent - Complementary Blue */
-  --accent: hsl(200, 65%, 94%);
-  --accent-foreground: hsl(220, 65%, 35%);
+  /* Accent - Contraste Violeta */
+  --accent: hsl(260, 70%, 95%);
+  --accent-foreground: hsl(260, 70%, 40%);
 
   /* Destructive */
-  --destructive: hsl(0, 65%, 55%);
-  --destructive-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 80%, 55%);
+  --destructive-foreground: hsl(0, 0%, 100%);
 
   /* Borders & Inputs */
-  --border: hsl(220, 25%, 90%);
-  --input: hsl(220, 25%, 90%);
-  --ring: hsl(220, 65%, 35%);
+  --border: hsl(216, 20%, 90%);
+  --input: hsl(216, 20%, 90%);
+  --ring: hsl(240, 55%, 50%);
 
-  /* Estados de propiedades */
-  --property-available: hsl(220, 65%, 45%);
-  --property-rented: hsl(200, 65%, 45%);
-  --property-sold: hsl(240, 65%, 45%);
-  --property-maintenance: hsl(210, 65%, 45%);
+  /* Estados de propiedades - Colores más vibrantes */
+  --property-available: hsl(210, 100%, 55%);
+  --property-rented: hsl(150, 70%, 45%);
+  --property-sold: hsl(260, 70%, 55%);
+  --property-maintenance: hsl(40, 100%, 50%);
 
   /* Indicadores */
-  --indicator-low: hsl(220, 65%, 45%);
-  --indicator-medium: hsl(200, 65%, 45%);
-  --indicator-high: hsl(240, 65%, 45%);
+  --indicator-low: hsl(210, 100%, 55%);
+  --indicator-medium: hsl(40, 100%, 50%);
+  --indicator-high: hsl(0, 80%, 55%);
 
-  /* Charts - Professional Blue Palette */
-  --chart-1: hsl(220, 65%, 45%);
-  --chart-2: hsl(200, 65%, 45%);
-  --chart-3: hsl(240, 65%, 45%);
-  --chart-4: hsl(210, 65%, 45%);
-  --chart-5: hsl(230, 65%, 45%);
+  /* Charts - Paleta Moderna */
+  --chart-1: hsl(240, 55%, 50%);
+  --chart-2: hsl(210, 100%, 55%);
+  --chart-3: hsl(150, 70%, 45%);
+  --chart-4: hsl(260, 70%, 55%);
+  --chart-5: hsl(320, 70%, 55%);
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  /* Shadows - Más sutiles */
+  --shadow-sm: 0 1px 2px rgba(30, 30, 60, 0.05);
+  --shadow-md: 0 4px 6px rgba(30, 30, 60, 0.08);
+  --shadow-lg: 0 10px 15px rgba(30, 30, 60, 0.1);
 
   /* Radios */
-  --radius: 0.4rem;
+  --radius: 0.5rem;
 
   /* Table - Base */
-  --table-header: hsl(220, 25%, 94%);
-  --table-header-foreground: hsl(220, 25%, 15%);
-  --table-row: hsl(220, 45%, 98%);
-  --table-row-foreground: hsl(220, 25%, 15%);
-  --table-row-alternate: hsl(220, 25%, 97%);
-  --table-border: hsl(220, 25%, 90%);
+  --table-header: hsl(216, 16%, 94%);
+  --table-header-foreground: hsl(224, 25%, 25%);
+  --table-row: hsl(0, 0%, 100%);
+  --table-row-foreground: hsl(224, 25%, 25%);
+  --table-row-alternate: hsl(210, 20%, 98%);
+  --table-border: hsl(216, 20%, 90%);
 
   /* Table - Interactive States */
-  --table-row-hover: hsl(220, 45%, 96%);
-  --table-row-selected: hsl(220, 65%, 97%);
-  --table-row-selected-foreground: hsl(220, 65%, 35%);
+  --table-row-hover: hsl(210, 20%, 96%);
+  --table-row-selected: hsl(240, 55%, 96%);
+  --table-row-selected-foreground: hsl(240, 55%, 50%);
 
   /* Table - Sort & Filter */
-  --table-sort-indicator: hsl(220, 65%, 35%);
-  --table-filter-background: hsl(220, 45%, 98%);
-  --table-filter-border: hsl(220, 25%, 90%);
+  --table-sort-indicator: hsl(240, 55%, 50%);
+  --table-filter-background: hsl(0, 0%, 100%);
+  --table-filter-border: hsl(216, 20%, 90%);
 
   /* Table - Loading & Empty States */
-  --table-loading-background: hsl(220, 25%, 97%);
-  --table-empty-background: hsl(220, 25%, 97%);
-  --table-empty-foreground: hsl(220, 15%, 45%);
+  --table-loading-background: hsl(210, 20%, 98%);
+  --table-empty-background: hsl(210, 20%, 98%);
+  --table-empty-foreground: hsl(224, 12%, 50%);
 }
 
 .dark {
   /* Base */
-  --background: hsl(220, 25%, 8%);
-  --foreground: hsl(220, 25%, 97%);
+  --background: hsl(224, 25%, 10%);
+  --foreground: hsl(210, 20%, 98%);
 
   /* Layout */
-  --layout-sidebar: hsl(220, 25%, 12%);
-  --layout-sidebar-foreground: hsl(220, 25%, 97%);
-  --layout-topbar: hsl(220, 25%, 12%);
-  --layout-topbar-foreground: hsl(220, 25%, 97%);
-  --layout-content: hsl(220, 25%, 8%);
-  --layout-footer: hsl(220, 25%, 12%);
-  --layout-footer-foreground: hsl(220, 25%, 97%);
+  --layout-sidebar: hsl(224, 35%, 14%);
+  --layout-sidebar-foreground: hsl(210, 20%, 98%);
+  --layout-topbar: hsl(224, 35%, 14%);
+  --layout-topbar-foreground: hsl(210, 20%, 98%);
+  --layout-content: hsl(224, 25%, 10%);
+  --layout-footer: hsl(224, 35%, 14%);
+  --layout-footer-foreground: hsl(210, 20%, 98%);
 
   /* Card */
-  --card: hsl(220, 25%, 12%);
-  --card-foreground: hsl(220, 25%, 97%);
-  --card-hover: hsl(220, 25%, 15%);
-  --card-active: hsl(220, 25%, 18%);
+  --card: hsl(224, 35%, 14%);
+  --card-foreground: hsl(210, 20%, 98%);
+  --card-hover: hsl(224, 35%, 16%);
+  --card-active: hsl(224, 35%, 18%);
 
   /* Popover */
-  --popover: hsl(220, 25%, 12%);
-  --popover-foreground: hsl(220, 25%, 97%);
+  --popover: hsl(224, 35%, 14%);
+  --popover-foreground: hsl(210, 20%, 98%);
 
-  /* Primary - Bright Professional Blue */
-  --primary: hsl(220, 85%, 65%);
-  --primary-foreground: hsl(220, 25%, 8%);
-  --primary-hover: hsl(220, 85%, 60%);
-  --primary-active: hsl(220, 85%, 55%);
+  /* Primary - Violeta Brillante */
+  --primary: hsl(256, 90%, 65%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --primary-hover: hsl(256, 90%, 60%);
+  --primary-active: hsl(256, 90%, 55%);
 
   /* Secondary */
-  --secondary: hsl(220, 30%, 20%);
-  --secondary-foreground: hsl(220, 85%, 65%);
-  --secondary-hover: hsl(220, 30%, 25%);
-  --secondary-active: hsl(220, 30%, 30%);
+  --secondary: hsl(224, 25%, 20%);
+  --secondary-foreground: hsl(256, 90%, 65%);
+  --secondary-hover: hsl(224, 25%, 24%);
+  --secondary-active: hsl(224, 25%, 28%);
 
   /* Navigation */
   --nav-item: transparent;
-  --nav-item-foreground: hsl(220, 25%, 97%);
-  --nav-item-hover: hsl(220, 25%, 20%);
-  --nav-item-active: hsl(220, 85%, 65%);
-  --nav-item-selected: hsl(220, 25%, 25%);
+  --nav-item-foreground: hsl(210, 20%, 98%);
+  --nav-item-hover: hsl(224, 35%, 20%);
+  --nav-item-active: hsl(256, 90%, 65%);
+  --nav-item-selected: hsl(224, 35%, 24%);
 
   /* Muted */
-  --muted: hsl(220, 25%, 20%);
-  --muted-foreground: hsl(220, 20%, 70%);
+  --muted: hsl(224, 25%, 20%);
+  --muted-foreground: hsl(210, 10%, 70%);
 
   /* Accent */
-  --accent: hsl(200, 35%, 20%);
-  --accent-foreground: hsl(220, 85%, 65%);
+  --accent: hsl(260, 40%, 25%);
+  --accent-foreground: hsl(256, 90%, 65%);
 
   /* Destructive */
-  --destructive: hsl(0, 65%, 45%);
-  --destructive-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 90%, 60%);
+  --destructive-foreground: hsl(0, 0%, 100%);
 
   /* Borders & Inputs */
-  --border: hsl(220, 30%, 20%);
-  --input: hsl(220, 30%, 20%);
-  --ring: hsl(220, 85%, 65%);
+  --border: hsl(224, 25%, 20%);
+  --input: hsl(224, 25%, 20%);
+  --ring: hsl(256, 90%, 65%);
 
   /* Estados de propiedades */
-  --property-available: hsl(220, 85%, 65%);
-  --property-rented: hsl(200, 85%, 65%);
-  --property-sold: hsl(240, 85%, 65%);
-  --property-maintenance: hsl(210, 85%, 65%);
+  --property-available: hsl(210, 100%, 60%);
+  --property-rented: hsl(150, 80%, 50%);
+  --property-sold: hsl(270, 80%, 65%);
+  --property-maintenance: hsl(40, 100%, 55%);
 
   /* Indicadores */
-  --indicator-low: hsl(220, 85%, 65%);
-  --indicator-medium: hsl(200, 85%, 65%);
-  --indicator-high: hsl(240, 85%, 65%);
+  --indicator-low: hsl(210, 100%, 60%);
+  --indicator-medium: hsl(40, 100%, 55%);
+  --indicator-high: hsl(0, 90%, 60%);
 
   /* Charts */
-  --chart-1: hsl(220, 85%, 65%);
-  --chart-2: hsl(200, 85%, 65%);
-  --chart-3: hsl(240, 85%, 65%);
-  --chart-4: hsl(210, 85%, 65%);
-  --chart-5: hsl(230, 85%, 65%);
+  --chart-1: hsl(256, 90%, 65%);
+  --chart-2: hsl(210, 100%, 60%);
+  --chart-3: hsl(150, 80%, 50%);
+  --chart-4: hsl(270, 80%, 65%);
+  --chart-5: hsl(320, 80%, 65%);
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
 
   /* Table - Base */
-  --table-header: hsl(220, 25%, 15%);
-  --table-header-foreground: hsl(220, 25%, 97%);
-  --table-row: hsl(220, 25%, 12%);
-  --table-row-foreground: hsl(220, 25%, 97%);
-  --table-row-alternate: hsl(220, 25%, 10%);
-  --table-border: hsl(220, 30%, 20%);
+  --table-header: hsl(224, 35%, 16%);
+  --table-header-foreground: hsl(210, 20%, 98%);
+  --table-row: hsl(224, 35%, 14%);
+  --table-row-foreground: hsl(210, 20%, 98%);
+  --table-row-alternate: hsl(224, 35%, 12%);
+  --table-border: hsl(224, 25%, 20%);
 
   /* Table - Interactive States */
-  --table-row-hover: hsl(220, 25%, 15%);
-  --table-row-selected: hsl(220, 85%, 25%);
-  --table-row-selected-foreground: hsl(220, 85%, 65%);
+  --table-row-hover: hsl(224, 35%, 18%);
+  --table-row-selected: hsl(256, 40%, 25%);
+  --table-row-selected-foreground: hsl(256, 90%, 65%);
 
   /* Table - Sort & Filter */
-  --table-sort-indicator: hsl(220, 85%, 65%);
-  --table-filter-background: hsl(220, 25%, 12%);
-  --table-filter-border: hsl(220, 30%, 20%);
+  --table-sort-indicator: hsl(256, 90%, 65%);
+  --table-filter-background: hsl(224, 35%, 14%);
+  --table-filter-border: hsl(224, 25%, 20%);
 
   /* Table - Loading & Empty States */
-  --table-loading-background: hsl(220, 25%, 12%);
-  --table-empty-background: hsl(220, 25%, 12%);
-  --table-empty-foreground: hsl(220, 20%, 70%);
+  --table-loading-background: hsl(224, 35%, 14%);
+  --table-empty-background: hsl(224, 35%, 14%);
+  --table-empty-foreground: hsl(210, 10%, 70%);
 }
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

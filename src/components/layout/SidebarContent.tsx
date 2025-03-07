@@ -32,7 +32,7 @@ const SidebarContent = ({
         duration: 0.2,
         ease: "easeInOut",
       }}
-      className="flex flex-col h-full border-r border-border bg-layout-sidebar text-layout-sidebar-foreground"
+      className="flex flex-col h-screen sticky top-0 border-r border-border bg-layout-sidebar text-layout-sidebar-foreground"
     >
       {}
       <div className="flex items-center justify-between p-3 border-b border-border">

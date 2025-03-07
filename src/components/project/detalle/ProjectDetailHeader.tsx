@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,171 +10,285 @@ import {
   ChevronLeft,
   MoreHorizontal,
   Edit,
+  MapPin,
+  CreditCard,
+  FileText,
+  Share2,
 } from "lucide-react";
 import Link from "next/link";
 import { ProjectDetailDto } from "@/types/project.types";
 import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 interface ProjectDetailHeaderProps {
   project: ProjectDetailDto | null;
   onEditClick: () => void;
 }
+
 export default function ProjectDetailHeader({
   project,
   onEditClick,
 }: ProjectDetailHeaderProps) {
-  if (!project) return null;
-  const formatDate = (date: Date) => {
+  // Define hooks before any conditional returns
+  const formatDate = useCallback((date: Date) => {
     return new Intl.DateTimeFormat("es-ES", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
     }).format(date);
-  };
-  const totalBlocks = project.stages.reduce(
-    (sum, stage) => sum + stage.blocks.length,
-    0,
-  );
-  const totalLots = project.stages.reduce(
-    (sum, stage) =>
-      sum +
-      stage.blocks.reduce((blockSum, block) => blockSum + block.lotCount, 0),
-    0,
-  );
-  const activeLots = project.stages.reduce(
-    (sum, stage) =>
-      sum +
-      stage.blocks.reduce((blockSum, block) => blockSum + block.activeLots, 0),
-    0,
-  );
-  const progressPercentage = totalLots > 0 ? (activeLots / totalLots) * 100 : 0;
+  }, []);
+
+  const { totalBlocks, totalLots, activeLots, progressPercentage } =
+    useMemo(() => {
+      if (!project) {
+        return {
+          totalBlocks: 0,
+          totalLots: 0,
+          activeLots: 0,
+          progressPercentage: 0,
+        };
+      }
+
+      const totalBlocks = project.stages.reduce(
+        (sum, stage) => sum + stage.blocks.length,
+        0,
+      );
+      const totalLots = project.stages.reduce(
+        (sum, stage) =>
+          sum +
+          stage.blocks.reduce(
+            (blockSum, block) => blockSum + block.lotCount,
+            0,
+          ),
+        0,
+      );
+      const activeLots = project.stages.reduce(
+        (sum, stage) =>
+          sum +
+          stage.blocks.reduce(
+            (blockSum, block) => blockSum + block.activeLots,
+            0,
+          ),
+        0,
+      );
+      const progressPercentage =
+        totalLots > 0 ? (activeLots / totalLots) * 100 : 0;
+      return { totalBlocks, totalLots, activeLots, progressPercentage };
+    }, [project]);
+
+  // Now we can safely return null if there's no project
+  if (!project) return null;
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      {/* Navigation */}
+      <motion.div
+        className="flex items-center justify-between mb-3"
+        initial={{ opacity: 0, y: -5 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
+      >
         <Link href="/proyectos">
           <Button
             variant="ghost"
             size="sm"
-            className="gap-1 text-muted-foreground hover:text-foreground"
+            className="gap-1 text-muted-foreground hover:text-foreground group"
           >
-            <ChevronLeft className="h-4 w-4" />
-            Volver a proyectos
+            <ChevronLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
+            <span>Volver</span>
           </Button>
         </Link>
         <div className="flex items-center gap-2">
-          {}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onEditClick}
-            className="flex items-center gap-1"
-          >
-            <Edit className="h-4 w-4" />
-            Editar
-          </Button>
-          <Button variant="ghost" size="icon">
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-      <Card className="p-6 bg-card/60 backdrop-blur-[2px]">
-        <div className="flex flex-col md:flex-row gap-6 items-start">
-          {}
-          <div
-            className={`h-20 w-20 rounded-md flex items-center justify-center ${project.isActive ? "bg-primary/10" : "bg-secondary/50"}`}
-          >
-            {project.logo ? (
-              <Image
-                width={64}
-                height={64}
-                src={project.logo}
-                alt={`Logo de ${project.name}`}
-                className="max-h-16 max-w-16 object-contain"
-              />
-            ) : (
-              <Building2
-                className={`h-10 w-10 ${project.isActive ? "text-primary" : "text-muted-foreground"}`}
-              />
-            )}
-          </div>
-          {}
-          <div className="flex-1">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-2xl font-bold">{project.name}</h1>
-                <Badge variant={project.isActive ? "default" : "secondary"}>
-                  {project.isActive ? "Activo" : "Inactivo"}
-                </Badge>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                {project.currency === "PEN" ? "Soles (S/)" : "Dólares ($)"}
-              </p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 mt-4">
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onEditClick}
+              className="h-8"
+            >
+              <Edit className="h-3.5 w-3.5 mr-1" />
+              Editar
+            </Button>
+          </motion.div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <motion.div
-                className="flex items-center gap-2"
-                initial={{ opacity: 0, x: -5 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <div className="p-1.5 rounded-full bg-primary/10">
-                  <Building2 className="h-3.5 w-3.5 text-primary" />
-                </div>
-                <span className="text-sm">
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </motion.div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem className="cursor-pointer text-xs">
+                <FileText className="h-3.5 w-3.5 mr-1.5" />
+                <span>Exportar detalles</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer text-xs">
+                <Share2 className="h-3.5 w-3.5 mr-1.5" />
+                <span>Compartir</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="cursor-pointer text-xs text-destructive">
+                <span>Archivar proyecto</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </motion.div>
+      {/* Card Container */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Card className="overflow-hidden">
+          {/* Status Bar */}
+          <div
+            className={`h-1 w-full ${project.isActive ? "bg-primary" : "bg-muted-foreground"}`}
+          />
+          <div className="p-4">
+            <div className="flex gap-3 items-center">
+              {/* Project Logo/Icon */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+                className={`h-14 w-14 rounded-md flex items-center justify-center ${
+                  project.isActive ? "bg-primary/10" : "bg-secondary/50"
+                }`}
+              >
+                {project.logo ? (
+                  <Image
+                    width={40}
+                    height={40}
+                    src={project.logo}
+                    alt={`Logo de ${project.name}`}
+                    className="max-h-10 max-w-10 object-contain"
+                  />
+                ) : (
+                  <Building2
+                    className={`h-6 w-6 ${
+                      project.isActive
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                    }`}
+                  />
+                )}
+              </motion.div>
+              {/* Project Info */}
+              <div className="flex-1">
+                <motion.div
+                  className="flex items-center gap-2 mb-0.5 flex-wrap"
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.2 }}
+                >
+                  <h1 className="text-xl font-bold">{project.name}</h1>
+                  <Badge
+                    variant={project.isActive ? "default" : "secondary"}
+                    className="text-xs px-1.5 py-0"
+                  >
+                    {project.isActive ? "Activo" : "Inactivo"}
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className="text-xs flex items-center"
+                  >
+                    <CreditCard className="h-3 w-3 mr-1" />
+                    {project.currency === "PEN" ? "Soles (S/)" : "Dólares ($)"}
+                  </Badge>
+                </motion.div>
+                {/* Progress Bar */}
+                <motion.div
+                  className="mt-1.5"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.3 }}
+                >
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <span className="text-muted-foreground">
+                      Lotes activos:{" "}
+                      <span className="font-medium text-primary">
+                        {activeLots}/{totalLots}
+                      </span>
+                    </span>
+                    <span className="text-muted-foreground text-xs">
+                      {Math.round(progressPercentage)}% completado
+                    </span>
+                  </div>
+                  <div className="relative w-full h-1.5 bg-secondary/50 rounded-full overflow-hidden">
+                    <motion.div
+                      className="absolute left-0 top-0 h-full bg-primary rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progressPercentage}%` }}
+                      transition={{
+                        duration: 0.7,
+                        delay: 0.4,
+                        ease: "easeOut",
+                      }}
+                    />
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+            {/* Footer Stats */}
+            <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/60">
+              <motion.div
+                className="flex items-center text-xs text-muted-foreground"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: 0.5 }}
+              >
+                <Building2 className="h-3.5 w-3.5 mr-1 text-primary/70" />
+                <span>
                   <span className="font-medium">{project.stages.length}</span>{" "}
                   Etapas
                 </span>
               </motion.div>
               <motion.div
-                className="flex items-center gap-2"
-                initial={{ opacity: 0, x: -5 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
+                className="flex items-center text-xs text-muted-foreground"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: 0.6 }}
               >
-                <div className="p-1.5 rounded-full bg-primary/10">
-                  <Layers className="h-3.5 w-3.5 text-primary" />
-                </div>
-                <span className="text-sm">
+                <Layers className="h-3.5 w-3.5 mr-1 text-primary/70" />
+                <span>
                   <span className="font-medium">{totalBlocks}</span> Manzanas
                 </span>
               </motion.div>
               <motion.div
-                className="flex flex-col"
-                initial={{ opacity: 0, x: -5 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
+                className="flex items-center text-xs text-muted-foreground"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: 0.7 }}
               >
-                <span className="text-sm">
-                  <span className="font-medium text-green-600 dark:text-green-400">
-                    {activeLots}
-                  </span>
-                  <span className="text-muted-foreground">
-                    /{totalLots} Lotes activos
-                  </span>
+                <MapPin className="h-3.5 w-3.5 mr-1 text-primary/70" />
+                <span>
+                  <span className="font-medium">{totalLots}</span> Lotes
                 </span>
-                <div className="w-full h-1.5 bg-secondary rounded-full mt-1 overflow-hidden">
-                  <div
-                    className="h-full bg-green-500 rounded-full"
-                    style={{ width: `${progressPercentage}%` }}
-                  />
-                </div>
               </motion.div>
               <motion.div
-                className="flex items-center gap-2"
-                initial={{ opacity: 0, x: -5 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
+                className="flex items-center text-xs text-muted-foreground"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: 0.8 }}
               >
-                <div className="p-1.5 rounded-full bg-primary/10">
-                  <Calendar className="h-3.5 w-3.5 text-primary" />
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  Actualizado: {formatDate(project.updatedAt)}
-                </span>
+                <Calendar className="h-3.5 w-3.5 mr-1 text-primary/70" />
+                <span>Act: {formatDate(project.updatedAt)}</span>
               </motion.div>
             </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      </motion.div>
     </div>
   );
 }

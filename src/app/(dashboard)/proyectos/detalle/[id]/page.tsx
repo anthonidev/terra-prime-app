@@ -19,17 +19,18 @@ import {
   LotResponseDto,
   StageDetailDto,
 } from "@/types/project.types";
+import { Info, LayoutGrid } from "lucide-react";
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState("info");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedStage, setSelectedStage] = useState<StageDetailDto | null>(
-    null
+    null,
   );
   const [isStageModalOpen, setIsStageModalOpen] = useState(false);
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
   const [selectedBlock, setSelectedBlock] = useState<BlockDetailDto | null>(
-    null
+    null,
   );
   const [selectedStageIdForBlock, setSelectedStageIdForBlock] = useState<
     string | undefined
@@ -148,41 +149,68 @@ export default function ProjectDetailPage() {
         )}
         <Separator className="my-6" />
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
-          <div className="flex items-center justify-between mb-1">
-            <TabsList className="grid w-full sm:w-auto grid-cols-2 sm:inline-flex">
-              <TabsTrigger
-                value="info"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
-                Información General
-              </TabsTrigger>
-              <TabsTrigger
-                value="lots"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
-                Lotes
-              </TabsTrigger>
+          <div className="border-b relative">
+            {}
+            <motion.div
+              key="tab-indicator"
+              className="absolute bottom-0 h-0.5 bg-primary"
+              initial={false}
+              animate={{
+                left: activeTab === "info" ? "0%" : "50%",
+                right: activeTab === "info" ? "50%" : "0%",
+              }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            />
+            <TabsList className="bg-transparent h-auto p-0 w-full">
+              <div className="grid w-full grid-cols-2">
+                <TabsTrigger
+                  value="info"
+                  className="flex items-center gap-1.5 rounded-none border-0 h-11 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-primary data-[state=active]:font-medium"
+                >
+                  <Info className="h-4 w-4" />
+                  <span>Información General</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="lots"
+                  className="flex items-center gap-1.5 rounded-none border-0 h-11 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-primary data-[state=active]:font-medium"
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                  <span>Lotes</span>
+                  {!isLoadingLots && totalLots > 0 && (
+                    <span className="ml-1.5 bg-primary/10 text-primary text-xs py-0.5 px-1.5 rounded-full">
+                      {totalLots}
+                    </span>
+                  )}
+                </TabsTrigger>
+              </div>
             </TabsList>
           </div>
-          <TabsContent value="info" className="mt-3 space-y-4">
+          {}
+          <TabsContent
+            value="info"
+            className="mt-4 pt-2 outline-none focus-visible:ring-0 focus-visible:outline-none"
+          >
             {isLoadingDetail ? (
               <motion.div
+                key="loading-container"
                 variants={containerAnimation}
                 initial="hidden"
                 animate="show"
               >
-                <motion.div variants={itemAnimation}>
+                <motion.div key="skeleton-1" variants={itemAnimation}>
                   <Skeleton className="h-64 w-full" />
                 </motion.div>
-                <motion.div variants={itemAnimation}>
+                <motion.div key="skeleton-2" variants={itemAnimation}>
                   <Skeleton className="h-64 w-full mt-4" />
                 </motion.div>
               </motion.div>
             ) : (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
+                key="info-content"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="focus:outline-none"
               >
                 <ProjectStages
                   stages={projectDetail?.stages || []}
@@ -194,36 +222,52 @@ export default function ProjectDetailPage() {
               </motion.div>
             )}
           </TabsContent>
-          <TabsContent value="lots" className="mt-3 space-y-4">
+          {}
+          <TabsContent
+            value="lots"
+            className="mt-4 pt-2 outline-none focus-visible:ring-0 focus-visible:outline-none"
+          >
             <motion.div
+              key="lots-container"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
+              className="space-y-4 focus:outline-none"
             >
-              <ProjectLotFilters
-                projectDetail={projectDetail}
-                currentFilters={filters}
-                onFilterChange={setFilters}
-                onReset={resetFilters}
-                isLoading={isLoadingDetail}
-              />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-            >
-              <ProjectLotsTable
-                lots={lots}
-                isLoading={isLoadingLots}
-                totalItems={totalLots}
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setPage}
-                pageSize={Number(filters.limit) || 10}
-                onEditLot={handleOpenEditLotModal}
-                onCreateLot={handleOpenCreateLotModal}
-              />
+              {}
+              <motion.div
+                key="lot-filters"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ProjectLotFilters
+                  projectDetail={projectDetail}
+                  currentFilters={filters}
+                  onFilterChange={setFilters}
+                  onReset={resetFilters}
+                  isLoading={isLoadingDetail}
+                />
+              </motion.div>
+              {}
+              <motion.div
+                key="lot-table"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              >
+                <ProjectLotsTable
+                  lots={lots}
+                  isLoading={isLoadingLots}
+                  totalItems={totalLots}
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                  pageSize={Number(filters.limit) || 10}
+                  onEditLot={handleOpenEditLotModal}
+                  onCreateLot={handleOpenCreateLotModal}
+                />
+              </motion.div>
             </motion.div>
           </TabsContent>
         </Tabs>

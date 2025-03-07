@@ -91,7 +91,8 @@ const UploadStep: React.FC<UploadStepProps> = ({
             </Button>
           </div>
           <a
-            href="/templates/project-template.xlsx"
+            href="/templates/plantilla-carga-proyecto.xlsx"
+            download
             className="text-primary text-sm mt-4 flex items-center"
           >
             <FileSpreadsheet className="h-4 w-4 mr-1" />
