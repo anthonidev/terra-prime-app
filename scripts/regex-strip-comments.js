@@ -1,5 +1,4 @@
 const fs = require("fs").promises;
-const path = require("path");
 const glob = require("glob");
 
 // Extensiones de archivos a procesar
@@ -44,7 +43,7 @@ async function main() {
     const files = extensions.flatMap((ext) =>
       glob.sync(`src/**/*${ext}`, {
         ignore: ["**/node_modules/**", "dist/**"],
-      }),
+      })
     );
 
     console.log(`Found ${files.length} files to process`);
