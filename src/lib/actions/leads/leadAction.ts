@@ -6,6 +6,9 @@ import {
   CreateUpdateLeadResponse,
   FindLeadByDocumentDto,
   FindLeadResponse,
+  LeadDetailResponse,
+  PaginatedLeadsResponse,
+  RegisterDepartureResponse,
 } from "@/types/leads.types";
 
 export async function findLeadByDocument(
@@ -32,6 +35,48 @@ export async function createOrUpdateLead(
     });
   } catch (error) {
     console.error("Error al crear o actualizar lead:", error);
+    throw error;
+  }
+}
+
+export async function getLeads(
+  params?: Record<string, any>
+): Promise<PaginatedLeadsResponse> {
+  try {
+    return await httpClient<PaginatedLeadsResponse>("/api/leads", {
+      params,
+    });
+  } catch (error) {
+    console.error("Error al obtener leads:", error);
+    throw error;
+  }
+}
+
+export async function registerLeadDeparture(
+  leadId: string
+): Promise<RegisterDepartureResponse> {
+  try {
+    return await httpClient<RegisterDepartureResponse>(
+      `/api/leads/register-departure/${leadId}`,
+      {
+        method: "POST",
+      }
+    );
+  } catch (error) {
+    console.error(`Error al registrar salida del lead ${leadId}:`, error);
+    throw error;
+  }
+}
+
+export async function getLeadDetail(
+  leadId: string
+): Promise<LeadDetailResponse> {
+  try {
+    return await httpClient<LeadDetailResponse>(`/api/leads/${leadId}`, {
+      method: "GET",
+    });
+  } catch (error) {
+    console.error(`Error al obtener detalles del lead ${leadId}:`, error);
     throw error;
   }
 }

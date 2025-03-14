@@ -223,3 +223,36 @@ export interface CreateUpdateLeadResponse {
   message: string;
   data: Lead | null;
 }
+
+// leads list
+export interface PaginatedLeadsResponse {
+  success: boolean;
+  data: Lead[];
+  meta: {
+    totalItems: number;
+    itemsPerPage: number;
+    totalPages: number;
+    currentPage: number;
+  };
+}
+
+// Interfaz para los parámetros de búsqueda de leads
+export interface GetLeadsParams {
+  search?: string;
+  isInOffice?: boolean;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  limit?: number;
+  order?: "ASC" | "DESC";
+}
+
+export interface RegisterDepartureResponse {
+  success: boolean;
+  message: string;
+  data: Lead | null;
+}
+export interface LeadDetailResponse {
+  success: boolean;
+  data: Lead;
+}
