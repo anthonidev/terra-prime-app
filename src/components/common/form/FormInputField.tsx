@@ -17,6 +17,7 @@ interface FormInputFieldProps<TFormValues extends FieldValues> {
   icon: React.ReactNode;
   control: Control<TFormValues>;
   errors: FieldErrors<TFormValues>;
+  disabled?: boolean;
 }
 const FormInputField = <TFormValues extends FieldValues>({
   name,

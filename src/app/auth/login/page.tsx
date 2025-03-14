@@ -27,7 +27,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [formData, setFormData] = useState<FormData>({
-    email: "ricardo.mendoza@inmobiliariahuertas.com",
+    email: "daniel.vega@inmobiliariahuertas.com",
     password: "Huertas2025",
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
