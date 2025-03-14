@@ -13,13 +13,21 @@ export async function findLeadByDocument(
   findDto: FindLeadByDocumentDto
 ): Promise<FindLeadResponse> {
   try {
+    // Here we're using httpClient with our updated implementation
+    // that doesn't throw but returns structured errors
     return await httpClient<FindLeadResponse>("/api/leads/find-by-document", {
       method: "POST",
       body: findDto,
     });
   } catch (error) {
+    // This is a fallback in case something goes wrong even with
+    // our new error handling approach
     console.error("Error al buscar lead por documento:", error);
-    throw error;
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Error desconocido",
+      data: null
+    };
   }
 }
 export async function createOrUpdateLead(
