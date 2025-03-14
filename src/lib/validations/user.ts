@@ -35,6 +35,6 @@ export const createUserSchema = z.object({
   roleId: z
     .string({ required_error: "El rol es requerido" })
     .transform((val) => Number(val)),
-  isActive: z.boolean().default(true),
+  isActive: z.string().default("true"),
 });
 export type CreateUserFormData = z.infer<typeof createUserSchema>;

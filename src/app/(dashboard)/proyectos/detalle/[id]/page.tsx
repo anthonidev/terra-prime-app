@@ -266,6 +266,7 @@ export default function ProjectDetailPage() {
                   pageSize={Number(filters.limit) || 10}
                   onEditLot={handleOpenEditLotModal}
                   onCreateLot={handleOpenCreateLotModal}
+                  currency={projectDetail?.currency || "USD"}
                 />
               </motion.div>
             </motion.div>

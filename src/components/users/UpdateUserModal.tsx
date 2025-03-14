@@ -30,7 +30,7 @@ const updateUserSchema = z.object({
   firstName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
   lastName: z.string().min(2, "El apellido debe tener al menos 2 caracteres"),
   email: z.string().email("Ingrese un correo válido"),
-  isActive: z.boolean(),
+  isActive: z.string(),
   roleId: z.string().min(1, "Debe seleccionar un rol"),
 });
 type UpdateUserFormData = z.infer<typeof updateUserSchema>;
@@ -49,7 +49,7 @@ export function UpdateUserModal({
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      isActive: user.isActive,
+      isActive: user.isActive.toString(),
       roleId: user.role.id.toString(),
     },
   });

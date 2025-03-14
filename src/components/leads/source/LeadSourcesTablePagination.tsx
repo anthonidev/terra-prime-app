@@ -53,10 +53,10 @@ export default function LeadSourcesTablePagination({
         </Select>
         <div className="flex items-center text-sm">
           <span className="text-muted-foreground">
-            Total:{" "}
+            Total:
             <span className="font-medium text-foreground">
               {data.meta.totalItems}
-            </span>{" "}
+            </span>
             fuentes
           </span>
         </div>
@@ -74,9 +74,9 @@ export default function LeadSourcesTablePagination({
         </Button>
         <div className="flex items-center text-sm">
           <span className="text-muted-foreground">
-            Página{" "}
+            Página
             <span className="font-medium text-foreground">{currentPage}</span>{" "}
-            de{" "}
+            de
             <span className="font-medium text-foreground">
               {data.meta.totalPages}
             </span>

@@ -39,6 +39,7 @@ interface ProjectLotsTableProps {
   onPageChange: (page: number) => void;
   onCreateLot: (blockId?: string) => void;
   onEditLot: (lot: LotResponseDto) => void;
+  currency: string;
 }
 export default function ProjectLotsTable({
   lots,
@@ -50,6 +51,7 @@ export default function ProjectLotsTable({
   onPageChange,
   onCreateLot,
   onEditLot,
+  currency,
 }: ProjectLotsTableProps) {
   const [activeSortColumn, setActiveSortColumn] = useState<string | null>(null);
   const handleSort = (column: string) => {
@@ -91,12 +93,7 @@ export default function ProjectLotsTable({
     separados: lots.filter((lot) => lot.status === "Separado").length,
   };
   const totalLotValue = lots.reduce((sum, lot) => sum + lot.totalPrice, 0);
-  const currency =
-    lots.length > 0
-      ? lots[0].totalPrice > lots[0].lotPrice + lots[0].urbanizationPrice
-        ? "USD"
-        : "PEN"
-      : "PEN";
+
   if (isLoading) {
     return (
       <Card className="shadow-sm border-border/80">

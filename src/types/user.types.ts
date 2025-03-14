@@ -66,7 +66,7 @@ export interface CreateUserDto {
   lastName: string;
   photo?: string;
   roleId: number;
-  isActive?: boolean;
+  isActive?: string;
 }
 export interface UpdateUserDto
   extends Omit<Partial<CreateUserDto>, "document"> {

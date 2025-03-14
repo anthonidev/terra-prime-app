@@ -47,7 +47,7 @@ export function CreateUserModal({
       document: "",
       firstName: "",
       lastName: "",
-      isActive: true,
+      isActive: "true",
     },
   });
   const [error, setError] = useState<string | null>(null);

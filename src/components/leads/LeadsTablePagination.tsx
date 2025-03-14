@@ -64,10 +64,10 @@ export default function LeadsTablePagination({
         </Select>
         <div className="flex items-center text-sm">
           <span className="text-muted-foreground">
-            Total:{" "}
+            Total:
             <span className="font-medium text-foreground">
               {meta.totalItems}
-            </span>{" "}
+            </span>
             resultados
           </span>
         </div>
