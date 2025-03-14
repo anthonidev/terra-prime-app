@@ -162,7 +162,6 @@ export default function ProjectLotFilters({
   };
   const activeFiltersCount = getActiveFiltersCount();
   const hasActiveFilters = activeFiltersCount > 0;
-
   if (isLoading) {
     return (
       <Card className="bg-card/60 shadow-sm">

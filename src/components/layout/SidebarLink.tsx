@@ -5,7 +5,19 @@ import {
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { View } from "@/types/user.types";
-import { ChevronDown, FileText, Home, Map, User, Users } from "lucide-react";
+import {
+  ChevronDown,
+  FileText,
+  Home,
+  Map,
+  Podcast,
+  SquareUserRound,
+  TableProperties,
+  User,
+  UserPlus,
+  UserRoundCheck,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,6 +33,11 @@ const ICON_MAPPING = {
   lote: Map,
   user: Users,
   lead: Home,
+  "g-lead": SquareUserRound,
+  "lead-source": Podcast,
+  "new-lead": UserPlus,
+  leads: TableProperties,
+  liner: UserRoundCheck,
 };
 type Props = {
   item: View;

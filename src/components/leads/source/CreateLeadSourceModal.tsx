@@ -12,18 +12,17 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, FileText, ActivityIcon } from "lucide-react";
+import { AlertCircle, FileText } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import FormInputField from "@/components/common/form/FormInputField";
-
+import { LeadSource } from "@/types/leads.types";
 interface CreateLeadSourceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (data: { name: string; isActive?: boolean }) => Promise<any>;
+  onCreate: (data: { name: string; isActive?: boolean }) => Promise<LeadSource>;
 }
-
 const createLeadSourceSchema = z.object({
   name: z
     .string()
@@ -31,16 +30,13 @@ const createLeadSourceSchema = z.object({
     .max(50, "El nombre no puede tener más de 50 caracteres"),
   isActive: z.boolean().default(true),
 });
-
 type CreateLeadSourceFormData = z.infer<typeof createLeadSourceSchema>;
-
 export default function CreateLeadSourceModal({
   isOpen,
   onClose,
   onCreate,
 }: CreateLeadSourceModalProps) {
   const [error, setError] = useState<string | null>(null);
-
   const form = useForm<CreateLeadSourceFormData>({
     resolver: zodResolver(createLeadSourceSchema),
     defaultValues: {
@@ -48,7 +44,6 @@ export default function CreateLeadSourceModal({
       isActive: true,
     },
   });
-
   const onSubmit = async (data: CreateLeadSourceFormData) => {
     try {
       setError(null);
@@ -60,7 +55,6 @@ export default function CreateLeadSourceModal({
       );
     }
   };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-h-[80vh] flex flex-col max-w-md">
@@ -71,7 +65,6 @@ export default function CreateLeadSourceModal({
           </DialogTitle>
         </DialogHeader>
         <Separator className="my-4" />
-
         {error && (
           <Alert
             variant="destructive"
@@ -83,7 +76,6 @@ export default function CreateLeadSourceModal({
             </AlertDescription>
           </Alert>
         )}
-
         <ScrollArea className="flex-1 overflow-y-auto pr-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -96,7 +88,6 @@ export default function CreateLeadSourceModal({
                   control={form.control}
                   errors={form.formState.errors}
                 />
-
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <label className="text-sm font-medium">Estado</label>
@@ -116,7 +107,6 @@ export default function CreateLeadSourceModal({
             </form>
           </Form>
         </ScrollArea>
-
         <DialogFooter className="gap-3 pt-4">
           <Button
             variant="outline"

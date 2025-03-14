@@ -18,8 +18,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import FormInputField from "@/components/common/form/FormInputField";
 import FormSelectField from "@/components/common/form/FormSelectField";
-import { DocumentType } from "@/types/leads.types";
-
+import { DocumentType, Liner } from "@/types/leads.types";
 interface CreateLinerModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -29,9 +28,8 @@ interface CreateLinerModalProps {
     document: string;
     documentType: DocumentType;
     isActive?: boolean;
-  }) => Promise<any>;
+  }) => Promise<Liner>;
 }
-
 const createLinerSchema = z.object({
   firstName: z
     .string()
@@ -56,16 +54,13 @@ const createLinerSchema = z.object({
   }),
   isActive: z.boolean().default(true),
 });
-
 type CreateLinerFormData = z.infer<typeof createLinerSchema>;
-
 export default function CreateLinerModal({
   isOpen,
   onClose,
   onCreate,
 }: CreateLinerModalProps) {
   const [error, setError] = useState<string | null>(null);
-
   const form = useForm<CreateLinerFormData>({
     resolver: zodResolver(createLinerSchema),
     defaultValues: {
@@ -76,7 +71,6 @@ export default function CreateLinerModal({
       isActive: true,
     },
   });
-
   const onSubmit = async (data: CreateLinerFormData) => {
     try {
       setError(null);
@@ -86,13 +80,11 @@ export default function CreateLinerModal({
       setError(err instanceof Error ? err.message : "Error al crear el liner");
     }
   };
-
   const documentTypeOptions = [
     { value: DocumentType.DNI, label: "DNI" },
     { value: DocumentType.CE, label: "CE" },
     { value: DocumentType.RUC, label: "RUC" },
   ];
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-h-[80vh] flex flex-col max-w-md">
@@ -103,7 +95,6 @@ export default function CreateLinerModal({
           </DialogTitle>
         </DialogHeader>
         <Separator className="my-4" />
-
         {error && (
           <Alert
             variant="destructive"
@@ -115,7 +106,6 @@ export default function CreateLinerModal({
             </AlertDescription>
           </Alert>
         )}
-
         <ScrollArea className="flex-1 overflow-y-auto pr-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -128,7 +118,6 @@ export default function CreateLinerModal({
                   control={form.control}
                   errors={form.formState.errors}
                 />
-
                 <FormInputField<CreateLinerFormData>
                   name="lastName"
                   label="Apellido"
@@ -137,7 +126,6 @@ export default function CreateLinerModal({
                   control={form.control}
                   errors={form.formState.errors}
                 />
-
                 <FormInputField<CreateLinerFormData>
                   name="document"
                   label="Documento"
@@ -146,7 +134,6 @@ export default function CreateLinerModal({
                   control={form.control}
                   errors={form.formState.errors}
                 />
-
                 <FormSelectField<CreateLinerFormData>
                   name="documentType"
                   label="Tipo de Documento"
@@ -156,7 +143,6 @@ export default function CreateLinerModal({
                   control={form.control}
                   errors={form.formState.errors}
                 />
-
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <label className="text-sm font-medium">Estado</label>
@@ -176,7 +162,6 @@ export default function CreateLinerModal({
             </form>
           </Form>
         </ScrollArea>
-
         <DialogFooter className="gap-3 pt-4">
           <Button
             variant="outline"

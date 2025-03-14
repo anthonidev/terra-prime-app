@@ -13,14 +13,12 @@ import {
   ChevronsRight,
   ListFilter,
 } from "lucide-react";
-
 interface PaginatedMeta {
   totalItems: number;
   itemsPerPage: number;
   totalPages: number;
   currentPage: number;
 }
-
 interface LeadsTablePaginationProps {
   meta: PaginatedMeta;
   currentPage: number;
@@ -28,7 +26,6 @@ interface LeadsTablePaginationProps {
   itemsPerPage: number;
   onItemsPerPageChange: (value: number) => void;
 }
-
 export default function LeadsTablePagination({
   meta,
   currentPage,
@@ -36,7 +33,6 @@ export default function LeadsTablePagination({
   itemsPerPage,
   onItemsPerPageChange,
 }: LeadsTablePaginationProps) {
-  // No mostrar paginación si no hay páginas o solo hay una
   if (!meta.totalPages || meta.totalPages < 2) {
     return (
       <div className="flex justify-between items-center py-3 px-4 border-t">
@@ -47,7 +43,6 @@ export default function LeadsTablePagination({
       </div>
     );
   }
-
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-3 px-4 border-t">
       <div className="flex items-center space-x-4">
@@ -67,7 +62,6 @@ export default function LeadsTablePagination({
             ))}
           </SelectContent>
         </Select>
-
         <div className="flex items-center text-sm">
           <span className="text-muted-foreground">
             Total:{" "}
@@ -78,7 +72,6 @@ export default function LeadsTablePagination({
           </span>
         </div>
       </div>
-
       <div className="flex items-center space-x-2">
         <Button
           variant="outline"
@@ -89,7 +82,6 @@ export default function LeadsTablePagination({
         >
           <ChevronsLeft className="h-4 w-4" />
         </Button>
-
         <Button
           variant="outline"
           size="sm"
@@ -100,7 +92,6 @@ export default function LeadsTablePagination({
           <ChevronLeft className="h-4 w-4 mr-1 sm:mr-0" />
           <span className="sm:hidden">Anterior</span>
         </Button>
-
         <div className="flex items-center text-sm px-2">
           <span className="text-muted-foreground">
             <span className="font-medium text-foreground">{currentPage}</span>
@@ -110,7 +101,6 @@ export default function LeadsTablePagination({
             </span>
           </span>
         </div>
-
         <Button
           variant="outline"
           size="sm"
@@ -123,7 +113,6 @@ export default function LeadsTablePagination({
           <span className="sm:hidden">Siguiente</span>
           <ChevronRight className="h-4 w-4 ml-1 sm:ml-0" />
         </Button>
-
         <Button
           variant="outline"
           size="icon"

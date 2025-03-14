@@ -7,12 +7,10 @@ import { Button } from "@/components/ui/button";
 import { useLeadsList } from "@/hooks/leads/useLeadsList";
 import { AlertCircle, Plus, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
-import { toast } from "sonner";
+import { useCallback } from "react";
 
 export default function LeadsPage() {
   const router = useRouter();
-
   const {
     data,
     loading,
@@ -31,11 +29,9 @@ export default function LeadsPage() {
     handleDateRangeChange,
     handleOrderChange,
     resetFilters,
-    refresh,
     handleRegisterDeparture,
   } = useLeadsList();
 
-  // Navegar a la página de detalle del lead
   const handleViewDetails = useCallback(
     (id: string) => {
       router.push(`/leads/detalle/${id}`);
@@ -43,12 +39,9 @@ export default function LeadsPage() {
     [router]
   );
 
-  // Navegar a la página de crear nuevo lead
   const handleCreateLead = useCallback(() => {
     router.push("/leads/nuevo");
   }, [router]);
-
-  // Registrar salida de un lead
 
   return (
     <div className="container py-8">
@@ -61,7 +54,6 @@ export default function LeadsPage() {
           Gestiona los leads y sus visitas a la inmobiliaria
         </p>
       </div>
-
       <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
         <Button
           onClick={handleCreateLead}
@@ -71,9 +63,7 @@ export default function LeadsPage() {
           Nuevo Lead
         </Button>
       </div>
-
       <div className="space-y-6">
-        {/* Filtros */}
         <LeadsTableFilters
           search={search}
           onSearchChange={handleSearchChange}
@@ -87,7 +77,6 @@ export default function LeadsPage() {
           onResetFilters={resetFilters}
         />
 
-        {/* Mensaje de error, si existe */}
         {error && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -96,7 +85,6 @@ export default function LeadsPage() {
           </Alert>
         )}
 
-        {/* Tabla de leads */}
         <LeadsTable
           data={data}
           loading={loading}

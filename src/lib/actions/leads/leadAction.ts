@@ -1,5 +1,4 @@
 "use server";
-
 import { httpClient } from "@/lib/api/http-client";
 import {
   CreateUpdateLeadDto,
@@ -10,7 +9,6 @@ import {
   PaginatedLeadsResponse,
   RegisterDepartureResponse,
 } from "@/types/leads.types";
-
 export async function findLeadByDocument(
   findDto: FindLeadByDocumentDto
 ): Promise<FindLeadResponse> {
@@ -24,7 +22,6 @@ export async function findLeadByDocument(
     throw error;
   }
 }
-
 export async function createOrUpdateLead(
   leadData: CreateUpdateLeadDto
 ): Promise<CreateUpdateLeadResponse> {
@@ -38,9 +35,25 @@ export async function createOrUpdateLead(
     throw error;
   }
 }
-
+export async function updateLead(
+  leadId: string,
+  leadData: CreateUpdateLeadDto
+): Promise<CreateUpdateLeadResponse> {
+  try {
+    return await httpClient<CreateUpdateLeadResponse>(
+      `/api/leads/update/${leadId}`,
+      {
+        method: "PATCH",
+        body: leadData,
+      }
+    );
+  } catch (error) {
+    console.error(`Error al actualizar lead ${leadId}:`, error);
+    throw error;
+  }
+}
 export async function getLeads(
-  params?: Record<string, any>
+  params?: Record<string, unknown> | undefined
 ): Promise<PaginatedLeadsResponse> {
   try {
     return await httpClient<PaginatedLeadsResponse>("/api/leads", {
@@ -51,7 +64,6 @@ export async function getLeads(
     throw error;
   }
 }
-
 export async function registerLeadDeparture(
   leadId: string
 ): Promise<RegisterDepartureResponse> {
@@ -67,7 +79,6 @@ export async function registerLeadDeparture(
     throw error;
   }
 }
-
 export async function getLeadDetail(
   leadId: string
 ): Promise<LeadDetailResponse> {

@@ -6,11 +6,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { LeadSource } from "@/types/leads.types";
 import { ChevronLeft, ChevronRight, ListFilter } from "lucide-react";
-
 interface PaginatedData {
   success: boolean;
-  data: any[];
+  data: LeadSource[];
   meta: {
     totalItems: number;
     itemsPerPage: number;
@@ -18,7 +18,6 @@ interface PaginatedData {
     currentPage: number;
   };
 }
-
 interface LeadSourcesTablePaginationProps {
   data: PaginatedData;
   currentPage: number;
@@ -26,7 +25,6 @@ interface LeadSourcesTablePaginationProps {
   itemsPerPage: number;
   onItemsPerPageChange: (value: number) => void;
 }
-
 export default function LeadSourcesTablePagination({
   data,
   currentPage,

@@ -65,7 +65,6 @@ export default function ProjectLotsTable({
     });
     return formatter.format(amount);
   };
-
   const getStatusBgColor = (status: string) => {
     switch (status) {
       case "Activo":

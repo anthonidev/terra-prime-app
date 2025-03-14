@@ -1,6 +1,5 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ChevronLeft } from "lucide-react";
@@ -10,16 +9,12 @@ import { useLeadManagement } from "@/hooks/leads/UseLeadManagementReturn";
 import LeadInOfficeMessage from "@/components/leads/nuevo/LeadInOfficeMessage";
 import LeadSearchForm from "@/components/leads/nuevo/LeadSearchForm";
 import LeadRegistrationForm from "@/components/leads/nuevo/LeadRegistrationForm";
-
 export default function NewLeadPage() {
   const {
     lead,
-    liners,
     leadSources,
-    ubigeos,
     isSearching,
     isSubmitting,
-    isLoadingData,
     searchError,
     submitError,
     isLeadFound,
@@ -32,26 +27,17 @@ export default function NewLeadPage() {
     getProvinces,
     getDistricts,
   } = useLeadManagement();
-
   const [activeTab, setActiveTab] = useState<string>("search");
   const [viewingDetails, setViewingDetails] = useState<boolean>(false);
-
-  // Manejar la búsqueda completada
   const handleSearchComplete = () => {
-    // Siempre vamos al formulario de registro después de la búsqueda
-    // independientemente del resultado
     if (!isLeadInOffice) {
       setActiveTab("register");
     }
   };
-
-  // Manejar la visualización de detalles para leads en oficina
   const handleViewDetails = () => {
     setViewingDetails(true);
     setActiveTab("register");
   };
-
-  // Manejar cambio de tab
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     if (value === "search") {
@@ -59,7 +45,6 @@ export default function NewLeadPage() {
       setViewingDetails(false);
     }
   };
-
   return (
     <div className="container py-8">
       <div className="flex items-center justify-between mb-6">
@@ -80,9 +65,7 @@ export default function NewLeadPage() {
           </p>
         </div>
       </div>
-
       <Separator className="mb-6" />
-
       {isLeadInOffice && lead && !viewingDetails ? (
         <LeadInOfficeMessage lead={lead} onContinue={handleViewDetails} />
       ) : (
@@ -97,7 +80,6 @@ export default function NewLeadPage() {
               {lead ? "Actualizar Lead" : "Registrar Lead"}
             </TabsTrigger>
           </TabsList>
-
           <TabsContent value="search" className="space-y-4">
             <LeadSearchForm
               onSearch={async (data) => {
@@ -108,7 +90,6 @@ export default function NewLeadPage() {
               searchError={searchError}
               isLeadFound={isLeadFound}
             />
-
             {!isSearching && !searchError && (
               <div className="mt-8 flex justify-center">
                 <Button
@@ -120,7 +101,6 @@ export default function NewLeadPage() {
               </div>
             )}
           </TabsContent>
-
           <TabsContent value="register">
             <LeadRegistrationForm
               lead={lead}

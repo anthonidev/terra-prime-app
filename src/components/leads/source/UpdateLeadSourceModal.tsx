@@ -19,7 +19,6 @@ import * as z from "zod";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import FormInputField from "@/components/common/form/FormInputField";
-
 interface LeadSource {
   id: number;
   name: string;
@@ -28,7 +27,6 @@ interface LeadSource {
   createdAt: string;
   updatedAt: string;
 }
-
 interface UpdateLeadSourceModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -36,20 +34,16 @@ interface UpdateLeadSourceModalProps {
   onUpdate: (
     id: number,
     data: { name?: string; isActive?: boolean }
-  ) => Promise<any>;
+  ) => Promise<LeadSource>;
 }
-
 const updateLeadSourceSchema = z.object({
   name: z
     .string()
     .min(2, "El nombre debe tener al menos 2 caracteres")
     .max(50, "El nombre no puede tener más de 50 caracteres"),
-
   isActive: z.boolean(),
 });
-
 type UpdateLeadSourceFormData = z.infer<typeof updateLeadSourceSchema>;
-
 export default function UpdateLeadSourceModal({
   isOpen,
   onClose,
@@ -57,7 +51,6 @@ export default function UpdateLeadSourceModal({
   onUpdate,
 }: UpdateLeadSourceModalProps) {
   const [error, setError] = useState<string | null>(null);
-
   const form = useForm<UpdateLeadSourceFormData>({
     resolver: zodResolver(updateLeadSourceSchema),
     defaultValues: {
@@ -65,8 +58,6 @@ export default function UpdateLeadSourceModal({
       isActive: leadSource.isActive,
     },
   });
-
-  // Actualizar el formulario cuando cambie la fuente de lead seleccionada
   useEffect(() => {
     if (isOpen && leadSource) {
       form.reset({
@@ -75,7 +66,6 @@ export default function UpdateLeadSourceModal({
       });
     }
   }, [isOpen, leadSource, form]);
-
   const onSubmit = async (data: UpdateLeadSourceFormData) => {
     try {
       setError(null);
@@ -88,11 +78,9 @@ export default function UpdateLeadSourceModal({
       );
     }
   };
-
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "PPP", { locale: es });
   };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-h-[80vh] flex flex-col max-w-md">
@@ -103,7 +91,6 @@ export default function UpdateLeadSourceModal({
           </DialogTitle>
         </DialogHeader>
         <Separator className="my-4" />
-
         {error && (
           <Alert
             variant="destructive"
@@ -115,7 +102,6 @@ export default function UpdateLeadSourceModal({
             </AlertDescription>
           </Alert>
         )}
-
         <div className="bg-muted/20 p-3 rounded-md text-sm">
           <div className="flex items-center text-muted-foreground">
             <Calendar className="h-4 w-4 mr-2" />
@@ -124,7 +110,6 @@ export default function UpdateLeadSourceModal({
             </span>
           </div>
         </div>
-
         <ScrollArea className="flex-1 overflow-y-auto pr-4 mt-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -137,7 +122,6 @@ export default function UpdateLeadSourceModal({
                   control={form.control}
                   errors={form.formState.errors}
                 />
-
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <label className="text-sm font-medium">Estado</label>
@@ -157,7 +141,6 @@ export default function UpdateLeadSourceModal({
             </form>
           </Form>
         </ScrollArea>
-
         <DialogFooter className="gap-3 pt-4">
           <Button
             variant="outline"

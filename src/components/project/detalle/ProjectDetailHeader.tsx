@@ -25,17 +25,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 interface ProjectDetailHeaderProps {
   project: ProjectDetailDto | null;
   onEditClick: () => void;
 }
-
 export default function ProjectDetailHeader({
   project,
   onEditClick,
 }: ProjectDetailHeaderProps) {
-  // Define hooks before any conditional returns
   const formatDate = useCallback((date: Date) => {
     return new Intl.DateTimeFormat("es-ES", {
       day: "2-digit",
@@ -43,7 +40,6 @@ export default function ProjectDetailHeader({
       year: "numeric",
     }).format(date);
   }, []);
-
   const { totalBlocks, totalLots, activeLots, progressPercentage } =
     useMemo(() => {
       if (!project) {
@@ -54,7 +50,6 @@ export default function ProjectDetailHeader({
           progressPercentage: 0,
         };
       }
-
       const totalBlocks = project.stages.reduce(
         (sum, stage) => sum + stage.blocks.length,
         0,
@@ -81,13 +76,10 @@ export default function ProjectDetailHeader({
         totalLots > 0 ? (activeLots / totalLots) * 100 : 0;
       return { totalBlocks, totalLots, activeLots, progressPercentage };
     }, [project]);
-
-  // Now we can safely return null if there's no project
   if (!project) return null;
-
   return (
     <div>
-      {/* Navigation */}
+      {}
       <motion.div
         className="flex items-center justify-between mb-3"
         initial={{ opacity: 0, y: -5 }}
@@ -144,20 +136,20 @@ export default function ProjectDetailHeader({
           </DropdownMenu>
         </div>
       </motion.div>
-      {/* Card Container */}
+      {}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
         <Card className="overflow-hidden">
-          {/* Status Bar */}
+          {}
           <div
             className={`h-1 w-full ${project.isActive ? "bg-primary" : "bg-muted-foreground"}`}
           />
           <div className="p-4">
             <div className="flex gap-3 items-center">
-              {/* Project Logo/Icon */}
+              {}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -184,7 +176,7 @@ export default function ProjectDetailHeader({
                   />
                 )}
               </motion.div>
-              {/* Project Info */}
+              {}
               <div className="flex-1">
                 <motion.div
                   className="flex items-center gap-2 mb-0.5 flex-wrap"
@@ -207,7 +199,7 @@ export default function ProjectDetailHeader({
                     {project.currency === "PEN" ? "Soles (S/)" : "Dólares ($)"}
                   </Badge>
                 </motion.div>
-                {/* Progress Bar */}
+                {}
                 <motion.div
                   className="mt-1.5"
                   initial={{ opacity: 0 }}
@@ -240,7 +232,7 @@ export default function ProjectDetailHeader({
                 </motion.div>
               </div>
             </div>
-            {/* Footer Stats */}
+            {}
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/60">
               <motion.div
                 className="flex items-center text-xs text-muted-foreground"

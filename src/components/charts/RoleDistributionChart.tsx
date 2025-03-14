@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
 import { TrendingUp, Users, RefreshCw } from "lucide-react";
@@ -20,21 +19,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { RoleCount } from "@/types/dashboard.types";
 import { getRoleCounts } from "@/lib/actions/dashboard/chartActions";
-
 export function RoleDistributionChart() {
   const [roleData, setRoleData] = useState<RoleCount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const fetchRoleData = async () => {
     try {
       setIsLoading(true);
       setError(null);
       const data = await getRoleCounts();
-      // Agregar colores a los datos
-      const dataWithColors = data.map(role => ({
+      const dataWithColors = data.map((role) => ({
         ...role,
-        fill: getRoleColor(role.code)
+        fill: getRoleColor(role.code),
       }));
       setRoleData(dataWithColors);
     } catch (err) {
@@ -44,41 +40,30 @@ export function RoleDistributionChart() {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     fetchRoleData();
-  }, []);
-
-  // Función para obtener colores basados en el rol
+  }, [fetchRoleData]);
   const getRoleColor = (code: string) => {
-    const colorMap: {[key: string]: string} = {
-      'VEN': '#a855f7', // Morado
-      'REC': '#3b82f6', // Azul
-      'COB': '#22c55e', // Verde
-      'GVE': '#f59e0b', // Ámbar
-      'FIN': '#ec4899', // Rosa
-      'SYS': '#06b6d4', // Cian
-      'SCO': '#84cc16', // Lima
-      'ADM': '#d946ef'  // Fucsia
+    const colorMap: { [key: string]: string } = {
+      VEN: "#a855f7",
+      REC: "#3b82f6",
+      COB: "#22c55e",
+      GVE: "#f59e0b",
+      FIN: "#ec4899",
+      SYS: "#06b6d4",
+      SCO: "#84cc16",
+      ADM: "#d946ef",
     };
-    
-    return colorMap[code] || '#8b5cf6'; // Morado por defecto
+    return colorMap[code] || "#8b5cf6";
   };
-
-  // Calculamos el total de usuarios
   const totalUsers = roleData.reduce((sum, role) => sum + role.count, 0);
-  
-  // Ordenamos los datos para el gráfico (de mayor a menor)
   const sortedData = [...roleData].sort((a, b) => b.count - a.count);
-
-  // Configuración del gráfico
   const chartConfig = {
     count: {
       label: "Usuarios",
       color: "hsl(var(--chart-1))",
-    }
+    },
   } satisfies ChartConfig;
-
   return (
     <Card className="flex flex-col h-full">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -88,18 +73,18 @@ export function RoleDistributionChart() {
             Distribución de Roles
           </CardTitle>
           <CardDescription>
-            {isLoading 
-              ? "Cargando datos..." 
-              : error 
-                ? "Error al cargar datos" 
+            {isLoading
+              ? "Cargando datos..."
+              : error
+                ? "Error al cargar datos"
                 : `${totalUsers} usuarios registrados`}
           </CardDescription>
         </div>
         {!isLoading && (
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={fetchRoleData} 
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={fetchRoleData}
             className="h-8 w-8"
           >
             <RefreshCw className="h-4 w-4" />
@@ -130,7 +115,7 @@ export function RoleDistributionChart() {
                 }}
                 maxBarSize={24}
               >
-                <XAxis type="number" hide domain={[0, 'dataMax']} />
+                <XAxis type="number" hide domain={[0, "dataMax"]} />
                 <YAxis
                   dataKey="name"
                   type="category"
@@ -141,21 +126,17 @@ export function RoleDistributionChart() {
                   tick={{ fontSize: 12 }}
                 />
                 <ChartTooltip
-                  cursor={{ fill: 'rgba(200, 200, 200, 0.2)' }}
+                  cursor={{ fill: "rgba(200, 200, 200, 0.2)" }}
                   content={
-                    <ChartTooltipContent 
-                      formatter={(value) => `${value} usuarios`} 
+                    <ChartTooltipContent
+                      formatter={(value) => `${value} usuarios`}
                     />
                   }
                 />
-                <Bar 
-                  dataKey="count" 
-                  radius={4}
-                  barSize={22}
-                >
+                <Bar dataKey="count" radius={4} barSize={22}>
                   {sortedData.map((entry) => (
-                    <Bar 
-                      key={`bar-${entry.code}`} 
+                    <Bar
+                      key={`bar-${entry.code}`}
                       dataKey="count"
                       fill={entry.fill}
                       name={entry.name}

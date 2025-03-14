@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -13,7 +12,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -37,14 +35,12 @@ import {
   Mail,
   User,
   Phone,
-  Upload,
   Save,
   Calendar,
 } from "lucide-react";
 import FormSelectField from "@/components/common/form/FormSelectField";
 import FormInputField from "@/components/common/form/FormInputField";
 import { Textarea } from "@/components/ui/textarea";
-// Definir esquema de validación para el formulario
 const leadFormSchema = z.object({
   firstName: z
     .string()
@@ -106,9 +102,7 @@ const leadFormSchema = z.object({
     .optional()
     .or(z.literal("")),
 });
-
 type LeadFormValues = z.infer<typeof leadFormSchema>;
-
 interface LeadRegistrationFormProps {
   lead: Lead | null;
   searchedDocument: FindLeadByDocumentDto | null;
@@ -123,7 +117,6 @@ interface LeadRegistrationFormProps {
   onCancelRegistration?: () => void;
   onFormChange?: (isDirty: boolean) => void;
 }
-
 export default function LeadRegistrationForm({
   lead,
   searchedDocument,
@@ -136,13 +129,10 @@ export default function LeadRegistrationForm({
   getDistricts,
   isReadOnly = false,
   onCancelRegistration,
-  onFormChange,
 }: LeadRegistrationFormProps) {
   const [departments, setDepartments] = useState<Ubigeo[]>([]);
   const [provinces, setProvinces] = useState<Ubigeo[]>([]);
   const [districts, setDistricts] = useState<Ubigeo[]>([]);
-
-  // Inicializar el formulario con los datos del lead o los datos de búsqueda
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
     defaultValues: {
@@ -164,8 +154,6 @@ export default function LeadRegistrationForm({
       observations: "",
     },
   });
-
-  // Actualizar el formulario cuando cambia el lead o los datos de búsqueda
   useEffect(() => {
     if (lead) {
       form.reset({
@@ -188,13 +176,9 @@ export default function LeadRegistrationForm({
       form.setValue("documentType", searchedDocument.documentType);
     }
   }, [lead, searchedDocument, form]);
-
-  // Cargar departamentos al montar el componente
   useEffect(() => {
     setDepartments(getDepartments());
   }, [getDepartments]);
-
-  // Actualizar provincias cuando cambia el departamento
   const departmentId = form.watch("departmentId");
   useEffect(() => {
     if (departmentId) {
@@ -205,8 +189,6 @@ export default function LeadRegistrationForm({
       setProvinces([]);
     }
   }, [departmentId, getProvinces, form]);
-
-  // Actualizar distritos cuando cambia la provincia
   const provinceId = form.watch("provinceId");
   useEffect(() => {
     if (provinceId) {
@@ -216,9 +198,7 @@ export default function LeadRegistrationForm({
       setDistricts([]);
     }
   }, [provinceId, getDistricts, form]);
-
   const handleSubmit = async (data: LeadFormValues) => {
-    // Convertir los datos del formulario al formato esperado por la API
     const leadData: CreateUpdateLeadDto = {
       firstName: data.firstName,
       lastName: data.lastName,
@@ -233,36 +213,29 @@ export default function LeadRegistrationForm({
       observations: data.observations || undefined,
       isNewLead: !lead,
     };
-
     await saveLead(leadData);
   };
-
   const documentTypeOptions = [
     { value: DocumentType.DNI, label: "DNI" },
     { value: DocumentType.CE, label: "CE" },
     { value: DocumentType.RUC, label: "RUC" },
   ];
-
   const leadSourceOptions = leadSources.map((source) => ({
     value: String(source.id),
     label: source.name,
   }));
-
   const departmentOptions = departments.map((dept) => ({
     value: String(dept.id),
     label: dept.name,
   }));
-
   const provinceOptions = provinces.map((prov) => ({
     value: String(prov.id),
     label: prov.name,
   }));
-
   const districtOptions = districts.map((dist) => ({
     value: String(dist.id),
     label: dist.name,
   }));
-
   return (
     <Card>
       <CardHeader>
@@ -287,12 +260,10 @@ export default function LeadRegistrationForm({
                 </AlertDescription>
               </Alert>
             )}
-
             <div className="space-y-1">
               <h3 className="text-md font-medium">Información Personal</h3>
               <Separator />
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormInputField<LeadFormValues>
                 name="firstName"
@@ -303,7 +274,6 @@ export default function LeadRegistrationForm({
                 errors={form.formState.errors}
                 disabled={isReadOnly}
               />
-
               <FormInputField<LeadFormValues>
                 name="lastName"
                 label="Apellido"
@@ -313,7 +283,6 @@ export default function LeadRegistrationForm({
                 errors={form.formState.errors}
                 disabled={isReadOnly}
               />
-
               <FormSelectField<LeadFormValues>
                 name="documentType"
                 label="Tipo de Documento"
@@ -324,7 +293,6 @@ export default function LeadRegistrationForm({
                 errors={form.formState.errors}
                 disabled={isReadOnly || !!lead}
               />
-
               <FormInputField<LeadFormValues>
                 name="document"
                 label="Número de Documento"
@@ -334,7 +302,6 @@ export default function LeadRegistrationForm({
                 errors={form.formState.errors}
                 disabled={isReadOnly || !!lead}
               />
-
               <FormInputField<LeadFormValues>
                 name="email"
                 label="Correo Electrónico"
@@ -345,7 +312,6 @@ export default function LeadRegistrationForm({
                 errors={form.formState.errors}
                 disabled={isReadOnly}
               />
-
               <FormInputField<LeadFormValues>
                 name="age"
                 label="Edad"
@@ -356,7 +322,6 @@ export default function LeadRegistrationForm({
                 errors={form.formState.errors}
                 disabled={isReadOnly}
               />
-
               <FormInputField<LeadFormValues>
                 name="phone"
                 label="Teléfono"
@@ -366,7 +331,6 @@ export default function LeadRegistrationForm({
                 errors={form.formState.errors}
                 disabled={isReadOnly}
               />
-
               <FormInputField<LeadFormValues>
                 name="phone2"
                 label="Teléfono Alternativo"
@@ -377,12 +341,10 @@ export default function LeadRegistrationForm({
                 disabled={isReadOnly}
               />
             </div>
-
             <div className="space-y-1">
               <h3 className="text-md font-medium">Información Adicional</h3>
               <Separator />
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormSelectField<LeadFormValues>
                 name="sourceId"
@@ -394,7 +356,6 @@ export default function LeadRegistrationForm({
                 errors={form.formState.errors}
                 disabled={isReadOnly}
               />
-
               <div className="grid grid-cols-1 gap-4">
                 <FormSelectField<LeadFormValues>
                   name="departmentId"
@@ -406,7 +367,6 @@ export default function LeadRegistrationForm({
                   errors={form.formState.errors}
                   disabled={isReadOnly}
                 />
-
                 <FormSelectField<LeadFormValues>
                   name="provinceId"
                   label="Provincia"
@@ -417,7 +377,6 @@ export default function LeadRegistrationForm({
                   errors={form.formState.errors}
                   disabled={isReadOnly || !departmentId}
                 />
-
                 <FormSelectField<LeadFormValues>
                   name="ubigeoId"
                   label="Distrito"
@@ -430,7 +389,6 @@ export default function LeadRegistrationForm({
                 />
               </div>
             </div>
-
             <FormField
               control={form.control}
               name="observations"

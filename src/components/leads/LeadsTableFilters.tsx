@@ -26,7 +26,6 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-
 interface LeadsTableFiltersProps {
   search: string;
   onSearchChange: (value: string) => void;
@@ -39,7 +38,6 @@ interface LeadsTableFiltersProps {
   onOrderChange: (value: "ASC" | "DESC") => void;
   onResetFilters: () => void;
 }
-
 export default function LeadsTableFilters({
   search,
   onSearchChange,
@@ -59,12 +57,8 @@ export default function LeadsTableFilters({
     from: startDate ? new Date(startDate) : undefined,
     to: endDate ? new Date(endDate) : undefined,
   });
-
-  // Determinar si hay filtros activos
   const hasActiveFilters =
     search || isInOffice !== undefined || dateRange.from || dateRange.to;
-
-  // Manejador para cambios en el calendario
   const handleCalendarChange = (range: { from?: Date; to?: Date }) => {
     setDateRange({
       from: range.from ?? undefined,
@@ -72,7 +66,6 @@ export default function LeadsTableFilters({
     });
     onDateRangeChange(range.from?.toISOString(), range.to?.toISOString());
   };
-
   return (
     <div className="bg-card shadow-sm rounded-md border p-4">
       <div className="flex items-center justify-between mb-4">
@@ -97,9 +90,7 @@ export default function LeadsTableFilters({
           </Button>
         )}
       </div>
-
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        {/* Búsqueda */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -109,8 +100,6 @@ export default function LeadsTableFilters({
             className="pl-9 bg-background border-input"
           />
         </div>
-
-        {/* Filtro de en oficina */}
         <Select
           value={isInOffice === undefined ? "all" : isInOffice.toString()}
           onValueChange={(value) => {
@@ -129,8 +118,6 @@ export default function LeadsTableFilters({
             <SelectItem value="false">No en oficina</SelectItem>
           </SelectContent>
         </Select>
-
-        {/* Selector de fechas */}
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -183,8 +170,6 @@ export default function LeadsTableFilters({
             </div>
           </PopoverContent>
         </Popover>
-
-        {/* Orden */}
         <Select
           value={order}
           onValueChange={(value: "ASC" | "DESC") => onOrderChange(value)}

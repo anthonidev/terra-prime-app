@@ -8,8 +8,11 @@ const extensions = [".js", ".jsx", ".ts", ".tsx"];
 const REGEX_PATTERNS = [
   // Comentarios de bloque /* ... */
   /\/\*[\s\S]*?\*\//g,
-  // Comentarios de una línea //
-  /\/\/.*$/gm,
+
+  // Comentarios de una línea // (pero no dentro de strings o URLs)
+  // Busca // que no estén precedidos por : o dentro de comillas
+  /(?<![:'"])\/\/.*$/gm,
+
   // Comentarios JSX {/* ... */}
   /\{\/\*[\s\S]*?\*\/\}/g,
 ];

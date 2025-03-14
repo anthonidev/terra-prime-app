@@ -1,6 +1,4 @@
 "use client";
-
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -25,7 +23,6 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { DocumentType, FindLeadByDocumentDto } from "@/types/leads.types";
 import { AlertCircle, Search, User } from "lucide-react";
-
 const searchSchema = z.object({
   documentType: z.nativeEnum(DocumentType, {
     required_error: "El tipo de documento es requerido",
@@ -35,19 +32,16 @@ const searchSchema = z.object({
     .min(1, "El documento es requerido")
     .max(20, "El documento no puede tener más de 20 caracteres"),
 });
-
 interface LeadSearchFormProps {
   onSearch: (data: FindLeadByDocumentDto) => Promise<void>;
   isSearching: boolean;
   searchError: string | null;
   isLeadFound: boolean;
 }
-
 export default function LeadSearchForm({
   onSearch,
   isSearching,
   searchError,
-  isLeadFound,
 }: LeadSearchFormProps) {
   const form = useForm<z.infer<typeof searchSchema>>({
     resolver: zodResolver(searchSchema),
@@ -56,17 +50,14 @@ export default function LeadSearchForm({
       document: "",
     },
   });
-
   const handleSubmit = async (data: z.infer<typeof searchSchema>) => {
     await onSearch(data);
   };
-
   const documentTypeOptions = [
     { value: DocumentType.DNI, label: "DNI" },
     { value: DocumentType.CE, label: "CE" },
     { value: DocumentType.RUC, label: "RUC" },
   ];
-
   return (
     <Card>
       <CardHeader>
@@ -93,7 +84,6 @@ export default function LeadSearchForm({
                 </AlertDescription>
               </Alert>
             )}
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormSelectField<z.infer<typeof searchSchema>>
                 name="documentType"
@@ -104,7 +94,6 @@ export default function LeadSearchForm({
                 control={form.control}
                 errors={form.formState.errors}
               />
-
               <FormField
                 control={form.control}
                 name="document"
@@ -126,7 +115,6 @@ export default function LeadSearchForm({
                 )}
               />
             </div>
-
             <div className="flex justify-end">
               <Button
                 type="submit"

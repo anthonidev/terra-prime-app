@@ -27,7 +27,6 @@ import { es } from "date-fns/locale";
 import FormInputField from "@/components/common/form/FormInputField";
 import FormSelectField from "@/components/common/form/FormSelectField";
 import { DocumentType } from "@/types/leads.types";
-
 interface Liner {
   id: string;
   firstName: string;
@@ -39,7 +38,6 @@ interface Liner {
   updatedAt: string;
   fullName: string;
 }
-
 interface UpdateLinerModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -53,9 +51,8 @@ interface UpdateLinerModalProps {
       documentType?: DocumentType;
       isActive?: boolean;
     }
-  ) => Promise<any>;
+  ) => Promise<Liner>;
 }
-
 const updateLinerSchema = z.object({
   firstName: z
     .string()
@@ -80,9 +77,7 @@ const updateLinerSchema = z.object({
   }),
   isActive: z.boolean(),
 });
-
 type UpdateLinerFormData = z.infer<typeof updateLinerSchema>;
-
 export default function UpdateLinerModal({
   isOpen,
   onClose,
@@ -90,7 +85,6 @@ export default function UpdateLinerModal({
   onUpdate,
 }: UpdateLinerModalProps) {
   const [error, setError] = useState<string | null>(null);
-
   const form = useForm<UpdateLinerFormData>({
     resolver: zodResolver(updateLinerSchema),
     defaultValues: {
@@ -101,8 +95,6 @@ export default function UpdateLinerModal({
       isActive: liner.isActive,
     },
   });
-
-  // Actualizar el formulario cuando cambie el liner seleccionado
   useEffect(() => {
     if (isOpen && liner) {
       form.reset({
@@ -114,7 +106,6 @@ export default function UpdateLinerModal({
       });
     }
   }, [isOpen, liner, form]);
-
   const onSubmit = async (data: UpdateLinerFormData) => {
     try {
       setError(null);
@@ -125,17 +116,14 @@ export default function UpdateLinerModal({
       );
     }
   };
-
   const documentTypeOptions = [
     { value: DocumentType.DNI, label: "DNI" },
     { value: DocumentType.CE, label: "CE" },
     { value: DocumentType.RUC, label: "RUC" },
   ];
-
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "PPP", { locale: es });
   };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-h-[80vh] flex flex-col max-w-md">
@@ -146,7 +134,6 @@ export default function UpdateLinerModal({
           </DialogTitle>
         </DialogHeader>
         <Separator className="my-4" />
-
         {error && (
           <Alert
             variant="destructive"
@@ -158,7 +145,6 @@ export default function UpdateLinerModal({
             </AlertDescription>
           </Alert>
         )}
-
         <div className="bg-muted/20 p-3 rounded-md text-sm">
           <div className="flex items-center text-muted-foreground">
             <Calendar className="h-4 w-4 mr-2" />
@@ -168,7 +154,6 @@ export default function UpdateLinerModal({
             </span>
           </div>
         </div>
-
         <ScrollArea className="flex-1 overflow-y-auto pr-4 mt-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -181,7 +166,6 @@ export default function UpdateLinerModal({
                   control={form.control}
                   errors={form.formState.errors}
                 />
-
                 <FormInputField<UpdateLinerFormData>
                   name="lastName"
                   label="Apellido"
@@ -190,7 +174,6 @@ export default function UpdateLinerModal({
                   control={form.control}
                   errors={form.formState.errors}
                 />
-
                 <FormInputField<UpdateLinerFormData>
                   name="document"
                   label="Documento"
@@ -199,7 +182,6 @@ export default function UpdateLinerModal({
                   control={form.control}
                   errors={form.formState.errors}
                 />
-
                 <FormSelectField<UpdateLinerFormData>
                   name="documentType"
                   label="Tipo de Documento"
@@ -209,7 +191,6 @@ export default function UpdateLinerModal({
                   control={form.control}
                   errors={form.formState.errors}
                 />
-
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <label className="text-sm font-medium">Estado</label>
@@ -229,7 +210,6 @@ export default function UpdateLinerModal({
             </form>
           </Form>
         </ScrollArea>
-
         <DialogFooter className="gap-3 pt-4">
           <Button
             variant="outline"
