@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 
 type Props = {
@@ -5,20 +7,28 @@ type Props = {
 };
 
 type ISidebarContext = {
-  bSidebarOpen: boolean;
-  setSidebarOpen: (state: boolean) => void;
+  isOpen: boolean;
+  isCollapsed: boolean;
+  toggleSidebar: () => void;
+  toggleCollapse: () => void;
 };
 
 const SidebarContext = React.createContext<ISidebarContext>({
-  bSidebarOpen: true,
-  setSidebarOpen: () => {}
+  isOpen: false,
+  isCollapsed: false,
+  toggleSidebar: () => {},
+  toggleCollapse: () => {}
 });
 
 const SidebarProvider = ({ children }: Props) => {
-  const [bSidebarOpen, setSidebarOpen] = React.useState<boolean>(true);
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [isCollapsed, setIsCollapsed] = React.useState<boolean>(false);
+
+  const toggleSidebar = () => setIsOpen(!isOpen);
+  const toggleCollapse = () => setIsCollapsed(!isCollapsed);
 
   return (
-    <SidebarContext.Provider value={{ bSidebarOpen, setSidebarOpen }}>
+    <SidebarContext.Provider value={{ isOpen, isCollapsed, toggleSidebar, toggleCollapse }}>
       {children}
     </SidebarContext.Provider>
   );

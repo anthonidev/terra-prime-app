@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion';
 import ThemeSwitch from '@components/common/ThemeSwich';
 import { Separator } from '@/components/ui/separator';
+import { Menu } from 'lucide-react';
+import useSidebar from '@/hooks/sidebar/useSidebar';
 
 const Navbar = () => {
   const formatDate = () => {
@@ -14,12 +16,22 @@ const Navbar = () => {
     }).format(new Date());
   };
 
+  const { toggleSidebar } = useSidebar();
+
   return (
     <motion.nav
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       className="border-border bg-layout-topbar text-layout-topbar-foreground flex w-full items-center justify-between border-b p-3 px-6 shadow-sm lg:relative"
     >
+      <motion.button
+        onClick={toggleSidebar}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="sticky top-2.5 left-4 z-40 p-2 lg:hidden"
+      >
+        <Menu size={20} />
+      </motion.button>
       <div className="invisible items-center space-x-4 lg:visible">
         <motion.div
           initial={{ opacity: 0 }}
