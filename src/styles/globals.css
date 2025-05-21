@@ -2,6 +2,9 @@
 @plugin "tailwindcss-animate";
 @custom-variant dark (&:is(.dark *));
 :root {
+  /* Fonts */
+  font-family: "Figtree", sans-serif;
+
   /* Base */
   --background: hsl(210, 20%, 98%);
   --foreground: hsl(224, 25%, 25%);
@@ -310,12 +313,17 @@
   --color-table-empty-background: var(--table-empty-background);
   --color-table-empty-foreground: var(--table-empty-foreground);
 }
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
   }
 }
 
