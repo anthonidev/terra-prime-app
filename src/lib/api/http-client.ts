@@ -1,10 +1,8 @@
-"use server";
+import { authOptions } from '@/lib/auth';
+import { getServerSession } from 'next-auth';
+import { createApiUrl } from '.';
 
-import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth";
-import { createApiUrl } from ".";
-
-type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 interface FetchOptions {
   method?: HttpMethod;
@@ -18,16 +16,16 @@ interface FetchOptions {
 export async function httpClient<T>(
   endpoint: string,
   {
-    method = "GET",
+    method = 'GET',
     body,
     params,
-    cache = "no-store",
-    contentType = "application/json",
-    skipJsonStringify = false,
+    cache = 'no-store',
+    contentType = 'application/json',
+    skipJsonStringify = false
   }: FetchOptions = {}
 ): Promise<T> {
+  // Intentar obtener la sesión, pero continuar incluso si no hay sesión
   const session = await getServerSession(authOptions);
-  if (!session?.accessToken) throw new Error("No autorizado");
 
   const queryParams = params
     ? new URLSearchParams(
@@ -39,12 +37,17 @@ export async function httpClient<T>(
 
   const url = createApiUrl(endpoint, queryParams);
 
-  const headers: HeadersInit = {
-    Authorization: `Bearer ${session.accessToken}`,
-  };
+  // Inicializar headers
+  const headers: HeadersInit = {};
 
+  // Agregar token de autorización solo si existe
+  if (session?.accessToken) {
+    headers['Authorization'] = `Bearer ${session.accessToken}`;
+  }
+
+  // Establecer Content-Type si no es FormData
   if (!(body instanceof FormData)) {
-    headers["Content-Type"] = contentType;
+    headers['Content-Type'] = contentType;
   }
 
   let requestBody: BodyInit | undefined;
@@ -60,30 +63,18 @@ export async function httpClient<T>(
     method,
     headers,
     body: requestBody,
-    cache,
+    cache
   };
 
   try {
     const response = await fetch(url, options);
-    
-    // Return structured error responses instead of throwing
     if (!response.ok) {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message: errorData.message || response.statusText,
-        status: response.status,
-      } as unknown as T;
+      const errorText = await response.json();
+      throw new Error(`${errorText.message || response.statusText}`);
     }
-    
-    return await response.json();
+    return response.json();
   } catch (error) {
     console.error(`Error en ${method} ${endpoint}:`, error);
-    // Return a structured error instead of throwing
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : "Error desconocido",
-      status: 500,
-    } as unknown as T;
+    throw error;
   }
 }

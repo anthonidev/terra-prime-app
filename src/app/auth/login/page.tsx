@@ -82,14 +82,14 @@ export default function LoginPage() {
             />
           </aside>
           <div className="flex flex-1 flex-shrink-0 flex-col items-center pt-4">
-            <div className="z-10 flex w-[330px] flex-1 flex-col justify-center sm:w-[384px]">
+            <div className="flex w-[330px] flex-1 flex-col justify-center sm:w-[384px]">
               <div className="flex flex-col gap-5">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <Card className="z-10 border-none bg-transparent shadow-none">
+                  <Card className="border-none bg-transparent shadow-none">
                     <CardHeader className="space-y-1 pb-6">
                       <CardTitle className="text-center text-2xl font-bold">
                         Iniciar Sesión
