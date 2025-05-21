@@ -1,107 +1,56 @@
-"use client";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { motion } from "framer-motion";
-import { Bell, Calendar } from "lucide-react";
-import { useState } from "react";
-import ThemeSwitch from "../common/ThemeSwich";
-import { Separator } from "@/components/ui/separator";
+'use client';
+
+import { motion } from 'framer-motion';
+import ThemeSwitch from '@components/common/ThemeSwich';
+import { Separator } from '@/components/ui/separator';
+
 const Navbar = () => {
-  const [notifications] = useState([
-    { id: 1, text: "Nueva propiedad agregada", time: "Hace 5 min" },
-    { id: 2, text: "Actualización de proyecto", time: "Hace 30 min" },
-  ]);
   const formatDate = () => {
-    return new Intl.DateTimeFormat("es-ES", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    return new Intl.DateTimeFormat('es-ES', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     }).format(new Date());
   };
+
   return (
     <motion.nav
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className=" border-b border-border bg-layout-topbar text-layout-topbar-foreground px-6 flex items-center justify-between shadow-sm p-3"
+      className="border-border bg-layout-topbar text-layout-topbar-foreground flex w-full items-center justify-between border-b p-3 px-6 shadow-sm lg:relative"
     >
-      {}
-      <div className="flex items-center space-x-4">
+      <div className="invisible items-center space-x-4 lg:visible">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-sm font-medium capitalize text-muted-foreground flex items-center gap-2 bg-primary/10 px-2 py-1 rounded-lg"
+          className="text-muted-foreground flex items-center gap-2 py-1 text-sm font-medium capitalize"
         >
-          <Calendar size={20} className="text-muted-foreground" />
+          <span>
+            <svg width="1.5em" height="1.5em" viewBox="0 0 48 48">
+              <path fill="#CFD8DC" d="M5 38V14h38v24c0 2.2-1.8 4-4 4H9c-2.2 0-4-1.8-4-4" />
+              <path fill="#F44336" d="M43 10v6H5v-6c0-2.2 1.8-4 4-4h30c2.2 0 4 1.8 4 4" />
+              <g fill="#B71C1C">
+                <circle cx="33" cy="10" r="3" />
+                <circle cx="15" cy="10" r="3" />
+              </g>
+              <path
+                fill="#B0BEC5"
+                d="M33 3c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2s2-.9 2-2V5c0-1.1-.9-2-2-2M15 3c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2s2-.9 2-2V5c0-1.1-.9-2-2-2"
+              />
+              <path
+                fill="#90A4AE"
+                d="M13 20h4v4h-4zm6 0h4v4h-4zm6 0h4v4h-4zm6 0h4v4h-4zm-18 6h4v4h-4zm6 0h4v4h-4zm6 0h4v4h-4zm6 0h4v4h-4zm-18 6h4v4h-4zm6 0h4v4h-4zm6 0h4v4h-4zm6 0h4v4h-4z"
+              />
+            </svg>
+          </span>
           {formatDate()}
         </motion.div>
       </div>
-      {}
       <div className="flex items-center gap-4">
-        {}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative p-2 rounded-lg hover:bg-secondary transition-colors outline-none"
-            >
-              <Bell size={20} className="text-muted-foreground" />
-              {notifications.length > 0 && (
-                <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full">
-                  <span className="absolute inset-0 rounded-full animate-ping bg-destructive/60" />
-                </span>
-              )}
-            </motion.button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="w-80 bg-popover text-popover-foreground"
-          >
-            <div className="flex items-center justify-between px-3 py-2">
-              <span className="text-sm font-medium">Notificaciones</span>
-              {notifications.length > 0 && (
-                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-                  {notifications.length} nuevas
-                </span>
-              )}
-            </div>
-            <Separator className="bg-border" />
-            {notifications.length > 0 ? (
-              <>
-                {notifications.map((notification, index) => (
-                  <DropdownMenuItem
-                    key={notification.id}
-                    className="flex flex-col items-start gap-1 px-3 py-2 cursor-pointer focus:bg-secondary/80 hover:bg-secondary/80"
-                  >
-                    <span className="font-medium">{notification.text}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {notification.time}
-                    </span>
-                    {index !== notifications.length - 1 && (
-                      <Separator className="bg-border/50 mt-2" />
-                    )}
-                  </DropdownMenuItem>
-                ))}
-                <Separator className="bg-border" />
-                <DropdownMenuItem className="p-2 text-center text-sm text-primary hover:bg-secondary/80 cursor-pointer">
-                  Ver todas las notificaciones
-                </DropdownMenuItem>
-              </>
-            ) : (
-              <div className="p-4 text-sm text-center text-muted-foreground">
-                No hay notificaciones
-              </div>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <Separator orientation="vertical" className="h-6 bg-border" />
-        {}
+        {/* <NotificationIcon /> */}
+        <Separator orientation="vertical" className="bg-border h-6" />
         <ThemeSwitch />
       </div>
     </motion.nav>
