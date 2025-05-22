@@ -1,30 +1,21 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TablePagination } from "@/components/common/table/TablePagination";
-import { StatusBadge } from "@/components/common/table/StatusBadge";
+import { StatusBadge } from '@/components/common/table/StatusBadge';
+import { TablePagination } from '@/components/common/table/TablePagination';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import {
-  AlertCircle,
-  CalendarClock,
-  RefreshCw,
-  FileText,
-  Coins,
-} from "lucide-react";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { Skeleton } from "@/components/ui/skeleton";
-import { SalesItem } from "@/types/sales";
-import { formatCurrency } from "@/lib/utils";
+  TableRow
+} from '@/components/ui/table';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { SalesItem } from '@/types/sales';
+import { AlertCircle, CalendarClock, RefreshCw } from 'lucide-react';
 
 interface Props {
   salesItems: SalesItem[];
@@ -52,9 +43,9 @@ export default function SalesTable({
   itemsPerPage,
   onPageChange,
   onPageSizeChange,
-  onRefresh,
+  onRefresh
 }: Props) {
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   if (isLoading) {
     return <ReconsumptionsTableSkeleton />;
@@ -64,8 +55,8 @@ export default function SalesTable({
     return (
       <Card>
         <CardContent className="pt-6">
-          <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800/50">
-            <div className="flex items-center gap-2 mb-2">
+          <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800/50 dark:bg-red-900/20">
+            <div className="mb-2 flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-red-500" />
               <h3 className="font-medium text-red-800 dark:text-red-300">
                 Error al cargar las ventas del día
@@ -76,9 +67,9 @@ export default function SalesTable({
               onClick={onRefresh}
               variant="outline"
               size="sm"
-              className="mt-2 border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400"
+              className="mt-2 border-red-200 text-red-600 dark:border-red-800/50 dark:text-red-400"
             >
-              <RefreshCw className="h-3.5 w-3.5 mr-1" />
+              <RefreshCw className="mr-1 h-3.5 w-3.5" />
               Reintentar
             </Button>
           </div>
@@ -93,7 +84,7 @@ export default function SalesTable({
       <Card className="mt-6">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2">
-            <CalendarClock className="h-5 w-5 text-primary" />
+            <CalendarClock className="text-primary h-5 w-5" />
             Historial de Reconsumos
           </CardTitle>
         </CardHeader>
@@ -105,7 +96,7 @@ export default function SalesTable({
                   <CardContent className="p-0">
                     <div className="flex flex-col divide-y">
                       {/* Cabecera con estado e ID */}
-                      <div className="flex items-center justify-between p-4 bg-muted/20">
+                      <div className="bg-muted/20 flex items-center justify-between p-4">
                         <StatusBadge status={reconsumo.status} />
                         <div className="text-sm font-medium">
                           <span>#{reconsumo.id}</span>
@@ -113,83 +104,67 @@ export default function SalesTable({
                       </div>
 
                       {/* Contenido principal */}
-                      <div className="p-4 space-y-3">
+                      <div className="space-y-3 p-4">
                         <div className="flex items-start gap-2">
-                          <div className="text-xs text-muted-foreground">
-                            Fecha del período:
-                          </div>
+                          <div className="text-muted-foreground text-xs">Fecha del período:</div>
                           <div className="text-sm">
-                            {format(
+                            {/* {format(
                               new Date(reconsumo.periodDate),
                               "dd/MM/yyyy",
                               { locale: es }
-                            )}
+                            )} */}
                           </div>
                         </div>
 
                         <div className="flex items-start gap-2">
-                          <div className="text-xs text-muted-foreground">
-                            Monto:
-                          </div>
-                          <div className="text-sm font-bold text-primary">
-                            {formatCurrency(reconsumo.amount)}
+                          <div className="text-muted-foreground text-xs">Monto:</div>
+                          <div className="text-primary text-sm font-bold">
+                            {/* {formatCurrency(reconsumo.amount)} */}250
                           </div>
                         </div>
 
-                        {reconsumo.methodPayment && (
+                        {/* {reconsumo.methodPayment && (
                           <div className="flex items-center gap-2">
-                            <div className="text-xs text-muted-foreground">
-                              Método de pago:
-                            </div>
-                            <div className="text-sm flex items-center gap-1">
-                              {reconsumo.methodPayment === "POINTS" ? (
+                            <div className="text-muted-foreground text-xs">Método de pago:</div>
+                            <div className="flex items-center gap-1 text-sm">
+                              {reconsumo.methodPayment === 'POINTS' ? (
                                 <>
-                                  <Coins className="h-3 w-3 text-primary" />
+                                  <Coins className="text-primary h-3 w-3" />
                                   <span>Puntos</span>
                                 </>
                               ) : (
                                 <>
-                                  <FileText className="h-3 w-3 text-primary" />
+                                  <FileText className="text-primary h-3 w-3" />
                                   <span>Comprobante</span>
                                 </>
                               )}
                             </div>
                           </div>
-                        )}
+                        )} */}
 
-                        <div className="flex items-start gap-2">
-                          <div className="text-xs text-muted-foreground">
-                            Creado:
-                          </div>
+                        {/* <div className="flex items-start gap-2">
+                          <div className="text-muted-foreground text-xs">Creado:</div>
                           <div className="text-sm">
-                            {format(
-                              new Date(reconsumo.createdAt),
-                              "dd/MM/yyyy HH:mm",
-                              { locale: es }
-                            )}
+                            {format(new Date(reconsumo.createdAt), 'dd/MM/yyyy HH:mm', {
+                              locale: es
+                            })}
                           </div>
                         </div>
 
                         {reconsumo.paymentReference && (
                           <div className="flex items-start gap-2">
-                            <div className="text-xs text-muted-foreground">
-                              Referencia:
-                            </div>
-                            <div className="text-sm">
-                              {reconsumo.paymentReference || "—"}
-                            </div>
+                            <div className="text-muted-foreground text-xs">Referencia:</div>
+                            <div className="text-sm">{reconsumo.paymentReference || '—'}</div>
                           </div>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               ))
             ) : (
-              <div className="text-center p-6 border rounded-lg">
-                <p className="text-muted-foreground">
-                  No hay reconsumos registrados
-                </p>
+              <div className="rounded-lg border p-6 text-center">
+                <p className="text-muted-foreground">No hay reconsumos registrados</p>
               </div>
             )}
 
@@ -197,7 +172,7 @@ export default function SalesTable({
               <TablePagination
                 pagination={{
                   pageIndex: currentPage - 1,
-                  pageSize: itemsPerPage,
+                  pageSize: itemsPerPage
                 }}
                 pageCount={meta.totalPages}
                 pageIndex={currentPage - 1}
@@ -206,9 +181,7 @@ export default function SalesTable({
                 setPageIndex={(idx) => onPageChange(Number(idx) + 1)}
                 setPageSize={() => onPageSizeChange}
                 previousPage={() => onPageChange(Math.max(1, currentPage - 1))}
-                nextPage={() =>
-                  onPageChange(Math.min(meta.totalPages, currentPage + 1))
-                }
+                nextPage={() => onPageChange(Math.min(meta.totalPages, currentPage + 1))}
                 totalItems={meta.totalItems}
               />
             )}
@@ -222,12 +195,12 @@ export default function SalesTable({
     <Card className="mt-6">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2">
-          <CalendarClock className="h-5 w-5 text-primary" />
+          <CalendarClock className="text-primary h-5 w-5" />
           <span>Historial de Reconsumos</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="rounded-md border overflow-hidden">
+        <div className="overflow-hidden rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -244,29 +217,27 @@ export default function SalesTable({
               {salesItems.length > 0 ? (
                 salesItems.map((reconsumo) => (
                   <TableRow key={reconsumo.id}>
-                    <TableCell className="font-medium">
-                      #{reconsumo.id}
-                    </TableCell>
-                    <TableCell>{formatCurrency(reconsumo.amount)}</TableCell>
+                    <TableCell className="font-medium">#{reconsumo.id}</TableCell>
+                    {/* <TableCell>{formatCurrency(reconsumo.amount)}</TableCell> */}
                     <TableCell>
                       <StatusBadge status={reconsumo.status} />
                     </TableCell>
-                    <TableCell>
-                      {format(new Date(reconsumo.periodDate), "dd/MM/yyyy", {
-                        locale: es,
+                    {/* <TableCell>
+                      {format(new Date(reconsumo.periodDate), 'dd/MM/yyyy', {
+                        locale: es
                       })}
-                    </TableCell>
-                    <TableCell>
+                    </TableCell> */}
+                    {/* <TableCell>
                       {reconsumo.methodPayment ? (
                         <div className="flex items-center gap-1">
-                          {reconsumo.methodPayment === "POINTS" ? (
+                          {reconsumo.methodPayment === 'POINTS' ? (
                             <>
-                              <Coins className="h-4 w-4 text-primary" />
+                              <Coins className="text-primary h-4 w-4" />
                               <span>Puntos</span>
                             </>
                           ) : (
                             <>
-                              <FileText className="h-4 w-4 text-primary" />
+                              <FileText className="text-primary h-4 w-4" />
                               <span>Comprobante</span>
                             </>
                           )}
@@ -276,21 +247,14 @@ export default function SalesTable({
                       )}
                     </TableCell>
                     <TableCell>
-                      {format(
-                        new Date(reconsumo.createdAt),
-                        "dd/MM/yyyy HH:mm",
-                        { locale: es }
-                      )}
+                      {format(new Date(reconsumo.createdAt), 'dd/MM/yyyy HH:mm', { locale: es })}
                     </TableCell>
-                    <TableCell>{reconsumo.paymentReference || "—"}</TableCell>
+                    <TableCell>{reconsumo.paymentReference || '—'}</TableCell> */}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell
-                    colSpan={7}
-                    className="h-24 text-center text-muted-foreground"
-                  >
+                  <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
                     No hay reconsumos registrados
                   </TableCell>
                 </TableRow>
@@ -304,7 +268,7 @@ export default function SalesTable({
             <TablePagination
               pagination={{
                 pageIndex: currentPage - 1,
-                pageSize: itemsPerPage,
+                pageSize: itemsPerPage
               }}
               pageCount={meta.totalPages}
               pageIndex={currentPage - 1}
@@ -313,9 +277,7 @@ export default function SalesTable({
               setPageIndex={(idx) => onPageChange(Number(idx) + 1)}
               setPageSize={() => onPageSizeChange}
               previousPage={() => onPageChange(Math.max(1, currentPage - 1))}
-              nextPage={() =>
-                onPageChange(Math.min(meta.totalPages, currentPage + 1))
-              }
+              nextPage={() => onPageChange(Math.min(meta.totalPages, currentPage + 1))}
               totalItems={meta.totalItems}
             />
           </div>
@@ -326,7 +288,7 @@ export default function SalesTable({
 }
 
 function ReconsumptionsTableSkeleton() {
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   if (isMobile) {
     return (
@@ -340,7 +302,7 @@ function ReconsumptionsTableSkeleton() {
               <Card key={index} className="overflow-hidden">
                 <CardContent className="p-0">
                   <div className="p-4">
-                    <div className="flex justify-between items-center mb-4">
+                    <div className="mb-4 flex items-center justify-between">
                       <Skeleton className="h-6 w-24" />
                       <Skeleton className="h-4 w-10" />
                     </div>
@@ -364,7 +326,7 @@ function ReconsumptionsTableSkeleton() {
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-between gap-4 mt-4">
+          <div className="mt-4 flex flex-col justify-between gap-4 sm:flex-row">
             <Skeleton className="h-8 w-full sm:w-48" />
             <Skeleton className="h-8 w-full sm:w-48" />
           </div>
@@ -436,7 +398,7 @@ function ReconsumptionsTableSkeleton() {
           </Table>
         </div>
 
-        <div className="flex items-center justify-between space-x-2 mt-4">
+        <div className="mt-4 flex items-center justify-between space-x-2">
           <Skeleton className="h-9 w-[200px]" />
           <Skeleton className="h-9 w-[200px]" />
         </div>
