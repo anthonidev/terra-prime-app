@@ -46,7 +46,7 @@ export interface GetUsersParams {
   isActive?: boolean;
   page?: number;
   limit?: number;
-  order?: "ASC" | "DESC";
+  order?: 'ASC' | 'DESC';
 }
 export interface PaginatedMeta {
   totalItems: number;
@@ -54,7 +54,7 @@ export interface PaginatedMeta {
   totalPages: number;
   currentPage: number;
 }
-export interface PaginatedUsers {
+export interface UsersResponse {
   items: UserList[];
   meta: PaginatedMeta;
 }
@@ -68,7 +68,6 @@ export interface CreateUserDto {
   roleId: number;
   isActive?: string;
 }
-export interface UpdateUserDto
-  extends Omit<Partial<CreateUserDto>, "document"> {
+export interface UpdateUserDto extends Omit<Partial<CreateUserDto>, 'document'> {
   password?: string;
 }
