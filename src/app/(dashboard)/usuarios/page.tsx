@@ -1,15 +1,52 @@
-import React from "react";
-import UsersTable from "@/components/users/UsersTable";
+'use client';
+
+import UsersTable from '@/app/(dashboard)/usuarios/components/UsersTable';
+import { PageHeader } from '@components/common/PageHeader';
+import { useUsers } from '@/app/(dashboard)/usuarios/hooks/useUsers';
+
 export default function Usuarios() {
+  const {
+    usersItems,
+    usersMeta,
+    usersLoading,
+    roles,
+    rolesLoading,
+    search,
+    currentPage,
+    itemsPerPage,
+    isActive,
+    order,
+    handlePageChange,
+    handleItemsPerPageChange,
+    handleSearchChange,
+    handleIsActiveChange,
+    handleOrderChange,
+    handleUpdateUser,
+    handleCreateUser
+  } = useUsers();
+
   return (
     <div className="container py-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">Usuarios</h1>
-        <p className="text-muted-foreground">
-          Gestiona los usuarios del sistema
-        </p>
-      </div>
-      <UsersTable />
+      <PageHeader title="Usuarios" subtitle="Gestiona los usuarios del sistema" variant="default" />
+      <UsersTable
+        data={usersItems}
+        isLoading={usersLoading}
+        meta={usersMeta}
+        currentPage={currentPage}
+        itemsPerPage={itemsPerPage}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handleItemsPerPageChange}
+        search={search}
+        handleCreateUser={handleCreateUser}
+        handleUpdateUser={handleUpdateUser}
+        handleSearchChange={handleSearchChange}
+        isActive={isActive}
+        handleIsActiveChange={handleIsActiveChange}
+        order={order}
+        handleOrderChange={handleOrderChange}
+        roles={roles}
+        rolesLoading={rolesLoading}
+      />
     </div>
   );
 }

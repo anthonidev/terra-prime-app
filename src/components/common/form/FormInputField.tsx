@@ -1,14 +1,8 @@
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import React from "react";
-import { Control, FieldErrors, FieldValues, Path } from "react-hook-form";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
+import React from 'react';
+import { Control, FieldErrors, FieldValues, Path } from 'react-hook-form';
 interface FormInputFieldProps<TFormValues extends FieldValues> {
   name: Path<TFormValues>;
   label: string;
@@ -23,10 +17,10 @@ const FormInputField = <TFormValues extends FieldValues>({
   name,
   label,
   placeholder,
-  type = "text",
+  type = 'text',
   icon,
   control,
-  errors,
+  errors
 }: FormInputFieldProps<TFormValues>) => {
   return (
     <FormField
@@ -34,9 +28,7 @@ const FormInputField = <TFormValues extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className={cn(errors[name] && "text-destructive")}>
-            {label}
-          </FormLabel>
+          <FormLabel className={cn(errors[name] && 'text-destructive')}>{label}</FormLabel>
           <FormControl>
             <div className="relative flex items-center">
               <Input
@@ -44,15 +36,14 @@ const FormInputField = <TFormValues extends FieldValues>({
                 placeholder={placeholder}
                 {...field}
                 className={cn(
-                  "pl-8",
-                  errors[name] &&
-                    "border-destructive focus-visible:ring-destructive"
+                  'bg-white pl-8 dark:bg-gray-900',
+                  errors[name] && 'border-destructive focus-visible:ring-destructive'
                 )}
               />
               <span
                 className={cn(
-                  "absolute left-2.5 flex h-3.5 w-3.5 items-center",
-                  errors[name] ? "text-destructive" : "text-muted-foreground"
+                  'absolute left-2.5 flex h-3.5 w-3.5 items-center',
+                  errors[name] ? 'text-destructive' : 'text-muted-foreground'
                 )}
               >
                 {icon}

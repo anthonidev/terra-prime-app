@@ -1,13 +1,13 @@
-import { FormField } from "@/components/ui/form";
+import { FormField } from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import { Control, FieldErrors, FieldValues, Path } from "react-hook-form";
+  SelectValue
+} from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+import { Control, FieldErrors, FieldValues, Path } from 'react-hook-form';
 interface Option {
   value: string;
   label: string;
@@ -30,20 +30,15 @@ const FormSelectField = <TFormValues extends FieldValues>({
   options,
   control,
   errors,
-  disabled = false,
+  disabled = false
 }: FormSelectFieldProps<TFormValues>) => {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <div className="space-y-2">
-          <label
-            className={cn(
-              "text-sm font-medium",
-              errors[name] && "text-destructive"
-            )}
-          >
+        <div className="space-y-px">
+          <label className={cn('text-sm font-medium', errors[name] && 'text-destructive')}>
             {label}
           </label>
           <Select
@@ -53,15 +48,14 @@ const FormSelectField = <TFormValues extends FieldValues>({
           >
             <SelectTrigger
               className={cn(
-                "bg-background border-input pl-9 relative",
-                errors[name] &&
-                  "border-destructive focus-visible:ring-destructive"
+                'border-input relative bg-white pl-9 dark:bg-gray-900',
+                errors[name] && 'border-destructive focus-visible:ring-destructive'
               )}
             >
               <div
                 className={cn(
-                  "absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2",
-                  errors[name] ? "text-destructive" : "text-muted-foreground"
+                  'absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2',
+                  errors[name] ? 'text-destructive' : 'text-muted-foreground'
                 )}
               >
                 {icon}
@@ -77,9 +71,7 @@ const FormSelectField = <TFormValues extends FieldValues>({
             </SelectContent>
           </Select>
           {errors[name] && (
-            <p className="text-sm text-destructive">
-              {String(errors[name]?.message)}
-            </p>
+            <p className="text-destructive text-sm">{String(errors[name]?.message)}</p>
           )}
         </div>
       )}

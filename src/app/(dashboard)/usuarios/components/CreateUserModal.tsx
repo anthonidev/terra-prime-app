@@ -1,30 +1,22 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Form } from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { CreateUserFormData, createUserSchema } from "@/lib/validations/user";
-import { CreateUserDto, Role, UserList } from "@/types/user.types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  AlertCircle,
-  FileText,
-  KeyRound,
-  Mail,
-  ShieldCheck,
-  User,
-} from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import FormInputField from "../common/form/FormInputField";
-import FormSelectField from "../common/form/FormSelectField";
+  DialogTitle
+} from '@/components/ui/dialog';
+import { Form } from '@/components/ui/form';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { CreateUserFormData, createUserSchema } from '@/lib/validations/user';
+import { CreateUserDto, Role, UserList } from '@/types/user';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { AlertCircle, FileText, KeyRound, Mail, ShieldCheck, User } from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import FormInputField from '@components/common/form/FormInputField';
+import FormSelectField from '@components/common/form/FormSelectField';
 interface CreateUserModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -37,18 +29,18 @@ export function CreateUserModal({
   onClose,
   onCreate,
   roles,
-  rolesLoading = false,
+  rolesLoading = false
 }: CreateUserModalProps) {
   const form = useForm<CreateUserFormData>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
-      email: "",
-      password: "",
-      document: "",
-      firstName: "",
-      lastName: "",
-      isActive: "true",
-    },
+      email: '',
+      password: '',
+      document: '',
+      firstName: '',
+      lastName: '',
+      isActive: 'true'
+    }
   });
   const [error, setError] = useState<string | null>(null);
   const onSubmit = async (data: CreateUserFormData) => {
@@ -58,71 +50,65 @@ export function CreateUserModal({
       form.reset();
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al crear usuario");
+      setError(err instanceof Error ? err.message : 'Error al crear usuario');
     }
   };
   const formFields = [
     {
-      name: "firstName",
-      label: "Nombre",
-      placeholder: "Nombre",
-      icon: <User />,
+      name: 'firstName',
+      label: 'Nombre',
+      placeholder: 'Nombre',
+      icon: <User />
     },
     {
-      name: "lastName",
-      label: "Apellido",
-      placeholder: "Apellido",
-      icon: <User />,
+      name: 'lastName',
+      label: 'Apellido',
+      placeholder: 'Apellido',
+      icon: <User />
     },
     {
-      name: "document",
-      label: "Documento",
-      placeholder: "Documento",
-      icon: <FileText />,
+      name: 'document',
+      label: 'Documento',
+      placeholder: 'Documento',
+      icon: <FileText />
     },
     {
-      name: "email",
-      label: "Email",
-      placeholder: "correo@ejemplo.com",
-      type: "email",
-      icon: <Mail />,
+      name: 'email',
+      label: 'Email',
+      placeholder: 'correo@ejemplo.com',
+      type: 'email',
+      icon: <Mail />
     },
     {
-      name: "password",
-      label: "Contraseña",
-      placeholder: "••••••",
-      type: "password",
-      icon: <KeyRound />,
-    },
+      name: 'password',
+      label: 'Contraseña',
+      placeholder: '••••••',
+      type: 'password',
+      icon: <KeyRound />
+    }
   ] as const;
   const roleOptions = roles.map((role) => ({
     value: role.id.toString(),
-    label: role.name,
+    label: role.name
   }));
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-h-[80vh] flex flex-col max-w-2xl w-full">
+      <DialogContent className="flex h-auto w-full max-w-2xl flex-col">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
             <User className="h-5 w-5" />
-            Crear Nuevo Usuario
+            Nuevo Usuario
           </DialogTitle>
         </DialogHeader>
-        <Separator className="my-4" />
         {error && (
-          <Alert
-            variant="destructive"
-            className="bg-destructive/10 border-destructive/30"
-          >
-            <AlertCircle className="h-4 w-4 text-destructive" />
-            <AlertDescription className="text-destructive text-sm">
-              {error}
-            </AlertDescription>
+          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
+            <AlertCircle className="text-destructive h-4 w-4" />
+            <AlertDescription className="text-destructive text-sm">{error}</AlertDescription>
           </Alert>
         )}
         <ScrollArea className="flex-1 overflow-y-auto pr-4">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-0 px-4">
               <div className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {formFields.map((field) => (
@@ -136,9 +122,7 @@ export function CreateUserModal({
                   <FormSelectField<CreateUserFormData>
                     name="roleId"
                     label="Rol"
-                    placeholder={
-                      rolesLoading ? "Cargando roles..." : "Seleccionar rol"
-                    }
+                    placeholder={rolesLoading ? 'Cargando roles...' : 'Seleccionar rol'}
                     icon={<ShieldCheck />}
                     options={roleOptions}
                     control={form.control}
@@ -147,7 +131,6 @@ export function CreateUserModal({
                   />
                 </div>
               </div>
-              <Separator />
             </form>
           </Form>
         </ScrollArea>
@@ -163,10 +146,10 @@ export function CreateUserModal({
           <Button
             type="submit"
             disabled={rolesLoading || form.formState.isSubmitting}
-            className="bg-primary text-primary-foreground hover:bg-primary-hover"
+            className="text-primary-foreground bg-green-600 transition-colors hover:bg-green-500"
             onClick={form.handleSubmit(onSubmit)}
           >
-            {form.formState.isSubmitting ? "Creando..." : "Crear Usuario"}
+            {form.formState.isSubmitting ? 'Creando...' : 'Crear Usuario'}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,40 +1,35 @@
-"use server";
-import {
-  CreateUserDto,
-  PaginatedUsers,
-  UpdateUserDto,
-  UserList,
-} from "@/types/user.types";
-import { httpClient } from "@/lib/api/http-client";
+'use server';
+import { CreateUserDto, UsersResponse, UpdateUserDto, UserList } from '@/types/user';
+import { httpClient } from '@/lib/api/http-client';
+
 export async function createUser(data: CreateUserDto): Promise<UserList> {
   try {
-    return await httpClient<UserList>("/api/users", {
-      method: "POST",
-      body: data,
+    return await httpClient<UserList>('/api/users', {
+      method: 'POST',
+      body: data
     });
   } catch (error) {
-    console.error("Error en createUser:", error);
+    if (error instanceof Error) console.error('Has been error, reason: %s', error.message);
     throw error;
   }
 }
-export async function updateUser(
-  id: string,
-  data: UpdateUserDto
-): Promise<UserList> {
+
+export async function updateUser(id: string, data: UpdateUserDto): Promise<UserList> {
   try {
     return await httpClient<UserList>(`/api/users/${id}`, {
-      method: "PATCH",
-      body: data,
+      method: 'PATCH',
+      body: data
     });
   } catch (error) {
-    console.error("Error en updateUser:", error);
+    if (error instanceof Error) console.error('Has been error, reason: %s', error.message);
     throw error;
   }
 }
+
 export async function getUsers(
   params?: Record<string, unknown> | undefined
-): Promise<PaginatedUsers> {
-  return httpClient<PaginatedUsers>("/api/users", {
-    params,
+): Promise<UsersResponse> {
+  return httpClient<UsersResponse>('/api/users', {
+    params
   });
 }
