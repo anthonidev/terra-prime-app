@@ -34,6 +34,6 @@ export const config = {
      * - public (folder with public assets)
      * - image extensions (png, jpg, etc.)
      */
-    '/((?!api|_next/static|_next/image|favicon\\.ico|images|public|.*\\.(?:png|jpg|jpeg|gif|svg|ico|webp)$).*)'
+    '/((?!api|_next/static|_next/image|favicon.ico|imgs/|register|auth/reset-password|data/terms.md|terms.md).*)'
   ]
 };
