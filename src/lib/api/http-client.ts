@@ -11,6 +11,10 @@ interface FetchOptions {
   cache?: RequestCache;
   contentType?: string;
   skipJsonStringify?: boolean;
+  next?: {
+    tags?: string[];
+    revalidate?: number;
+  };
 }
 
 export async function httpClient<T>(
@@ -21,7 +25,8 @@ export async function httpClient<T>(
     params,
     cache = 'no-store',
     contentType = 'application/json',
-    skipJsonStringify = false
+    skipJsonStringify = false,
+    next
   }: FetchOptions = {}
 ): Promise<T> {
   // Intentar obtener la sesión, pero continuar incluso si no hay sesión
@@ -59,11 +64,13 @@ export async function httpClient<T>(
     }
   }
 
+  // Create fetch options with Next.js cache control
   const options: RequestInit = {
     method,
     headers,
     body: requestBody,
-    cache
+    cache,
+    next // Pass the next option directly to fetch
   };
 
   try {

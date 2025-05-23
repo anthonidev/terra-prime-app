@@ -1,9 +1,7 @@
-import { Suspense } from 'react';
 import { PageHeader } from '@/components/common/PageHeader';
 import LeadSourcesTableSkeleton from './components/LeadSourcesTableSkeleton';
-import LeadSourcesTable from './components/LeadSoucesTable';
 
-export default function LeadSourcesPage() {
+export default function Loading() {
   return (
     <div className="container py-8">
       <PageHeader
@@ -12,10 +10,7 @@ export default function LeadSourcesPage() {
         className="mb-6"
         variant="gradient"
       />
-
-      <Suspense fallback={<LeadSourcesTableSkeleton />}>
-        <LeadSourcesTable />
-      </Suspense>
+      <LeadSourcesTableSkeleton />
     </div>
   );
 }

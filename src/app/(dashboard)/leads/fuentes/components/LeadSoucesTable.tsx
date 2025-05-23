@@ -1,6 +1,4 @@
-'use client';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -11,54 +9,51 @@ import {
 } from '@/components/ui/table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Plus } from 'lucide-react';
-import { useLeadSources } from '../../hooks/useLeadSources';
-import CreateLeadSourceModal from './CreateLeadSourceModal';
-import LeadSourcesTableFilters from './LeadSourcesTableFilters';
-import LeadSourcesTablePagination from './LeadSourcesTablePagination';
-import UpdateLeadSourceModal from './UpdateLeadSourceModal';
-export default function LeadSourcesTable() {
-  const {
-    data,
-    loading,
+import { LeadSourcesTableFilters } from './LeadSourcesTableFilters';
+import { LeadSourcesTablePagination } from './LeadSourcesTablePagination';
+import { getLeadSources } from '../action';
+import CreateLeadSourceButton from './CreateLeadSourceButton';
+import UpdateLeadSourceButton from './UpdateLeadSourceButton';
+
+export default async function LeadSourcesTable({
+  searchParams
+}: {
+  searchParams?: {
+    search?: string;
+    isActive?: string;
+    order?: 'ASC' | 'DESC';
+    page?: string;
+    limit?: string;
+  };
+}) {
+  // Parse search parameters
+  const search = searchParams?.search || '';
+  const isActive =
+    searchParams?.isActive === 'true'
+      ? true
+      : searchParams?.isActive === 'false'
+        ? false
+        : undefined;
+  const order = (searchParams?.order as 'ASC' | 'DESC') || 'DESC';
+  const page = parseInt(searchParams?.page || '1');
+  const limit = parseInt(searchParams?.limit || '10');
+
+  // Fetch data from the server
+  const { data, meta, success } = await getLeadSources({
     search,
-    currentPage,
-    itemsPerPage,
     isActive,
     order,
-    isCreateModalOpen,
-    isUpdateModalOpen,
-    selectedLeadSource,
-    handlePageChange,
-    handleItemsPerPageChange,
-    handleSearchChange,
-    handleIsActiveChange,
-    handleOrderChange,
-    openCreateModal,
-    openUpdateModal,
-    closeModals,
-    handleCreateLeadSource,
-    handleUpdateLeadSource
-  } = useLeadSources();
+    page,
+    limit
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <LeadSourcesTableFilters
-          search={search}
-          onSearchChange={handleSearchChange}
-          isActive={isActive}
-          onIsActiveChange={handleIsActiveChange}
-          order={order}
-          onOrderChange={handleOrderChange}
-        />
-        <Button
-          onClick={openCreateModal}
-          className="bg-primary text-primary-foreground hover:bg-primary-hover"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Nueva Fuente
-        </Button>
+        <LeadSourcesTableFilters search={search} isActive={isActive} order={order} />
+        <CreateLeadSourceButton />
       </div>
+
       <div className="border-border rounded-md border">
         <Table>
           <TableHeader>
@@ -71,14 +66,8 @@ export default function LeadSourcesTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={6} className="bg-table-loading-background h-24 text-center">
-                  Cargando fuentes de leads...
-                </TableCell>
-              </TableRow>
-            ) : data?.data.length ? (
-              data.data.map((source) => (
+            {data.length ? (
+              data.map((source) => (
                 <TableRow key={source.id} className="bg-table-row hover:bg-table-row-hover">
                   <TableCell className="text-table-row-foreground">{source.id}</TableCell>
                   <TableCell className="text-table-row-foreground font-medium">
@@ -93,16 +82,14 @@ export default function LeadSourcesTable() {
                     {format(new Date(source.createdAt), 'PPP', { locale: es })}
                   </TableCell>
                   <TableCell className="text-table-row-foreground text-right">
-                    <Button variant="ghost" size="sm" onClick={() => openUpdateModal(source)}>
-                      Editar
-                    </Button>
+                    <UpdateLeadSourceButton source={source} />
                   </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={6}
+                  colSpan={5}
                   className="bg-table-empty-background text-table-empty-foreground h-24 text-center"
                 >
                   No se encontraron fuentes de leads.
@@ -112,26 +99,12 @@ export default function LeadSourcesTable() {
           </TableBody>
         </Table>
       </div>
+
       {data && (
         <LeadSourcesTablePagination
-          data={data}
-          currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
-          onPageChange={handlePageChange}
-          onItemsPerPageChange={handleItemsPerPageChange}
-        />
-      )}
-      <CreateLeadSourceModal
-        isOpen={isCreateModalOpen}
-        onClose={closeModals}
-        onCreate={handleCreateLeadSource}
-      />
-      {selectedLeadSource && (
-        <UpdateLeadSourceModal
-          isOpen={isUpdateModalOpen}
-          onClose={closeModals}
-          leadSource={selectedLeadSource}
-          onUpdate={handleUpdateLeadSource}
+          data={{ data, meta, success }}
+          currentPage={page}
+          itemsPerPage={limit}
         />
       )}
     </div>
