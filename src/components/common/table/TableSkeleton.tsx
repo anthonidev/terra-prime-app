@@ -14,71 +14,32 @@ export function TableSkeleton() {
   return (
     <div className="space-y-4">
       {/* Skeleton para vista de escritorio */}
-      <Card className="mt-6">
-        <CardContent>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>
-                    <Skeleton className="h-4 w-8" />
-                  </TableHead>
-                  <TableHead>
-                    <Skeleton className="h-4 w-16" />
-                  </TableHead>
-                  <TableHead>
-                    <Skeleton className="h-4 w-20" />
-                  </TableHead>
-                  <TableHead>
+      <div className="hidden overflow-hidden rounded-md border md:block">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <TableHead key={index} className="h-10">
                     <Skeleton className="h-4 w-24" />
                   </TableHead>
-                  <TableHead>
-                    <Skeleton className="h-4 w-24" />
-                  </TableHead>
-                  <TableHead>
-                    <Skeleton className="h-4 w-24" />
-                  </TableHead>
-                  <TableHead>
-                    <Skeleton className="h-4 w-32" />
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {[...Array(5)].map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell>
-                      <Skeleton className="h-4 w-8" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-16" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-6 w-20" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-24" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-24" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-24" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-32" />
-                    </TableCell>
-                  </TableRow>
                 ))}
-              </TableBody>
-            </Table>
-          </div>
-
-          <div className="mt-4 flex items-center justify-between space-x-2">
-            <Skeleton className="h-9 w-[200px]" />
-            <Skeleton className="h-9 w-[200px]" />
-          </div>
-        </CardContent>
-      </Card>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Array.from({ length: 5 }).map((_, rowIndex) => (
+                <TableRow key={rowIndex}>
+                  {Array.from({ length: 6 }).map((_, colIndex) => (
+                    <TableCell key={colIndex}>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
 
       {/* Skeleton para vista móvil */}
       <div className="space-y-4 md:hidden">
