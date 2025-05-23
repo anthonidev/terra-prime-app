@@ -1,54 +1,70 @@
-enum StatusSale {
-  PENDING = "PENDING",
-  COMPLETED = "COMPLETED",
-  CANCELLED = "CANCELLED",
-}
-
-export interface SalesItem {
+export interface VendorsActivesItem {
   id: string;
-  client: Client;
-  type: SalesType;
-  lot: Lot;
-  vendor: User;
-  initialAmount: number;
-  totalAmount: number;
-  status: StatusSale;
-  financing?: Financing;
-  createdAt?: Date;
-  updatedAt?: Date;
+  firstName: string;
+  lastName: string;
+  email: string;
+  document: string;
+  photo: string;
+  createdAt: string;
 }
 
-export interface SalesResponse {
-  items: SalesItem[];
-  meta: {
-    totalItems: number;
-    itemsPerPage: number;
-    totalPages: number;
-    currentPage: number;
+export interface LeadsByDayItem {
+  id: string;
+  firstName: string;
+  lastName: string;
+  document: string;
+  documentType: string;
+  phone: string;
+  phone2?: string;
+  age?: number;
+  createdAt: string;
+  source: {
+    id: number;
+    name: string;
   };
+  ubigeo: {
+    id: number;
+    name: string;
+    code: string;
+    parentId: number | null;
+  };
+  vendor:
+    | string
+    | {
+        id: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        document: string;
+      }
+    | null;
 }
 
-export interface Client {
-  id: string;
-  sales?: SalesItem[];
+export interface PaginatedMeta {
+  totalItems: number;
+  itemsPerPage: number;
+  totalPages: number;
+  currentPage: number;
 }
 
-export interface SalesType {
-  id: string;
-  sales?: SalesItem[];
+export interface LeadsByDayResponse {
+  items: LeadsByDayItem[];
+  meta: PaginatedMeta;
 }
 
-export interface Lot {
-  id: string;
-  sales?: SalesItem[];
-}
+export type AllVendorsActivesResponse = Array<VendorsActivesItem>;
 
-export interface User {
-  id: string;
-  sales?: SalesItem[];
-}
+export interface AssignLeadsToVendorDto {
+  /**
+   * Array
+   * @minItems 1
+   * @format uuid
+   */
+  leadsId: string[];
 
-export interface Financing {
-  id: string;
-  type: SalesType;
+  /**
+   * ID
+   * @format uuid
+   */
+  vendorId: string;
 }
