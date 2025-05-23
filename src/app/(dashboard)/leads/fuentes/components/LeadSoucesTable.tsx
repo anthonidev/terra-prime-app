@@ -1,4 +1,6 @@
 'use client';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -7,16 +9,14 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { Plus } from 'lucide-react';
+import { useLeadSources } from '../../hooks/useLeadSources';
+import CreateLeadSourceModal from './CreateLeadSourceModal';
 import LeadSourcesTableFilters from './LeadSourcesTableFilters';
 import LeadSourcesTablePagination from './LeadSourcesTablePagination';
-import CreateLeadSourceModal from './CreateLeadSourceModal';
 import UpdateLeadSourceModal from './UpdateLeadSourceModal';
-import { useLeadSources } from '../../hooks/useLeadSources';
 export default function LeadSourcesTable() {
   const {
     data,
