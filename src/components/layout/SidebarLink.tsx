@@ -1,6 +1,5 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@components/ui/collapsible';
 import { cn } from '@/lib/utils';
-import { View } from '@/types/user.types';
 import {
   ChevronDown,
   FileText,
@@ -19,6 +18,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@components/ui/tooltip';
+import { View } from '@/types/user';
 
 const ICON_MAPPING = {
   profile: User,

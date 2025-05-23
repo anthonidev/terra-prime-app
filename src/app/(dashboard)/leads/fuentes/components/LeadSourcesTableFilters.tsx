@@ -10,7 +10,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface LeadSourcesTableFiltersProps {
   search: string;
@@ -18,43 +18,74 @@ interface LeadSourcesTableFiltersProps {
   order: 'ASC' | 'DESC';
 }
 
-export function LeadSourcesTableFilters({ search, isActive, order }: LeadSourcesTableFiltersProps) {
+export function LeadSourcesTableFilters({
+  search: initialSearch,
+  isActive: initialIsActive,
+  order: initialOrder
+}: LeadSourcesTableFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  // Local state to control inputs
+  const [searchValue, setSearchValue] = useState(initialSearch);
+  const [activeValue, setActiveValue] = useState<string>(
+    initialIsActive === undefined ? 'all' : initialIsActive.toString()
+  );
+  const [orderValue, setOrderValue] = useState<'ASC' | 'DESC'>(initialOrder);
+
   // Create a function to update the search params
   const createQueryString = useCallback(
-    (name: string, value: string) => {
+    (updates: { [key: string]: string }) => {
       const params = new URLSearchParams(searchParams.toString());
 
-      if (value) {
-        params.set(name, value);
-      } else {
-        params.delete(name);
-      }
+      // Apply all updates to the URLSearchParams object
+      Object.entries(updates).forEach(([name, value]) => {
+        if (value === '' || value === 'all') {
+          params.delete(name);
+        } else {
+          params.set(name, value);
+        }
+      });
 
-      // Reset to page 1 when filtering
-      if (name !== 'page') {
-        params.set('page', '1');
-      }
+      // Always reset to page 1 when applying filters
+      params.set('page', '1');
 
       return params.toString();
     },
     [searchParams]
   );
 
-  const handleSearchChange = (value: string) => {
-    router.push(`${pathname}?${createQueryString('search', value)}`);
+  // Debounce search to avoid too many URL updates while typing
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+
+    const timeoutId = setTimeout(() => {
+      router.push(`${pathname}?${createQueryString({ search: value })}`);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
   };
 
   const handleIsActiveChange = (value: string) => {
-    router.push(`${pathname}?${createQueryString('isActive', value === 'all' ? '' : value)}`);
+    setActiveValue(value);
+    router.push(`${pathname}?${createQueryString({ isActive: value === 'all' ? '' : value })}`);
   };
 
   const handleOrderChange = (value: 'ASC' | 'DESC') => {
-    router.push(`${pathname}?${createQueryString('order', value)}`);
+    setOrderValue(value);
+    router.push(`${pathname}?${createQueryString({ order: value })}`);
   };
+
+  // Logging for debugging
+  useEffect(() => {
+    console.log('Filter component searchParams:', {
+      search: searchParams.get('search'),
+      isActive: searchParams.get('isActive'),
+      order: searchParams.get('order')
+    });
+  }, [searchParams]);
 
   return (
     <div className="flex items-center gap-3">
@@ -62,15 +93,12 @@ export function LeadSourcesTableFilters({ search, isActive, order }: LeadSources
         <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
         <Input
           placeholder="Buscar fuentes..."
-          value={search}
-          onChange={(e) => handleSearchChange(e.target.value)}
+          value={searchValue}
+          onChange={handleSearchChange}
           className="bg-background border-input pl-9"
         />
       </div>
-      <Select
-        value={isActive === undefined ? 'all' : isActive.toString()}
-        onValueChange={handleIsActiveChange}
-      >
+      <Select value={activeValue} onValueChange={handleIsActiveChange}>
         <SelectTrigger className="bg-background border-input w-[160px]">
           <Activity className="text-muted-foreground mr-2 h-4 w-4" />
           <SelectValue placeholder="Estado" />
@@ -81,9 +109,12 @@ export function LeadSourcesTableFilters({ search, isActive, order }: LeadSources
           <SelectItem value="false">Inactivos</SelectItem>
         </SelectContent>
       </Select>
-      <Select value={order} onValueChange={(value: 'ASC' | 'DESC') => handleOrderChange(value)}>
+      <Select
+        value={orderValue}
+        onValueChange={(value: 'ASC' | 'DESC') => handleOrderChange(value)}
+      >
         <SelectTrigger className="bg-background border-input w-[160px]">
-          {order === 'DESC' ? (
+          {orderValue === 'DESC' ? (
             <SortDesc className="text-muted-foreground mr-2 h-4 w-4" />
           ) : (
             <SortAsc className="text-muted-foreground mr-2 h-4 w-4" />

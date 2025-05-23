@@ -3,7 +3,12 @@ import { PageHeader } from '@/components/common/PageHeader';
 import LeadSourcesTableSkeleton from './components/LeadSourcesTableSkeleton';
 import LeadSourcesTable from './components/LeadSoucesTable';
 
-export default function LeadSourcesPage() {
+export default async function LeadSourcesPage({
+  searchParams
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const filters = await searchParams;
   return (
     <div className="container py-8">
       <PageHeader
@@ -14,7 +19,7 @@ export default function LeadSourcesPage() {
       />
 
       <Suspense fallback={<LeadSourcesTableSkeleton />}>
-        <LeadSourcesTable />
+        <LeadSourcesTable searchParams={filters} />
       </Suspense>
     </div>
   );

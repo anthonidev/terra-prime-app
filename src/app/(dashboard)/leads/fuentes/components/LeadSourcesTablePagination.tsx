@@ -1,6 +1,5 @@
 'use client';
 
-// app/(dashboard)/leads/fuentes/components/LeadSourcesTablePagination.tsx
 import { Button } from '@/components/ui/button';
 import {
   Select,

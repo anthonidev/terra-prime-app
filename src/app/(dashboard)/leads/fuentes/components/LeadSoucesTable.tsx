@@ -14,31 +14,39 @@ import { LeadSourcesTablePagination } from './LeadSourcesTablePagination';
 import { getLeadSources } from '../action';
 import CreateLeadSourceButton from './CreateLeadSourceButton';
 import UpdateLeadSourceButton from './UpdateLeadSourceButton';
-
 export default async function LeadSourcesTable({
   searchParams
 }: {
   searchParams?: {
     search?: string;
     isActive?: string;
-    order?: 'ASC' | 'DESC';
+    order?: string;
     page?: string;
     limit?: string;
   };
 }) {
-  // Parse search parameters
+  // Asegúrate de acceder directamente a los valores de searchParams
   const search = searchParams?.search || '';
+
+  // Procesar isActive correctamente
   const isActive =
     searchParams?.isActive === 'true'
       ? true
       : searchParams?.isActive === 'false'
         ? false
         : undefined;
-  const order = (searchParams?.order as 'ASC' | 'DESC') || 'DESC';
-  const page = parseInt(searchParams?.page || '1');
-  const limit = parseInt(searchParams?.limit || '10');
 
-  // Fetch data from the server
+  // Asegúrate de que order sea ASC o DESC
+  const order = (searchParams?.order === 'ASC' ? 'ASC' : 'DESC') as 'ASC' | 'DESC';
+
+  // Convertir page y limit a números
+  const page = searchParams?.page ? parseInt(searchParams.page) : 1;
+  const limit = searchParams?.limit ? parseInt(searchParams.limit) : 10;
+
+  console.log('Actual searchParams:', searchParams);
+  console.log('Processed params for API call:', { search, isActive, order, page, limit });
+
+  // Fetch data from the server with parameters
   const { data, meta, success } = await getLeadSources({
     search,
     isActive,
@@ -46,6 +54,8 @@ export default async function LeadSourcesTable({
     page,
     limit
   });
+
+  // Resto del componente...
 
   return (
     <div className="space-y-6">
