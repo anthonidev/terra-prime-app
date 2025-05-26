@@ -60,7 +60,7 @@ export default function VendorsActivesTable({ data, isLoading, error, onRefresh 
     <div>
       {bMobile ? (
         data.map((item, index) => (
-          <Card key={item.id} className="overflow-hidden py-0">
+          <Card key={item.id} className="mb-4 overflow-hidden py-0">
             <CardContent className="p-0">
               <div className="flex flex-col divide-y font-medium">
                 <div className="bg-muted/20 flex items-center justify-between p-4">
@@ -83,11 +83,7 @@ export default function VendorsActivesTable({ data, isLoading, error, onRefresh 
                   </div>
                   <div className="flex items-start gap-2">
                     <div className="text-muted-foreground text-sm">Email:</div>
-                    <div className="text-primary text-sm">{item.email}</div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div className="text-muted-foreground text-sm">Foto:</div>
-                    <div className="text-primary text-sm">{item.photo}</div>
+                    <div className="text-primary truncate text-sm">{item.email}</div>
                   </div>
                   <div className="flex items-start gap-2">
                     <div className="text-muted-foreground text-xs">Creado:</div>
