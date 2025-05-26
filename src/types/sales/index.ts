@@ -1,3 +1,17 @@
+export interface LeadsVendorItems {
+  id: string;
+  firstName: string;
+  lastName: string;
+  document: string;
+  documentType: string;
+  phone: string;
+  phone2?: string;
+  age: number;
+  createdAt: string;
+  source: Source;
+  ubigeo: Ubigeo;
+}
+
 export interface ProyectsActivesItems {
   id: string;
   name: string;
@@ -40,6 +54,18 @@ export interface VendorsActivesItem {
   createdAt: string;
 }
 
+interface Source {
+  id: number;
+  name: string;
+}
+
+interface Ubigeo {
+  id: number;
+  name: string;
+  code: string;
+  parentId: number | null;
+}
+
 export interface LeadsByDayItem {
   id: string;
   firstName: string;
@@ -50,16 +76,8 @@ export interface LeadsByDayItem {
   phone2?: string;
   age?: number;
   createdAt: string;
-  source: {
-    id: number;
-    name: string;
-  };
-  ubigeo: {
-    id: number;
-    name: string;
-    code: string;
-    parentId: number | null;
-  };
+  source: Source;
+  ubigeo: Ubigeo;
   vendor:
     | string
     | {
@@ -89,6 +107,7 @@ export type ProyectsActivesResponse = ProyectsActivesItems[];
 export type ProyectStagesResponse = ProyectStagesItems[];
 export type ProyectBlocksResponse = ProyectBlocksItems[];
 export type ProyectLotsResponse = ProyectLotsItems[];
+export type LeadsVendorResponse = LeadsVendorItems[];
 
 export interface AssignLeadsToVendorDto {
   leadsId: string[];
