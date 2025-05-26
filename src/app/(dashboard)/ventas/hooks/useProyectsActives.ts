@@ -1,5 +1,5 @@
-import { getProyectsActives } from '@/lib/actions/lotes/proyectsActivesActions';
-import { ProyectsActivesItems } from '@/types/lotes';
+import { getProyectsActives } from '@/lib/actions/sales/proyectsActivesActions';
+import { ProyectsActivesItems } from '@/types/sales';
 import { useCallback, useEffect, useState } from 'react';
 
 interface TLotes {

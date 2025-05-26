@@ -3,13 +3,13 @@
 import { PageHeader } from '@/components/common/PageHeader';
 import { Box } from 'lucide-react';
 import { useNavigationStack } from '@hooks/navigation/useNavigationStack';
-import { useProyectsActives } from './hooks/useProyectsActives';
-import { BreadcrumbNav } from './components/BreadcrumbNav';
+import { useProyectsActives } from '../hooks/useProyectsActives';
+import { BreadcrumbNav } from '../components/BreadcrumbNav';
 
-import ProyectsLayer from './components/ProyectsLayer';
-import StagesLayer from './components/StagesLayer';
-import BlocksLayer from './components/BlocksLayer';
-import LotsLayer from './components/LotsLayer';
+import ProyectsLayer from '../components/ProyectsLayer';
+import StagesLayer from '../components/StagesLayer';
+import BlocksLayer from '../components/BlocksLayer';
+import LotsLayer from '../components/LotsLayer';
 
 export default function LotesPage() {
   const { data, isLoading, error } = useProyectsActives();

@@ -1,4 +1,4 @@
-import type { ProyectsActivesItems } from '@/types/lotes';
+import type { ProyectsActivesItems } from '@/types/sales';
 import { AlertCircle, Calendar, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ProyectSkeleton from '@/components/project/list/ProjectsSkeleton';

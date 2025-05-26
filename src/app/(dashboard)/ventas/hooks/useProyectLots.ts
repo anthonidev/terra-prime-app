@@ -1,5 +1,5 @@
-import { getProyectLots } from '@/lib/actions/lotes/proyectLotsActions';
-import { ProyectLotsItems } from '@/types/lotes';
+import { getProyectLots } from '@/lib/actions/sales/proyectLotsActions';
+import { ProyectLotsItems } from '@/types/sales';
 import { useCallback, useEffect, useState } from 'react';
 
 interface TUseProyectLotsResult {

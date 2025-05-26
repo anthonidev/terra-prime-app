@@ -17,8 +17,6 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { StatusBadge } from '@/components/common/table/StatusBadge';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { TableSkeleton } from '@/components/common/table/TableSkeleton';
 
 interface Props {
@@ -88,16 +86,12 @@ export default function LotsLayer({ blockId, onBack }: Props) {
                           <div className="">{lot.lotPrice}</div>
                         </div>
                         <div className="flex items-start gap-2">
-                          <div className="text-muted-foreground text-sm">Precio Total:</div>
-                          <div className="">{lot.totalPrice}</div>
+                          <div className="text-muted-foreground text-sm">Precio HU:</div>
+                          <div className="">{lot.urbanizationPrice}</div>
                         </div>
                         <div className="flex items-start gap-2">
-                          <div className="text-muted-foreground">Fecha del período:</div>
-                          <div className="">
-                            {format(new Date(lot.createdAt), 'dd/MM/yyyy', {
-                              locale: es
-                            })}
-                          </div>
+                          <div className="text-muted-foreground text-sm">Precio Total:</div>
+                          <div className="">{lot.totalPrice}</div>
                         </div>
                       </div>
                     </div>
@@ -118,24 +112,22 @@ export default function LotsLayer({ blockId, onBack }: Props) {
                   <TableHead>Lote</TableHead>
                   <TableHead>Area</TableHead>
                   <TableHead>Precio Lote</TableHead>
-                  <TableHead>Precio Total Lote</TableHead>
-                  <TableHead>Precio Urbanización</TableHead>
+                  <TableHead>Precio HU</TableHead>
                   <TableHead>Estado</TableHead>
-                  <TableHead>Fecha Creada</TableHead>
+                  <TableHead>Precio Final Lote</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredData.map((lot) => (
                   <TableRow key={lot.id}>
                     <TableCell className="font-medium">Lt {lot.name}</TableCell>
-                    <TableCell className="font-medium">{lot.area}</TableCell>
+                    <TableCell className="font-medium">{lot.area} m²</TableCell>
                     <TableCell className="font-medium">{lot.lotPrice}</TableCell>
-                    <TableCell className="font-medium">{lot.totalPrice}</TableCell>
                     <TableCell className="font-medium">{lot.urbanizationPrice}</TableCell>
                     <TableCell>
                       <StatusBadge status={lot.status} />
                     </TableCell>
-                    <TableCell className="font-medium">{lot.createdAt}</TableCell>
+                    <TableCell className="font-medium">{lot.totalPrice}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

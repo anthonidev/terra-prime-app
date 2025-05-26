@@ -1,5 +1,5 @@
-import { getProyectBlocks } from '@/lib/actions/lotes/proyectBlocksActions';
-import { ProyectBlocksItems } from '@/types/lotes';
+import { getProyectBlocks } from '@/lib/actions/sales/proyectBlocksActions';
+import { ProyectBlocksItems } from '@/types/sales';
 import { useCallback, useEffect, useState } from 'react';
 
 interface TUseProyectBlocksResult {
