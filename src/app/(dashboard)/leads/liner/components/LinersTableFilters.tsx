@@ -1,1 +1,121 @@
-import { Input } from "@/components/ui/input";import { Search, SortAsc, SortDesc, Activity } from "lucide-react";import {  Select,  SelectContent,  SelectItem,  SelectTrigger,  SelectValue,} from "@/components/ui/select";interface LinersTableFiltersProps {  search: string;  onSearchChange: (value: string) => void;  isActive: boolean | undefined;  onIsActiveChange: (value: boolean | undefined) => void;  order: "ASC" | "DESC";  onOrderChange: (value: "ASC" | "DESC") => void;}export default function LinersTableFilters({  search,  onSearchChange,  isActive,  onIsActiveChange,  order,  onOrderChange,}: LinersTableFiltersProps) {  return (    <div className="flex items-center gap-3">      <div className="relative w-80">        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />        <Input          placeholder="Buscar por nombre o documento..."          value={search}          onChange={(e) => onSearchChange(e.target.value)}          className="pl-9 bg-background border-input"        />      </div>      <Select        value={isActive === undefined ? "all" : isActive.toString()}        onValueChange={(value) => {          onIsActiveChange(            value === "all" ? undefined : value === "true" ? true : false          );        }}      >        <SelectTrigger className="w-[160px] bg-background border-input">          <Activity className="mr-2 h-4 w-4 text-muted-foreground" />          <SelectValue placeholder="Estado" />        </SelectTrigger>        <SelectContent>          <SelectItem value="all">Todos</SelectItem>          <SelectItem value="true">Activos</SelectItem>          <SelectItem value="false">Inactivos</SelectItem>        </SelectContent>      </Select>      <Select        value={order}        onValueChange={(value: "ASC" | "DESC") => onOrderChange(value)}      >        <SelectTrigger className="w-[160px] bg-background border-input">          {order === "DESC" ? (            <SortDesc className="mr-2 h-4 w-4 text-muted-foreground" />          ) : (            <SortAsc className="mr-2 h-4 w-4 text-muted-foreground" />          )}          <SelectValue placeholder="Ordenar por" />        </SelectTrigger>        <SelectContent>          <SelectItem value="DESC">Más recientes</SelectItem>          <SelectItem value="ASC">Más antiguos</SelectItem>        </SelectContent>      </Select>    </div>  );}
+'use client';
+
+import { Input } from '@/components/ui/input';
+import { Search, SortAsc, SortDesc, Activity } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+
+interface LinersTableFiltersProps {
+  search: string;
+  isActive: boolean | undefined;
+  order: 'ASC' | 'DESC';
+}
+
+export function LinersTableFilters({
+  search: initialSearch,
+  isActive: initialIsActive,
+  order: initialOrder
+}: LinersTableFiltersProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Estados locales para controlar los inputs
+  const [searchValue, setSearchValue] = useState(initialSearch);
+  const [activeValue, setActiveValue] = useState<string>(
+    initialIsActive === undefined ? 'all' : initialIsActive.toString()
+  );
+  const [orderValue, setOrderValue] = useState<'ASC' | 'DESC'>(initialOrder);
+
+  // Función para crear query string actualizado
+  const createQueryString = useCallback(
+    (updates: { [key: string]: string }) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      Object.entries(updates).forEach(([name, value]) => {
+        if (value === '' || value === 'all') {
+          params.delete(name);
+        } else {
+          params.set(name, value);
+        }
+      });
+
+      // Siempre resetear a página 1 cuando se aplican filtros
+      params.set('page', '1');
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  // Debounce para búsqueda
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+
+    const timeoutId = setTimeout(() => {
+      router.push(`${pathname}?${createQueryString({ search: value })}`);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  };
+
+  const handleIsActiveChange = (value: string) => {
+    setActiveValue(value);
+    router.push(`${pathname}?${createQueryString({ isActive: value === 'all' ? '' : value })}`);
+  };
+
+  const handleOrderChange = (value: 'ASC' | 'DESC') => {
+    setOrderValue(value);
+    router.push(`${pathname}?${createQueryString({ order: value })}`);
+  };
+
+  return (
+    <div className="flex items-center gap-3">
+      <div className="relative w-80">
+        <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+        <Input
+          placeholder="Buscar por nombre o documento..."
+          value={searchValue}
+          onChange={handleSearchChange}
+          className="bg-background border-input pl-9"
+        />
+      </div>
+      <Select value={activeValue} onValueChange={handleIsActiveChange}>
+        <SelectTrigger className="bg-background border-input w-[160px]">
+          <Activity className="text-muted-foreground mr-2 h-4 w-4" />
+          <SelectValue placeholder="Estado" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Todos</SelectItem>
+          <SelectItem value="true">Activos</SelectItem>
+          <SelectItem value="false">Inactivos</SelectItem>
+        </SelectContent>
+      </Select>
+      <Select
+        value={orderValue}
+        onValueChange={(value: 'ASC' | 'DESC') => handleOrderChange(value)}
+      >
+        <SelectTrigger className="bg-background border-input w-[160px]">
+          {orderValue === 'DESC' ? (
+            <SortDesc className="text-muted-foreground mr-2 h-4 w-4" />
+          ) : (
+            <SortAsc className="text-muted-foreground mr-2 h-4 w-4" />
+          )}
+          <SelectValue placeholder="Ordenar por" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="DESC">Más recientes</SelectItem>
+          <SelectItem value="ASC">Más antiguos</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}

@@ -1,109 +1,123 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+'use client';
+
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Form } from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, User, FileText, CreditCard } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import FormInputField from "@/components/common/form/FormInputField";
-import FormSelectField from "@/components/common/form/FormSelectField";
-import { DocumentType, Liner } from "@/types/leads.types";
-interface CreateLinerModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onCreate: (data: {
-    firstName: string;
-    lastName: string;
-    document: string;
-    documentType: DocumentType;
-    isActive?: boolean;
-  }) => Promise<Liner>;
-}
+  DialogTitle
+} from '@/components/ui/dialog';
+import { Form } from '@/components/ui/form';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Switch } from '@/components/ui/switch';
+import { AlertCircle, User, FileText, CreditCard } from 'lucide-react';
+import FormInputField from '@/components/common/form/FormInputField';
+import FormSelectField from '@/components/common/form/FormSelectField';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { DocumentType } from '@/types/leads.types';
+import { createLiner } from '../action';
+
 const createLinerSchema = z.object({
   firstName: z
     .string()
-    .min(2, "El nombre debe tener al menos 2 caracteres")
-    .max(100, "El nombre no puede tener más de 100 caracteres")
+    .min(2, 'El nombre debe tener al menos 2 caracteres')
+    .max(100, 'El nombre no puede tener más de 100 caracteres')
     .regex(/^[a-zA-ZÀ-ÿ\s]+$/, {
-      message: "El nombre solo debe contener letras y espacios",
+      message: 'El nombre solo debe contener letras y espacios'
     }),
   lastName: z
     .string()
-    .min(2, "El apellido debe tener al menos 2 caracteres")
-    .max(100, "El apellido no puede tener más de 100 caracteres")
+    .min(2, 'El apellido debe tener al menos 2 caracteres')
+    .max(100, 'El apellido no puede tener más de 100 caracteres')
     .regex(/^[a-zA-ZÀ-ÿ\s]+$/, {
-      message: "El apellido solo debe contener letras y espacios",
+      message: 'El apellido solo debe contener letras y espacios'
     }),
   document: z
     .string()
-    .min(1, "El documento es requerido")
-    .max(20, "El documento no puede tener más de 20 caracteres"),
+    .min(1, 'El documento es requerido')
+    .max(20, 'El documento no puede tener más de 20 caracteres'),
   documentType: z.nativeEnum(DocumentType, {
-    errorMap: () => ({ message: "El tipo de documento es requerido" }),
+    errorMap: () => ({ message: 'El tipo de documento es requerido' })
   }),
-  isActive: z.boolean().default(true),
+  isActive: z.boolean().default(true)
 });
+
 type CreateLinerFormData = z.infer<typeof createLinerSchema>;
-export default function CreateLinerModal({
-  isOpen,
-  onClose,
-  onCreate,
-}: CreateLinerModalProps) {
+
+interface CreateLinerModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function CreateLinerModal({ isOpen, onClose }: CreateLinerModalProps) {
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+
   const form = useForm<CreateLinerFormData>({
     resolver: zodResolver(createLinerSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      document: "",
+      firstName: '',
+      lastName: '',
+      document: '',
       documentType: DocumentType.DNI,
-      isActive: true,
-    },
+      isActive: true
+    }
   });
+
   const onSubmit = async (data: CreateLinerFormData) => {
+    setIsSubmitting(true);
+    setError(null);
+
     try {
-      setError(null);
-      await onCreate(data);
-      form.reset();
+      const result = await createLiner(data);
+
+      if (result.success) {
+        toast.success('Liner creado correctamente');
+        form.reset();
+        onClose();
+        router.refresh();
+      } else {
+        setError(result.error || 'Error al crear el liner');
+        toast.error(result.error || 'Error al crear el liner');
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al crear el liner");
+      const errorMessage = err instanceof Error ? err.message : 'Error al crear el liner';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
   const documentTypeOptions = [
-    { value: DocumentType.DNI, label: "DNI" },
-    { value: DocumentType.CE, label: "CE" },
-    { value: DocumentType.RUC, label: "RUC" },
+    { value: DocumentType.DNI, label: 'DNI' },
+    { value: DocumentType.CE, label: 'CE' },
+    { value: DocumentType.RUC, label: 'RUC' }
   ];
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-h-[80vh] flex flex-col max-w-md">
+      <DialogContent className="flex max-h-[80vh] max-w-md flex-col">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
             <User className="h-5 w-5" />
             Nuevo Liner
           </DialogTitle>
         </DialogHeader>
         <Separator className="my-4" />
         {error && (
-          <Alert
-            variant="destructive"
-            className="bg-destructive/10 border-destructive/30"
-          >
-            <AlertCircle className="h-4 w-4 text-destructive" />
-            <AlertDescription className="text-destructive text-sm">
-              {error}
-            </AlertDescription>
+          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
+            <AlertCircle className="text-destructive h-4 w-4" />
+            <AlertDescription className="text-destructive text-sm">{error}</AlertDescription>
           </Alert>
         )}
         <ScrollArea className="flex-1 overflow-y-auto pr-4">
@@ -146,15 +160,13 @@ export default function CreateLinerModal({
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <label className="text-sm font-medium">Estado</label>
-                    <p className="text-sm text-muted-foreground">
-                      {form.watch("isActive") ? "Activo" : "Inactivo"}
+                    <p className="text-muted-foreground text-sm">
+                      {form.watch('isActive') ? 'Activo' : 'Inactivo'}
                     </p>
                   </div>
                   <Switch
-                    checked={form.watch("isActive")}
-                    onCheckedChange={(checked) =>
-                      form.setValue("isActive", checked)
-                    }
+                    checked={form.watch('isActive')}
+                    onCheckedChange={(checked) => form.setValue('isActive', checked)}
                   />
                 </div>
               </div>
@@ -173,11 +185,11 @@ export default function CreateLinerModal({
           </Button>
           <Button
             type="submit"
-            disabled={form.formState.isSubmitting}
+            disabled={isSubmitting}
             className="bg-primary text-primary-foreground hover:bg-primary-hover"
             onClick={form.handleSubmit(onSubmit)}
           >
-            {form.formState.isSubmitting ? "Creando..." : "Crear Liner"}
+            {isSubmitting ? 'Creando...' : 'Crear Liner'}
           </Button>
         </DialogFooter>
       </DialogContent>

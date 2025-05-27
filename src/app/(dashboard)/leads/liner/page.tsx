@@ -1,14 +1,27 @@
-'use client';
-import React from 'react';
+import { Suspense } from 'react';
+import { PageHeader } from '@/components/common/PageHeader';
+import LinersTableSkeleton from './components/LinersTableSkeleton';
 import LinersTable from './components/LinersTable';
-export default function LinersPage() {
+
+export default async function LinersPage({
+  searchParams
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const filters = await searchParams;
+
   return (
     <div className="container py-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">Liners</h1>
-        <p className="text-muted-foreground">Gestiona los liners para la captación de leads</p>
-      </div>
-      <LinersTable />
+      <PageHeader
+        title="Liners"
+        subtitle="Gestiona los liners para la captación de leads"
+        className="mb-6"
+        variant="gradient"
+      />
+
+      <Suspense fallback={<LinersTableSkeleton />}>
+        <LinersTable searchParams={filters} />
+      </Suspense>
     </div>
   );
 }

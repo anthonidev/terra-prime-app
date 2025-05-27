@@ -1,6 +1,4 @@
-'use client';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -11,54 +9,54 @@ import {
 } from '@/components/ui/table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Pencil, Plus, User } from 'lucide-react';
-import LinersTableFilters from './LinersTableFilters';
-import LinersTablePagination from './LinersTablePagination';
-import CreateLinerModal from './CreateLinerModal';
-import UpdateLinerModal from './UpdateLinerModal';
-import { useLiners } from '../../hooks/useLiners';
-export default function LinersTable() {
-  const {
-    data,
-    loading,
+import { getLiners } from '../action';
+import { User } from 'lucide-react';
+import { LinersTableFilters } from './LinersTableFilters';
+import { LinersTablePagination } from './LinersTablePagination';
+import CreateLinerButton from './CreateLinerButton';
+import UpdateLinerButton from './UpdateLinerButton';
+
+export default async function LinersTable({
+  searchParams
+}: {
+  searchParams?: {
+    search?: string;
+    isActive?: string;
+    order?: string;
+    page?: string;
+    limit?: string;
+  };
+}) {
+  // Procesar parámetros de búsqueda
+  const search = searchParams?.search || '';
+
+  const isActive =
+    searchParams?.isActive === 'true'
+      ? true
+      : searchParams?.isActive === 'false'
+        ? false
+        : undefined;
+
+  const order = (searchParams?.order === 'ASC' ? 'ASC' : 'DESC') as 'ASC' | 'DESC';
+  const page = searchParams?.page ? parseInt(searchParams.page) : 1;
+  const limit = searchParams?.limit ? parseInt(searchParams.limit) : 10;
+
+  // Obtener datos del servidor
+  const { data, meta, success } = await getLiners({
     search,
-    currentPage,
-    itemsPerPage,
     isActive,
     order,
-    isCreateModalOpen,
-    isUpdateModalOpen,
-    selectedLiner,
-    handlePageChange,
-    handleItemsPerPageChange,
-    handleSearchChange,
-    handleIsActiveChange,
-    handleOrderChange,
-    openCreateModal,
-    openUpdateModal,
-    closeModals,
-    handleCreateLiner,
-    handleUpdateLiner
-  } = useLiners();
+    page,
+    limit
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <LinersTableFilters
-          search={search}
-          onSearchChange={handleSearchChange}
-          isActive={isActive}
-          onIsActiveChange={handleIsActiveChange}
-          order={order}
-          onOrderChange={handleOrderChange}
-        />
-        <Button
-          onClick={openCreateModal}
-          className="bg-primary text-primary-foreground hover:bg-primary-hover"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Nuevo Liner
-        </Button>
+        <LinersTableFilters search={search} isActive={isActive} order={order} />
+        <CreateLinerButton />
       </div>
+
       <div className="border-border rounded-md border">
         <Table>
           <TableHeader>
@@ -72,14 +70,8 @@ export default function LinersTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={6} className="bg-table-loading-background h-24 text-center">
-                  Cargando liners...
-                </TableCell>
-              </TableRow>
-            ) : data?.data.length ? (
-              data.data.map((liner) => (
+            {data.length ? (
+              data.map((liner) => (
                 <TableRow key={liner.id} className="bg-table-row hover:bg-table-row-hover">
                   <TableCell className="text-table-row-foreground font-medium">
                     <div className="flex items-center">
@@ -102,9 +94,7 @@ export default function LinersTable() {
                     {format(new Date(liner.createdAt), 'PPP', { locale: es })}
                   </TableCell>
                   <TableCell className="text-table-row-foreground text-right">
-                    <Button variant="ghost" size="icon" onClick={() => openUpdateModal(liner)}>
-                      <Pencil className="h-4 w-4" />
-                    </Button>
+                    <UpdateLinerButton liner={liner} />
                   </TableCell>
                 </TableRow>
               ))
@@ -121,26 +111,12 @@ export default function LinersTable() {
           </TableBody>
         </Table>
       </div>
+
       {data && (
         <LinersTablePagination
-          data={data}
-          currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
-          onPageChange={handlePageChange}
-          onItemsPerPageChange={handleItemsPerPageChange}
-        />
-      )}
-      <CreateLinerModal
-        isOpen={isCreateModalOpen}
-        onClose={closeModals}
-        onCreate={handleCreateLiner}
-      />
-      {selectedLiner && (
-        <UpdateLinerModal
-          isOpen={isUpdateModalOpen}
-          onClose={closeModals}
-          liner={selectedLiner}
-          onUpdate={handleUpdateLiner}
+          data={{ data, meta, success }}
+          currentPage={page}
+          itemsPerPage={limit}
         />
       )}
     </div>

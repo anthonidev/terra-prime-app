@@ -1,13 +1,18 @@
-import { Button } from "@/components/ui/button";
+'use client';
+
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Liner } from "@/types/leads.types";
-import { ChevronLeft, ChevronRight, ListFilter } from "lucide-react";
+  SelectValue
+} from '@/components/ui/select';
+import { Liner } from '@/types/leads.types';
+import { ChevronLeft, ChevronRight, ListFilter } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback } from 'react';
+
 interface PaginatedData {
   success: boolean;
   data: Liner[];
@@ -18,29 +23,57 @@ interface PaginatedData {
     currentPage: number;
   };
 }
+
 interface LinersTablePaginationProps {
   data: PaginatedData;
   currentPage: number;
-  onPageChange: (page: number) => void;
   itemsPerPage: number;
-  onItemsPerPageChange: (value: number) => void;
 }
-export default function LinersTablePagination({
+
+export function LinersTablePagination({
   data,
   currentPage,
-  onPageChange,
-  itemsPerPage,
-  onItemsPerPageChange,
+  itemsPerPage
 }: LinersTablePaginationProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (value) {
+        params.set(name, value);
+      } else {
+        params.delete(name);
+      }
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  const handlePageChange = (page: number) => {
+    router.push(`${pathname}?${createQueryString('page', page.toString())}`);
+  };
+
+  const handleItemsPerPageChange = (value: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('limit', value.toString());
+    params.set('page', '1'); // Reset to page 1 when changing items per page
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
   return (
     <div className="flex items-center justify-between px-2">
       <div className="flex items-center space-x-4">
         <Select
           value={itemsPerPage.toString()}
-          onValueChange={(value) => onItemsPerPageChange(Number(value))}
+          onValueChange={(value) => handleItemsPerPageChange(Number(value))}
         >
-          <SelectTrigger className="w-[160px] bg-background border-input">
-            <ListFilter className="mr-2 h-4 w-4 text-muted-foreground" />
+          <SelectTrigger className="bg-background border-input w-[160px]">
+            <ListFilter className="text-muted-foreground mr-2 h-4 w-4" />
             <SelectValue placeholder="Registros por página" />
           </SelectTrigger>
           <SelectContent>
@@ -54,9 +87,7 @@ export default function LinersTablePagination({
         <div className="flex items-center text-sm">
           <span className="text-muted-foreground">
             Total:
-            <span className="font-medium text-foreground">
-              {data.meta.totalItems}
-            </span>
+            <span className="text-foreground font-medium">{data.meta.totalItems}</span>
             liners
           </span>
         </div>
@@ -65,7 +96,7 @@ export default function LinersTablePagination({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
           className="border-input hover:bg-accent"
         >
@@ -75,19 +106,14 @@ export default function LinersTablePagination({
         <div className="flex items-center text-sm">
           <span className="text-muted-foreground">
             Página
-            <span className="font-medium text-foreground">{currentPage}</span>{" "}
-            de
-            <span className="font-medium text-foreground">
-              {data.meta.totalPages}
-            </span>
+            <span className="text-foreground font-medium">{currentPage}</span> de
+            <span className="text-foreground font-medium">{data.meta.totalPages}</span>
           </span>
         </div>
         <Button
           variant="outline"
           size="sm"
-          onClick={() =>
-            onPageChange(Math.min(data.meta.totalPages, currentPage + 1))
-          }
+          onClick={() => handlePageChange(Math.min(data.meta.totalPages, currentPage + 1))}
           disabled={currentPage === data.meta.totalPages}
           className="border-input hover:bg-accent"
         >
