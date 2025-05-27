@@ -14,8 +14,6 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { VendorsActivesItem } from '@/types/sales';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { TableSkeleton } from '@/components/common/table/TableSkeleton';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 
 interface Props {
   data: VendorsActivesItem[];
@@ -85,14 +83,6 @@ export default function VendorsActivesTable({ data, isLoading, error, onRefresh 
                     <div className="text-muted-foreground text-sm">Email:</div>
                     <div className="text-primary truncate text-sm">{item.email}</div>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <div className="text-muted-foreground text-xs">Creado:</div>
-                    <div className="text-sm">
-                      {format(new Date(item.createdAt), 'dd/MM/yyyy HH:mm', {
-                        locale: es
-                      })}
-                    </div>
-                  </div>
                 </div>
               </div>
             </CardContent>
@@ -108,8 +98,6 @@ export default function VendorsActivesTable({ data, isLoading, error, onRefresh 
                 <TableHead>Apellido</TableHead>
                 <TableHead>Documento</TableHead>
                 <TableHead>Teléfono</TableHead>
-                <TableHead>Vendedor</TableHead>
-                <TableHead>Fecha Creada</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -122,11 +110,6 @@ export default function VendorsActivesTable({ data, isLoading, error, onRefresh 
                     <TableCell>{leads.email}</TableCell>
                     <TableCell>{leads.document}</TableCell>
                     <TableCell>{leads.photo}</TableCell>
-                    <TableCell>
-                      {format(new Date(leads.createdAt), 'dd/MM/yyyy HH:mm', {
-                        locale: es
-                      })}
-                    </TableCell>
                   </TableRow>
                 ))
               ) : (
