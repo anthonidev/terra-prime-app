@@ -1,5 +1,5 @@
-import { getProyectStages } from '@/lib/actions/lotes/proyectStagesActions';
-import { ProyectStagesItems } from '@/types/lotes';
+import { getProyectStages } from '@/lib/actions/sales/proyectStagesActions';
+import { ProyectStagesItems } from '@/types/sales';
 import { useCallback, useEffect, useState } from 'react';
 
 interface UseProyectStagesResult {

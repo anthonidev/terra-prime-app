@@ -48,33 +48,27 @@ export default function MobileTable({
                         <span>#{index + 1}</span>
                       </div>
                     </div>
-
                     <div className="space-y-3 p-4">
                       <div className="flex items-start gap-2">
                         <div className="text-muted-foreground text-sm">Nombre</div>
                         <div className="truncate text-sm">{item.firstName}</div>
                       </div>
-
                       <div className="flex items-start gap-2">
                         <div className="text-muted-foreground text-sm">Apellido:</div>
                         <div className="text-primary text-sm">{item.lastName}</div>
                       </div>
-
                       <div className="flex items-start gap-2">
                         <div className="text-muted-foreground text-sm">Documento:</div>
                         <div className="text-primary text-sm">{item.document}</div>
                       </div>
-
                       <div className="flex items-start gap-2">
                         <div className="text-muted-foreground text-sm">Edad:</div>
                         <div className="text-primary text-sm">{item.age}</div>
                       </div>
-
                       <div className="flex items-start gap-2">
                         <div className="text-muted-foreground text-sm">Teléfono:</div>
                         <div className="text-primary text-sm">{item.phone}</div>
                       </div>
-
                       <div className="flex items-start gap-2">
                         <div className="text-muted-foreground text-xs">Creado:</div>
                         <div className="text-sm">
@@ -101,10 +95,9 @@ export default function MobileTable({
             ))
           ) : (
             <div className="rounded-lg border p-6 text-center">
-              <p className="text-muted-foreground">No hay reconsumos registrados</p>
+              <p className="text-muted-foreground">No hay registros</p>
             </div>
           )}
-
           {meta && meta.totalItems > 0 && (
             <TablePagination
               pagination={{

@@ -1,7 +1,7 @@
 'use server';
 
 import { httpClient } from '@/lib/api/http-client';
-import { ProyectLotsDTO, ProyectLotsResponse } from '@/types/lotes';
+import { ProyectLotsDTO, ProyectLotsResponse } from '@/types/sales';
 
 export const getProyectLots = async (data: ProyectLotsDTO): Promise<ProyectLotsResponse> => {
   try {

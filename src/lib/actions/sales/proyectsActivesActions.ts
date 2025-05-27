@@ -1,7 +1,7 @@
 'use server';
 
 import { httpClient } from '@/lib/api/http-client';
-import { ProyectsActivesResponse } from '@/types/lotes';
+import { ProyectsActivesResponse } from '@/types/sales';
 
 export const getProyectsActives = async (): Promise<ProyectsActivesResponse> => {
   try {

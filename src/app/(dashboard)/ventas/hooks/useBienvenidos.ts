@@ -1,6 +1,6 @@
 'use client';
 
-import { assignLeadsToVendor, getLeadsByDay } from '@/lib/actions/sales/bienvenidos.action';
+import { assignLeadsToVendor, getLeadsByDay } from '@/lib/actions/sales/bienvenidosAction';
 import { AssignLeadsToVendorDto, LeadsByDayItem } from '@/types/sales';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';

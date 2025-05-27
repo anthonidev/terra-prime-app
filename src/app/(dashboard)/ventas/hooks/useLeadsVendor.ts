@@ -1,18 +1,18 @@
 'use client';
 
-import { getVendorsActives } from '@/lib/actions/sales/vendorsAction';
-import { VendorsActivesItem } from '@/types/sales';
+import { getLeadsVendor } from '@/lib/actions/sales/leadsVendorActions';
+import { LeadsVendorItems } from '@/types/sales';
 import { useCallback, useEffect, useState } from 'react';
 
 interface TData {
-  data: VendorsActivesItem[];
+  data: LeadsVendorItems[];
   isLoading: boolean;
   error: string;
   refresh: () => Promise<void>;
 }
 
-export function useVendors(): TData {
-  const [data, setData] = useState<VendorsActivesItem[]>([]);
+export function useLeadsVendor(): TData {
+  const [data, setData] = useState<LeadsVendorItems[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
@@ -20,7 +20,7 @@ export function useVendors(): TData {
     try {
       setIsLoading(true);
       setError('');
-      const response = await getVendorsActives();
+      const response = await getLeadsVendor();
       setData(response);
       console.log(response);
     } catch (err) {

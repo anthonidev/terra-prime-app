@@ -119,87 +119,84 @@ export default function BienvenidosTable({
         <User className="mr-1 h-3.5 w-3.5" />
         Asignar vendedor
       </Button>
-      <Card className="mt-6">
-        <CardContent>
-          <div className="overflow-hidden rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>
-                    <Checkbox onCheckedChange={() => {}} />
-                  </TableHead>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Nombre</TableHead>
-                  <TableHead>Apellido</TableHead>
-                  <TableHead>Documento</TableHead>
-                  <TableHead>Teléfono</TableHead>
-                  <TableHead>Edad</TableHead>
-                  <TableHead>Vendedor</TableHead>
-                  <TableHead>Fecha Creada</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.length > 0 ? (
-                  data.map((leads, i) => (
-                    <TableRow key={leads.id}>
-                      <TableCell>
-                        <Checkbox
-                          checked={selectedItems.includes(leads.id)}
-                          onCheckedChange={() => toggleItem(leads.id)}
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">#{i + 1}</TableCell>
-                      <TableCell>{leads.firstName}</TableCell>
-                      <TableCell>{leads.lastName}</TableCell>
-                      <TableCell>{leads.document}</TableCell>
-                      <TableCell>{leads.phone}</TableCell>
-                      <TableCell>{leads.age}</TableCell>
-                      <TableCell>
-                        {typeof leads.vendor === 'string'
-                          ? leads.vendor
-                          : leads.vendor
-                            ? `${leads.vendor.firstName} ${leads.vendor.lastName}`
-                            : 'No asignado'}
-                      </TableCell>
-                      <TableCell>
-                        {format(new Date(leads.createdAt), 'dd/MM/yyyy HH:mm', {
-                          locale: es
-                        })}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
-                      Sin registros existentes.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
 
-          {meta && meta.totalItems > 0 && (
-            <div className="mt-4">
-              <TablePagination
-                pagination={{
-                  pageIndex: currentPage - 1,
-                  pageSize: itemsPerPage
-                }}
-                pageCount={meta.totalPages}
-                pageIndex={currentPage - 1}
-                canNextPage={currentPage >= meta.totalPages}
-                canPreviousPage={currentPage <= 1}
-                setPageIndex={(idx) => onPageChange(Number(idx) + 1)}
-                setPageSize={() => onPageSizeChange}
-                previousPage={() => onPageChange(Math.max(1, currentPage - 1))}
-                nextPage={() => onPageChange(Math.min(meta.totalPages, currentPage + 1))}
-                totalItems={meta.totalItems}
-              />
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      <div className="overflow-hidden rounded-md border bg-white dark:bg-gray-900">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>
+                <Checkbox onCheckedChange={() => {}} />
+              </TableHead>
+              <TableHead>Nº</TableHead>
+              <TableHead>Nombre</TableHead>
+              <TableHead>Apellido</TableHead>
+              <TableHead>Documento</TableHead>
+              <TableHead>Teléfono</TableHead>
+              <TableHead>Edad</TableHead>
+              <TableHead>Vendedor</TableHead>
+              <TableHead>Fecha Creada</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.length > 0 ? (
+              data.map((leads, i) => (
+                <TableRow key={leads.id}>
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedItems.includes(leads.id)}
+                      onCheckedChange={() => toggleItem(leads.id)}
+                    />
+                  </TableCell>
+                  <TableCell className="font-medium">{i + 1}</TableCell>
+                  <TableCell>{leads.firstName}</TableCell>
+                  <TableCell>{leads.lastName}</TableCell>
+                  <TableCell>{leads.document}</TableCell>
+                  <TableCell>{leads.phone}</TableCell>
+                  <TableCell>{leads.age}</TableCell>
+                  <TableCell>
+                    {typeof leads.vendor === 'string'
+                      ? leads.vendor
+                      : leads.vendor
+                        ? `${leads.vendor.firstName} ${leads.vendor.lastName}`
+                        : 'No asignado'}
+                  </TableCell>
+                  <TableCell>
+                    {format(new Date(leads.createdAt), 'dd/MM/yyyy HH:mm', {
+                      locale: es
+                    })}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
+                  Sin registros existentes.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {meta && meta.totalItems > 0 && (
+        <div className="mt-4">
+          <TablePagination
+            pagination={{
+              pageIndex: currentPage - 1,
+              pageSize: itemsPerPage
+            }}
+            pageCount={meta.totalPages}
+            pageIndex={currentPage - 1}
+            canNextPage={currentPage >= meta.totalPages}
+            canPreviousPage={currentPage <= 1}
+            setPageIndex={(idx) => onPageChange(Number(idx) + 1)}
+            setPageSize={() => onPageSizeChange}
+            previousPage={() => onPageChange(Math.max(1, currentPage - 1))}
+            nextPage={() => onPageChange(Math.min(meta.totalPages, currentPage + 1))}
+            totalItems={meta.totalItems}
+          />
+        </div>
+      )}
       <AsignVendorModal
         leads={Array.from(selectedItems)}
         isOpen={isOpenModal}

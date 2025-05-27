@@ -1,9 +1,9 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { ProyectBlocksItems } from '@/types/lotes';
+import { ProyectStagesItems } from '@/types/sales';
 import { ArrowLeft, Calendar, Search } from 'lucide-react';
-import { useProyectBlocks } from '../hooks/useProyectBlocks';
+import { useProyectStages } from '../hooks/useProyectStages';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import ProjectsSkeleton from '@/components/project/list/ProjectsSkeleton';
@@ -11,18 +11,18 @@ import * as React from 'react';
 import { Input } from '@/components/ui/input';
 
 interface Props {
-  stageId: string;
-  onPushClick: (stage: ProyectBlocksItems) => void;
+  projectId: string;
+  onPushClick: (stage: ProyectStagesItems) => void;
   onBack: () => void;
 }
 
-export default function BlocksLayer({ stageId, onPushClick, onBack }: Props) {
+export default function StagesLayer({ projectId, onPushClick, onBack }: Props) {
   const [searchData, setSearchData] = React.useState<string>('');
-  const { blocks, isLoading } = useProyectBlocks(stageId);
+  const { stages, isLoading } = useProyectStages(projectId);
 
   const filteredData = React.useMemo(() => {
-    return blocks.filter((block) => block.name.toLowerCase().includes(searchData.toLowerCase()));
-  }, [blocks, searchData]);
+    return stages.filter((block) => block.name.toLowerCase().includes(searchData.toLowerCase()));
+  }, [stages, searchData]);
 
   return (
     <div>
@@ -51,16 +51,16 @@ export default function BlocksLayer({ stageId, onPushClick, onBack }: Props) {
           <ProjectsSkeleton header={false} padding={false} />
         ) : (
           <div className="grid grid-cols-1 gap-6 rounded-lg sm:grid-cols-2 lg:grid-cols-3">
-            {filteredData.map((block) => (
+            {filteredData.map((stage) => (
               <Card
-                key={block.id}
-                onClick={() => onPushClick(block)}
+                key={stage.id}
+                onClick={() => onPushClick(stage)}
                 className="group flex h-full cursor-pointer flex-col overflow-hidden py-0 transition-colors duration-200 hover:border-green-200 hover:shadow-md hover:shadow-green-200 hover:transition-colors hover:duration-700 dark:hover:border-green-800 dark:hover:duration-200"
               >
-                <CardHeader className="bg-gradient-to-r from-[#025864]/10 to-[#00CA7C]/10 bg-[length:200%_100%] bg-left py-4 transition-all duration-200 ease-in-out group-hover:bg-right">
+                <CardHeader className="bg-gradient-to-r from-[#025864] to-[#00CA7C] bg-[length:200%_100%] bg-left py-4 transition-all duration-200 ease-in-out group-hover:bg-right">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-primary line-clamp-1 text-lg transition-colors">
-                      Manzana - <span className="">{block.name}</span>
+                    <CardTitle className="line-clamp-1 text-lg text-slate-50 transition-colors">
+                      {stage.name}
                     </CardTitle>
                   </div>
                 </CardHeader>
@@ -76,7 +76,7 @@ export default function BlocksLayer({ stageId, onPushClick, onBack }: Props) {
                 <CardFooter className="mt-auto border-t py-4">
                   <div className="text-muted-foreground flex items-center text-xs">
                     <Calendar className="mr-1.5 h-3.5 w-3.5" />
-                    <span>{new Date(block.createdAt).toLocaleDateString()}</span>
+                    <span>{new Date(stage.createdAt).toLocaleDateString()}</span>
                   </div>
                 </CardFooter>
               </Card>
