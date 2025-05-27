@@ -12,8 +12,10 @@ import {
 } from '@/components/ui/table';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { VendorsActivesItem } from '@/types/sales';
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import { AlertCircle, RefreshCw, Search } from 'lucide-react';
 import { TableSkeleton } from '@/components/common/table/TableSkeleton';
+import * as React from 'react';
+import { Input } from '@/components/ui/input';
 
 interface Props {
   data: VendorsActivesItem[];
@@ -23,7 +25,14 @@ interface Props {
 }
 
 export default function VendorsActivesTable({ data, isLoading, error, onRefresh }: Props) {
+  const [searchData, setSearchData] = React.useState<string>('');
   const bMobile = useMediaQuery('(max-width: 768px)');
+
+  const filteredData = React.useMemo(() => {
+    return data.filter((vendor) =>
+      vendor.firstName.toLowerCase().includes(searchData.toLowerCase())
+    );
+  }, [data, searchData]);
 
   if (isLoading) return <TableSkeleton />;
 
@@ -56,8 +65,20 @@ export default function VendorsActivesTable({ data, isLoading, error, onRefresh 
 
   return (
     <div>
+      <div className="pb-4">
+        <div className="relative w-full lg:max-w-80">
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="Buscar..."
+            className="bg-white pl-10 text-sm dark:bg-gray-900"
+            value={searchData}
+            onChange={(e) => setSearchData(e.target.value)}
+          />
+        </div>
+      </div>
       {bMobile ? (
-        data.map((item, index) => (
+        filteredData.map((item, index) => (
           <Card key={item.id} className="mb-4 overflow-hidden py-0">
             <CardContent className="p-0">
               <div className="flex flex-col divide-y font-medium">
@@ -101,8 +122,8 @@ export default function VendorsActivesTable({ data, isLoading, error, onRefresh 
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.length > 0 ? (
-                data.map((leads, i) => (
+              {filteredData.length > 0 ? (
+                filteredData.map((leads, i) => (
                   <TableRow key={leads.id}>
                     <TableCell className="font-medium">{i + 1}</TableCell>
                     <TableCell>{leads.firstName}</TableCell>
@@ -115,7 +136,7 @@ export default function VendorsActivesTable({ data, isLoading, error, onRefresh 
               ) : (
                 <TableRow>
                   <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
-                    Sin registros existentes.
+                    Sin registros existentes para <strong>{searchData}</strong>
                   </TableCell>
                 </TableRow>
               )}
