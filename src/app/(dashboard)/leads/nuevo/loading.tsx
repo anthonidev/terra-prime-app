@@ -1,9 +1,7 @@
-import { Suspense } from 'react';
 import { PageHeader } from '@/components/common/PageHeader';
 import NewLeadSkeleton from './components/NewLeadSkeleton';
-import NewLeadContent from './components/NewLeadContent';
 
-export default async function NewLeadPage() {
+export default function Loading() {
   return (
     <div className="container py-8">
       <PageHeader
@@ -13,10 +11,7 @@ export default async function NewLeadPage() {
         variant="gradient"
         backUrl="/leads"
       />
-
-      <Suspense fallback={<NewLeadSkeleton />}>
-        <NewLeadContent />
-      </Suspense>
+      <NewLeadSkeleton />
     </div>
   );
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -6,49 +8,76 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ListFilter } from 'lucide-react';
-interface PaginatedMeta {
-  totalItems: number;
-  itemsPerPage: number;
-  totalPages: number;
-  currentPage: number;
+import { Lead } from '@/types/leads.types';
+import { ChevronLeft, ChevronRight, ListFilter } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback } from 'react';
+
+interface PaginatedData {
+  success: boolean;
+  data: Lead[];
+  meta: {
+    totalItems: number;
+    itemsPerPage: number;
+    totalPages: number;
+    currentPage: number;
+  };
 }
+
 interface LeadsTablePaginationProps {
-  meta: PaginatedMeta;
+  data: PaginatedData;
   currentPage: number;
-  onPageChange: (page: number) => void;
   itemsPerPage: number;
-  onItemsPerPageChange: (value: number) => void;
 }
-export default function LeadsTablePagination({
-  meta,
+
+export function LeadsTablePagination({
+  data,
   currentPage,
-  onPageChange,
-  itemsPerPage,
-  onItemsPerPageChange
+  itemsPerPage
 }: LeadsTablePaginationProps) {
-  if (!meta.totalPages || meta.totalPages < 2) {
-    return (
-      <div className="flex items-center justify-between border-t px-4 py-3">
-        <div className="text-muted-foreground text-sm">
-          Mostrando {meta.totalItems} {meta.totalItems === 1 ? 'resultado' : 'resultados'}
-        </div>
-      </div>
-    );
-  }
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (value) {
+        params.set(name, value);
+      } else {
+        params.delete(name);
+      }
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  const handlePageChange = (page: number) => {
+    router.push(`${pathname}?${createQueryString('page', page.toString())}`);
+  };
+
+  const handleItemsPerPageChange = (value: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('limit', value.toString());
+    params.set('page', '1'); // Reset to page 1 when changing items per page
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
   return (
-    <div className="flex flex-col justify-between gap-4 border-t px-4 py-3 sm:flex-row sm:items-center">
+    <div className="flex items-center justify-between px-2">
       <div className="flex items-center space-x-4">
         <Select
           value={itemsPerPage.toString()}
-          onValueChange={(value) => onItemsPerPageChange(Number(value))}
+          onValueChange={(value) => handleItemsPerPageChange(Number(value))}
         >
-          <SelectTrigger className="bg-background border-input h-8 w-[180px]">
+          <SelectTrigger className="bg-background border-input w-[160px]">
             <ListFilter className="text-muted-foreground mr-2 h-4 w-4" />
             <SelectValue placeholder="Registros por página" />
           </SelectTrigger>
           <SelectContent>
-            {[10, 20, 30, 50, 100].map((value) => (
+            {[10, 20, 30, 40, 50].map((value) => (
               <SelectItem key={value} value={value.toString()}>
                 {value} por página
               </SelectItem>
@@ -58,56 +87,38 @@ export default function LeadsTablePagination({
         <div className="flex items-center text-sm">
           <span className="text-muted-foreground">
             Total:
-            <span className="text-foreground font-medium">{meta.totalItems}</span>
-            resultados
+            <span className="text-foreground font-medium">{data.meta.totalItems}</span>
+            leads
           </span>
         </div>
       </div>
-      <div className="flex items-center space-x-2">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => onPageChange(1)}
-          disabled={currentPage === 1}
-          className="hidden h-8 w-8 sm:flex"
-        >
-          <ChevronsLeft className="h-4 w-4" />
-        </Button>
+      <div className="flex items-center space-x-4">
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
-          className="h-8"
+          className="border-input hover:bg-accent"
         >
-          <ChevronLeft className="mr-1 h-4 w-4 sm:mr-0" />
-          <span className="sm:hidden">Anterior</span>
+          <ChevronLeft className="mr-2 h-4 w-4" />
+          Anterior
         </Button>
-        <div className="flex items-center px-2 text-sm">
+        <div className="flex items-center text-sm">
           <span className="text-muted-foreground">
-            <span className="text-foreground font-medium">{currentPage}</span>
-            {' / '}
-            <span className="text-foreground font-medium">{meta.totalPages}</span>
+            Página
+            <span className="text-foreground font-medium">{currentPage}</span> de
+            <span className="text-foreground font-medium">{data.meta.totalPages}</span>
           </span>
         </div>
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(Math.min(meta.totalPages, currentPage + 1))}
-          disabled={currentPage === meta.totalPages}
-          className="h-8"
+          onClick={() => handlePageChange(Math.min(data.meta.totalPages, currentPage + 1))}
+          disabled={currentPage === data.meta.totalPages}
+          className="border-input hover:bg-accent"
         >
-          <span className="sm:hidden">Siguiente</span>
-          <ChevronRight className="ml-1 h-4 w-4 sm:ml-0" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => onPageChange(meta.totalPages)}
-          disabled={currentPage === meta.totalPages}
-          className="hidden h-8 w-8 sm:flex"
-        >
-          <ChevronsRight className="h-4 w-4" />
+          Siguiente
+          <ChevronRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </div>
