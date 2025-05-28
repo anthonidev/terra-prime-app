@@ -27,6 +27,7 @@ import { AlertCircle, Building, Mail, User, Phone, Save, Calendar } from 'lucide
 import FormSelectField from '@/components/common/form/FormSelectField';
 import FormInputField from '@/components/common/form/FormInputField';
 import { Textarea } from '@/components/ui/textarea';
+
 const leadFormSchema = z.object({
   firstName: z
     .string()
@@ -84,7 +85,9 @@ const leadFormSchema = z.object({
     .optional()
     .or(z.literal(''))
 });
+
 type LeadFormValues = z.infer<typeof leadFormSchema>;
+
 interface LeadRegistrationFormProps {
   lead: Lead | null;
   searchedDocument: FindLeadByDocumentDto | null;
@@ -99,6 +102,7 @@ interface LeadRegistrationFormProps {
   onCancelRegistration?: () => void;
   onFormChange?: (isDirty: boolean) => void;
 }
+
 export default function LeadRegistrationForm({
   lead,
   searchedDocument,
@@ -115,6 +119,8 @@ export default function LeadRegistrationForm({
   const [departments, setDepartments] = useState<Ubigeo[]>([]);
   const [provinces, setProvinces] = useState<Ubigeo[]>([]);
   const [districts, setDistricts] = useState<Ubigeo[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
+
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
     defaultValues: {
@@ -133,8 +139,18 @@ export default function LeadRegistrationForm({
       observations: ''
     }
   });
+
+  // Initialize departments on component mount
+  useEffect(() => {
+    setDepartments(getDepartments());
+  }, [getDepartments]);
+
+  // Initialize form data and hierarchical locations when lead changes
   useEffect(() => {
     if (lead) {
+      console.log('Setting form data for lead:', lead);
+
+      // Reset form with lead data
       form.reset({
         firstName: lead.firstName,
         lastName: lead.lastName,
@@ -150,34 +166,80 @@ export default function LeadRegistrationForm({
         ubigeoId: lead.ubigeo?.id,
         observations: ''
       });
+
+      // Initialize hierarchical location data if lead has location data
+      if (lead.departmentId) {
+        console.log('Lead has departmentId:', lead.departmentId);
+        const provincesForDept = getProvinces(lead.departmentId);
+        console.log('Provinces for department:', provincesForDept);
+        setProvinces(provincesForDept);
+
+        if (lead.provinceId) {
+          console.log('Lead has provinceId:', lead.provinceId);
+          const districtsForProv = getDistricts(lead.provinceId);
+          console.log('Districts for province:', districtsForProv);
+          setDistricts(districtsForProv);
+        }
+      }
+
+      setIsInitialized(true);
     } else if (searchedDocument) {
       form.setValue('document', searchedDocument.document);
       form.setValue('documentType', searchedDocument.documentType);
+      setIsInitialized(true);
+    } else {
+      setIsInitialized(true);
     }
-  }, [lead, searchedDocument, form]);
-  useEffect(() => {
-    setDepartments(getDepartments());
-  }, [getDepartments]);
+  }, [lead, searchedDocument, form, getProvinces, getDistricts]);
+
+  // Watch for department changes (user selection)
   const departmentId = form.watch('departmentId');
   useEffect(() => {
-    if (departmentId) {
-      console.log('Department ID changed:', departmentId);
-      setProvinces(getProvinces(Number(departmentId)));
+    // Only react to user changes after initialization
+    if (!isInitialized) return;
+
+    console.log('Department ID changed (user selection):', departmentId);
+
+    if (departmentId && departmentId !== (lead?.departmentId ? String(lead.departmentId) : '')) {
+      console.log('Loading provinces for user-selected department:', departmentId);
+      const provincesForDept = getProvinces(Number(departmentId));
+      setProvinces(provincesForDept);
+
+      // Clear dependent fields only for user changes
       form.setValue('provinceId', '');
       form.setValue('ubigeoId', undefined);
-    } else {
+      setDistricts([]);
+    } else if (!departmentId) {
+      // Clear dependent data when department is cleared
       setProvinces([]);
+      setDistricts([]);
+      form.setValue('provinceId', '');
+      form.setValue('ubigeoId', undefined);
     }
-  }, [departmentId, getProvinces, form]);
+  }, [departmentId, getProvinces, form, isInitialized, lead?.departmentId]);
+
+  // Watch for province changes (user selection)
   const provinceId = form.watch('provinceId');
   useEffect(() => {
-    if (provinceId) {
-      setDistricts(getDistricts(Number(provinceId)));
+    // Only react to user changes after initialization
+    if (!isInitialized) return;
+
+    console.log('Province ID changed (user selection):', provinceId);
+
+    if (provinceId && provinceId !== (lead?.provinceId ? String(lead.provinceId) : '')) {
+      console.log('Loading districts for user-selected province:', provinceId);
+      const districtsForProv = getDistricts(Number(provinceId));
+      setDistricts(districtsForProv);
+
+      // Clear dependent field only for user changes
       form.setValue('ubigeoId', undefined);
-    } else {
+    } else if (!provinceId) {
+      // Clear dependent data when province is cleared
       setDistricts([]);
+      form.setValue('ubigeoId', undefined);
     }
-  }, [provinceId, getDistricts, form]);
+  }, [provinceId, getDistricts, form, isInitialized, lead?.provinceId]);
+
   const handleSubmit = async (data: LeadFormValues) => {
     const leadData: CreateUpdateLeadDto = {
       firstName: data.firstName,
@@ -195,27 +257,33 @@ export default function LeadRegistrationForm({
     };
     await saveLead(leadData);
   };
+
   const documentTypeOptions = [
     { value: DocumentType.DNI, label: 'DNI' },
     { value: DocumentType.CE, label: 'CE' },
     { value: DocumentType.RUC, label: 'RUC' }
   ];
+
   const leadSourceOptions = leadSources.map((source) => ({
     value: String(source.id),
     label: source.name
   }));
+
   const departmentOptions = departments.map((dept) => ({
     value: String(dept.id),
     label: dept.name
   }));
+
   const provinceOptions = provinces.map((prov) => ({
     value: String(prov.id),
     label: prov.name
   }));
+
   const districtOptions = districts.map((dist) => ({
     value: String(dist.id),
     label: dist.name
   }));
+
   return (
     <Card>
       <CardHeader>
@@ -234,10 +302,12 @@ export default function LeadRegistrationForm({
                 </AlertDescription>
               </Alert>
             )}
+
             <div className="space-y-1">
               <h3 className="text-md font-medium">Información Personal</h3>
               <Separator />
             </div>
+
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormInputField<LeadFormValues>
                 name="firstName"
@@ -315,10 +385,12 @@ export default function LeadRegistrationForm({
                 disabled={isReadOnly}
               />
             </div>
+
             <div className="space-y-1">
               <h3 className="text-md font-medium">Información Adicional</h3>
               <Separator />
             </div>
+
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormSelectField<LeadFormValues>
                 name="sourceId"
@@ -363,6 +435,7 @@ export default function LeadRegistrationForm({
                 />
               </div>
             </div>
+
             <FormField
               control={form.control}
               name="observations"
