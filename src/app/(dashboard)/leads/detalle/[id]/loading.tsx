@@ -1,15 +1,9 @@
+'use client';
 import { PageHeader } from '@/components/common/PageHeader';
-import { Suspense } from 'react';
-import LeadDetailContent from './components/LeadDetailContent';
+import { User } from 'lucide-react';
 import LeadDetailSkeleton from './components/LeadDetailSkeleton';
 
-interface LeadDetailPageProps {
-  params: Promise<{ id: string }>;
-}
-
-export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
-  const { id } = await params;
-
+export default function Loading() {
   return (
     <div className="container py-8">
       <PageHeader
@@ -18,11 +12,9 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
         className="mb-6"
         variant="gradient"
         backUrl="/leads"
+        icon={User}
       />
-
-      <Suspense fallback={<LeadDetailSkeleton />}>
-        <LeadDetailContent leadId={id} />
-      </Suspense>
+      <LeadDetailSkeleton />
     </div>
   );
 }

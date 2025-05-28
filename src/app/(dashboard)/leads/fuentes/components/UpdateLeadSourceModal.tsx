@@ -1,10 +1,6 @@
 'use client';
 
-// app/(dashboard)/leads/fuentes/components/UpdateLeadSourceModal.tsx
-import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import FormInputField from '@/components/common/form/FormInputField';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,16 +11,19 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
-import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
-import { AlertCircle, FileText, Calendar } from 'lucide-react';
-import FormInputField from '@/components/common/form/FormInputField';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { LeadSource } from '@/types/leads.types';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { LeadSource } from '@/types/leads.types';
+import { AlertCircle, Calendar, FileText } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import * as z from 'zod';
 import { updateLeadSource } from '../action';
 
 const updateLeadSourceSchema = z.object({
@@ -60,7 +59,6 @@ export default function UpdateLeadSourceModal({
     }
   });
 
-  // Update form values when leadSource changes
   useEffect(() => {
     if (isOpen && leadSource) {
       form.reset({

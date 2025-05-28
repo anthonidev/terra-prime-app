@@ -1,7 +1,6 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
-import { Search, SortAsc, SortDesc, Activity } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -9,8 +8,9 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { Activity, Search, SortAsc, SortDesc } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 interface LeadSourcesTableFiltersProps {
   search: string;
@@ -27,19 +27,16 @@ export function LeadSourcesTableFilters({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Local state to control inputs
   const [searchValue, setSearchValue] = useState(initialSearch);
   const [activeValue, setActiveValue] = useState<string>(
     initialIsActive === undefined ? 'all' : initialIsActive.toString()
   );
   const [orderValue, setOrderValue] = useState<'ASC' | 'DESC'>(initialOrder);
 
-  // Create a function to update the search params
   const createQueryString = useCallback(
     (updates: { [key: string]: string }) => {
       const params = new URLSearchParams(searchParams.toString());
 
-      // Apply all updates to the URLSearchParams object
       Object.entries(updates).forEach(([name, value]) => {
         if (value === '' || value === 'all') {
           params.delete(name);
@@ -48,7 +45,6 @@ export function LeadSourcesTableFilters({
         }
       });
 
-      // Always reset to page 1 when applying filters
       params.set('page', '1');
 
       return params.toString();
@@ -56,7 +52,6 @@ export function LeadSourcesTableFilters({
     [searchParams]
   );
 
-  // Debounce search to avoid too many URL updates while typing
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchValue(value);
@@ -77,15 +72,6 @@ export function LeadSourcesTableFilters({
     setOrderValue(value);
     router.push(`${pathname}?${createQueryString({ order: value })}`);
   };
-
-  // Logging for debugging
-  useEffect(() => {
-    console.log('Filter component searchParams:', {
-      search: searchParams.get('search'),
-      isActive: searchParams.get('isActive'),
-      order: searchParams.get('order')
-    });
-  }, [searchParams]);
 
   return (
     <div className="flex items-center gap-3">

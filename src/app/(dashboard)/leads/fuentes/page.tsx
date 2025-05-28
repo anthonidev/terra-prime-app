@@ -1,7 +1,7 @@
-import { Suspense } from 'react';
 import { PageHeader } from '@/components/common/PageHeader';
-import LeadSourcesTableSkeleton from './components/LeadSourcesTableSkeleton';
+import { Suspense } from 'react';
 import LeadSourcesTable from './components/LeadSoucesTable';
+import LeadSourcesTableSkeleton from './components/LeadSourcesTableSkeleton';
 
 export default async function LeadSourcesPage({
   searchParams

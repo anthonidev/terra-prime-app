@@ -1,6 +1,5 @@
 'use client';
 
-// app/(dashboard)/leads/fuentes/components/UpdateLeadSourceButton.tsx
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { LeadSource } from '@/types/leads.types';

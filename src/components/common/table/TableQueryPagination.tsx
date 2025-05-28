@@ -6,35 +6,56 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { PaginationState, Updater } from '@tanstack/react-table';
+import { PaginatedMeta } from '@/types/global/utils.types';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface TablePaginationProps {
-  pagination: PaginationState;
-  pageIndex: number;
-  pageCount: number;
-  previousPage: () => void;
-  nextPage: () => void;
-  setPageSize: (updater: Updater<number>) => void;
-  setPageIndex: (updater: Updater<number>) => void;
-  canNextPage: boolean;
-  canPreviousPage: boolean;
-  totalItems: number;
+  meta: PaginatedMeta;
 }
 
-export function TablePagination({
-  pageIndex,
-  pageCount,
-  pagination,
-  previousPage,
-  nextPage,
-  setPageSize,
-  canNextPage,
-  canPreviousPage,
-  totalItems,
-  setPageIndex
+export function TableQueryPagination({
+  meta: { currentPage, itemsPerPage, totalItems, totalPages }
 }: TablePaginationProps) {
-  // Hide pagination controls if there's only one page
+  const pageIndex = currentPage - 1;
+  const pageCount = totalPages;
+  const pagination = {
+    pageIndex,
+    pageSize: itemsPerPage
+  };
+  const canNextPage = currentPage >= totalPages;
+  const canPreviousPage = currentPage <= 1;
+
+  const onPageChange = (newPage: number) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', newPage.toString());
+    window.history.pushState({}, '', url.toString());
+  };
+  const onPageSizeChange = (newSize: number) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('limit', newSize.toString());
+    window.history.pushState({}, '', url.toString());
+  };
+
+  const previousPage = () => {
+    if (pageIndex > 0) {
+      onPageChange(pageIndex);
+    }
+  };
+
+  const nextPage = () => {
+    if (pageIndex < pageCount - 1) {
+      onPageChange(pageIndex + 2);
+    }
+  };
+
+  const setPageSize = (size: number) => {
+    onPageSizeChange(size);
+  };
+
+  const setPageIndex = (index: number) => {
+    onPageChange(index + 1);
+  };
+
   if (pageCount <= 1) {
     return (
       <div className="flex w-full items-center gap-2 sm:w-auto">

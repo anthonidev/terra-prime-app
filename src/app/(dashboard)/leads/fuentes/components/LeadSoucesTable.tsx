@@ -1,3 +1,4 @@
+import { TableQueryPagination } from '@/components/common/table/TableQueryPagination';
 import { Badge } from '@/components/ui/badge';
 import {
   Table,
@@ -9,10 +10,9 @@ import {
 } from '@/components/ui/table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { LeadSourcesTableFilters } from './LeadSourcesTableFilters';
-import { LeadSourcesTablePagination } from './LeadSourcesTablePagination';
 import { getLeadSources } from '../action';
 import CreateLeadSourceButton from './CreateLeadSourceButton';
+import { LeadSourcesTableFilters } from './LeadSourcesTableFilters';
 import UpdateLeadSourceButton from './UpdateLeadSourceButton';
 export default async function LeadSourcesTable({
   searchParams
@@ -25,10 +25,8 @@ export default async function LeadSourcesTable({
     limit?: string;
   };
 }) {
-  // Asegúrate de acceder directamente a los valores de searchParams
   const search = searchParams?.search || '';
 
-  // Procesar isActive correctamente
   const isActive =
     searchParams?.isActive === 'true'
       ? true
@@ -36,26 +34,18 @@ export default async function LeadSourcesTable({
         ? false
         : undefined;
 
-  // Asegúrate de que order sea ASC o DESC
   const order = (searchParams?.order === 'ASC' ? 'ASC' : 'DESC') as 'ASC' | 'DESC';
 
-  // Convertir page y limit a números
   const page = searchParams?.page ? parseInt(searchParams.page) : 1;
   const limit = searchParams?.limit ? parseInt(searchParams.limit) : 10;
 
-  console.log('Actual searchParams:', searchParams);
-  console.log('Processed params for API call:', { search, isActive, order, page, limit });
-
-  // Fetch data from the server with parameters
-  const { data, meta, success } = await getLeadSources({
+  const { data, meta } = await getLeadSources({
     search,
     isActive,
     order,
     page,
     limit
   });
-
-  // Resto del componente...
 
   return (
     <div className="space-y-6">
@@ -110,13 +100,7 @@ export default async function LeadSourcesTable({
         </Table>
       </div>
 
-      {data && (
-        <LeadSourcesTablePagination
-          data={{ data, meta, success }}
-          currentPage={page}
-          itemsPerPage={limit}
-        />
-      )}
+      <TableQueryPagination meta={meta} />
     </div>
   );
 }
