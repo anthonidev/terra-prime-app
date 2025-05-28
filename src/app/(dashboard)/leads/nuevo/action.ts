@@ -47,7 +47,7 @@ export async function createOrUpdateLead(
 
     return result;
   } catch (error) {
-    console.error('Error al crear o actualizar lead:', error);
+    console.error('ERROR al crear o actualizar lead:', error);
     throw error;
   }
 }

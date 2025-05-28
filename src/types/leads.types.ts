@@ -21,7 +21,7 @@ export interface GetLeadSourcesParams {
   isActive?: boolean;
   page?: number;
   limit?: number;
-  order?: "ASC" | "DESC";
+  order?: 'ASC' | 'DESC';
 }
 export interface ActiveLeadSourcesResponse {
   success: boolean;
@@ -46,9 +46,9 @@ export interface UpdateLeadSourceResponse {
   data: LeadSource;
 }
 export enum DocumentType {
-  DNI = "DNI",
-  CE = "CE",
-  RUC = "RUC",
+  DNI = 'DNI',
+  CE = 'CE',
+  RUC = 'RUC'
 }
 export interface Liner {
   id: string;
@@ -91,7 +91,7 @@ export interface GetLinersParams {
   isActive?: boolean;
   page?: number;
   limit?: number;
-  order?: "ASC" | "DESC";
+  order?: 'ASC' | 'DESC';
 }
 export interface CreateLinerDto {
   firstName: string;
@@ -122,16 +122,18 @@ export interface Lead {
   id: string;
   firstName: string;
   lastName: string;
-  email?: string;
+  email: string | null;
   document: string;
   documentType: DocumentType;
-  phone: string;
-  phone2?: string;
-  age?: number;
+  phone: string | null;
+  phone2: string | null;
+  age: number | null;
   ubigeo?: Ubigeo;
   source?: LeadSource;
   visits: LeadVisit[];
   isActive: boolean;
+  departmentId: number | null;
+  provinceId: number | null;
   createdAt: string;
   updatedAt: string;
   isInOffice: boolean;
@@ -205,7 +207,7 @@ export interface GetLeadsParams {
   endDate?: string;
   page?: number;
   limit?: number;
-  order?: "ASC" | "DESC";
+  order?: 'ASC' | 'DESC';
 }
 export interface RegisterDepartureResponse {
   success: boolean;

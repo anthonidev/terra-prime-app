@@ -3,7 +3,6 @@ import NewLeadForm from './NewLeadForm';
 
 export default async function NewLeadContent() {
   try {
-    // Fetch all data in parallel
     const [leadSourcesResponse, linersResponse, ubigeosResponse] = await Promise.all([
       getActiveLeadSources(),
       getActiveLiners(),
@@ -14,13 +13,7 @@ export default async function NewLeadContent() {
       throw new Error('Failed to load required data');
     }
 
-    return (
-      <NewLeadForm
-        leadSources={leadSourcesResponse.data}
-        liners={linersResponse.data}
-        ubigeos={ubigeosResponse.data}
-      />
-    );
+    return <NewLeadForm leadSources={leadSourcesResponse.data} ubigeos={ubigeosResponse.data} />;
   } catch (error) {
     console.error('Error loading new lead data:', error);
 

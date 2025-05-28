@@ -21,11 +21,10 @@ import LeadSearchForm from './LeadSearchForm';
 
 interface NewLeadFormProps {
   leadSources: LeadSource[];
-  liners: Liner[];
   ubigeos: Ubigeo[];
 }
 
-export default function NewLeadForm({ leadSources, liners, ubigeos }: NewLeadFormProps) {
+export default function NewLeadForm({ leadSources, ubigeos }: NewLeadFormProps) {
   const router = useRouter();
   const [lead, setLead] = useState<Lead | null>(null);
   const [isSearching, setIsSearching] = useState<boolean>(false);
@@ -79,6 +78,7 @@ export default function NewLeadForm({ leadSources, liners, ubigeos }: NewLeadFor
     setSubmitError(null);
 
     try {
+      console.log('Saving lead data:', leadData);
       const response = await createOrUpdateLead(leadData);
 
       if (response.success) {

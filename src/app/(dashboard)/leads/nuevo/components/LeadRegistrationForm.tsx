@@ -1,106 +1,88 @@
-"use client";
-import { useEffect, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+'use client';
+import { useEffect, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
+  FormMessage
+} from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Separator } from '@/components/ui/separator';
 import {
   CreateUpdateLeadDto,
   DocumentType,
   FindLeadByDocumentDto,
   Lead,
   LeadSource,
-  Ubigeo,
-} from "@/types/leads.types";
-import {
-  AlertCircle,
-  Building,
-  Mail,
-  User,
-  Phone,
-  Save,
-  Calendar,
-} from "lucide-react";
-import FormSelectField from "@/components/common/form/FormSelectField";
-import FormInputField from "@/components/common/form/FormInputField";
-import { Textarea } from "@/components/ui/textarea";
+  Ubigeo
+} from '@/types/leads.types';
+import { AlertCircle, Building, Mail, User, Phone, Save, Calendar } from 'lucide-react';
+import FormSelectField from '@/components/common/form/FormSelectField';
+import FormInputField from '@/components/common/form/FormInputField';
+import { Textarea } from '@/components/ui/textarea';
 const leadFormSchema = z.object({
   firstName: z
     .string()
-    .min(2, "El nombre debe tener al menos 2 caracteres")
-    .max(100, "El nombre no puede tener más de 100 caracteres")
+    .min(2, 'El nombre debe tener al menos 2 caracteres')
+    .max(100, 'El nombre no puede tener más de 100 caracteres')
     .regex(/^[a-zA-ZÀ-ÿ\s]+$/, {
-      message: "El nombre solo debe contener letras y espacios",
+      message: 'El nombre solo debe contener letras y espacios'
     }),
   lastName: z
     .string()
-    .min(2, "El apellido debe tener al menos 2 caracteres")
-    .max(100, "El apellido no puede tener más de 100 caracteres")
+    .min(2, 'El apellido debe tener al menos 2 caracteres')
+    .max(100, 'El apellido no puede tener más de 100 caracteres')
     .regex(/^[a-zA-ZÀ-ÿ\s]+$/, {
-      message: "El apellido solo debe contener letras y espacios",
+      message: 'El apellido solo debe contener letras y espacios'
     }),
   document: z
     .string()
-    .min(1, "El documento es requerido")
-    .max(20, "El documento no puede tener más de 20 caracteres"),
+    .min(1, 'El documento es requerido')
+    .max(20, 'El documento no puede tener más de 20 caracteres'),
   documentType: z.nativeEnum(DocumentType, {
-    required_error: "El tipo de documento es requerido",
+    required_error: 'El tipo de documento es requerido'
   }),
-  email: z
-    .string()
-    .email("El email debe tener un formato válido")
-    .optional()
-    .or(z.literal("")),
+  email: z.string().email('El email debe tener un formato válido').optional().or(z.literal('')),
   phone: z
     .string()
     .regex(/^\+?[0-9]{6,15}$/, {
-      message: "El teléfono debe ser un número válido",
+      message: 'El teléfono debe ser un número válido'
     })
     .optional()
-    .or(z.literal("")),
+    .or(z.literal('')),
   phone2: z
     .string()
     .regex(/^\+?[0-9]{6,15}$/, {
-      message: "El teléfono alternativo debe ser un número válido",
+      message: 'El teléfono alternativo debe ser un número válido'
     })
     .optional()
-    .or(z.literal("")),
+    .or(z.literal('')),
   age: z
     .string()
     .transform((val) => (val ? Number(val) : undefined))
     .refine((val) => !val || (val >= 18 && val <= 120), {
-      message: "La edad debe estar entre 18 y 120 años",
+      message: 'La edad debe estar entre 18 y 120 años'
     })
     .optional(),
-  sourceId: z.string().optional().or(z.literal("")),
-  departmentId: z.string().optional().or(z.literal("")),
-  provinceId: z.string().optional().or(z.literal("")),
+  sourceId: z.string().optional().or(z.literal('')),
+  departmentId: z.string().optional().or(z.literal('')),
+  provinceId: z.string().optional().or(z.literal('')),
   ubigeoId: z
     .string()
     .transform((val) => (val ? Number(val) : undefined))
     .optional(),
   observations: z
     .string()
-    .max(500, "Las observaciones no pueden tener más de 500 caracteres")
+    .max(500, 'Las observaciones no pueden tener más de 500 caracteres')
     .optional()
-    .or(z.literal("")),
+    .or(z.literal(''))
 });
 type LeadFormValues = z.infer<typeof leadFormSchema>;
 interface LeadRegistrationFormProps {
@@ -128,7 +110,7 @@ export default function LeadRegistrationForm({
   getProvinces,
   getDistricts,
   isReadOnly = false,
-  onCancelRegistration,
+  onCancelRegistration
 }: LeadRegistrationFormProps) {
   const [departments, setDepartments] = useState<Ubigeo[]>([]);
   const [provinces, setProvinces] = useState<Ubigeo[]>([]);
@@ -136,23 +118,20 @@ export default function LeadRegistrationForm({
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
     defaultValues: {
-      firstName: lead?.firstName || "",
-      lastName: lead?.lastName || "",
-      document: lead?.document || searchedDocument?.document || "",
-      documentType:
-        lead?.documentType ||
-        searchedDocument?.documentType ||
-        DocumentType.DNI,
-      email: lead?.email || "",
-      phone: lead?.phone || "",
-      phone2: lead?.phone2 || "",
-      age: lead?.age,
-      sourceId: lead?.source?.id ? String(lead.source.id) : "",
-      departmentId: "",
-      provinceId: "",
+      firstName: lead?.firstName || '',
+      lastName: lead?.lastName || '',
+      document: lead?.document || searchedDocument?.document || '',
+      documentType: lead?.documentType || searchedDocument?.documentType || DocumentType.DNI,
+      email: lead?.email || '',
+      phone: lead?.phone || '',
+      phone2: lead?.phone2 || '',
+      age: lead?.age ? Number(lead.age) : undefined,
+      sourceId: lead?.source?.id ? String(lead.source.id) : '',
+      departmentId: lead?.departmentId ? String(lead.departmentId) : '',
+      provinceId: lead?.provinceId ? String(lead.provinceId) : '',
       ubigeoId: lead?.ubigeo?.id,
-      observations: "",
-    },
+      observations: ''
+    }
   });
   useEffect(() => {
     if (lead) {
@@ -161,39 +140,40 @@ export default function LeadRegistrationForm({
         lastName: lead.lastName,
         document: lead.document,
         documentType: lead.documentType,
-        email: lead.email || "",
-        phone: lead.phone || "",
-        phone2: lead.phone2 || "",
-        age: lead.age,
-        sourceId: lead.source?.id ? String(lead.source.id) : "",
-        departmentId: "",
-        provinceId: "",
+        email: lead.email || '',
+        phone: lead.phone || '',
+        phone2: lead.phone2 || '',
+        age: lead?.age ? Number(lead.age) : undefined,
+        sourceId: lead.source?.id ? String(lead.source.id) : '',
+        departmentId: lead?.departmentId ? String(lead.departmentId) : '',
+        provinceId: lead?.provinceId ? String(lead.provinceId) : '',
         ubigeoId: lead.ubigeo?.id,
-        observations: "",
+        observations: ''
       });
     } else if (searchedDocument) {
-      form.setValue("document", searchedDocument.document);
-      form.setValue("documentType", searchedDocument.documentType);
+      form.setValue('document', searchedDocument.document);
+      form.setValue('documentType', searchedDocument.documentType);
     }
   }, [lead, searchedDocument, form]);
   useEffect(() => {
     setDepartments(getDepartments());
   }, [getDepartments]);
-  const departmentId = form.watch("departmentId");
+  const departmentId = form.watch('departmentId');
   useEffect(() => {
     if (departmentId) {
+      console.log('Department ID changed:', departmentId);
       setProvinces(getProvinces(Number(departmentId)));
-      form.setValue("provinceId", "");
-      form.setValue("ubigeoId", undefined);
+      form.setValue('provinceId', '');
+      form.setValue('ubigeoId', undefined);
     } else {
       setProvinces([]);
     }
   }, [departmentId, getProvinces, form]);
-  const provinceId = form.watch("provinceId");
+  const provinceId = form.watch('provinceId');
   useEffect(() => {
     if (provinceId) {
       setDistricts(getDistricts(Number(provinceId)));
-      form.setValue("ubigeoId", undefined);
+      form.setValue('ubigeoId', undefined);
     } else {
       setDistricts([]);
     }
@@ -211,50 +191,44 @@ export default function LeadRegistrationForm({
       sourceId: data.sourceId || undefined,
       ubigeoId: data.ubigeoId,
       observations: data.observations || undefined,
-      isNewLead: !lead,
+      isNewLead: !lead
     };
     await saveLead(leadData);
   };
   const documentTypeOptions = [
-    { value: DocumentType.DNI, label: "DNI" },
-    { value: DocumentType.CE, label: "CE" },
-    { value: DocumentType.RUC, label: "RUC" },
+    { value: DocumentType.DNI, label: 'DNI' },
+    { value: DocumentType.CE, label: 'CE' },
+    { value: DocumentType.RUC, label: 'RUC' }
   ];
   const leadSourceOptions = leadSources.map((source) => ({
     value: String(source.id),
-    label: source.name,
+    label: source.name
   }));
   const departmentOptions = departments.map((dept) => ({
     value: String(dept.id),
-    label: dept.name,
+    label: dept.name
   }));
   const provinceOptions = provinces.map((prov) => ({
     value: String(prov.id),
-    label: prov.name,
+    label: prov.name
   }));
   const districtOptions = districts.map((dist) => ({
     value: String(dist.id),
-    label: dist.name,
+    label: dist.name
   }));
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-lg">
-          {lead ? "Actualizar información del Lead" : "Registrar nuevo Lead"}
+          {lead ? 'Actualizar información del Lead' : 'Registrar nuevo Lead'}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-6"
-          >
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             {submitError && (
-              <Alert
-                variant="destructive"
-                className="bg-destructive/10 border-destructive/30"
-              >
-                <AlertCircle className="h-4 w-4 text-destructive" />
+              <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
+                <AlertCircle className="text-destructive h-4 w-4" />
                 <AlertDescription className="text-destructive text-sm">
                   {submitError}
                 </AlertDescription>
@@ -264,7 +238,7 @@ export default function LeadRegistrationForm({
               <h3 className="text-md font-medium">Información Personal</h3>
               <Separator />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormInputField<LeadFormValues>
                 name="firstName"
                 label="Nombre"
@@ -345,7 +319,7 @@ export default function LeadRegistrationForm({
               <h3 className="text-md font-medium">Información Adicional</h3>
               <Separator />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormSelectField<LeadFormValues>
                 name="sourceId"
                 label="Fuente de Lead"
@@ -437,7 +411,7 @@ export default function LeadRegistrationForm({
               ) : (
                 <>
                   <Save className="mr-2 h-4 w-4" />
-                  {lead ? "Actualizar Lead" : "Registrar Lead"}
+                  {lead ? 'Actualizar Lead' : 'Registrar Lead'}
                 </>
               )}
             </Button>

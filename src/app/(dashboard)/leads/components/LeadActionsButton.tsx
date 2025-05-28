@@ -26,10 +26,6 @@ export default function LeadActionsButton({ lead }: LeadActionsButtonProps) {
     router.push(`/leads/detalle/${lead.id}`);
   };
 
-  const handleEdit = () => {
-    router.push(`/leads/editar/${lead.id}`);
-  };
-
   const handleRegisterDeparture = async () => {
     if (!lead.isInOffice) {
       toast.error('El lead no se encuentra en la oficina');
@@ -66,10 +62,7 @@ export default function LeadActionsButton({ lead }: LeadActionsButtonProps) {
           <Eye className="mr-2 h-4 w-4" />
           Ver detalles
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleEdit}>
-          <Edit className="mr-2 h-4 w-4" />
-          Editar
-        </DropdownMenuItem>
+
         {lead.isInOffice && (
           <DropdownMenuItem onClick={handleRegisterDeparture} disabled={isLoading}>
             <LogOut className="mr-2 h-4 w-4" />
