@@ -8,7 +8,6 @@ import {
   FindLeadByDocumentDto,
   Lead,
   LeadSource,
-  Liner,
   Ubigeo
 } from '@/types/leads.types';
 import { useRouter } from 'next/navigation';

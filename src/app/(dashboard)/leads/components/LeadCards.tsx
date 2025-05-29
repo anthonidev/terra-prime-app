@@ -5,6 +5,7 @@ type Props = {
   data: Lead[];
 };
 const LeadCards = ({ data }: Props) => {
+  console.log('LeadCards data', data);
   return <div>LeadCards</div>;
 };
 

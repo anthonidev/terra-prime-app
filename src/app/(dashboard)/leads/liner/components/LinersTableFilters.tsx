@@ -1,7 +1,6 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
-import { Search, SortAsc, SortDesc, Activity } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -9,8 +8,9 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { Activity, Search, SortAsc, SortDesc } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 interface LinersTableFiltersProps {
   search: string;

@@ -42,7 +42,7 @@ export default function LeadActionsButton({ lead }: LeadActionsButtonProps) {
       } else {
         toast.error(result.error || 'Error al registrar la salida');
       }
-    } catch (error) {
+    } catch {
       toast.error('Error al registrar la salida');
     } finally {
       setIsLoading(false);

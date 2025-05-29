@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useCallback } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { CreateUpdateLeadDto, Lead } from '@/types/leads.types';
 import { AlertCircle } from 'lucide-react';
-import { Lead } from '@/types/leads.types';
-import LeadDetailHeader from './LeadDetailHeader';
-import LeadVisits from './LeadVisits';
-import LeadEditForm from './LeadEditForm';
+import { useCallback, useState } from 'react';
 import { useLeadDetail } from '../hooks/useLeadDetail';
+import LeadDetailHeader from './LeadDetailHeader';
+import LeadEditForm from './LeadEditForm';
+import LeadVisits from './LeadVisits';
 
 interface LeadDetailViewProps {
   lead: Lead;
@@ -26,7 +26,7 @@ export default function LeadDetailView({ lead }: LeadDetailViewProps) {
   }, []);
 
   const handleUpdateLead = useCallback(
-    async (data: any) => {
+    async (data: CreateUpdateLeadDto) => {
       const success = await updateLeadContactAction(data, lead.id);
       if (success) {
         handleCloseEditModal();

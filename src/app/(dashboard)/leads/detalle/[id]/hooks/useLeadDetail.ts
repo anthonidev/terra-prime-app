@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
 import { CreateUpdateLeadDto, Lead } from '@/types/leads.types';
-import { updateLeadContact, registerLeadDeparture } from '../action';
+import { useRouter } from 'next/navigation';
+import { useCallback, useState } from 'react';
+import { toast } from 'sonner';
+import { registerLeadDeparture, updateLeadContact } from '../action';
 
 interface UseLeadDetailReturn {
   updating: boolean;
@@ -61,7 +61,7 @@ export function useLeadDetail(lead: Lead): UseLeadDetailReturn {
         setUpdating(false);
       }
     },
-    []
+    [router]
   );
 
   const registerDepartureAction = useCallback(

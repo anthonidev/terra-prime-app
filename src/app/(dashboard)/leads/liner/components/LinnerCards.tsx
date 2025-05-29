@@ -6,6 +6,7 @@ type Props = {
 };
 
 const LinnerCards = ({ data }: Props) => {
+  console.log('LinnerCards data', data);
   return <div>LinnerCards</div>;
 };
 

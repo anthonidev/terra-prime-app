@@ -33,7 +33,7 @@ export default async function LeadsData({
   const page = searchParams?.page ? parseInt(searchParams.page) : 1;
   const limit = searchParams?.limit ? parseInt(searchParams.limit) : 10;
 
-  const { data, meta, success } = await getLeads({
+  const { data, meta } = await getLeads({
     search,
     isInOffice,
     startDate,
