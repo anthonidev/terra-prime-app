@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { LeadSource } from '@/types/leads.types';
-import UpdateLeadSourceModal from './UpdateLeadSourceModal';
+import UpdateLeadSourceModal from '../modal/UpdateLeadSourceModal';
 
 interface UpdateLeadSourceButtonProps {
   source: LeadSource;

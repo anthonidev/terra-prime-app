@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Liner } from '@/types/leads.types';
-import UpdateLinerModal from './UpdateLinerModal';
+import UpdateLinerModal from '../modal/UpdateLinerModal';
 
 interface UpdateLinerButtonProps {
   liner: Liner;

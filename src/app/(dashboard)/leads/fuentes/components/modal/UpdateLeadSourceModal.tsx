@@ -14,66 +14,87 @@ import { Form } from '@/components/ui/form';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
+import { LeadSource } from '@/types/leads.types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertCircle, FileText } from 'lucide-react';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { AlertCircle, Calendar, FileText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
-import { createLeadSource } from '../action';
+import { updateLeadSource } from '../../action';
 
-const createLeadSourceSchema = z.object({
+const updateLeadSourceSchema = z.object({
   name: z
     .string()
     .min(2, 'El nombre debe tener al menos 2 caracteres')
     .max(50, 'El nombre no puede tener más de 50 caracteres'),
-  isActive: z.boolean().default(true)
+  isActive: z.boolean()
 });
 
-type CreateLeadSourceFormData = z.infer<typeof createLeadSourceSchema>;
+type UpdateLeadSourceFormData = z.infer<typeof updateLeadSourceSchema>;
 
-interface CreateLeadSourceModalProps {
+interface UpdateLeadSourceModalProps {
   isOpen: boolean;
   onClose: () => void;
+  leadSource: LeadSource;
 }
 
-export default function CreateLeadSourceModal({ isOpen, onClose }: CreateLeadSourceModalProps) {
+export default function UpdateLeadSourceModal({
+  isOpen,
+  onClose,
+  leadSource
+}: UpdateLeadSourceModalProps) {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
-  const form = useForm<CreateLeadSourceFormData>({
-    resolver: zodResolver(createLeadSourceSchema),
+  const form = useForm<UpdateLeadSourceFormData>({
+    resolver: zodResolver(updateLeadSourceSchema),
     defaultValues: {
-      name: '',
-      isActive: true
+      name: leadSource.name,
+      isActive: leadSource.isActive
     }
   });
 
-  const onSubmit = async (data: CreateLeadSourceFormData) => {
+  useEffect(() => {
+    if (isOpen && leadSource) {
+      form.reset({
+        name: leadSource.name,
+        isActive: leadSource.isActive
+      });
+    }
+  }, [isOpen, leadSource, form]);
+
+  const onSubmit = async (data: UpdateLeadSourceFormData) => {
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const result = await createLeadSource(data);
+      const result = await updateLeadSource(leadSource.id, data);
 
       if (result.success) {
-        toast.success('Fuente de lead creada correctamente');
-        form.reset();
+        toast.success('Fuente de lead actualizada correctamente');
         onClose();
         router.refresh();
       } else {
-        setError(result.error || 'Error al crear la fuente de lead');
-        toast.error(result.error || 'Error al crear la fuente de lead');
+        setError(result.error || 'Error al actualizar la fuente de lead');
+        toast.error(result.error || 'Error al actualizar la fuente de lead');
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error al crear la fuente de lead';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Error al actualizar la fuente de lead';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    return format(new Date(dateString), 'PPP', { locale: es });
   };
 
   return (
@@ -82,7 +103,7 @@ export default function CreateLeadSourceModal({ isOpen, onClose }: CreateLeadSou
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
             <FileText className="h-5 w-5" />
-            Nueva Fuente de Lead
+            Editar Fuente de Lead
           </DialogTitle>
         </DialogHeader>
         <Separator className="my-4" />
@@ -92,11 +113,19 @@ export default function CreateLeadSourceModal({ isOpen, onClose }: CreateLeadSou
             <AlertDescription className="text-destructive text-sm">{error}</AlertDescription>
           </Alert>
         )}
-        <ScrollArea className="flex-1 overflow-y-auto pr-4">
+        <div className="bg-muted/20 rounded-md p-3 text-sm">
+          <div className="text-muted-foreground flex items-center">
+            <Calendar className="mr-2 h-4 w-4" />
+            <span>
+              ID: {leadSource.id} | Creado: {formatDate(leadSource.createdAt)}
+            </span>
+          </div>
+        </div>
+        <ScrollArea className="mt-4 flex-1 overflow-y-auto pr-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-4">
-                <FormInputField<CreateLeadSourceFormData>
+                <FormInputField<UpdateLeadSourceFormData>
                   name="name"
                   label="Nombre"
                   placeholder="Nombre de la fuente"
@@ -136,7 +165,7 @@ export default function CreateLeadSourceModal({ isOpen, onClose }: CreateLeadSou
             className="bg-primary text-primary-foreground hover:bg-primary-hover"
             onClick={form.handleSubmit(onSubmit)}
           >
-            {isSubmitting ? 'Creando...' : 'Crear Fuente'}
+            {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
           </Button>
         </DialogFooter>
       </DialogContent>

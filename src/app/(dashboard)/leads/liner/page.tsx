@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { PageHeader } from '@/components/common/PageHeader';
 import LinersTableSkeleton from './components/LinersTableSkeleton';
-import LinersTable from './components/LinersTable';
+import LinersData from './components/LinersData';
 
 export default async function LinersPage({
   searchParams
@@ -20,7 +20,7 @@ export default async function LinersPage({
       />
 
       <Suspense fallback={<LinersTableSkeleton />}>
-        <LinersTable searchParams={filters} />
+        <LinersData searchParams={filters} />
       </Suspense>
     </div>
   );

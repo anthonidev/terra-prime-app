@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -8,11 +7,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Eye, LogOut, MoreHorizontal, Edit } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
 import { Lead } from '@/types/leads.types';
-import { registerDeparture } from '../action';
+import { Eye, LogOut, MoreHorizontal } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { registerDeparture } from '../../action';
 
 interface LeadActionsButtonProps {
   lead: Lead;

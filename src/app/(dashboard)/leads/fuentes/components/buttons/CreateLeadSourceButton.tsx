@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import CreateLinerModal from './CreateLinerModal';
+import { useState } from 'react';
+import CreateLeadSourceModal from '../modal/CreateLeadSourceModal';
 
-export default function CreateLinerButton() {
+export default function CreateLeadSourceButton() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   return (
@@ -15,10 +15,13 @@ export default function CreateLinerButton() {
         className="bg-primary text-primary-foreground hover:bg-primary-hover"
       >
         <Plus className="mr-2 h-4 w-4" />
-        Nuevo Liner
+        Nueva Fuente
       </Button>
 
-      <CreateLinerModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
+      <CreateLeadSourceModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
     </>
   );
 }

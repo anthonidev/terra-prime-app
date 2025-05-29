@@ -62,7 +62,6 @@ export default function LeadDetailView({ lead }: LeadDetailViewProps) {
         </Alert>
       )}
 
-      {/* Header con información principal del lead */}
       <LeadDetailHeader
         lead={lead}
         onEditClick={handleOpenEditModal}
@@ -70,10 +69,8 @@ export default function LeadDetailView({ lead }: LeadDetailViewProps) {
         isUpdating={updating}
       />
 
-      {/* Historial de visitas */}
       <LeadVisits lead={lead} />
 
-      {/* Modal de edición */}
       <LeadEditForm
         lead={lead}
         isOpen={isEditModalOpen}

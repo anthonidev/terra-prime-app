@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -17,15 +17,17 @@ import { Form } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Switch } from '@/components/ui/switch';
-import { AlertCircle, User, FileText, CreditCard } from 'lucide-react';
+import { AlertCircle, User, FileText, CreditCard, Calendar } from 'lucide-react';
 import FormInputField from '@/components/common/form/FormInputField';
 import FormSelectField from '@/components/common/form/FormSelectField';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { DocumentType } from '@/types/leads.types';
-import { createLiner } from '../action';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { DocumentType, Liner } from '@/types/leads.types';
+import { updateLiner } from '../../action';
 
-const createLinerSchema = z.object({
+const updateLinerSchema = z.object({
   firstName: z
     .string()
     .min(2, 'El nombre debe tener al menos 2 caracteres')
@@ -47,50 +49,63 @@ const createLinerSchema = z.object({
   documentType: z.nativeEnum(DocumentType, {
     errorMap: () => ({ message: 'El tipo de documento es requerido' })
   }),
-  isActive: z.boolean().default(true)
+  isActive: z.boolean()
 });
 
-type CreateLinerFormData = z.infer<typeof createLinerSchema>;
+type UpdateLinerFormData = z.infer<typeof updateLinerSchema>;
 
-interface CreateLinerModalProps {
+interface UpdateLinerModalProps {
   isOpen: boolean;
   onClose: () => void;
+  liner: Liner;
 }
 
-export default function CreateLinerModal({ isOpen, onClose }: CreateLinerModalProps) {
+export default function UpdateLinerModal({ isOpen, onClose, liner }: UpdateLinerModalProps) {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
-  const form = useForm<CreateLinerFormData>({
-    resolver: zodResolver(createLinerSchema),
+  const form = useForm<UpdateLinerFormData>({
+    resolver: zodResolver(updateLinerSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      document: '',
-      documentType: DocumentType.DNI,
-      isActive: true
+      firstName: liner.firstName,
+      lastName: liner.lastName,
+      document: liner.document,
+      documentType: liner.documentType,
+      isActive: liner.isActive
     }
   });
 
-  const onSubmit = async (data: CreateLinerFormData) => {
+  // Actualizar valores del formulario cuando cambie el liner
+  useEffect(() => {
+    if (isOpen && liner) {
+      form.reset({
+        firstName: liner.firstName,
+        lastName: liner.lastName,
+        document: liner.document,
+        documentType: liner.documentType,
+        isActive: liner.isActive
+      });
+    }
+  }, [isOpen, liner, form]);
+
+  const onSubmit = async (data: UpdateLinerFormData) => {
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const result = await createLiner(data);
+      const result = await updateLiner(liner.id, data);
 
       if (result.success) {
-        toast.success('Liner creado correctamente');
-        form.reset();
+        toast.success('Liner actualizado correctamente');
         onClose();
         router.refresh();
       } else {
-        setError(result.error || 'Error al crear el liner');
-        toast.error(result.error || 'Error al crear el liner');
+        setError(result.error || 'Error al actualizar el liner');
+        toast.error(result.error || 'Error al actualizar el liner');
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error al crear el liner';
+      const errorMessage = err instanceof Error ? err.message : 'Error al actualizar el liner';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -104,13 +119,17 @@ export default function CreateLinerModal({ isOpen, onClose }: CreateLinerModalPr
     { value: DocumentType.RUC, label: 'RUC' }
   ];
 
+  const formatDate = (dateString: string) => {
+    return format(new Date(dateString), 'PPP', { locale: es });
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="flex max-h-[80vh] max-w-md flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
             <User className="h-5 w-5" />
-            Nuevo Liner
+            Editar Liner
           </DialogTitle>
         </DialogHeader>
         <Separator className="my-4" />
@@ -120,11 +139,19 @@ export default function CreateLinerModal({ isOpen, onClose }: CreateLinerModalPr
             <AlertDescription className="text-destructive text-sm">{error}</AlertDescription>
           </Alert>
         )}
-        <ScrollArea className="flex-1 overflow-y-auto pr-4">
+        <div className="bg-muted/20 rounded-md p-3 text-sm">
+          <div className="text-muted-foreground flex items-center">
+            <Calendar className="mr-2 h-4 w-4" />
+            <span>
+              ID: {liner.id.substring(0, 8)}... | Creado: {formatDate(liner.createdAt)}
+            </span>
+          </div>
+        </div>
+        <ScrollArea className="mt-4 flex-1 overflow-y-auto pr-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-4">
-                <FormInputField<CreateLinerFormData>
+                <FormInputField<UpdateLinerFormData>
                   name="firstName"
                   label="Nombre"
                   placeholder="Nombre del liner"
@@ -132,7 +159,7 @@ export default function CreateLinerModal({ isOpen, onClose }: CreateLinerModalPr
                   control={form.control}
                   errors={form.formState.errors}
                 />
-                <FormInputField<CreateLinerFormData>
+                <FormInputField<UpdateLinerFormData>
                   name="lastName"
                   label="Apellido"
                   placeholder="Apellido del liner"
@@ -140,7 +167,7 @@ export default function CreateLinerModal({ isOpen, onClose }: CreateLinerModalPr
                   control={form.control}
                   errors={form.formState.errors}
                 />
-                <FormInputField<CreateLinerFormData>
+                <FormInputField<UpdateLinerFormData>
                   name="document"
                   label="Documento"
                   placeholder="Número de documento"
@@ -148,7 +175,7 @@ export default function CreateLinerModal({ isOpen, onClose }: CreateLinerModalPr
                   control={form.control}
                   errors={form.formState.errors}
                 />
-                <FormSelectField<CreateLinerFormData>
+                <FormSelectField<UpdateLinerFormData>
                   name="documentType"
                   label="Tipo de Documento"
                   placeholder="Seleccionar tipo"
@@ -189,7 +216,7 @@ export default function CreateLinerModal({ isOpen, onClose }: CreateLinerModalPr
             className="bg-primary text-primary-foreground hover:bg-primary-hover"
             onClick={form.handleSubmit(onSubmit)}
           >
-            {isSubmitting ? 'Creando...' : 'Crear Liner'}
+            {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
           </Button>
         </DialogFooter>
       </DialogContent>

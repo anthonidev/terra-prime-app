@@ -1,7 +1,7 @@
 import { PageHeader } from '@/components/common/PageHeader';
 import { Suspense } from 'react';
-import LeadSourcesTable from './components/LeadSoucesTable';
 import LeadSourcesTableSkeleton from './components/LeadSourcesTableSkeleton';
+import LeadSoucesData from './components/LeadSoucesData';
 
 export default async function LeadSourcesPage({
   searchParams
@@ -19,7 +19,7 @@ export default async function LeadSourcesPage({
       />
 
       <Suspense fallback={<LeadSourcesTableSkeleton />}>
-        <LeadSourcesTable searchParams={filters} />
+        <LeadSoucesData searchParams={filters} />
       </Suspense>
     </div>
   );

@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -8,6 +10,7 @@ import {
 } from '@/components/ui/select';
 import { PaginatedMeta } from '@/types/global/utils.types';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 interface TablePaginationProps {
   meta: PaginatedMeta;
@@ -16,6 +19,10 @@ interface TablePaginationProps {
 export function TableQueryPagination({
   meta: { currentPage, itemsPerPage, totalItems, totalPages }
 }: TablePaginationProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const pageIndex = currentPage - 1;
   const pageCount = totalPages;
   const pagination = {
@@ -26,14 +33,16 @@ export function TableQueryPagination({
   const canPreviousPage = currentPage <= 1;
 
   const onPageChange = (newPage: number) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set('page', newPage.toString());
-    window.history.pushState({}, '', url.toString());
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', newPage.toString());
+    router.push(`${pathname}?${params.toString()}`);
   };
+
   const onPageSizeChange = (newSize: number) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set('limit', newSize.toString());
-    window.history.pushState({}, '', url.toString());
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('limit', newSize.toString());
+    params.set('page', '1'); // Reset to first page when changing page size
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   const previousPage = () => {

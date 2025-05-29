@@ -1,8 +1,9 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import FormInputField from '@/components/common/form/FormInputField';
+import FormSelectField from '@/components/common/form/FormSelectField';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -11,82 +12,18 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
 import {
   CreateUpdateLeadDto,
-  DocumentType,
   FindLeadByDocumentDto,
   Lead,
   LeadSource,
   Ubigeo
 } from '@/types/leads.types';
-import { AlertCircle, Building, Mail, User, Phone, Save, Calendar } from 'lucide-react';
-import FormSelectField from '@/components/common/form/FormSelectField';
-import FormInputField from '@/components/common/form/FormInputField';
-import { Textarea } from '@/components/ui/textarea';
-
-const leadFormSchema = z.object({
-  firstName: z
-    .string()
-    .min(2, 'El nombre debe tener al menos 2 caracteres')
-    .max(100, 'El nombre no puede tener más de 100 caracteres')
-    .regex(/^[a-zA-ZÀ-ÿ\s]+$/, {
-      message: 'El nombre solo debe contener letras y espacios'
-    }),
-  lastName: z
-    .string()
-    .min(2, 'El apellido debe tener al menos 2 caracteres')
-    .max(100, 'El apellido no puede tener más de 100 caracteres')
-    .regex(/^[a-zA-ZÀ-ÿ\s]+$/, {
-      message: 'El apellido solo debe contener letras y espacios'
-    }),
-  document: z
-    .string()
-    .min(1, 'El documento es requerido')
-    .max(20, 'El documento no puede tener más de 20 caracteres'),
-  documentType: z.nativeEnum(DocumentType, {
-    required_error: 'El tipo de documento es requerido'
-  }),
-  email: z.string().email('El email debe tener un formato válido').optional().or(z.literal('')),
-  phone: z
-    .string()
-    .regex(/^\+?[0-9]{6,15}$/, {
-      message: 'El teléfono debe ser un número válido'
-    })
-    .optional()
-    .or(z.literal('')),
-  phone2: z
-    .string()
-    .regex(/^\+?[0-9]{6,15}$/, {
-      message: 'El teléfono alternativo debe ser un número válido'
-    })
-    .optional()
-    .or(z.literal('')),
-  age: z
-    .string()
-    .transform((val) => (val ? Number(val) : undefined))
-    .refine((val) => !val || (val >= 18 && val <= 120), {
-      message: 'La edad debe estar entre 18 y 120 años'
-    })
-    .optional(),
-  sourceId: z.string().optional().or(z.literal('')),
-  departmentId: z.string().optional().or(z.literal('')),
-  provinceId: z.string().optional().or(z.literal('')),
-  ubigeoId: z
-    .string()
-    .transform((val) => (val ? Number(val) : undefined))
-    .optional(),
-  observations: z
-    .string()
-    .max(500, 'Las observaciones no pueden tener más de 500 caracteres')
-    .optional()
-    .or(z.literal(''))
-});
-
-type LeadFormValues = z.infer<typeof leadFormSchema>;
+import { AlertCircle, Building, Calendar, Mail, Phone, Save, User } from 'lucide-react';
+import { useLeadRegister } from './hooks/useLeadRegister';
+import { LeadFormValues } from './schema/leadform';
 
 interface LeadRegistrationFormProps {
   lead: Lead | null;
@@ -116,174 +53,25 @@ export default function LeadRegistrationForm({
   isReadOnly = false,
   onCancelRegistration
 }: LeadRegistrationFormProps) {
-  const [departments, setDepartments] = useState<Ubigeo[]>([]);
-  const [provinces, setProvinces] = useState<Ubigeo[]>([]);
-  const [districts, setDistricts] = useState<Ubigeo[]>([]);
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  const form = useForm<LeadFormValues>({
-    resolver: zodResolver(leadFormSchema),
-    defaultValues: {
-      firstName: lead?.firstName || '',
-      lastName: lead?.lastName || '',
-      document: lead?.document || searchedDocument?.document || '',
-      documentType: lead?.documentType || searchedDocument?.documentType || DocumentType.DNI,
-      email: lead?.email || '',
-      phone: lead?.phone || '',
-      phone2: lead?.phone2 || '',
-      age: lead?.age ? Number(lead.age) : undefined,
-      sourceId: lead?.source?.id ? String(lead.source.id) : '',
-      departmentId: lead?.departmentId ? String(lead.departmentId) : '',
-      provinceId: lead?.provinceId ? String(lead.provinceId) : '',
-      ubigeoId: lead?.ubigeo?.id,
-      observations: ''
-    }
+  const {
+    form,
+    handleSubmit,
+    documentTypeOptions,
+    leadSourceOptions,
+    departmentOptions,
+    provinceOptions,
+    departmentId,
+    provinceId,
+    districtOptions
+  } = useLeadRegister({
+    lead,
+    searchedDocument,
+    getDepartments,
+    getProvinces,
+    getDistricts,
+    saveLead,
+    leadSources
   });
-
-  // Initialize departments on component mount
-  useEffect(() => {
-    setDepartments(getDepartments());
-  }, [getDepartments]);
-
-  // Initialize form data and hierarchical locations when lead changes
-  useEffect(() => {
-    if (lead) {
-      console.log('Setting form data for lead:', lead);
-
-      // Reset form with lead data
-      form.reset({
-        firstName: lead.firstName,
-        lastName: lead.lastName,
-        document: lead.document,
-        documentType: lead.documentType,
-        email: lead.email || '',
-        phone: lead.phone || '',
-        phone2: lead.phone2 || '',
-        age: lead?.age ? Number(lead.age) : undefined,
-        sourceId: lead.source?.id ? String(lead.source.id) : '',
-        departmentId: lead?.departmentId ? String(lead.departmentId) : '',
-        provinceId: lead?.provinceId ? String(lead.provinceId) : '',
-        ubigeoId: lead.ubigeo?.id,
-        observations: ''
-      });
-
-      // Initialize hierarchical location data if lead has location data
-      if (lead.departmentId) {
-        console.log('Lead has departmentId:', lead.departmentId);
-        const provincesForDept = getProvinces(lead.departmentId);
-        console.log('Provinces for department:', provincesForDept);
-        setProvinces(provincesForDept);
-
-        if (lead.provinceId) {
-          console.log('Lead has provinceId:', lead.provinceId);
-          const districtsForProv = getDistricts(lead.provinceId);
-          console.log('Districts for province:', districtsForProv);
-          setDistricts(districtsForProv);
-        }
-      }
-
-      setIsInitialized(true);
-    } else if (searchedDocument) {
-      form.setValue('document', searchedDocument.document);
-      form.setValue('documentType', searchedDocument.documentType);
-      setIsInitialized(true);
-    } else {
-      setIsInitialized(true);
-    }
-  }, [lead, searchedDocument, form, getProvinces, getDistricts]);
-
-  // Watch for department changes (user selection)
-  const departmentId = form.watch('departmentId');
-  useEffect(() => {
-    // Only react to user changes after initialization
-    if (!isInitialized) return;
-
-    console.log('Department ID changed (user selection):', departmentId);
-
-    if (departmentId && departmentId !== (lead?.departmentId ? String(lead.departmentId) : '')) {
-      console.log('Loading provinces for user-selected department:', departmentId);
-      const provincesForDept = getProvinces(Number(departmentId));
-      setProvinces(provincesForDept);
-
-      // Clear dependent fields only for user changes
-      form.setValue('provinceId', '');
-      form.setValue('ubigeoId', undefined);
-      setDistricts([]);
-    } else if (!departmentId) {
-      // Clear dependent data when department is cleared
-      setProvinces([]);
-      setDistricts([]);
-      form.setValue('provinceId', '');
-      form.setValue('ubigeoId', undefined);
-    }
-  }, [departmentId, getProvinces, form, isInitialized, lead?.departmentId]);
-
-  // Watch for province changes (user selection)
-  const provinceId = form.watch('provinceId');
-  useEffect(() => {
-    // Only react to user changes after initialization
-    if (!isInitialized) return;
-
-    console.log('Province ID changed (user selection):', provinceId);
-
-    if (provinceId && provinceId !== (lead?.provinceId ? String(lead.provinceId) : '')) {
-      console.log('Loading districts for user-selected province:', provinceId);
-      const districtsForProv = getDistricts(Number(provinceId));
-      setDistricts(districtsForProv);
-
-      // Clear dependent field only for user changes
-      form.setValue('ubigeoId', undefined);
-    } else if (!provinceId) {
-      // Clear dependent data when province is cleared
-      setDistricts([]);
-      form.setValue('ubigeoId', undefined);
-    }
-  }, [provinceId, getDistricts, form, isInitialized, lead?.provinceId]);
-
-  const handleSubmit = async (data: LeadFormValues) => {
-    const leadData: CreateUpdateLeadDto = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      document: data.document,
-      documentType: data.documentType,
-      email: data.email || undefined,
-      phone: data.phone || undefined,
-      phone2: data.phone2 || undefined,
-      age: data.age ? Number(data.age) : undefined,
-      sourceId: data.sourceId || undefined,
-      ubigeoId: data.ubigeoId,
-      observations: data.observations || undefined,
-      isNewLead: !lead
-    };
-    await saveLead(leadData);
-  };
-
-  const documentTypeOptions = [
-    { value: DocumentType.DNI, label: 'DNI' },
-    { value: DocumentType.CE, label: 'CE' },
-    { value: DocumentType.RUC, label: 'RUC' }
-  ];
-
-  const leadSourceOptions = leadSources.map((source) => ({
-    value: String(source.id),
-    label: source.name
-  }));
-
-  const departmentOptions = departments.map((dept) => ({
-    value: String(dept.id),
-    label: dept.name
-  }));
-
-  const provinceOptions = provinces.map((prov) => ({
-    value: String(prov.id),
-    label: prov.name
-  }));
-
-  const districtOptions = districts.map((dist) => ({
-    value: String(dist.id),
-    label: dist.name
-  }));
-
   return (
     <Card>
       <CardHeader>

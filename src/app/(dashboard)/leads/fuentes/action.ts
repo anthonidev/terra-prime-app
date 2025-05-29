@@ -17,7 +17,6 @@ export async function getLeadSources(
       }
     });
   } catch (error) {
-    console.error('Error al obtener fuentes de leads:', error);
     throw error;
   }
 }
@@ -34,7 +33,6 @@ export async function createLeadSource(data: CreateLeadSourceDto) {
 
     return { success: true, data: result };
   } catch (error) {
-    console.error('Error al crear fuente de lead:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Error al crear fuente de lead'
@@ -54,7 +52,6 @@ export async function updateLeadSource(id: number, data: UpdateLeadSourceDto) {
 
     return { success: true, data: result };
   } catch (error) {
-    console.error(`Error al actualizar fuente de lead (ID: ${id}):`, error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Error al actualizar fuente de lead'
