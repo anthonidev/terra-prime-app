@@ -11,7 +11,8 @@ export async function getLiners(params?: Record<string, unknown>): Promise<Liner
     return await httpClient<LinersResponse>('/api/liners', {
       params,
       next: {
-        tags: [LINERS_CACHE_TAG]
+        tags: [LINERS_CACHE_TAG],
+        revalidate: 300
       }
     });
   } catch (error) {
@@ -23,6 +24,7 @@ export async function getLiners(params?: Record<string, unknown>): Promise<Liner
 export async function createLiner(data: CreateLinerDto) {
   try {
     const result = await httpClient('/api/liners', {
+      cache: 'no-store',
       method: 'POST',
       body: data
     });
@@ -43,6 +45,7 @@ export async function createLiner(data: CreateLinerDto) {
 export async function updateLiner(id: string, data: UpdateLinerDto) {
   try {
     const result = await httpClient(`/api/liners/${id}`, {
+      cache: 'no-store',
       method: 'PATCH',
       body: data
     });

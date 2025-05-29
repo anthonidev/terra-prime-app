@@ -1,7 +1,7 @@
 'use client';
 
-import FormInputField from '@/components/common/form/FormInputField';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -11,14 +11,14 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { LeadSource } from '@/types/leads.types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { AlertCircle, Calendar, FileText } from 'lucide-react';
+import { AlertCircle, Building2, Calendar, Save, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -65,6 +65,7 @@ export default function UpdateLeadSourceModal({
         name: leadSource.name,
         isActive: leadSource.isActive
       });
+      setError(null);
     }
   }, [isOpen, leadSource, form]);
 
@@ -93,81 +94,160 @@ export default function UpdateLeadSourceModal({
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'PPP', { locale: es });
+  const handleClose = () => {
+    if (!isSubmitting) {
+      form.reset();
+      setError(null);
+      onClose();
+    }
   };
 
+  const hasChanges = form.formState.isDirty;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="flex max-h-[80vh] max-w-md flex-col">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
-            <FileText className="h-5 w-5" />
-            Editar Fuente de Lead
-          </DialogTitle>
-        </DialogHeader>
-        <Separator className="my-4" />
-        {error && (
-          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
-            <AlertCircle className="text-destructive h-4 w-4" />
-            <AlertDescription className="text-destructive text-sm">{error}</AlertDescription>
-          </Alert>
-        )}
-        <div className="bg-muted/20 rounded-md p-3 text-sm">
-          <div className="text-muted-foreground flex items-center">
-            <Calendar className="mr-2 h-4 w-4" />
-            <span>
-              ID: {leadSource.id} | Creado: {formatDate(leadSource.createdAt)}
-            </span>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader className="px-6 pt-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
+              <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <DialogTitle className="text-lg font-semibold">Editar Fuente de Lead</DialogTitle>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Modificar la información de la fuente
+              </p>
+            </div>
           </div>
-        </div>
-        <ScrollArea className="mt-4 flex-1 overflow-y-auto pr-4">
+        </DialogHeader>
+
+        <div className="px-6 pb-6">
+          {/* Información de la fuente */}
+          <div className="mb-6 rounded-lg bg-gray-50 p-4 dark:bg-gray-900/50">
+            <div className="mb-2 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  ID: #{leadSource.id}
+                </span>
+                <Badge
+                  variant={leadSource.isActive ? 'default' : 'secondary'}
+                  className={
+                    leadSource.isActive
+                      ? 'border-green-200 bg-green-100 text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400'
+                      : 'border-gray-200 bg-gray-100 text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400'
+                  }
+                >
+                  {leadSource.isActive ? 'Activa' : 'Inactiva'}
+                </Badge>
+              </div>
+            </div>
+            <div className="space-y-1 text-xs text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-3 w-3" />
+                <span>Creado: {format(new Date(leadSource.createdAt), 'PPP', { locale: es })}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-3 w-3" />
+                <span>
+                  Actualizado: {format(new Date(leadSource.updatedAt), 'PPP', { locale: es })}
+                </span>
+              </div>
+            </div>
+          </div>
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {error && (
+                <Alert
+                  variant="destructive"
+                  className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
+                >
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription className="text-sm">{error}</AlertDescription>
+                </Alert>
+              )}
+
               <div className="space-y-4">
-                <FormInputField<UpdateLeadSourceFormData>
-                  name="name"
-                  label="Nombre"
-                  placeholder="Nombre de la fuente"
-                  icon={<FileText className="h-4 w-4" />}
-                  control={form.control}
-                  errors={form.formState.errors}
-                />
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <label className="text-sm font-medium">Estado</label>
-                    <p className="text-muted-foreground text-sm">
-                      {form.watch('isActive') ? 'Activo' : 'Inactivo'}
-                    </p>
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nombre de la fuente</Label>
+                  <div className="relative">
+                    <Building2 className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      id="name"
+                      placeholder="Ej: Facebook, Google Ads, Referidos..."
+                      className="pl-9"
+                      {...form.register('name')}
+                      disabled={isSubmitting}
+                    />
                   </div>
-                  <Switch
-                    checked={form.watch('isActive')}
-                    onCheckedChange={(checked) => form.setValue('isActive', checked)}
-                  />
+                  {form.formState.errors.name && (
+                    <p className="text-sm text-red-600 dark:text-red-400">
+                      {form.formState.errors.name.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Estado de la fuente</Label>
+                  <div className="flex items-center justify-between rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={`h-2 w-2 rounded-full ${form.watch('isActive') ? 'bg-green-500' : 'bg-gray-400'}`}
+                        />
+                        <span className="text-sm font-medium">
+                          {form.watch('isActive') ? 'Activa' : 'Inactiva'}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {form.watch('isActive')
+                          ? 'La fuente estará disponible para asignar a leads'
+                          : 'La fuente no aparecerá en las opciones disponibles'}
+                      </p>
+                    </div>
+                    <Switch
+                      checked={form.watch('isActive')}
+                      onCheckedChange={(checked) =>
+                        form.setValue('isActive', checked, { shouldDirty: true })
+                      }
+                      disabled={isSubmitting}
+                    />
+                  </div>
                 </div>
               </div>
-              <Separator />
+
+              <DialogFooter className="gap-2 border-t pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleClose}
+                  disabled={isSubmitting}
+                  className="flex items-center gap-2"
+                >
+                  <X className="h-4 w-4" />
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting || !hasChanges || !form.formState.isValid}
+                  className="flex items-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      Guardando...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4" />
+                      Guardar Cambios
+                    </>
+                  )}
+                </Button>
+              </DialogFooter>
             </form>
           </Form>
-        </ScrollArea>
-        <DialogFooter className="gap-3 pt-4">
-          <Button
-            variant="outline"
-            onClick={onClose}
-            type="button"
-            className="border-input hover:bg-accent"
-          >
-            Cancelar
-          </Button>
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-primary text-primary-foreground hover:bg-primary-hover"
-            onClick={form.handleSubmit(onSubmit)}
-          >
-            {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
-          </Button>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

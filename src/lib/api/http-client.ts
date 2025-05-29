@@ -23,13 +23,12 @@ export async function httpClient<T>(
     method = 'GET',
     body,
     params,
-    cache = 'no-store',
+    cache = 'default',
     contentType = 'application/json',
     skipJsonStringify = false,
     next
   }: FetchOptions = {}
 ): Promise<T> {
-  // Intentar obtener la sesión, pero continuar incluso si no hay sesión
   const session = await getServerSession(authOptions);
 
   const queryParams = params
@@ -42,15 +41,12 @@ export async function httpClient<T>(
 
   const url = createApiUrl(endpoint, queryParams);
 
-  // Inicializar headers
   const headers: HeadersInit = {};
 
-  // Agregar token de autorización solo si existe
   if (session?.accessToken) {
     headers['Authorization'] = `Bearer ${session.accessToken}`;
   }
 
-  // Establecer Content-Type si no es FormData
   if (!(body instanceof FormData)) {
     headers['Content-Type'] = contentType;
   }
@@ -64,13 +60,12 @@ export async function httpClient<T>(
     }
   }
 
-  // Create fetch options with Next.js cache control
   const options: RequestInit = {
     method,
     headers,
     body: requestBody,
     cache,
-    next // Pass the next option directly to fetch
+    next
   };
 
   try {

@@ -12,10 +12,11 @@ export default function CreateLeadSourceButton() {
     <>
       <Button
         onClick={() => setIsCreateModalOpen(true)}
-        className="bg-primary text-primary-foreground hover:bg-primary-hover"
+        className="flex h-9 items-center gap-2 px-4"
       >
-        <Plus className="mr-2 h-4 w-4" />
-        Nueva Fuente
+        <Plus className="h-4 w-4" />
+        <span className="hidden sm:inline">Nueva Fuente</span>
+        <span className="sm:hidden">Nueva</span>
       </Button>
 
       <CreateLeadSourceModal

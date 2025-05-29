@@ -1,4 +1,5 @@
 import { TableQueryPagination } from '@/components/common/table/TableQueryPagination';
+import { Card, CardContent } from '@/components/ui/card';
 import { getLiners } from '../action';
 import { LinersTableFilters } from './LinersTableFilters';
 import LinnerCards from './LinnerCards';
@@ -39,10 +40,18 @@ export default async function LinersData({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <LinersTableFilters search={search} isActive={isActive} order={order} />
-        <CreateLinerButton />
-      </div>
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex-1">
+              <LinersTableFilters search={search} isActive={isActive} order={order} />
+            </div>
+            <div className="flex justify-end lg:ml-4">
+              <CreateLinerButton />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="hidden md:block">
         <LinnerTable data={data} />

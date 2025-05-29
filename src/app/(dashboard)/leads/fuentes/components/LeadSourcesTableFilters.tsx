@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -8,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { Activity, Search, SortAsc, SortDesc } from 'lucide-react';
+import { Activity, Search, SortAsc, SortDesc, X } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
@@ -23,7 +24,7 @@ export function LeadSourcesTableFilters({
   isActive: initialIsActive,
   order: initialOrder
 }: LeadSourcesTableFiltersProps) {
-  const router = useRouter();
+  const { push } = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -46,7 +47,6 @@ export function LeadSourcesTableFilters({
       });
 
       params.set('page', '1');
-
       return params.toString();
     },
     [searchParams]
@@ -57,7 +57,7 @@ export function LeadSourcesTableFilters({
     setSearchValue(value);
 
     const timeoutId = setTimeout(() => {
-      router.push(`${pathname}?${createQueryString({ search: value })}`);
+      push(`${pathname}?${createQueryString({ search: value })}`);
     }, 500);
 
     return () => clearTimeout(timeoutId);
@@ -65,53 +65,85 @@ export function LeadSourcesTableFilters({
 
   const handleIsActiveChange = (value: string) => {
     setActiveValue(value);
-    router.push(`${pathname}?${createQueryString({ isActive: value === 'all' ? '' : value })}`);
+    push(`${pathname}?${createQueryString({ isActive: value === 'all' ? '' : value })}`);
   };
 
   const handleOrderChange = (value: 'ASC' | 'DESC') => {
     setOrderValue(value);
-    router.push(`${pathname}?${createQueryString({ order: value })}`);
+    push(`${pathname}?${createQueryString({ order: value })}`);
   };
 
+  const clearAllFilters = () => {
+    setSearchValue('');
+    setActiveValue('all');
+    setOrderValue('DESC');
+    push(pathname);
+  };
+
+  const hasActiveFilters = searchValue || activeValue !== 'all' || orderValue !== 'DESC';
+
   return (
-    <div className="flex items-center gap-3">
-      <div className="relative w-80">
-        <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-        <Input
-          placeholder="Buscar fuentes..."
-          value={searchValue}
-          onChange={handleSearchChange}
-          className="bg-background border-input pl-9"
-        />
+    <div className="space-y-3">
+      {hasActiveFilters && (
+        <div className="flex justify-end">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={clearAllFilters}
+            className="h-8 px-3 text-sm"
+          >
+            <X className="mr-1 h-3 w-3" />
+            Limpiar filtros
+          </Button>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="relative">
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Input
+            placeholder="Buscar fuentes..."
+            value={searchValue}
+            onChange={handleSearchChange}
+            className="pl-9"
+          />
+        </div>
+
+        <Select value={activeValue} onValueChange={handleIsActiveChange}>
+          <SelectTrigger>
+            <div className="flex items-center">
+              <Activity className="mr-2 h-4 w-4 text-gray-400" />
+              <SelectValue placeholder="Estado" />
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos</SelectItem>
+            <SelectItem value="true">Activos</SelectItem>
+            <SelectItem value="false">Inactivos</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* Filtro de orden */}
+        <Select
+          value={orderValue}
+          onValueChange={(value: 'ASC' | 'DESC') => handleOrderChange(value)}
+        >
+          <SelectTrigger>
+            <div className="flex items-center">
+              {orderValue === 'DESC' ? (
+                <SortDesc className="mr-2 h-4 w-4 text-gray-400" />
+              ) : (
+                <SortAsc className="mr-2 h-4 w-4 text-gray-400" />
+              )}
+              <SelectValue placeholder="Ordenar por" />
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="DESC">Más recientes</SelectItem>
+            <SelectItem value="ASC">Más antiguos</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
-      <Select value={activeValue} onValueChange={handleIsActiveChange}>
-        <SelectTrigger className="bg-background border-input w-[160px]">
-          <Activity className="text-muted-foreground mr-2 h-4 w-4" />
-          <SelectValue placeholder="Estado" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Todos</SelectItem>
-          <SelectItem value="true">Activos</SelectItem>
-          <SelectItem value="false">Inactivos</SelectItem>
-        </SelectContent>
-      </Select>
-      <Select
-        value={orderValue}
-        onValueChange={(value: 'ASC' | 'DESC') => handleOrderChange(value)}
-      >
-        <SelectTrigger className="bg-background border-input w-[160px]">
-          {orderValue === 'DESC' ? (
-            <SortDesc className="text-muted-foreground mr-2 h-4 w-4" />
-          ) : (
-            <SortAsc className="text-muted-foreground mr-2 h-4 w-4" />
-          )}
-          <SelectValue placeholder="Ordenar por" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="DESC">Más recientes</SelectItem>
-          <SelectItem value="ASC">Más antiguos</SelectItem>
-        </SelectContent>
-      </Select>
     </div>
   );
 }

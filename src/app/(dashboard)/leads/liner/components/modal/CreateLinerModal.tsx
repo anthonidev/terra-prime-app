@@ -14,12 +14,17 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
-import { Separator } from '@/components/ui/separator';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { AlertCircle, User, FileText, CreditCard } from 'lucide-react';
-import FormInputField from '@/components/common/form/FormInputField';
-import FormSelectField from '@/components/common/form/FormSelectField';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { AlertCircle, UserCheck, User, FileText, CreditCard, Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { DocumentType } from '@/types/leads.types';
@@ -98,6 +103,14 @@ export default function CreateLinerModal({ isOpen, onClose }: CreateLinerModalPr
     }
   };
 
+  const handleClose = () => {
+    if (!isSubmitting) {
+      form.reset();
+      setError(null);
+      onClose();
+    }
+  };
+
   const documentTypeOptions = [
     { value: DocumentType.DNI, label: 'DNI' },
     { value: DocumentType.CE, label: 'CE' },
@@ -105,93 +118,182 @@ export default function CreateLinerModal({ isOpen, onClose }: CreateLinerModalPr
   ];
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="flex max-h-[80vh] max-w-md flex-col">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
-            <User className="h-5 w-5" />
-            Nuevo Liner
-          </DialogTitle>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader className="px-6 pt-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
+              <UserCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <DialogTitle className="text-lg font-semibold">Nuevo Liner</DialogTitle>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Registrar un nuevo liner para la captación de leads
+              </p>
+            </div>
+          </div>
         </DialogHeader>
-        <Separator className="my-4" />
-        {error && (
-          <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
-            <AlertCircle className="text-destructive h-4 w-4" />
-            <AlertDescription className="text-destructive text-sm">{error}</AlertDescription>
-          </Alert>
-        )}
-        <ScrollArea className="flex-1 overflow-y-auto pr-4">
+
+        <div className="px-6 pb-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="space-y-4">
-                <FormInputField<CreateLinerFormData>
-                  name="firstName"
-                  label="Nombre"
-                  placeholder="Nombre del liner"
-                  icon={<User className="h-4 w-4" />}
-                  control={form.control}
-                  errors={form.formState.errors}
-                />
-                <FormInputField<CreateLinerFormData>
-                  name="lastName"
-                  label="Apellido"
-                  placeholder="Apellido del liner"
-                  icon={<User className="h-4 w-4" />}
-                  control={form.control}
-                  errors={form.formState.errors}
-                />
-                <FormInputField<CreateLinerFormData>
-                  name="document"
-                  label="Documento"
-                  placeholder="Número de documento"
-                  icon={<FileText className="h-4 w-4" />}
-                  control={form.control}
-                  errors={form.formState.errors}
-                />
-                <FormSelectField<CreateLinerFormData>
-                  name="documentType"
-                  label="Tipo de Documento"
-                  placeholder="Seleccionar tipo"
-                  options={documentTypeOptions}
-                  icon={<CreditCard className="h-4 w-4" />}
-                  control={form.control}
-                  errors={form.formState.errors}
-                />
-                <div className="flex items-center justify-between">
+              {error && (
+                <Alert
+                  variant="destructive"
+                  className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
+                >
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription className="text-sm">{error}</AlertDescription>
+                </Alert>
+              )}
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">Nombre</Label>
+                  <div className="relative">
+                    <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      id="firstName"
+                      placeholder="Nombre del liner"
+                      className="pl-9"
+                      {...form.register('firstName')}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  {form.formState.errors.firstName && (
+                    <p className="text-sm text-red-600 dark:text-red-400">
+                      {form.formState.errors.firstName.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">Apellido</Label>
+                  <div className="relative">
+                    <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      id="lastName"
+                      placeholder="Apellido del liner"
+                      className="pl-9"
+                      {...form.register('lastName')}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  {form.formState.errors.lastName && (
+                    <p className="text-sm text-red-600 dark:text-red-400">
+                      {form.formState.errors.lastName.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="documentType">Tipo de Documento</Label>
+                  <Select
+                    value={form.watch('documentType')}
+                    onValueChange={(value) => form.setValue('documentType', value as DocumentType)}
+                    disabled={isSubmitting}
+                  >
+                    <SelectTrigger>
+                      <div className="flex items-center">
+                        <CreditCard className="mr-2 h-4 w-4 text-gray-400" />
+                        <SelectValue placeholder="Seleccionar tipo" />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {documentTypeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {form.formState.errors.documentType && (
+                    <p className="text-sm text-red-600 dark:text-red-400">
+                      {form.formState.errors.documentType.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="document">Número de Documento</Label>
+                  <div className="relative">
+                    <FileText className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      id="document"
+                      placeholder="Número de documento"
+                      className="pl-9"
+                      {...form.register('document')}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  {form.formState.errors.document && (
+                    <p className="text-sm text-red-600 dark:text-red-400">
+                      {form.formState.errors.document.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Estado inicial</Label>
+                <div className="flex items-center justify-between rounded-lg border border-gray-200 p-3 dark:border-gray-700">
                   <div className="space-y-0.5">
-                    <label className="text-sm font-medium">Estado</label>
-                    <p className="text-muted-foreground text-sm">
-                      {form.watch('isActive') ? 'Activo' : 'Inactivo'}
+                    <div className="flex items-center gap-2">
+                      <div
+                        className={`h-2 w-2 rounded-full ${form.watch('isActive') ? 'bg-green-500' : 'bg-gray-400'}`}
+                      />
+                      <span className="text-sm font-medium">
+                        {form.watch('isActive') ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {form.watch('isActive')
+                        ? 'El liner estará disponible para asignar a leads'
+                        : 'El liner no aparecerá en las opciones disponibles'}
                     </p>
                   </div>
                   <Switch
                     checked={form.watch('isActive')}
                     onCheckedChange={(checked) => form.setValue('isActive', checked)}
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
-              <Separator />
+
+              <DialogFooter className="gap-2 border-t pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleClose}
+                  disabled={isSubmitting}
+                  className="flex items-center gap-2"
+                >
+                  <X className="h-4 w-4" />
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting || !form.formState.isValid}
+                  className="flex items-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      Creando...
+                    </>
+                  ) : (
+                    <>
+                      <Check className="h-4 w-4" />
+                      Crear Liner
+                    </>
+                  )}
+                </Button>
+              </DialogFooter>
             </form>
           </Form>
-        </ScrollArea>
-        <DialogFooter className="gap-3 pt-4">
-          <Button
-            variant="outline"
-            onClick={onClose}
-            type="button"
-            className="border-input hover:bg-accent"
-          >
-            Cancelar
-          </Button>
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-primary text-primary-foreground hover:bg-primary-hover"
-            onClick={form.handleSubmit(onSubmit)}
-          >
-            {isSubmitting ? 'Creando...' : 'Crear Liner'}
-          </Button>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );
