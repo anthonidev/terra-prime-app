@@ -1,4 +1,4 @@
-import { PaginatedMeta } from "./user.types";
+import { PaginatedMeta } from './user';
 export interface ExcelValidationResponse {
   isValid: boolean;
   data?: ProjectData;
@@ -88,15 +88,15 @@ export interface PaginatedLotsResponseDto {
   meta: PaginatedMeta;
 }
 export enum LotStatus {
-  ACTIVE = "Activo",
-  INACTIVE = "Inactivo",
-  SOLD = "Vendido",
-  RESERVED = "Separado",
+  ACTIVE = 'Activo',
+  INACTIVE = 'Inactivo',
+  SOLD = 'Vendido',
+  RESERVED = 'Separado'
 }
 export interface ProjectLotsFilterParams {
   page?: number;
   limit?: number;
-  order?: "ASC" | "DESC";
+  order?: 'ASC' | 'DESC';
   stageId?: string;
   blockId?: string;
   status?: LotStatus;

@@ -90,6 +90,11 @@ export interface LeadsByDayItem {
     | null;
 }
 
+export interface AmortizationItem {
+  couteAmount: number;
+  expectedPaymentDate: string;
+}
+
 export interface PaginatedMeta {
   totalItems: number;
   itemsPerPage: number;
@@ -102,6 +107,16 @@ export interface LeadsByDayResponse {
   meta: PaginatedMeta;
 }
 
+export interface AmortizationResponse {
+  installments: AmortizationItem[];
+}
+
+export interface Client {
+  id: number;
+  address: string;
+}
+
+export type ClientResponse = Client;
 export type AllVendorsActivesResponse = VendorsActivesItem[];
 export type ProyectsActivesResponse = ProyectsActivesItems[];
 export type ProyectStagesResponse = ProyectStagesItems[];
@@ -115,13 +130,49 @@ export interface AssignLeadsToVendorDto {
 }
 
 export interface ProyectStagesDTO {
-  id: string;
+  id: string | undefined;
 }
 
 export interface ProyectBlocksDTO {
-  id: string;
+  id: string | undefined;
 }
 
 export interface ProyectLotsDTO {
-  id: string;
+  id: string | undefined;
+}
+
+export interface ClientFindDTO {
+  document: number;
+}
+
+export interface AmortizationDTO {
+  totalAmount: number;
+  initialAmount: number;
+  reservationAmount: number;
+  interestRate: number;
+  numberOfPayments: number;
+  firstPaymentDate: string;
+  includeDecimals: boolean;
+}
+
+export interface ClientGuarantorPayload {
+  createClient: {
+    leadId: string;
+    address: string;
+  };
+  createGuarantor: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    document: string;
+    documentType: string;
+    phone: string;
+    address: string;
+  };
+  document: string;
+}
+
+export interface ClientGuarantorResponse {
+  clientId: number;
+  guarantorId: number;
 }

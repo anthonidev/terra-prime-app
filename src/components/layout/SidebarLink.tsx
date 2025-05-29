@@ -1,6 +1,6 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@components/ui/collapsible';
 import { cn } from '@/lib/utils';
-import { View } from '@/types/user.types';
+import { View } from '@/types/user';
 import {
   ChevronDown,
   FileText,

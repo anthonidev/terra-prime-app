@@ -76,7 +76,7 @@ export function AsignVendorModal({ leads, isOpen, onClose, onAssign }: Props) {
           </div>
         ) : error ? (
           <div className="rounded-md bg-red-50 p-4 text-red-600">
-            Error al cargar vendedores: {error.message}
+            Error al cargar vendedores: {error}
           </div>
         ) : Array.isArray(filteredVendors) && filteredVendors.length > 0 ? (
           <div className="space-y-3 overflow-y-auto px-4">

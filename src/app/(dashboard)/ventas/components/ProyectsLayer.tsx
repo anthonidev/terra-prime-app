@@ -1,5 +1,5 @@
 import type { ProyectsActivesItems } from '@/types/sales';
-import { AlertCircle, Calendar, Search } from 'lucide-react';
+import { Calendar, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ProyectSkeleton from '@/components/project/list/ProjectsSkeleton';
 import * as React from 'react';
@@ -11,11 +11,10 @@ import Image from 'next/image';
 interface Props {
   data: ProyectsActivesItems[];
   isLoading: boolean;
-  error: string | null;
   onPushClick: (project: ProyectsActivesItems) => void;
 }
 
-export default function ProyectsLayer({ data, isLoading, error, onPushClick }: Props) {
+export default function ProyectsLayer({ data, isLoading, onPushClick }: Props) {
   const [searchTerm, setSearchTerm] = React.useState<string>('');
 
   const filteredProjects = React.useMemo(() => {
@@ -28,18 +27,6 @@ export default function ProyectsLayer({ data, isLoading, error, onPushClick }: P
   }, [data, searchTerm]);
 
   if (isLoading) return <ProyectSkeleton header={false} />;
-
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-800/50 dark:bg-red-900/20">
-        <AlertCircle className="mb-3 h-10 w-10 text-red-500" />
-        <h3 className="mb-2 text-lg font-medium text-red-800 dark:text-red-300">
-          Error al cargar proyectos
-        </h3>
-        <p className="text-center text-red-600 dark:text-red-400">{error}</p>
-      </div>
-    );
-  }
 
   if (data.length === 0) {
     return (

@@ -9,7 +9,7 @@ interface UseProyectStagesResult {
   refreshStages: () => Promise<void>;
 }
 
-export function useProyectStages(projectId: string): UseProyectStagesResult {
+export function useProyectStages(projectId: string | undefined): UseProyectStagesResult {
   const [stages, setStages] = useState<ProyectStagesItems[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

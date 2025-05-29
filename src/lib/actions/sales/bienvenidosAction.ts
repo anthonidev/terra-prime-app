@@ -7,7 +7,7 @@ export async function getLeadsByDay(
   params?: Record<string, unknown> | undefined
 ): Promise<LeadsByDayResponse> {
   try {
-    return await httpClient<LeadsByDayResponse>('/api/sales/leads-day', {
+    return await httpClient<LeadsByDayResponse>('/api/sales/leads/day', {
       params: params
     });
   } catch (error) {
@@ -18,7 +18,7 @@ export async function getLeadsByDay(
 
 export async function assignLeadsToVendor(data: AssignLeadsToVendorDto): Promise<LeadsByDayItem[]> {
   try {
-    return await httpClient<LeadsByDayItem[]>('/api/sales/assign-leads-to-vendor', {
+    return await httpClient<LeadsByDayItem[]>('/api/sales/leads/assign/vendor', {
       method: 'POST',
       body: data
     });

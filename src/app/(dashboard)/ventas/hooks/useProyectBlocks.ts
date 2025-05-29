@@ -9,7 +9,7 @@ interface TUseProyectBlocksResult {
   refreshStages: () => Promise<void>;
 }
 
-export function useProyectBlocks(stageId: string): TUseProyectBlocksResult {
+export function useProyectBlocks(stageId: string | undefined): TUseProyectBlocksResult {
   const [blocks, setBlocks] = useState<ProyectBlocksItems[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

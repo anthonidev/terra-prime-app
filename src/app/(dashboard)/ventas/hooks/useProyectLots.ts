@@ -9,7 +9,7 @@ interface TUseProyectLotsResult {
   refreshStages: () => Promise<void>;
 }
 
-export function useProyectLots(blockId: string): TUseProyectLotsResult {
+export function useProyectLots(blockId: string | undefined): TUseProyectLotsResult {
   const [lots, setLots] = useState<ProyectLotsItems[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

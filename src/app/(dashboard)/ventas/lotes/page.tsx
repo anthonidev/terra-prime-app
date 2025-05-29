@@ -12,7 +12,7 @@ import BlocksLayer from '../components/BlocksLayer';
 import LotsLayer from '../components/LotsLayer';
 
 export default function LotesPage() {
-  const { data, isLoading, error } = useProyectsActives();
+  const { data, isLoading } = useProyectsActives();
   const { stack, currentLayer, pushLayer, popLayer } = useNavigationStack();
 
   const renderCurrentLayer = () => {
@@ -21,7 +21,6 @@ export default function LotesPage() {
         <ProyectsLayer
           data={data}
           isLoading={isLoading}
-          error={error}
           onPushClick={(project) => pushLayer('proyect-stages', project.name, project.id)}
         />
       );
