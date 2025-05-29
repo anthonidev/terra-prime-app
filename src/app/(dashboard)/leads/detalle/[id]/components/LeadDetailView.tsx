@@ -55,13 +55,17 @@ export default function LeadDetailView({ lead }: LeadDetailViewProps) {
   return (
     <div className="space-y-6">
       {error && (
-        <Alert variant="destructive">
+        <Alert
+          variant="destructive"
+          className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
+        >
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
+      {/* Main Lead Information */}
       <LeadDetailHeader
         lead={lead}
         onEditClick={handleOpenEditModal}
@@ -69,8 +73,10 @@ export default function LeadDetailView({ lead }: LeadDetailViewProps) {
         isUpdating={updating}
       />
 
+      {/* Visits History */}
       <LeadVisits lead={lead} />
 
+      {/* Edit Modal */}
       <LeadEditForm
         lead={lead}
         isOpen={isEditModalOpen}

@@ -1,7 +1,10 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
-import { Search, SortAsc, SortDesc, MapPin, Calendar, FilterX } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -9,15 +12,12 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
-import { Badge } from '@/components/ui/badge';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { cn } from '@/lib/utils';
+import { Calendar, FilterX, MapPin, Search, SortAsc, SortDesc, X } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useState } from 'react';
 
 interface LeadsTableFiltersProps {
   search: string;
@@ -54,7 +54,11 @@ export function LeadsTableFilters({
   });
 
   const hasActiveFilters =
-    searchValue || isInOfficeValue !== 'all' || dateRange.from || dateRange.to;
+    searchValue ||
+    isInOfficeValue !== 'all' ||
+    dateRange.from ||
+    dateRange.to ||
+    orderValue !== 'DESC';
 
   // Función para crear query string actualizado
   const createQueryString = useCallback(
@@ -120,70 +124,104 @@ export function LeadsTableFilters({
     router.push(pathname);
   };
 
+  const clearDateRange = () => {
+    setDateRange({ from: undefined, to: undefined });
+    router.push(`${pathname}?${createQueryString({ startDate: '', endDate: '' })}`);
+  };
+
   return (
-    <div className="bg-card rounded-md border p-4 shadow-sm">
-      <div className="mb-4 flex items-center justify-between">
-        <h3 className="flex items-center gap-2 text-sm font-medium">
-          <FilterX className="text-primary h-4 w-4" />
-          Filtros de búsqueda
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2">
+          <FilterX className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            Filtros de búsqueda
+          </h3>
           {hasActiveFilters && (
-            <Badge variant="secondary" className="ml-2 text-xs">
+            <Badge
+              variant="secondary"
+              className="ml-2 border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-300"
+            >
               Filtros activos
             </Badge>
           )}
-        </h3>
+        </div>
+
         {hasActiveFilters && (
-          <Button variant="ghost" size="sm" onClick={resetFilters} className="h-8 text-xs">
-            <FilterX className="mr-1 h-3.5 w-3.5" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={resetFilters}
+            className="h-8 px-3 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          >
+            <X className="mr-1 h-3.5 w-3.5" />
             Limpiar filtros
           </Button>
         )}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
+      {/* Filters Grid */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Search Input */}
         <div className="relative">
-          <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input
             placeholder="Buscar por nombre o documento..."
             value={searchValue}
             onChange={handleSearchChange}
-            className="bg-background border-input pl-9"
+            className="pl-9 transition-colors focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
 
+        {/* Office Status Filter */}
         <Select value={isInOfficeValue} onValueChange={handleIsInOfficeChange}>
-          <SelectTrigger className="bg-background border-input">
-            <MapPin className="text-muted-foreground mr-2 h-4 w-4" />
-            <SelectValue placeholder="Estado de visita" />
+          <SelectTrigger className="transition-colors focus:border-blue-500 focus:ring-blue-500">
+            <div className="flex items-center">
+              <MapPin className="mr-2 h-4 w-4 text-gray-400" />
+              <SelectValue placeholder="Estado de visita" />
+            </div>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Todos</SelectItem>
-            <SelectItem value="true">En oficina</SelectItem>
-            <SelectItem value="false">No en oficina</SelectItem>
+            <SelectItem value="all">Todos los estados</SelectItem>
+            <SelectItem value="true">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-green-500" />
+                En oficina
+              </div>
+            </SelectItem>
+            <SelectItem value="false">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-gray-400" />
+                No en oficina
+              </div>
+            </SelectItem>
           </SelectContent>
         </Select>
 
+        {/* Date Range Filter */}
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               className={cn(
-                'w-full justify-start text-left font-normal',
-                (dateRange.from || dateRange.to) && 'text-primary'
+                'w-full justify-start text-left font-normal transition-colors focus:border-blue-500 focus:ring-blue-500',
+                (dateRange.from || dateRange.to) &&
+                  'border-blue-500 text-blue-600 dark:text-blue-400'
               )}
             >
               <Calendar className="mr-2 h-4 w-4" />
               {dateRange.from ? (
                 dateRange.to ? (
                   <>
-                    {format(dateRange.from, 'dd/MM/yyyy', { locale: es })} -{' '}
-                    {format(dateRange.to, 'dd/MM/yyyy', { locale: es })}
+                    {format(dateRange.from, 'dd/MM/yy', { locale: es })} -{' '}
+                    {format(dateRange.to, 'dd/MM/yy', { locale: es })}
                   </>
                 ) : (
                   format(dateRange.from, 'dd/MM/yyyy', { locale: es })
                 )
               ) : (
-                'Seleccionar fechas'
+                'Rango de fechas'
               )}
             </Button>
           </PopoverTrigger>
@@ -198,37 +236,46 @@ export function LeadsTableFilters({
               }
               numberOfMonths={2}
               locale={es}
+              className="rounded-md border"
             />
-            <div className="flex justify-end gap-2 border-t p-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setDateRange({ from: undefined, to: undefined });
-                  router.push(`${pathname}?${createQueryString({ startDate: '', endDate: '' })}`);
-                }}
-              >
+            <div className="flex justify-between gap-2 border-t p-3">
+              <Button variant="outline" size="sm" onClick={clearDateRange} className="text-sm">
+                <X className="mr-1 h-3 w-3" />
                 Limpiar
               </Button>
+              <div className="text-xs text-gray-500">Filtra por fecha de registro</div>
             </div>
           </PopoverContent>
         </Popover>
 
+        {/* Sort Order Filter */}
         <Select
           value={orderValue}
           onValueChange={(value: 'ASC' | 'DESC') => handleOrderChange(value)}
         >
-          <SelectTrigger className="bg-background border-input">
-            {orderValue === 'DESC' ? (
-              <SortDesc className="text-muted-foreground mr-2 h-4 w-4" />
-            ) : (
-              <SortAsc className="text-muted-foreground mr-2 h-4 w-4" />
-            )}
-            <SelectValue placeholder="Ordenar por" />
+          <SelectTrigger className="transition-colors focus:border-blue-500 focus:ring-blue-500">
+            <div className="flex items-center">
+              {orderValue === 'DESC' ? (
+                <SortDesc className="mr-2 h-4 w-4 text-gray-400" />
+              ) : (
+                <SortAsc className="mr-2 h-4 w-4 text-gray-400" />
+              )}
+              <SelectValue placeholder="Ordenar por" />
+            </div>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="DESC">Más recientes</SelectItem>
-            <SelectItem value="ASC">Más antiguos</SelectItem>
+            <SelectItem value="DESC">
+              <div className="flex items-center gap-2">
+                <SortDesc className="h-4 w-4" />
+                Más recientes primero
+              </div>
+            </SelectItem>
+            <SelectItem value="ASC">
+              <div className="flex items-center gap-2">
+                <SortAsc className="h-4 w-4" />
+                Más antiguos primero
+              </div>
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>

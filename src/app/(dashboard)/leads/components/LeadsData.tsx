@@ -1,4 +1,5 @@
 import { TableQueryPagination } from '@/components/common/table/TableQueryPagination';
+import { Card, CardContent } from '@/components/ui/card';
 import { getLeads } from '../action';
 import CreateLeadButton from './buttons/CreateLeadButton';
 import LeadCards from './LeadCards';
@@ -45,19 +46,33 @@ export default async function LeadsData({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <LeadsTableFilters
-          search={search}
-          isInOffice={isInOffice}
-          startDate={startDate}
-          endDate={endDate}
-          order={order}
-        />
-        <CreateLeadButton />
-      </div>
+      <Card className="border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <CardContent className="p-6">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+            <div className="flex-1">
+              <LeadsTableFilters
+                search={search}
+                isInOffice={isInOffice}
+                startDate={startDate}
+                endDate={endDate}
+                order={order}
+              />
+            </div>
+            <div className="flex justify-end lg:ml-6">
+              <CreateLeadButton />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="hidden md:block">
-        <LeadsTable data={data} />
+        <Card className="border-gray-200 shadow-sm dark:border-gray-800">
+          <CardContent className="p-0">
+            <LeadsTable data={data} />
+          </CardContent>
+        </Card>
       </div>
+
       <div className="md:hidden">
         <LeadCards data={data} />
       </div>

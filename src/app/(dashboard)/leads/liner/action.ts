@@ -10,6 +10,7 @@ export async function getLiners(params?: Record<string, unknown>): Promise<Liner
   try {
     return await httpClient<LinersResponse>('/api/liners', {
       params,
+
       next: {
         tags: [LINERS_CACHE_TAG],
         revalidate: 300

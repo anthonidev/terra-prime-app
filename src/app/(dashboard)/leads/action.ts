@@ -16,7 +16,8 @@ export async function getLeads(params?: Record<string, unknown>): Promise<Pagina
     return await httpClient<PaginatedLeadsResponse>('/api/leads', {
       params,
       next: {
-        tags: [LEADS_CACHE_TAG]
+        tags: [LEADS_CACHE_TAG],
+        revalidate: 300
       }
     });
   } catch (error) {
@@ -28,6 +29,7 @@ export async function getLeads(params?: Record<string, unknown>): Promise<Pagina
 export async function createLead(data: CreateUpdateLeadDto) {
   try {
     const result = await httpClient<CreateUpdateLeadResponse>('/api/leads/register', {
+      cache: 'no-store',
       method: 'POST',
       body: data
     });
@@ -48,6 +50,7 @@ export async function createLead(data: CreateUpdateLeadDto) {
 export async function updateLead(id: string, data: CreateUpdateLeadDto) {
   try {
     const result = await httpClient<CreateUpdateLeadResponse>(`/api/leads/update/${id}`, {
+      cache: 'no-store',
       method: 'PATCH',
       body: data
     });
@@ -70,7 +73,8 @@ export async function registerDeparture(id: string) {
     const result = await httpClient<RegisterDepartureResponse>(
       `/api/leads/register-departure/${id}`,
       {
-        method: 'POST'
+        method: 'POST',
+        cache: 'no-store'
       }
     );
 

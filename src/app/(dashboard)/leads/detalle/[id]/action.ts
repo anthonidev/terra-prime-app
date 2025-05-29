@@ -16,11 +16,12 @@ export async function getLeadDetail(leadId: string): Promise<LeadDetailResponse>
     return await httpClient<LeadDetailResponse>(`/api/leads/${leadId}`, {
       method: 'GET',
       next: {
-        tags: [`${LEAD_CACHE_TAG}-${leadId}`]
+        tags: [`${LEAD_CACHE_TAG}-${leadId}`],
+        revalidate: 300
       }
     });
   } catch (error) {
-    console.error(`Error al obtener detalles del lead ${leadId}:`, error);
+    console.error('Error al obtener detalle del lead:', error);
     throw error;
   }
 }
@@ -29,7 +30,8 @@ export async function updateLeadContact(leadId: string, data: CreateUpdateLeadDt
   try {
     const result = await httpClient<CreateUpdateLeadResponse>(`/api/leads/update/${leadId}`, {
       method: 'PATCH',
-      body: data
+      body: data,
+      cache: 'no-store'
     });
 
     revalidateTag(`${LEAD_CACHE_TAG}-${leadId}`);
@@ -38,7 +40,6 @@ export async function updateLeadContact(leadId: string, data: CreateUpdateLeadDt
 
     return { success: true, data: result };
   } catch (error) {
-    console.error(`Error al actualizar lead ${leadId}:`, error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Error al actualizar lead'
@@ -51,7 +52,8 @@ export async function registerLeadDeparture(leadId: string) {
     const result = await httpClient<RegisterDepartureResponse>(
       `/api/leads/register-departure/${leadId}`,
       {
-        method: 'POST'
+        method: 'POST',
+        cache: 'no-store'
       }
     );
 
@@ -61,7 +63,6 @@ export async function registerLeadDeparture(leadId: string) {
 
     return { success: true, data: result };
   } catch (error) {
-    console.error(`Error al registrar salida del lead ${leadId}:`, error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Error al registrar salida'
