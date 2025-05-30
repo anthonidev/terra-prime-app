@@ -236,3 +236,54 @@ export interface SaleResponse {
     lastName: string;
   };
 }
+
+export interface ProjectSelectionState {
+  selectedProject: ProyectsActivesItems | null;
+  selectedStage: ProyectStagesItems | null;
+  selectedBlock: ProyectBlocksItems | null;
+  selectedLot: ProyectLotsItems | null;
+}
+
+export interface ProjectLoadingState {
+  projects: boolean;
+  stages: boolean;
+  blocks: boolean;
+  lots: boolean;
+}
+
+export interface ProjectSelectionHandlers {
+  onProjectChange: (projectId: string) => void;
+  onStageChange: (stageId: string) => void;
+  onBlockChange: (blockId: string) => void;
+  onLotChange: (lotId: string) => void;
+}
+
+export interface ProjectDataActions {
+  loadProjects: () => Promise<void>;
+  loadStages: (projectId: string) => Promise<void>;
+  loadBlocks: (stageId: string) => Promise<void>;
+  loadLots: (blockId: string) => Promise<void>;
+}
+
+// Constantes para los mensajes de placeholder
+export const PLACEHOLDER_MESSAGES = {
+  PROJECT: {
+    LOADING: 'Cargando proyectos...',
+    SELECT: 'Selecciona un proyecto'
+  },
+  STAGE: {
+    LOADING: 'Cargando etapas...',
+    SELECT: 'Selecciona una etapa',
+    DISABLED: 'Primero selecciona un proyecto'
+  },
+  BLOCK: {
+    LOADING: 'Cargando manzanas...',
+    SELECT: 'Selecciona una manzana',
+    DISABLED: 'Primero selecciona una etapa'
+  },
+  LOT: {
+    LOADING: 'Cargando lotes...',
+    SELECT: 'Selecciona un lote',
+    DISABLED: 'Primero selecciona una manzana'
+  }
+} as const;

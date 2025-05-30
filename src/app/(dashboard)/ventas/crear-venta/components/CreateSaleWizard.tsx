@@ -8,15 +8,16 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
 import StepIndicator from './StepIndicator';
-import Step1ProjectSelection from './steps/Step1ProjectSelection';
-import Step2FinancialConfig from './steps/Step2FinancialConfig';
-import Step3ClientGuarantor from './steps/Step3ClientGuarantor';
-import Step4Summary from './steps/Step4Summary';
+
 import SaleSuccessModal from './modals/SaleSuccessModal';
 
 import { CreateSaleFormData } from '../validations/saleValidation';
 import { createSale } from '../action';
 import { SaleResponse } from '@/types/sales';
+import Step1ProjectSelection from './steps/step1/Step1ProjectSelection';
+import Step2FinancialConfig from './steps/step2/Step2FinancialConfig';
+import Step3ClientGuarantor from './steps/step3/Step3ClientGuarantor';
+import Step4Summary from './steps/step4/Step4Summary';
 
 export default function CreateSaleWizard() {
   const router = useRouter();
