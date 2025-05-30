@@ -1,26 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Form } from '@/components/ui/form';
 import {
   Table,
   TableBody,
@@ -29,23 +19,34 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import {
-  CalendarIcon,
-  Calculator,
-  DollarSign,
-  Percent,
-  Calendar as CalendarDays
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Calculator, Calendar as CalendarDays, DollarSign, Percent } from 'lucide-react';
 
-import { step2Schema, Step2FormData } from '../../validations/saleValidation';
-import { CreateSaleFormData } from '../../validations/saleValidation';
-import { calculateAmortization } from '../../action';
+import FormInputField from '@/components/common/form/FormInputField';
 import { AmortizationItem } from '@/types/sales';
+import { calculateAmortization } from '../../action';
+import {
+  AmortizationCalculationData,
+  CreateSaleFormData,
+  Step2FormData,
+  amortizationCalculationSchema,
+  step2Schema
+} from '../../validations/saleValidation';
 
 interface Step2Props {
-  formData: Partial<CreateSaleFormData>;
-  updateFormData: (data: Partial<CreateSaleFormData>) => void;
+  formData: Partial<CreateSaleFormData> & {
+    financingInstallments?: any[];
+    initialAmount?: number;
+    interestRate?: number;
+    quantitySaleCoutes?: number;
+  };
+  updateFormData: (
+    data: Partial<CreateSaleFormData> & {
+      financingInstallments?: any[];
+      initialAmount?: number;
+      interestRate?: number;
+      quantitySaleCoutes?: number;
+    }
+  ) => void;
   updateStepValidation: (step: 'step2', isValid: boolean) => void;
 }
 
@@ -70,11 +71,23 @@ export default function Step2FinancialConfig({
       firstPaymentDateHu: formData.firstPaymentDateHu || '',
       initialAmountUrbanDevelopment: formData.initialAmountUrbanDevelopment || 0,
       quantityHuCuotes: formData.quantityHuCuotes || 0,
+      // Campos de financiamiento - siempre presentes
       initialAmount: formData.initialAmount || 0,
       interestRate: formData.interestRate || 12,
       quantitySaleCoutes: formData.quantitySaleCoutes || 12,
-      firstPaymentDate: formData.firstPaymentDate || '',
       financingInstallments: formData.financingInstallments || []
+    }
+  });
+
+  // Formulario separado para el cálculo de amortización
+  const amortizationForm = useForm<AmortizationCalculationData>({
+    resolver: zodResolver(amortizationCalculationSchema),
+    defaultValues: {
+      totalAmount: 0,
+      initialAmount: 0,
+      interestRate: 12,
+      quantitySaleCoutes: 12,
+      firstPaymentDate: ''
     }
   });
 
@@ -89,41 +102,79 @@ export default function Step2FinancialConfig({
         isValid = !!(
           value.totalAmount &&
           value.totalAmount > 0 &&
-          value.initialAmount !== undefined &&
-          value.initialAmount >= 0 &&
-          value.interestRate &&
-          value.interestRate > 0 &&
-          value.quantitySaleCoutes &&
-          value.quantitySaleCoutes > 0 &&
-          value.firstPaymentDate &&
-          value.financingInstallments &&
-          value.financingInstallments.length > 0
+          (value as any).initialAmount !== undefined &&
+          (value as any).initialAmount >= 0 &&
+          (value as any).interestRate &&
+          (value as any).interestRate > 0 &&
+          (value as any).quantitySaleCoutes &&
+          (value as any).quantitySaleCoutes > 0 &&
+          (value as any).financingInstallments &&
+          (value as any).financingInstallments.length > 0
         );
       }
 
       updateStepValidation('step2', isValid);
 
-      if (value.totalAmount !== undefined && value.totalAmount !== formData.totalAmount) {
-        updateFormData({ totalAmount: value.totalAmount });
+      if (value) {
+        updateFormData({
+          totalAmount: value.totalAmount,
+          totalAmountUrbanDevelopment: value.totalAmountUrbanDevelopment,
+          firstPaymentDateHu: value.firstPaymentDateHu,
+          initialAmountUrbanDevelopment: value.initialAmountUrbanDevelopment,
+          quantityHuCuotes: value.quantityHuCuotes,
+          initialAmount: (value as any).initialAmount,
+          interestRate: (value as any).interestRate,
+          quantitySaleCoutes: (value as any).quantitySaleCoutes,
+          financingInstallments: (value as any).financingInstallments
+        });
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [form, updateFormData, updateStepValidation, formData.totalAmount]);
+  }, [form, updateFormData, updateStepValidation, isFinanced]);
+
+  // Sincronizar datos para el cálculo de amortización
+  useEffect(() => {
+    if (isFinanced) {
+      const subscription = form.watch((values) => {
+        if (values.totalAmount !== undefined) {
+          amortizationForm.setValue('totalAmount', values.totalAmount);
+        }
+        if (
+          values.saleType === 'FINANCED' &&
+          'initialAmount' in values &&
+          values.initialAmount !== undefined
+        ) {
+          amortizationForm.setValue('initialAmount', values.initialAmount);
+        }
+        if (
+          values.saleType === 'FINANCED' &&
+          'interestRate' in values &&
+          values.interestRate !== undefined
+        ) {
+          amortizationForm.setValue('interestRate', values.interestRate);
+        }
+        if (
+          values.saleType === 'FINANCED' &&
+          'quantitySaleCoutes' in values &&
+          values.quantitySaleCoutes !== undefined
+        ) {
+          amortizationForm.setValue('quantitySaleCoutes', values.quantitySaleCoutes);
+        }
+      });
+
+      return () => subscription.unsubscribe();
+    }
+  }, [isFinanced, form, amortizationForm]);
 
   const handleCalculateAmortization = async () => {
-    const values = form.getValues();
-
-    if (
-      !values.totalAmount ||
-      !values.initialAmount ||
-      !values.interestRate ||
-      !values.quantitySaleCoutes ||
-      !values.firstPaymentDate
-    ) {
+    const isAmortizationValid = await amortizationForm.trigger();
+    if (!isAmortizationValid) {
       toast.error('Complete todos los campos de financiamiento');
       return;
     }
+
+    const values = amortizationForm.getValues();
 
     setIsCalculating(true);
     try {
@@ -140,15 +191,8 @@ export default function Step2FinancialConfig({
       setAmortizationTable(result.installments);
       setShowAmortization(true);
 
-      // Actualizar formulario con las cuotas calculadas
+      // Actualizar formulario principal con las cuotas calculadas
       form.setValue('financingInstallments', result.installments);
-      updateFormData({
-        financingInstallments: result.installments,
-        initialAmount: values.initialAmount,
-        interestRate: values.interestRate,
-        quantitySaleCoutes: values.quantitySaleCoutes,
-        firstPaymentDate: values.firstPaymentDate
-      });
 
       toast.success('Cronograma de pagos calculado correctamente');
     } catch (error) {
@@ -179,126 +223,57 @@ export default function Step2FinancialConfig({
             </h3>
 
             {/* Monto Total del Lote */}
-            <FormField
-              control={form.control}
+            <FormInputField<Step2FormData>
               name="totalAmount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <DollarSign className="h-4 w-4" />
-                    Monto Total del Lote
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="0.00"
-                      {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Monto Total del Lote"
+              placeholder="0.00"
+              type="number"
+              icon={<DollarSign className="h-4 w-4" />}
+              control={form.control}
+              errors={form.formState.errors}
             />
 
             {/* Campos de Habilitación Urbana - Solo si el monto es mayor a 0 */}
             {hasUrbanization && (
               <>
-                <FormField
-                  control={form.control}
+                <FormInputField<Step2FormData>
                   name="totalAmountUrbanDevelopment"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Monto Total Habilitación Urbana</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="0.00"
-                          {...field}
-                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Monto Total Habilitación Urbana"
+                  placeholder="0.00"
+                  type="number"
+                  icon={<DollarSign className="h-4 w-4" />}
+                  control={form.control}
+                  errors={form.formState.errors}
                 />
 
-                <FormField
-                  control={form.control}
+                <FormInputField<Step2FormData>
                   name="initialAmountUrbanDevelopment"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Monto Inicial HU</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="0.00"
-                          {...field}
-                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Monto Inicial HU"
+                  placeholder="0.00"
+                  type="number"
+                  icon={<DollarSign className="h-4 w-4" />}
+                  control={form.control}
+                  errors={form.formState.errors}
                 />
 
-                <FormField
-                  control={form.control}
+                <FormInputField<Step2FormData>
                   name="quantityHuCuotes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Cantidad de Cuotas HU</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="0"
-                          {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Cantidad de Cuotas HU"
+                  placeholder="0"
+                  type="number"
+                  icon={<CalendarDays className="h-4 w-4" />}
+                  control={form.control}
+                  errors={form.formState.errors}
                 />
 
-                <FormField
-                  control={form.control}
+                <FormInputField<Step2FormData>
                   name="firstPaymentDateHu"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Fecha Primer Pago HU</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                'w-full pl-3 text-left font-normal',
-                                !field.value && 'text-muted-foreground'
-                              )}
-                            >
-                              {field.value ? (
-                                format(new Date(field.value), 'PPP', { locale: es })
-                              ) : (
-                                <span>Selecciona una fecha</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value ? new Date(field.value) : undefined}
-                            onSelect={(date) => field.onChange(date?.toISOString() || '')}
-                            disabled={(date) => date < new Date()}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Fecha Primer Pago HU"
+                  placeholder="YYYY-MM-DD"
+                  type="date"
+                  icon={<CalendarDays className="h-4 w-4" />}
+                  control={form.control}
+                  errors={form.formState.errors}
                 />
               </>
             )}
@@ -311,114 +286,48 @@ export default function Step2FinancialConfig({
                 Configuración de Financiamiento
               </h3>
 
-              <FormField
-                control={form.control}
+              <FormInputField<Step2FormData>
                 name="initialAmount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <DollarSign className="h-4 w-4" />
-                      Monto Inicial
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="0.00"
-                        {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Monto Inicial"
+                placeholder="0.00"
+                type="number"
+                icon={<DollarSign className="h-4 w-4" />}
+                control={form.control}
+                errors={form.formState.errors}
               />
 
-              <FormField
-                control={form.control}
+              <FormInputField<Step2FormData>
                 name="interestRate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <Percent className="h-4 w-4" />
-                      Tasa de Interés (%)
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        placeholder="12.0"
-                        {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Tasa de Interés (%)"
+                placeholder="12.0"
+                type="number"
+                icon={<Percent className="h-4 w-4" />}
+                control={form.control}
+                errors={form.formState.errors}
               />
 
-              <FormField
-                control={form.control}
+              <FormInputField<Step2FormData>
                 name="quantitySaleCoutes"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2">
-                      <CalendarDays className="h-4 w-4" />
-                      Cantidad de Cuotas (máx. 74)
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="1"
-                        max="74"
-                        placeholder="12"
-                        {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Cantidad de Cuotas (máx. 74)"
+                placeholder="12"
+                type="number"
+                icon={<CalendarDays className="h-4 w-4" />}
+                control={form.control}
+                errors={form.formState.errors}
               />
 
-              <FormField
-                control={form.control}
-                name="firstPaymentDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Fecha Primer Pago</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              'w-full pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground'
-                            )}
-                          >
-                            {field.value ? (
-                              format(new Date(field.value), 'PPP', { locale: es })
-                            ) : (
-                              <span>Selecciona una fecha</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value ? new Date(field.value) : undefined}
-                          onSelect={(date) => field.onChange(date?.toISOString() || '')}
-                          disabled={(date) => date < new Date()}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* Campo separado para fecha de primer pago (solo para cálculo) */}
+              <Form {...amortizationForm}>
+                <FormInputField<AmortizationCalculationData>
+                  name="firstPaymentDate"
+                  label="Fecha Primer Pago"
+                  placeholder="YYYY-MM-DD"
+                  type="date"
+                  icon={<CalendarDays className="h-4 w-4" />}
+                  control={amortizationForm.control}
+                  errors={amortizationForm.formState.errors}
+                />
+              </Form>
 
               <Button
                 type="button"
@@ -458,7 +367,7 @@ export default function Step2FinancialConfig({
                         Monto del Lote:
                       </span>
                       <span className="font-semibold">
-                        S/ {form.watch('totalAmount')?.toFixed(2) || '0.00'}
+                        S/ {(form.watch('totalAmount') || 0).toFixed(2)}
                       </span>
                     </div>
                     {hasUrbanization && (
@@ -467,7 +376,7 @@ export default function Step2FinancialConfig({
                           Habilitación Urbana:
                         </span>
                         <span className="font-semibold">
-                          S/ {form.watch('totalAmountUrbanDevelopment')?.toFixed(2) || '0.00'}
+                          S/ {(form.watch('totalAmountUrbanDevelopment') || 0).toFixed(2)}
                         </span>
                       </div>
                     )}
@@ -492,7 +401,7 @@ export default function Step2FinancialConfig({
                       <div className="space-y-1">
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600 dark:text-gray-400">Monto Inicial:</span>
-                          <span>S/ {form.watch('initialAmount')?.toFixed(2) || '0.00'}</span>
+                          <span>S/ {(form.watch('initialAmount') || 0).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600 dark:text-gray-400">Tasa de Interés:</span>

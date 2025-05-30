@@ -25,11 +25,19 @@ export const step2BaseSchema = z.object({
     .optional()
 });
 
+// Esquema para calcular amortización (separado del esquema de venta)
+export const amortizationCalculationSchema = z.object({
+  totalAmount: z.number().min(1, 'El monto total debe ser mayor a 0'),
+  initialAmount: z.number().min(0, 'El monto inicial debe ser mayor o igual a 0'),
+  interestRate: z.number().min(0).max(100, 'La tasa de interés debe estar entre 0 y 100'),
+  quantitySaleCoutes: z.number().min(1).max(74, 'La cantidad de cuotas debe estar entre 1 y 74'),
+  firstPaymentDate: z.string().min(1, 'La fecha del primer pago es requerida')
+});
+
 export const step2FinancedSchema = step2BaseSchema.extend({
   initialAmount: z.number().min(0, 'El monto inicial debe ser mayor o igual a 0'),
   interestRate: z.number().min(0).max(100, 'La tasa de interés debe estar entre 0 y 100'),
   quantitySaleCoutes: z.number().min(1).max(74, 'La cantidad de cuotas debe estar entre 1 y 74'),
-  firstPaymentDate: z.string().min(1, 'La fecha del primer pago es requerida'),
   financingInstallments: z
     .array(
       z.object({
@@ -79,7 +87,7 @@ export const step4Schema = z.object({
   paymentDate: z.string().min(1, 'La fecha de pago es requerida')
 });
 
-// Schema completo
+// Schema completo para la venta final
 export const createSaleSchema = z.object({
   // Paso 1
   lotId: z.string().min(1, 'Debe seleccionar un lote'),
@@ -123,3 +131,4 @@ export type Step3FormData = z.infer<typeof step3Schema>;
 export type Step4FormData = z.infer<typeof step4Schema>;
 export type GuarantorFormData = z.infer<typeof guarantorSchema>;
 export type CreateSaleFormData = z.infer<typeof createSaleSchema>;
+export type AmortizationCalculationData = z.infer<typeof amortizationCalculationSchema>;

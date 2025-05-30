@@ -60,7 +60,6 @@ export default function Step3ClientGuarantor({
   const form = useForm<Step3FormData>({
     resolver: zodResolver(step3Schema),
     defaultValues: {
-      leadId: formData.leadId || '',
       clientId: formData.clientId || 0,
       guarantorId: formData.guarantorId || 0,
       clientAddress: ''
@@ -88,7 +87,6 @@ export default function Step3ClientGuarantor({
 
       if (isValid) {
         updateFormData({
-          leadId: value.leadId,
           clientId: value.clientId,
           guarantorId: value.guarantorId
         });

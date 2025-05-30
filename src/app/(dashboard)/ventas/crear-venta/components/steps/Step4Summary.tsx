@@ -7,29 +7,10 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import {
-  Building,
-  CalendarIcon,
-  Clock,
-  CreditCard,
-  DollarSign,
-  FileText,
-  User,
-  UserCheck
-} from 'lucide-react';
+import { Form } from '@/components/ui/form';
+import FormInputField from '@/components/common/form/FormInputField';
+import { Building, Clock, CreditCard, DollarSign, FileText, User, UserCheck } from 'lucide-react';
 
 import { CreateSaleFormData, Step4FormData, step4Schema } from '../../validations/saleValidation';
 
@@ -104,10 +85,6 @@ export default function Step4Summary({
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-400">Lote ID:</span>
-                <span className="font-medium">{formData.lotId}</span>
-              </div>
-              <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">Tipo de Venta:</span>
                 <Badge variant={isFinanced ? 'default' : 'secondary'}>
                   {isFinanced ? 'Financiada' : 'Pago Directo'}
@@ -159,16 +136,6 @@ export default function Step4Summary({
                       <span className="text-gray-600 dark:text-gray-400">Número de Cuotas:</span>
                       <span className="font-medium">{formData.quantitySaleCoutes || 0}</span>
                     </div>
-                    {formData.firstPaymentDate && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Primer Pago:</span>
-                        <span className="font-medium">
-                          {format(new Date(formData.firstPaymentDate), 'dd/MM/yyyy', {
-                            locale: es
-                          })}
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </>
               )}
@@ -184,10 +151,6 @@ export default function Step4Summary({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-400">Lead ID:</span>
-                <span className="font-medium">{formData.leadId}</span>
-              </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">Cliente ID:</span>
                 <span className="font-medium">{formData.clientId}</span>
@@ -209,135 +172,36 @@ export default function Step4Summary({
           <Form {...form}>
             <div className="space-y-4">
               {/* Fecha de Venta */}
-              <FormField
-                control={form.control}
+              <FormInputField<Step4FormData>
                 name="saleDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      Fecha de Venta
-                    </FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              'w-full pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground'
-                            )}
-                          >
-                            {field.value ? (
-                              format(new Date(field.value), 'PPP', { locale: es })
-                            ) : (
-                              <span>Selecciona la fecha de venta</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value ? new Date(field.value) : undefined}
-                          onSelect={(date) => field.onChange(date?.toISOString() || '')}
-                          disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Fecha de Venta"
+                placeholder="YYYY-MM-DD"
+                type="date"
+                icon={<Clock className="h-4 w-4" />}
+                control={form.control}
+                errors={form.formState.errors}
               />
 
               {/* Fecha de Contrato */}
-              <FormField
-                control={form.control}
+              <FormInputField<Step4FormData>
                 name="contractDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel className="flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      Fecha de Contrato
-                    </FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              'w-full pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground'
-                            )}
-                          >
-                            {field.value ? (
-                              format(new Date(field.value), 'PPP', { locale: es })
-                            ) : (
-                              <span>Selecciona la fecha de contrato</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value ? new Date(field.value) : undefined}
-                          onSelect={(date) => field.onChange(date?.toISOString() || '')}
-                          disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Fecha de Contrato"
+                placeholder="YYYY-MM-DD"
+                type="date"
+                icon={<FileText className="h-4 w-4" />}
+                control={form.control}
+                errors={form.formState.errors}
               />
 
               {/* Fecha de Pago */}
-              <FormField
-                control={form.control}
+              <FormInputField<Step4FormData>
                 name="paymentDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel className="flex items-center gap-2">
-                      <CreditCard className="h-4 w-4" />
-                      Fecha de Pago
-                    </FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              'w-full pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground'
-                            )}
-                          >
-                            {field.value ? (
-                              format(new Date(field.value), 'PPP', { locale: es })
-                            ) : (
-                              <span>Selecciona la fecha de pago</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value ? new Date(field.value) : undefined}
-                          onSelect={(date) => field.onChange(date?.toISOString() || '')}
-                          disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Fecha de Pago"
+                placeholder="YYYY-MM-DD"
+                type="date"
+                icon={<CreditCard className="h-4 w-4" />}
+                control={form.control}
+                errors={form.formState.errors}
               />
             </div>
           </Form>
