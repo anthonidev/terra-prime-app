@@ -1,7 +1,7 @@
 'use client';
 
 import { PageHeader } from '@/components/common/PageHeader';
-import { Check, ChevronLeft, ChevronRight, User } from 'lucide-react';
+import { AlertCircle, Check, ChevronLeft, ChevronRight, User } from 'lucide-react';
 import { Stepper } from '@/components/ui/stepper';
 import { useStepper } from '@/hooks/stepper/useStepper';
 import { Button } from '@/components/ui/button';
@@ -20,6 +20,22 @@ import { useClients } from '../hooks/useClients';
 import { createSaleFinanceSchema, SaleFormData } from '@/lib/validations/sales';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { DateFormatDisplay } from '@/components/common/table/DateFormatDisplay';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
+import { Form } from '@/components/ui/form';
+import { createSaleFinanced } from '@/lib/actions/sales/saleAction';
+import { toast } from 'sonner';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { SaleModal } from '../components/SaleModal';
 
 const _steps = [{ id: 'step_01' }, { id: 'step_02' }, { id: 'step_03' }, { id: 'step_04' }];
 
@@ -27,26 +43,57 @@ export default function Page() {
   const form = useForm<SaleFormData>({
     resolver: zodResolver(createSaleFinanceSchema),
     defaultValues: {
-      interestRate: 12,
-      quantityHuCuotes: 1,
-      quantitySaleCoutes: 1
+      methodPayment: 'VOUCHER',
+      saleDate: new Date().toISOString().split('T')[0],
+      contractDate: new Date().toISOString().split('T')[0]
     }
   });
   const { steps, currentStepId, nextStep, prevStep } = useStepper(_steps);
-
+  const [error, setError] = React.useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [selectedProject, setSelectedProject] = React.useState<ProyectsActivesItems | null>(null);
   const [selectedStage, setSelectedStage] = React.useState<ProyectStagesItems | null>(null);
   const [selectedBlock, setSelectedBlock] = React.useState<ProyectBlocksItems | null>(null);
   const [selectedLeadVendor, setSelectedLeadVendor] = React.useState<LeadsVendorItems | null>(null);
-
+  const [openModal, setOpenModal] = React.useState<boolean>(true);
   const { data: leadsData } = useLeadsVendor();
   const { client, searchClient, createClientGuarantor } = useClients();
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
 
   React.useEffect(() => {
     if (selectedLeadVendor?.document) {
       searchClient(Number(selectedLeadVendor.document));
     }
   }, [selectedLeadVendor?.document, searchClient]);
+
+  const formValues = form.getValues();
+
+  const onSubmit = async (data: SaleFormData) => {
+    setIsSubmitting(true);
+    setError(null);
+    console.table(data);
+    try {
+      const result = await createSaleFinanced(data);
+
+      if (result.success) {
+        toast.success('Venta creada correctamente');
+        form.reset();
+      } else {
+        setError(result.error || 'Error al crear');
+        toast.error(result.error || 'Error al crear');
+      }
+      setOpenModal(true);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al crear';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const stepContent = () => {
     switch (currentStepId) {
@@ -76,53 +123,218 @@ export default function Page() {
           />
         );
       case 'step_04':
-        return <p>Resumen del proyecto</p>;
+        return (
+          <div className="space-y-3">
+            <Card className="bg-slate-50 dark:bg-gray-800">
+              <CardHeader>
+                <CardTitle className="text-lg">Resumen de la Venta</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div>
+                  <p className="text-muted-foreground text-xs">Proyecto:</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-slate-100">
+                    {selectedProject?.name}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-xs">Etapa:</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-slate-100">
+                    {selectedStage?.name}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-xs">Manzana:</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-slate-100">
+                    {selectedBlock?.name}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-xs">Método de Pago:</p>
+                  <Badge variant={formValues.saleType === 'FINANCED' ? 'default' : 'outline'}>
+                    {formValues.saleType === 'FINANCED' ? 'Financiado' : 'Contado'}
+                  </Badge>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-xs">Precio Total:</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-slate-100">
+                    {selectedProject?.currency == 'USD' ? '$' : 'S/.'}&nbsp;{formValues.totalAmount}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-xs">Fecha de Venta</p>
+                  <DateFormatDisplay date={formValues.saleDate} />
+                </div>
+              </CardContent>
+            </Card>
+            {formValues.saleType === 'FINANCED' && (
+              <Card className="bg-slate-50 dark:bg-gray-800">
+                <CardHeader>
+                  <CardTitle className="text-lg">Detalles de Financiamiento</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-4">
+                    <div>
+                      <p className="text-muted-foreground text-xs">Cuota Inicial</p>
+                      <p className="text-sm font-medium text-gray-700 dark:text-slate-100">
+                        {selectedProject?.currency == 'USD' ? '$' : 'S/.'}&nbsp;
+                        {formValues.initialAmount}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground text-xs">Tasa de Interés</p>
+                      <p className="text-sm font-medium text-gray-700 dark:text-slate-100">
+                        {formValues.interestRate}%
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground text-xs">Número de Cuotas</p>
+                      <p className="text-sm font-medium text-gray-700 dark:text-slate-100">
+                        {formValues.quantitySaleCoutes}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground text-xs">Fecha inicial de pago</p>
+                      <DateFormatDisplay date={formValues.paymentDate} />
+                    </div>
+                  </div>
+                  <h4 className="mb-2 font-medium">Cronograma de Pagos</h4>
+                  <div className="rounded-md border bg-white dark:bg-gray-900">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>N° Cuota</TableHead>
+                          <TableHead>Monto</TableHead>
+                          <TableHead>Fecha de Pago</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {formValues.financingInstallments?.map((installment, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{index + 1}</TableCell>
+                            <TableCell>
+                              S/ {installment.couteAmount.toLocaleString('es-PE')}
+                            </TableCell>
+                            <TableCell>
+                              <DateFormatDisplay date={installment.expectedPaymentDate} />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+            <Card className="bg-slate-50 dark:bg-gray-800">
+              <CardHeader>
+                <CardTitle className="text-lg">Datos del Cliente</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-5">
+                <div>
+                  <p className="text-muted-foreground text-xs">Nombre:</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-slate-100">
+                    {selectedLeadVendor?.firstName}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Apellido:</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-slate-100">
+                    {selectedLeadVendor?.lastName}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Teléfono:</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-slate-100">
+                    {selectedLeadVendor?.age}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Documento:</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-slate-100">
+                    {selectedLeadVendor?.document}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Teléfono:</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-slate-100">
+                    {selectedLeadVendor?.phone}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
       default:
         return null;
     }
   };
 
   return (
-    <form className="container pt-8">
-      <PageHeader
-        icon={User}
-        title="Crear Venta"
-        subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        variant="default"
-      />
-      <div className="container">
-        <Stepper steps={steps} currentStepId={currentStepId} className="mb-4" />
-        <div className="rounded-lg border bg-white p-4 dark:bg-gray-900">
-          {stepContent()}
-          <div className="mt-8 flex justify-between">
-            <Button
-              type="button"
-              className="text-sm font-normal"
-              variant="outline"
-              onClick={prevStep}
-              disabled={currentStepId === _steps[0].id}
-            >
-              <ChevronLeft className="h-4 w-4" />
-              Anterior
-            </Button>
-
-            {currentStepId !== _steps[_steps.length - 1].id ? (
-              <Button
-                type="button"
-                className="border border-blue-500 bg-blue-500 text-sm font-normal transition-colors hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-                onClick={nextStep}
+    <>
+      <Form {...form}>
+        <form className="container pt-8" onSubmit={form.handleSubmit(onSubmit)}>
+          <PageHeader
+            icon={User}
+            title="Crear Venta"
+            subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            variant="default"
+          />
+          <div className="container">
+            <Stepper steps={steps} currentStepId={currentStepId} className="mb-4" />
+            <div className="rounded-lg border bg-white p-4 dark:bg-gray-900">
+              <Alert
+                variant="destructive"
+                className="bg-destructive/10 not-only:border-destructive/30 mb-4"
               >
-                Siguiente
-                <ChevronRight className="h-4 w-4 font-normal" />
-              </Button>
-            ) : (
-              <Button className="bg-gradient-to-r from-[#025864] to-[#00CA7C] font-normal">
-                Finalizar <Check className="" />
-              </Button>
-            )}
+                <AlertCircle className="text-destructive h-4 w-4" />
+                <AlertDescription className="text-destructive text-sm">
+                  <ul className="list-disc space-y-1 pl-5">
+                    {Object.entries(form.formState.errors).map(([fieldName, error]) => (
+                      <li key={fieldName}>
+                        {fieldName}: {error.message}
+                      </li>
+                    ))}
+                  </ul>
+                </AlertDescription>
+              </Alert>
+              {stepContent()}
+              <div className="mt-8 flex justify-between">
+                <Button
+                  type="button"
+                  className="text-sm font-normal"
+                  variant="outline"
+                  onClick={prevStep}
+                  disabled={currentStepId === _steps[0].id}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Anterior
+                </Button>
+
+                {currentStepId !== _steps[_steps.length - 1].id ? (
+                  <Button
+                    type="button"
+                    className="border border-blue-500 bg-blue-500 text-sm font-normal transition-colors hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+                    onClick={() => nextStep()}
+                  >
+                    Siguiente
+                    <ChevronRight className="h-4 w-4 font-normal" />
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-gradient-to-r from-[#025864] to-[#00CA7C] font-normal hover:bg-left"
+                  >
+                    {isSubmitting ? 'Creando...' : 'Finalizar'}
+                    <Check className="" />
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </form>
+        </form>
+      </Form>
+      <SaleModal isOpen={openModal} onClose={handleCloseModal} />
+    </>
   );
 }

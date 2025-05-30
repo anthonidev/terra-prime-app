@@ -109,6 +109,9 @@ export interface LeadsByDayResponse {
 
 export interface AmortizationResponse {
   installments: AmortizationItem[];
+  meta: {
+    totalCouteAmountSum: number;
+  };
 }
 
 export interface Client {
@@ -175,4 +178,41 @@ export interface ClientGuarantorPayload {
 export interface ClientGuarantorResponse {
   clientId: number;
   guarantorId: number;
+}
+
+export interface CreateSaleDirectDTO {
+  lotId: string;
+  saleType: 'DIRECT_PAYMENT' | 'FINANCED';
+  clientId: number;
+  guarantorId: number;
+  paymentDate: string;
+  saleDate: string;
+  contractDate: string;
+  methodPayment: 'VOUCHER';
+  totalAmount: number;
+  totalAmountUrbanDevelopment: number;
+}
+
+export interface CreateSaleFinancedDTO {
+  lotId: string;
+  saleType: 'DIRECT_PAYMENT' | 'FINANCED';
+  clientId: number;
+  reservationId?: string | undefined;
+  guarantorId: number;
+  paymentDate: string;
+  saleDate: string;
+  contractDate: string;
+  methodPayment: 'VOUCHER';
+  totalAmount: number;
+  totalAmountUrbanDevelopment: number;
+  quantityHuCuotes?: number | undefined;
+  initialAmountUrbanDevelopment?: number | undefined;
+  firstPaymentDateHu?: string | null;
+  initialAmount: number;
+  interestRate: number;
+  quantitySaleCoutes: number;
+  financingInstallments: Array<{
+    couteAmount: number;
+    expectedPaymentDate: string;
+  }>;
 }

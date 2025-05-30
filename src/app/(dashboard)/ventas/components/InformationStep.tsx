@@ -29,6 +29,7 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import * as React from 'react';
 
 interface Props {
   selectedProject: ProyectsActivesItems | null;
@@ -55,12 +56,16 @@ export function InformationStep({
   const { blocks, isLoading: loadingBlock } = useProyectBlocks(selectedStage?.id);
   const { lots, isLoading: loadingLot } = useProyectLots(selectedBlock?.id);
 
-  const paymentMethod = form.watch('methodPayment');
+  const saleType = form.watch('saleType');
   const lotId = form.watch('lotId');
   const selectedLot = lots?.find((lot) => lot.id === lotId);
 
-  form.setValue('totalAmount', Number(selectedLot?.totalPrice));
-  form.setValue('totalAmountUrbanDevelopment', Number(selectedLot?.urbanizationPrice));
+  React.useEffect(() => {
+    if (selectedLot) {
+      form.setValue('totalAmount', Number(selectedLot.totalPrice));
+      form.setValue('totalAmountUrbanDevelopment', Number(selectedLot.urbanizationPrice));
+    }
+  }, [selectedLot, form]);
 
   return (
     <motion.div
@@ -245,9 +250,9 @@ export function InformationStep({
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button variant="outline" size="icon" className="w-full px-2">
                   <span className="text-sm text-gray-600 dark:text-green-600">
-                    {paymentMethod === 'DIRECT_PAYMENT'
+                    {saleType === 'DIRECT_PAYMENT'
                       ? 'Cash'
-                      : paymentMethod === 'FINANCED'
+                      : saleType === 'FINANCED'
                         ? 'Financiado'
                         : 'Seleccionar'}
                   </span>
@@ -258,32 +263,30 @@ export function InformationStep({
               <DropdownMenuItem
                 className={cn(
                   'cursor-pointer text-xs',
-                  paymentMethod === 'DIRECT_PAYMENT' && 'bg-blue-50 dark:bg-blue-900'
+                  saleType === 'DIRECT_PAYMENT' && 'bg-blue-50 dark:bg-blue-900'
                 )}
-                onSelect={() => form.setValue('methodPayment', 'DIRECT_PAYMENT')}
+                onSelect={() => form.setValue('saleType', 'DIRECT_PAYMENT')}
               >
                 <span className="truncate text-sm">Cash</span>
-                {paymentMethod === 'DIRECT_PAYMENT' && (
+                {saleType === 'DIRECT_PAYMENT' && (
                   <Check className="ml-auto h-3.5 w-3.5 text-blue-500" />
                 )}
               </DropdownMenuItem>
               <DropdownMenuItem
                 className={cn(
                   'cursor-pointer text-xs',
-                  paymentMethod === 'FINANCED' && 'bg-blue-50 dark:bg-blue-900'
+                  saleType === 'FINANCED' && 'bg-blue-50 dark:bg-blue-900'
                 )}
-                onSelect={() => form.setValue('methodPayment', 'FINANCED')}
+                onSelect={() => form.setValue('saleType', 'FINANCED')}
               >
                 <span className="truncate text-sm">Financiado</span>
-                {paymentMethod === 'FINANCED' && (
-                  <Check className="ml-auto h-3.5 w-3.5 text-blue-500" />
-                )}
+                {saleType === 'FINANCED' && <Check className="ml-auto h-3.5 w-3.5 text-blue-500" />}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
-      {selectedProject && selectedStage && selectedBlock && selectedLot && paymentMethod && (
+      {selectedProject && selectedStage && selectedBlock && selectedLot && saleType && (
         <motion.div className={cn('')} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <div className="mt-5 overflow-hidden rounded-md border bg-slate-50 dark:bg-gray-800">
             <Table>
@@ -307,9 +310,9 @@ export function InformationStep({
                   <TableCell>
                     <Badge variant="default" className="lowercase">
                       <span className="text-sm">
-                        {paymentMethod === 'DIRECT_PAYMENT'
+                        {saleType === 'DIRECT_PAYMENT'
                           ? 'Cash'
-                          : paymentMethod === 'FINANCED'
+                          : saleType === 'FINANCED'
                             ? 'Financiado'
                             : 'Seleccionar'}
                       </span>
@@ -318,13 +321,13 @@ export function InformationStep({
                   <TableCell>
                     {selectedLot.lotPrice}&nbsp;
                     <span className="text-green-600">
-                      {selectedProject?.currency == 'usd' ? '$' : 'S/.'}
+                      {selectedProject?.currency == 'USD' ? '$' : 'S/.'}
                     </span>
                   </TableCell>
                   <TableCell>
                     {selectedLot.urbanizationPrice}&nbsp;
                     <span className="text-green-600">
-                      {selectedProject?.currency == 'usd' ? '$' : 'S/.'}
+                      {selectedProject?.currency == 'USD' ? '$' : 'S/.'}
                     </span>
                   </TableCell>
                 </TableRow>

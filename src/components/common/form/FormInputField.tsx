@@ -20,7 +20,8 @@ const FormInputField = <TFormValues extends FieldValues>({
   type = 'text',
   icon,
   control,
-  errors
+  errors,
+  disabled
 }: FormInputFieldProps<TFormValues>) => {
   return (
     <FormField
@@ -39,6 +40,7 @@ const FormInputField = <TFormValues extends FieldValues>({
                   'bg-white pl-8 dark:bg-gray-900',
                   errors[name] && 'border-destructive focus-visible:ring-destructive'
                 )}
+                disabled={disabled}
               />
               <span
                 className={cn(

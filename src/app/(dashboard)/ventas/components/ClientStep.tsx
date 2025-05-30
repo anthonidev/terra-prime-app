@@ -38,11 +38,11 @@ export function ClientStep({
   leadsData,
   selectedLeadVendor,
   setSelectedLeadVendor,
-  createClientGuarantor
+  createClientGuarantor,
+  form
 }: Props) {
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState<string>(client?.address || '');
-  const [creationResult, setCreationResult] = useState<ClientGuarantorResponse | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
@@ -78,7 +78,8 @@ export function ClientStep({
       };
 
       const result = await createClientGuarantor(payload);
-      setCreationResult(result);
+      form.setValue('clientId', result.clientId);
+      form.setValue('guarantorId', result.guarantorId);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Error al crear cliente y garante');
     } finally {
@@ -187,16 +188,6 @@ export function ClientStep({
               </TableRow>
             </TableBody>
           </Table>
-          {creationResult && (
-            <div className="rounded-md bg-green-50 p-4 dark:bg-green-900/20">
-              <h4 className="mb-2 font-medium text-green-800 dark:text-green-200">
-                Resultado de creación:
-              </h4>
-              <pre className="text-sm text-green-700 dark:text-green-300">
-                {JSON.stringify(creationResult, null, 2)}
-              </pre>
-            </div>
-          )}
         </div>
       )}
     </motion.div>
