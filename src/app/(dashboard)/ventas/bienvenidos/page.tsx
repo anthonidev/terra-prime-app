@@ -1,46 +1,27 @@
-'use client';
-
 import { PageHeader } from '@/components/common/PageHeader';
-import { ShoppingBag } from 'lucide-react';
-import BienvenidosTable from './components/BienvenidosTable';
-import { useBienvenidos } from './hooks/useBienvenidos';
+import { Suspense } from 'react';
+import BienvenidosData from './components/BienvenidosData';
+import BienvenidosTableSkeleton from './components/BienvenidosTableSkeleton';
 
-export default function BienvenidosPage() {
-  const {
-    data,
-    dataLoading,
-    dataError,
-    dataMeta,
-
-    currentPage,
-    dataPerPage,
-    handlePageChange,
-    handleDataPerPageChange,
-    refreshData,
-    handleAssignVendor
-  } = useBienvenidos();
+export default async function BienvenidosPage({
+  searchParams
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const filters = await searchParams;
 
   return (
-    <div className="container pt-8">
+    <div className="container py-8">
       <PageHeader
-        icon={ShoppingBag}
         title="Bienvenidos del día"
-        subtitle="Información de los leads en oficina"
-        variant="default"
+        subtitle="Gestiona los leads del día y asigna vendedores"
+        className="mb-6"
+        variant="gradient"
       />
 
-      <BienvenidosTable
-        data={data}
-        isLoading={dataLoading}
-        error={dataError}
-        meta={dataMeta}
-        currentPage={currentPage}
-        itemsPerPage={dataPerPage}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handleDataPerPageChange}
-        onRefresh={refreshData}
-        onAssign={handleAssignVendor}
-      />
+      <Suspense fallback={<BienvenidosTableSkeleton />}>
+        <BienvenidosData searchParams={filters} />
+      </Suspense>
     </div>
   );
 }

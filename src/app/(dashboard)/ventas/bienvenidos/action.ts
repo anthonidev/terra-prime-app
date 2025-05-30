@@ -24,7 +24,7 @@ export async function getLeadsByDay(
       }
     });
   } catch (error) {
-    if (error instanceof Error) console.error('Has been error, reason: %s', error.message);
+    console.error('Error al obtener leads del día:', error);
     throw error;
   }
 }
@@ -36,11 +36,13 @@ export async function assignLeadsToVendor(data: AssignLeadsToVendorDto): Promise
       method: 'POST',
       body: data
     });
+
     revalidateTag(SALES_LEADS_CACHE_TAG);
-    revalidatePath('/dashboard/sales/bienvenidos');
+    revalidatePath('/ventas/bienvenidos');
+
     return result;
   } catch (error) {
-    if (error instanceof Error) console.error('Has been error, reason: %s', error.message);
+    console.error('Error al asignar vendedor:', error);
     throw error;
   }
 }
@@ -50,11 +52,11 @@ export async function getVendorsActives(): Promise<AllVendorsActivesResponse> {
     return await httpClient<AllVendorsActivesResponse>('/api/sales/vendors/actives', {
       next: {
         tags: [VENDORS_ACTIVES_CACHE_TAG],
-        revalidate: 200
+        revalidate: 300
       }
     });
   } catch (error) {
-    if (error instanceof Error) console.error('Has been error, reason: %s', error.message);
+    console.error('Error al obtener vendedores activos:', error);
     throw error;
   }
 }

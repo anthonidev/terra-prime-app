@@ -1,207 +1,281 @@
 'use client';
 
-import { TablePagination } from '@/components/common/table/TablePagination';
+import TableTemplate from '@/components/common/table/TableTemplate';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { LeadsByDayItem } from '@/types/sales';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { AssignLeadsToVendorDto, LeadsByDayItem } from '@/types/sales';
-import { AlertCircle, RefreshCw, User } from 'lucide-react';
-import MobileTable from './MobileTable';
-import { TableSkeleton } from '@/components/common/table/TableSkeleton';
-import { useCallback, useState } from 'react';
+  ColumnDef,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
+  VisibilityState
+} from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { AsignVendorModal } from './AsignVendorModal';
+import { Building2, Calendar, CreditCard, Phone, User, UserPlus } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import AssignVendorButton from './AssignVendorButton';
+import AssignVendorModal from './AssignVendorModal';
 
-interface Props {
+type Props = {
   data: LeadsByDayItem[];
-  isLoading: boolean;
-  error: string | null;
-  meta: {
-    totalItems: number;
-    itemsPerPage: number;
-    totalPages: number;
-    currentPage: number;
-  } | null;
-  currentPage: number;
-  itemsPerPage: number;
-  onPageChange: (page: number) => void;
-  onPageSizeChange: (pageSize: number) => void;
-  onRefresh: () => void;
-  onAssign: (data: AssignLeadsToVendorDto) => Promise<LeadsByDayItem[]>;
-}
+};
 
-export default function BienvenidosTable({
-  data,
-  isLoading,
-  error,
-  meta,
-  currentPage,
-  itemsPerPage,
-  onPageChange,
-  onPageSizeChange,
-  onRefresh,
-  onAssign
-}: Props) {
-  const bMobile = useMediaQuery('(max-width: 768px)');
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+export default function BienvenidosTable({ data }: Props) {
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    id: false,
+    documentType: false,
+    phone2: false
+  });
 
-  const handleCloseModal = () => {
-    setIsOpenModal(false);
+  const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+
+  const columns = useMemo<ColumnDef<LeadsByDayItem>[]>(
+    () => [
+      {
+        accessorKey: 'id',
+        header: 'ID',
+        cell: ({ row }) => (
+          <div className="text-sm font-medium">
+            #{(row.getValue('id') as string).substring(0, 8)}...
+          </div>
+        ),
+        enableHiding: true
+      },
+      {
+        id: 'leadInfo',
+        header: 'Información del Lead',
+        cell: ({ row }) => {
+          const lead = row.original;
+          return (
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
+                <User className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+              </div>
+              <div>
+                <div className="font-medium text-gray-900 dark:text-gray-100">
+                  {lead.firstName} {lead.lastName}
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {lead.age ? `${lead.age} años` : 'Edad no registrada'}
+                </div>
+              </div>
+            </div>
+          );
+        },
+        enableHiding: false
+      },
+      {
+        id: 'document',
+        header: 'Documento',
+        cell: ({ row }) => {
+          const lead = row.original;
+          return (
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4 text-gray-400" />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{lead.document}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {lead.documentType}
+                </span>
+              </div>
+            </div>
+          );
+        },
+        enableHiding: false
+      },
+      {
+        accessorKey: 'documentType',
+        header: 'Tipo de documento',
+        cell: ({ row }) => <div className="text-sm">{row.getValue('documentType')}</div>,
+        enableHiding: true
+      },
+      {
+        id: 'contact',
+        header: 'Contacto',
+        cell: ({ row }) => {
+          const lead = row.original;
+          return (
+            <div className="flex flex-col gap-1">
+              {lead.phone && (
+                <div className="flex items-center gap-1 text-xs">
+                  <Phone className="h-3 w-3 text-gray-400" />
+                  <span>{lead.phone}</span>
+                </div>
+              )}
+              {lead.phone2 && (
+                <div className="flex items-center gap-1 text-xs">
+                  <Phone className="h-3 w-3 text-gray-400" />
+                  <span>{lead.phone2}</span>
+                </div>
+              )}
+            </div>
+          );
+        },
+        enableHiding: false
+      },
+      {
+        accessorKey: 'phone2',
+        header: 'Teléfono 2',
+        cell: ({ row }) => (
+          <div className="text-sm">
+            {row.getValue('phone2') || <span className="text-gray-400">No registrado</span>}
+          </div>
+        ),
+        enableHiding: true
+      },
+      {
+        id: 'source',
+        header: 'Fuente',
+        cell: ({ row }) => {
+          const lead = row.original;
+          return lead.source ? (
+            <div className="flex items-center gap-2">
+              <Building2 className="h-4 w-4 text-gray-400" />
+              <span className="text-sm">{lead.source.name}</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-xs text-gray-400">
+              <Building2 className="h-3 w-3" />
+              <span>No especificada</span>
+            </div>
+          );
+        },
+        enableHiding: true
+      },
+      {
+        id: 'vendor',
+        header: 'Vendedor',
+        cell: ({ row }) => {
+          const lead = row.original;
+          const vendor = lead.vendor;
+
+          if (typeof vendor === 'string') {
+            return <Badge variant="outline">{vendor}</Badge>;
+          }
+
+          if (vendor && typeof vendor === 'object') {
+            return (
+              <div className="flex items-center gap-2">
+                <User className="h-4 w-4 text-gray-400" />
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium">
+                    {vendor.firstName} {vendor.lastName}
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{vendor.email}</span>
+                </div>
+              </div>
+            );
+          }
+
+          return (
+            <Badge
+              variant="secondary"
+              className="border-amber-200 bg-amber-100 text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400"
+            >
+              Sin asignar
+            </Badge>
+          );
+        },
+        enableHiding: false
+      },
+      {
+        accessorKey: 'createdAt',
+        header: 'Fecha de Registro',
+        cell: ({ row }) => (
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-gray-400" />
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">
+                {format(new Date(row.getValue('createdAt')), 'dd/MM/yyyy', { locale: es })}
+              </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {format(new Date(row.getValue('createdAt')), 'HH:mm', { locale: es })}
+              </span>
+            </div>
+          </div>
+        ),
+        enableHiding: true
+      },
+      {
+        id: 'actions',
+        header: 'Acciones',
+        cell: ({ row }) => {
+          const lead = row.original;
+          const vendor = lead.vendor;
+          const hasVendor = vendor && typeof vendor === 'object';
+
+          if (hasVendor) {
+            return (
+              <Badge variant="default" className="border-green-200 bg-green-100 text-green-700">
+                Asignado
+              </Badge>
+            );
+          }
+
+          return <AssignVendorButton leadId={lead.id} />;
+        },
+        enableHiding: false
+      }
+    ],
+    []
+  );
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    state: {
+      columnVisibility
+    }
+  });
+
+  const getRowId = (lead: LeadsByDayItem): string => lead.id;
+
+  const canSelectRow = (lead: LeadsByDayItem): boolean => {
+    const vendor = lead.vendor;
+    return !vendor || typeof vendor === 'string';
   };
 
-  const toggleItem = useCallback((id: string) => {
-    setSelectedItems((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  }, []);
+  const bulkActions =
+    selectedLeadIds.length > 0 ? (
+      <Button onClick={() => setIsAssignModalOpen(true)} size="sm" className="ml-2">
+        <UserPlus className="mr-2 h-4 w-4" />
+        Asignar vendedor
+      </Button>
+    ) : null;
 
-  if (isLoading) return <TableSkeleton />;
+  const selectionMessage = (count: number) => `${count} lead(s) sin vendedor seleccionado(s)`;
 
-  if (error) {
-    return (
-      <Card>
-        <CardContent className="pt-6">
-          <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800/50 dark:bg-red-900/20">
-            <div className="mb-2 flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-red-500" />
-              <h3 className="font-medium text-red-800 dark:text-red-300">
-                Error al cargar las ventas del día
-              </h3>
-            </div>
-            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-            <Button
-              onClick={onRefresh}
-              variant="outline"
-              size="sm"
-              className="mt-2 border-red-200 text-red-600 dark:border-red-800/50 dark:text-red-400"
-            >
-              <RefreshCw className="mr-1 h-3.5 w-3.5" />
-              Reintentar
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (bMobile)
-    return (
-      <MobileTable
-        data={data}
-        meta={meta}
-        currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-        onPageChange={onPageChange}
-        onPageSizeChange={onPageSizeChange}
-      />
-    );
+  const handleModalClose = () => {
+    setIsAssignModalOpen(false);
+    setSelectedLeadIds([]);
+  };
 
   return (
     <>
-      <Button
-        onClick={() => setIsOpenModal(true)}
-        variant="outline"
-        hidden={selectedItems.length > 0 ? false : true}
-        size="sm"
-        className="mt-2 border-blue-200 text-blue-600 transition-colors hover:text-blue-500 dark:border-blue-800/50 dark:text-blue-400"
-      >
-        <User className="mr-1 h-3.5 w-3.5" />
-        Asignar vendedor
-      </Button>
+      <TableTemplate<LeadsByDayItem>
+        table={table}
+        columns={columns}
+        showColumnVisibility={true}
+        columnVisibilityLabel="Mostrar columnas"
+        enableRowSelection={true}
+        selectedRows={selectedLeadIds}
+        onRowSelectionChange={setSelectedLeadIds}
+        getRowId={getRowId}
+        canSelectRow={canSelectRow}
+        bulkActions={bulkActions}
+        selectionMessage={selectionMessage}
+      />
 
-      <div className="overflow-hidden rounded-md border bg-white dark:bg-gray-900">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>
-                <Checkbox onCheckedChange={() => {}} />
-              </TableHead>
-              <TableHead>Nº</TableHead>
-              <TableHead>Nombre</TableHead>
-              <TableHead>Apellido</TableHead>
-              <TableHead>Documento</TableHead>
-              <TableHead>Teléfono</TableHead>
-              <TableHead>Edad</TableHead>
-              <TableHead>Vendedor</TableHead>
-              <TableHead>Fecha Creada</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.length > 0 ? (
-              data.map((leads, i) => (
-                <TableRow key={leads.id}>
-                  <TableCell>
-                    <Checkbox
-                      checked={selectedItems.includes(leads.id)}
-                      onCheckedChange={() => toggleItem(leads.id)}
-                    />
-                  </TableCell>
-                  <TableCell className="font-medium">{i + 1}</TableCell>
-                  <TableCell>{leads.firstName}</TableCell>
-                  <TableCell>{leads.lastName}</TableCell>
-                  <TableCell>{leads.document}</TableCell>
-                  <TableCell>{leads.phone}</TableCell>
-                  <TableCell>{leads.age}</TableCell>
-                  <TableCell>
-                    {typeof leads.vendor === 'string'
-                      ? leads.vendor
-                      : leads.vendor
-                        ? `${leads.vendor.firstName} ${leads.vendor.lastName}`
-                        : 'No asignado'}
-                  </TableCell>
-                  <TableCell>
-                    {format(new Date(leads.createdAt), 'dd/MM/yyyy HH:mm', {
-                      locale: es
-                    })}
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={7} className="text-muted-foreground h-24 text-center">
-                  Sin registros existentes.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-
-      {meta && meta.totalItems > 0 && (
-        <div className="mt-4">
-          <TablePagination
-            pagination={{
-              pageIndex: currentPage - 1,
-              pageSize: itemsPerPage
-            }}
-            pageCount={meta.totalPages}
-            pageIndex={currentPage - 1}
-            canNextPage={currentPage >= meta.totalPages}
-            canPreviousPage={currentPage <= 1}
-            setPageIndex={(idx) => onPageChange(Number(idx) + 1)}
-            setPageSize={() => onPageSizeChange}
-            previousPage={() => onPageChange(Math.max(1, currentPage - 1))}
-            nextPage={() => onPageChange(Math.min(meta.totalPages, currentPage + 1))}
-            totalItems={meta.totalItems}
-          />
-        </div>
-      )}
-      <AsignVendorModal
-        leads={Array.from(selectedItems)}
-        isOpen={isOpenModal}
-        onClose={handleCloseModal}
-        onAssign={onAssign}
+      <AssignVendorModal
+        leadIds={selectedLeadIds}
+        isOpen={isAssignModalOpen}
+        onClose={handleModalClose}
       />
     </>
   );

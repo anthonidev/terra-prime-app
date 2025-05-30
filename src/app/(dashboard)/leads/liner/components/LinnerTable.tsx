@@ -11,7 +11,7 @@ import {
 } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { UserCheck, CreditCard } from 'lucide-react';
+import { CreditCard, UserCheck } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import UpdateLinerButton from './buttons/UpdateLinerButton';
 
