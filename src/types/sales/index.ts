@@ -173,3 +173,66 @@ export interface ClientGuarantorResponse {
   clientId: number;
   guarantorId: number;
 }
+
+export interface CreateSalePayload {
+  lotId: string;
+  saleType: 'DIRECT_PAYMENT' | 'FINANCED';
+  clientId: number;
+  guarantorId: number;
+  paymentDate: string;
+  saleDate: string;
+  contractDate: string;
+  totalAmount: number;
+
+  totalAmountUrbanDevelopment: number;
+  firstPaymentDateHu?: string;
+  initialAmountUrbanDevelopment?: number; //puede ser 0
+  quantityHuCuotes?: number;
+
+  initialAmount?: number;
+  interestRate?: number;
+  quantitySaleCoutes?: number;
+
+  financingInstallments?: Array<{
+    couteAmount: number;
+    expectedPaymentDate: string;
+  }>;
+}
+
+export interface SaleResponse {
+  id: string;
+  type: string;
+  totalAmount: number;
+  contractDate: string;
+  saleDate: string;
+  status: string;
+  client: {
+    address: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+  };
+  lot: {
+    name: string;
+    lotPrice: number;
+  };
+  financing: {
+    id: string;
+    initialAmount: number;
+    interestRate: number;
+    quantityCoutes: number;
+  };
+  guarantor: {
+    firstName: string;
+    lastName: string;
+  };
+  reservation: {
+    id: string;
+    amount: number;
+  };
+  vendor: {
+    document: string;
+    firstName: string;
+    lastName: string;
+  };
+}
