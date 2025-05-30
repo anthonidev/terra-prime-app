@@ -8,6 +8,7 @@ import {
   ColumnDef,
   getCoreRowModel,
   getFilteredRowModel,
+  RowSelectionState,
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table';
@@ -29,8 +30,17 @@ export default function BienvenidosTable({ data }: Props) {
     phone2: false
   });
 
-  const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+
+  const hasVendorAssigned = (lead: LeadsByDayItem): boolean => {
+    const vendor = lead.vendor;
+    return vendor !== null && typeof vendor === 'object' && !Array.isArray(vendor);
+  };
+
+  // const canSelectRow = (lead: LeadsByDayItem): boolean => {
+  //   return true;
+  // };
 
   const columns = useMemo<ColumnDef<LeadsByDayItem>[]>(
     () => [
@@ -204,18 +214,18 @@ export default function BienvenidosTable({ data }: Props) {
         header: 'Acciones',
         cell: ({ row }) => {
           const lead = row.original;
-          const vendor = lead.vendor;
-          const hasVendor = vendor && typeof vendor === 'object';
+          const hasVendor = hasVendorAssigned(lead);
 
-          if (hasVendor) {
-            return (
-              <Badge variant="default" className="border-green-200 bg-green-100 text-green-700">
-                Asignado
-              </Badge>
-            );
-          }
-
-          return <AssignVendorButton leadId={lead.id} />;
+          return (
+            <div className="flex items-center gap-2">
+              {hasVendor && (
+                <Badge variant="default" className="border-green-200 bg-green-100 text-green-700">
+                  Asignado
+                </Badge>
+              )}
+              <AssignVendorButton leadId={lead.id} hasVendor={hasVendor} />
+            </div>
+          );
         },
         enableHiding: false
       }
@@ -229,31 +239,31 @@ export default function BienvenidosTable({ data }: Props) {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    // enableRowSelection: (row) => canSelectRow(row.original),
+    getRowId: (row) => row.id,
     state: {
-      columnVisibility
+      columnVisibility,
+      rowSelection
     }
   });
 
-  const getRowId = (lead: LeadsByDayItem): string => lead.id;
-
-  const canSelectRow = (lead: LeadsByDayItem): boolean => {
-    const vendor = lead.vendor;
-    return !vendor || typeof vendor === 'string';
-  };
+  const selectedRowIds = Object.keys(rowSelection).filter((key) => rowSelection[key]);
 
   const bulkActions =
-    selectedLeadIds.length > 0 ? (
+    selectedRowIds.length > 0 ? (
       <Button onClick={() => setIsAssignModalOpen(true)} size="sm" className="ml-2">
         <UserPlus className="mr-2 h-4 w-4" />
-        Asignar vendedor
+        Asignar vendedor ({selectedRowIds.length})
       </Button>
     ) : null;
 
-  const selectionMessage = (count: number) => `${count} lead(s) sin vendedor seleccionado(s)`;
+  const selectionMessage = (count: number) =>
+    `${count} lead(s) seleccionado(s) para asignar/reasignar`;
 
   const handleModalClose = () => {
     setIsAssignModalOpen(false);
-    setSelectedLeadIds([]);
+    setRowSelection({});
   };
 
   return (
@@ -264,16 +274,12 @@ export default function BienvenidosTable({ data }: Props) {
         showColumnVisibility={true}
         columnVisibilityLabel="Mostrar columnas"
         enableRowSelection={true}
-        selectedRows={selectedLeadIds}
-        onRowSelectionChange={setSelectedLeadIds}
-        getRowId={getRowId}
-        canSelectRow={canSelectRow}
         bulkActions={bulkActions}
         selectionMessage={selectionMessage}
       />
 
       <AssignVendorModal
-        leadIds={selectedLeadIds}
+        leadIds={selectedRowIds}
         isOpen={isAssignModalOpen}
         onClose={handleModalClose}
       />

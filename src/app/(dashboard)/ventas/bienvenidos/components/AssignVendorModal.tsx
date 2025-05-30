@@ -1,5 +1,7 @@
 'use client';
 
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -9,15 +11,11 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Search, User, X, AlertCircle, Mail, FileText, Loader2 } from 'lucide-react';
-import React, { useState, useMemo, useEffect } from 'react';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 import { VendorsActivesItem } from '@/types/sales';
+import { AlertCircle, Loader2, RefreshCw, Search, User, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { assignLeadsToVendor, getVendorsActives } from '../action';
 
 interface AssignVendorModalProps {
@@ -78,7 +76,10 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
         vendorId: selectedVendorId
       });
 
-      toast.success(`Vendedor asignado correctamente a ${leadIds.length} lead(s)`);
+      const isReassignment = leadIds.length === 1;
+      const actionText = isReassignment ? 'reasignado' : 'asignado';
+
+      toast.success(`Vendedor ${actionText} correctamente a ${leadIds.length} lead(s)`);
       handleClose();
       router.refresh();
     } catch (err) {
@@ -116,9 +117,14 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
               <User className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <DialogTitle className="text-lg font-semibold">Asignar vendedor a leads</DialogTitle>
+              <DialogTitle className="text-lg font-semibold">
+                {leadIds.length === 1 ? 'Asignar/Reasignar vendedor' : 'Asignar vendedor a leads'}
+              </DialogTitle>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Selecciona un vendedor para asignar a {leadIds.length} lead(s)
+                Selecciona un vendedor para{' '}
+                {leadIds.length === 1
+                  ? 'asignar o reasignar a este lead'
+                  : `asignar a ${leadIds.length} lead(s)`}
               </p>
             </div>
           </div>
@@ -126,7 +132,6 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
 
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <div className="space-y-4 p-6">
-            {/* Buscador */}
             <div className="relative">
               <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <Input
@@ -185,50 +190,73 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
                     Vendedores disponibles ({filteredVendors.length})
                   </div>
                   {filteredVendors.map((vendor) => (
-                    <Card
+                    <div
                       key={vendor.id}
-                      className={`cursor-pointer border transition-all hover:shadow-sm ${
+                      className={`group relative cursor-pointer rounded-lg border p-3 transition-all ${
                         selectedVendorId === vendor.id
-                          ? 'border-blue-500 bg-blue-50 shadow-sm dark:bg-blue-950/20'
-                          : 'border-gray-200 hover:border-gray-300 dark:border-gray-700'
+                          ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200 dark:bg-blue-950/30 dark:ring-blue-800'
+                          : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:border-blue-600 dark:hover:bg-gray-800/50'
                       }`}
                       onClick={() => setSelectedVendorId(vendor.id)}
                     >
-                      <CardHeader className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <Checkbox
-                              checked={selectedVendorId === vendor.id}
-                              onCheckedChange={() => setSelectedVendorId(vendor.id)}
-                              className="h-4 w-4"
-                            />
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-                              <User className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <CardTitle className="truncate text-base font-semibold text-gray-900 dark:text-gray-100">
-                                {vendor.firstName} {vendor.lastName}
-                              </CardTitle>
-                              <div className="mt-1 flex items-center gap-4">
-                                <CardDescription className="flex items-center gap-1 text-sm">
-                                  <Mail className="h-3 w-3" />
-                                  {vendor.email}
-                                </CardDescription>
-                                <CardDescription className="flex items-center gap-1 text-sm">
-                                  <FileText className="h-3 w-3" />
-                                  {vendor.document}
-                                </CardDescription>
-                              </div>
-                            </div>
-                          </div>
+                      {/* Radio-style selection indicator */}
+                      <div className="absolute top-3 right-3">
+                        <div
+                          className={`flex h-4 w-4 items-center justify-center rounded-full border-2 ${
+                            selectedVendorId === vendor.id
+                              ? 'border-blue-500 bg-blue-500'
+                              : 'border-gray-300 group-hover:border-blue-400'
+                          }`}
+                        >
                           {selectedVendorId === vendor.id && (
-                            <Badge variant="default" className="bg-blue-600 text-white">
-                              ✓
-                            </Badge>
+                            <div className="h-2 w-2 rounded-full bg-white" />
                           )}
                         </div>
-                      </CardHeader>
-                    </Card>
+                      </div>
+
+                      <div className="flex items-center gap-3 pr-6">
+                        {/* Avatar */}
+                        <div
+                          className={`flex h-12 w-12 items-center justify-center rounded-full transition-colors ${
+                            selectedVendorId === vendor.id
+                              ? 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400'
+                              : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+                          }`}
+                        >
+                          <User className="h-6 w-6" />
+                        </div>
+
+                        {/* Info */}
+                        <div className="min-w-0 flex-1">
+                          <h4
+                            className={`truncate font-semibold ${
+                              selectedVendorId === vendor.id
+                                ? 'text-blue-900 dark:text-blue-100'
+                                : 'text-gray-900 dark:text-gray-100'
+                            }`}
+                          >
+                            {vendor.firstName} {vendor.lastName}
+                          </h4>
+                          <div className="mt-1 space-y-1">
+                            <p className="truncate text-sm text-gray-600 dark:text-gray-400">
+                              {vendor.email}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-500">
+                              Doc: {vendor.document}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Hover effect overlay */}
+                      <div
+                        className={`absolute inset-0 rounded-lg transition-opacity ${
+                          selectedVendorId === vendor.id
+                            ? 'bg-blue-500/5'
+                            : 'bg-transparent group-hover:bg-blue-500/3'
+                        }`}
+                      />
+                    </div>
                   ))}
                 </>
               ) : vendors.length === 0 && !isLoadingVendors ? (
@@ -260,7 +288,7 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
           <div className="flex w-full items-center justify-between">
             <div className="text-sm text-gray-500 dark:text-gray-400">
               {selectedVendorId
-                ? `Listo para asignar a ${leadIds.length} lead(s)`
+                ? `Listo para ${leadIds.length === 1 ? 'asignar/reasignar' : 'asignar'} a ${leadIds.length} lead(s)`
                 : 'Selecciona un vendedor para continuar'}
             </div>
             <div className="flex items-center gap-3">
@@ -281,12 +309,16 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
                 {isAssigning ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Asignando...
+                    {leadIds.length === 1 ? 'Asignando...' : 'Asignando...'}
                   </>
                 ) : (
                   <>
-                    <User className="mr-2 h-4 w-4" />
-                    Asignar
+                    {leadIds.length === 1 ? (
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                    ) : (
+                      <User className="mr-2 h-4 w-4" />
+                    )}
+                    {leadIds.length === 1 ? 'Asignar/Reasignar' : 'Asignar'}
                   </>
                 )}
               </Button>

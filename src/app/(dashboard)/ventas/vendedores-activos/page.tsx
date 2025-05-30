@@ -1,9 +1,9 @@
 'use client';
 
 import { PageHeader } from '@/components/common/PageHeader';
-import VendorsActivesTable from '../components/VendorsActivesTable';
-import { useVendors } from '../hooks/useVendors';
 import { User } from 'lucide-react';
+import { useVendors } from './hooks/useVendors';
+import VendorsActivesTable from './components/VendorsActivesTable';
 export default function VendorsActivesPage() {
   const { data, isLoading, error, refresh } = useVendors();
   return (

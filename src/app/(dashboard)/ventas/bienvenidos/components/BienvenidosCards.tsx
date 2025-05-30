@@ -11,6 +11,11 @@ type Props = {
 };
 
 export default function BienvenidosCards({ data }: Props) {
+  const hasVendorAssigned = (lead: LeadsByDayItem): boolean => {
+    const vendor = lead.vendor;
+    return vendor !== null && typeof vendor === 'object' && !Array.isArray(vendor);
+  };
+
   if (!data.length) {
     return (
       <Card className="border-dashed">
@@ -31,7 +36,7 @@ export default function BienvenidosCards({ data }: Props) {
     <div className="grid grid-cols-1 gap-4">
       {data.map((lead) => {
         const vendor = lead.vendor;
-        const hasVendor = vendor && typeof vendor === 'object';
+        const hasVendor = hasVendorAssigned(lead);
 
         return (
           <Card key={lead.id} className="transition-shadow hover:shadow-md">
@@ -96,7 +101,7 @@ export default function BienvenidosCards({ data }: Props) {
                 </div>
               </div>
 
-              {hasVendor && (
+              {hasVendor && vendor && (
                 <div className="mb-4 rounded-lg bg-green-50 p-3 dark:bg-green-950/20">
                   <div className="flex items-center gap-2 text-sm">
                     <User className="h-4 w-4 text-green-600 dark:text-green-400" />
@@ -112,11 +117,9 @@ export default function BienvenidosCards({ data }: Props) {
                 </div>
               )}
 
-              {!hasVendor && (
-                <div className="flex justify-end border-t border-gray-100 pt-3 dark:border-gray-800">
-                  <AssignVendorButton leadId={lead.id} />
-                </div>
-              )}
+              <div className="flex justify-end border-t border-gray-100 pt-3 dark:border-gray-800">
+                <AssignVendorButton leadId={lead.id} hasVendor={hasVendor} />
+              </div>
             </CardContent>
           </Card>
         );

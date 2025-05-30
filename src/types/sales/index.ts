@@ -78,16 +78,13 @@ export interface LeadsByDayItem {
   createdAt: string;
   source: Source;
   ubigeo: Ubigeo;
-  vendor:
-    | string
-    | {
-        id: string;
-        firstName: string;
-        lastName: string;
-        email: string;
-        document: string;
-      }
-    | null;
+  vendor: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    document: string;
+  } | null;
 }
 
 export interface AmortizationItem {

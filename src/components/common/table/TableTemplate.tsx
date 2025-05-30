@@ -1,11 +1,3 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -14,6 +6,14 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import { ColumnDef, flexRender, Table as TanStackTable } from '@tanstack/react-table';
 import { Info, Settings2 } from 'lucide-react';
 import { ReactNode } from 'react';
@@ -24,11 +24,6 @@ type Props<T> = {
   showColumnVisibility?: boolean;
   columnVisibilityLabel?: string;
   enableRowSelection?: boolean;
-  selectedRows?: string[];
-  onRowSelectionChange?: (selectedIds: string[]) => void;
-  getRowId?: (row: T) => string;
-  canSelectRow?: (row: T) => boolean;
-  // Props para acciones en bulk
   bulkActions?: ReactNode;
   selectionMessage?: (count: number) => string;
 };
@@ -39,81 +34,21 @@ const TableTemplate = <T,>({
   showColumnVisibility = true,
   columnVisibilityLabel = 'Columnas',
   enableRowSelection = false,
-  selectedRows = [],
-  onRowSelectionChange,
-  getRowId,
-  canSelectRow,
   bulkActions,
   selectionMessage
 }: Props<T>) => {
-  const getRowIdentifier = (row: T): string => {
-    if (getRowId) {
-      return getRowId(row);
-    }
-    return (row as any)?.id || '';
-  };
-
-  const isRowSelectable = (row: T): boolean => {
-    return canSelectRow ? canSelectRow(row) : true;
-  };
-
-  const selectableRows = table.getRowModel().rows.filter((row) => isRowSelectable(row.original));
-
-  const handleRowSelection = (row: T, checked: boolean) => {
-    if (!onRowSelectionChange || !isRowSelectable(row)) return;
-
-    const rowId = getRowIdentifier(row);
-    if (!rowId) return;
-
-    let newSelection: string[];
-    if (checked) {
-      newSelection = [...selectedRows, rowId];
-    } else {
-      newSelection = selectedRows.filter((id) => id !== rowId);
-    }
-
-    onRowSelectionChange(newSelection);
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    if (!onRowSelectionChange) return;
-
-    if (checked) {
-      const selectableIds = selectableRows
-        .map((row) => getRowIdentifier(row.original))
-        .filter((id) => id !== '');
-      onRowSelectionChange(selectableIds);
-    } else {
-      onRowSelectionChange([]);
-    }
-  };
-
-  const isRowSelected = (row: T): boolean => {
-    const rowId = getRowIdentifier(row);
-    return selectedRows.includes(rowId);
-  };
-
-  const areAllSelectableRowsSelected = (): boolean => {
-    if (selectableRows.length === 0) return false;
-
-    return selectableRows.every((row) => isRowSelected(row.original));
-  };
-
-  const areSomeRowsSelected = (): boolean => {
-    return selectedRows.length > 0 && !areAllSelectableRowsSelected();
-  };
+  const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          {/* Mensaje de selección */}
-          {enableRowSelection && selectedRows.length > 0 && (
+          {enableRowSelection && selectedRowsCount > 0 && (
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground text-sm">
                 {selectionMessage
-                  ? selectionMessage(selectedRows.length)
-                  : `${selectedRows.length} elemento(s) seleccionado(s)`}
+                  ? selectionMessage(selectedRowsCount)
+                  : `${selectedRowsCount} elemento(s) seleccionado(s)`}
               </span>
               {bulkActions}
             </div>
@@ -159,7 +94,6 @@ const TableTemplate = <T,>({
         )}
       </div>
 
-      {/* Tabla */}
       <div className="overflow-hidden rounded-md border">
         <div className="overflow-x-auto">
           <Table>
@@ -169,14 +103,13 @@ const TableTemplate = <T,>({
                   {enableRowSelection && (
                     <TableHead className="w-12">
                       <Checkbox
-                        checked={areAllSelectableRowsSelected()}
-                        ref={(el) => {
-                          const input = el as unknown as HTMLInputElement | null;
-                          if (input) input.indeterminate = areSomeRowsSelected();
-                        }}
-                        onCheckedChange={handleSelectAll}
+                        checked={
+                          table.getIsAllPageRowsSelected() ||
+                          (table.getIsSomePageRowsSelected() && 'indeterminate')
+                        }
+                        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                         aria-label="Seleccionar todas las filas"
-                        disabled={selectableRows.length === 0}
+                        className="translate-y-[2px]"
                       />
                     </TableHead>
                   )}
@@ -193,28 +126,27 @@ const TableTemplate = <T,>({
             <TableBody>
               {table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => {
-                  const isSelectable = isRowSelectable(row.original);
-                  const isSelected = isRowSelected(row.original);
+                  const canSelect = row.getCanSelect();
+                  const isSelected = row.getIsSelected();
 
                   return (
                     <TableRow
                       key={row.id}
-                      data-state={row.getIsSelected() && 'selected'}
+                      data-state={isSelected && 'selected'}
                       className={`hover:bg-muted/50 transition-colors ${
                         enableRowSelection && isSelected
                           ? 'bg-muted/25 border-l-primary border-l-2'
                           : ''
-                      } ${enableRowSelection && !isSelectable ? 'opacity-60' : ''}`}
+                      } ${enableRowSelection && !canSelect ? 'opacity-60' : ''}`}
                     >
                       {enableRowSelection && (
                         <TableCell className="w-12">
                           <Checkbox
                             checked={isSelected}
-                            onCheckedChange={(checked) =>
-                              handleRowSelection(row.original, checked as boolean)
-                            }
-                            disabled={!isSelectable}
+                            onCheckedChange={(value) => row.toggleSelected(!!value)}
+                            disabled={!canSelect}
                             aria-label={`Seleccionar fila ${row.id}`}
+                            className="translate-y-[2px]"
                           />
                         </TableCell>
                       )}

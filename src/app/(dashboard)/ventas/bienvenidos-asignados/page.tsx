@@ -1,9 +1,9 @@
 'use client';
 
 import { PageHeader } from '@/components/common/PageHeader';
-import LeadsVendorTable from '../components/LeadsVendorTable';
-import { useLeadsVendor } from '../hooks/useLeadsVendor';
 import { User } from 'lucide-react';
+import LeadsVendorTable from './components/LeadsVendorTable';
+import { useLeadsVendor } from './hooks/useLeadsVendor';
 
 export default function LeadsVendorPage() {
   const { data, isLoading, error, refresh } = useLeadsVendor();

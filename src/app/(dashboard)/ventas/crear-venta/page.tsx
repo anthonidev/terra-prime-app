@@ -12,7 +12,6 @@ import {
   ProyectsActivesItems,
   ProyectStagesItems
 } from '@/types/sales';
-import { useLeadsVendor } from '../hooks/useLeadsVendor';
 import { InformationStep } from '../components/InformationStep';
 import { FinancingStep } from '../components/FinancingStep';
 import { ClientStep } from '../components/ClientStep';
@@ -20,6 +19,7 @@ import { useClients } from '../hooks/useClients';
 import { createSaleFinanceSchema, SaleFormData } from '@/lib/validations/sales';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useLeadsVendor } from '../hooks/useLeadsVendor';
 
 const _steps = [{ id: 'step_01' }, { id: 'step_02' }, { id: 'step_03' }, { id: 'step_04' }];
 

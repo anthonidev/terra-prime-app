@@ -3,12 +3,12 @@
 import { Button } from '@/components/ui/button';
 import { ProyectBlocksItems } from '@/types/sales';
 import { ArrowLeft, Calendar, Search } from 'lucide-react';
-import { useProyectBlocks } from '../hooks/useProyectBlocks';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import ProjectsSkeleton from '@/components/project/list/ProjectsSkeleton';
 import * as React from 'react';
 import { Input } from '@/components/ui/input';
+import { useProyectBlocks } from '../hooks/useProyectBlocks';
 
 interface Props {
   stageId: string;

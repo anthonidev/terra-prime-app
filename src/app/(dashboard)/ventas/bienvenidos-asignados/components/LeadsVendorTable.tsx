@@ -1,5 +1,6 @@
 'use client';
 
+import { TableSkeleton } from '@/components/common/table/TableSkeleton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -13,7 +14,6 @@ import {
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { LeadsVendorItems } from '@/types/sales';
 import { AlertCircle, RefreshCw } from 'lucide-react';
-import { TableSkeleton } from '@/components/common/table/TableSkeleton';
 
 interface Props {
   data: LeadsVendorItems[];

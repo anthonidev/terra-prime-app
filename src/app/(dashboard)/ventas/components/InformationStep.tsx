@@ -16,7 +16,6 @@ import { motion } from 'framer-motion';
 import { Building, Check } from 'lucide-react';
 import { useProyectsActives } from '../hooks/useProyectsActives';
 import { useProyectStages } from '../hooks/useProyectStages';
-import { useProyectBlocks } from '../hooks/useProyectBlocks';
 import { useProyectLots } from '../hooks/useProyectLots';
 import { UseFormReturn } from 'react-hook-form';
 import { SaleFormData } from '@/lib/validations/sales';
@@ -29,6 +28,7 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { useProyectBlocks } from '../hooks/useProyectBlocks';
 
 interface Props {
   selectedProject: ProyectsActivesItems | null;
