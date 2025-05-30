@@ -37,6 +37,8 @@ export default function LeadInOfficeMessage({ lead, onContinue }: LeadInOfficeMe
     return format(new Date(dateString), "PPP 'a las' HH:mm", { locale: es });
   };
 
+  console.log(formatDate);
+
   const formatTime = (dateString: string) => {
     return format(new Date(dateString), 'HH:mm', { locale: es });
   };

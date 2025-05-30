@@ -60,7 +60,8 @@ export async function getActiveLeadSources(): Promise<ActiveLeadSourcesResponse>
       }
     });
   } catch (error) {
-    console.error('Error al obtener fuentes de leads activas:', error);
+    if (error instanceof Error)
+      console.error('Error al obtener fuentes de leads activas: %s', error.message);
     throw error;
   }
 }

@@ -63,6 +63,8 @@ export default function Page() {
     setOpenModal(false);
   };
 
+  console.error(error);
+
   React.useEffect(() => {
     if (selectedLeadVendor?.document) {
       searchClient(Number(selectedLeadVendor.document));

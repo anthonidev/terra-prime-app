@@ -3,6 +3,8 @@ import { PageHeader } from '@/components/common/PageHeader';
 import NewLeadSkeleton from './components/NewLeadSkeleton';
 import NewLeadContent from './components/NewLeadContent';
 
+export const dynamic = 'force-dynamic';
+
 export default async function NewLeadPage() {
   return (
     <div className="container py-8">

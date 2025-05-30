@@ -21,7 +21,7 @@ export function useClients(): TUseClients {
       toast.success('Cliente encontrado correctamente');
       setClient(response);
     } catch (error) {
-      toast.error('Cliente no encontrado');
+      if (error instanceof Error) toast.error(error.message);
       setClient(null);
     } finally {
       setIsLoading(false);
