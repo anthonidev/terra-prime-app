@@ -1,17 +1,15 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Form } from '@/components/ui/form';
 
 import { AmortizationItem } from '@/types/sales';
 
-import AmountConfiguration from './AmountConfiguration';
-import FinancingConfiguration from './FinancingConfiguration';
-import FinancialSummary from './FinancialSummary';
-import AmortizationTable from './AmortizationTable';
+import { useFinancialConfig } from '../../../hooks/useFinancialConfig';
+import { useFormSynchronization } from '../../../hooks/useFormSynchronization';
 import {
   AmortizationCalculationData,
   amortizationCalculationSchema,
@@ -19,19 +17,27 @@ import {
   Step2FormData,
   step2Schema
 } from '../../../validations/saleValidation';
-import { useFinancialConfig } from '../../../hooks/useFinancialConfig';
-import { useFormSynchronization } from '../../../hooks/useFormSynchronization';
+import AmortizationTable from './AmortizationTable';
+import AmountConfiguration from './AmountConfiguration';
+import FinancialSummary from './FinancialSummary';
+import FinancingConfiguration from './FinancingConfiguration';
 
 interface Step2Props {
   formData: Partial<CreateSaleFormData> & {
-    financingInstallments?: any[];
+    financingInstallments?: {
+      couteAmount: number;
+      expectedPaymentDate: string;
+    }[];
     initialAmount?: number;
     interestRate?: number;
     quantitySaleCoutes?: number;
   };
   updateFormData: (
     data: Partial<CreateSaleFormData> & {
-      financingInstallments?: any[];
+      financingInstallments?: {
+        couteAmount: number;
+        expectedPaymentDate: string;
+      }[];
       initialAmount?: number;
       interestRate?: number;
       quantitySaleCoutes?: number;
@@ -40,12 +46,11 @@ interface Step2Props {
   updateStepValidation: (step: 'step2', isValid: boolean) => void;
 }
 
-const safeNumber = (value: any): number => {
+const safeNumber = (value: string | number | undefined | null): number => {
   if (value === undefined || value === null || value === '') return 0;
   const num = typeof value === 'string' ? parseFloat(value) : Number(value);
   return isNaN(num) ? 0 : num;
 };
-
 export default function Step2FinancialConfig({
   formData,
   updateFormData,

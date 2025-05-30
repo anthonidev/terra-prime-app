@@ -17,7 +17,7 @@ interface SaleTypeSelectorProps {
   errors: FieldErrors<Step1FormData>;
 }
 
-export default function SaleTypeSelector({ control, errors }: SaleTypeSelectorProps) {
+export default function SaleTypeSelector({ control }: SaleTypeSelectorProps) {
   return (
     <div className="space-y-4">
       <h3 className="text-md font-medium text-gray-800 dark:text-gray-200">

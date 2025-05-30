@@ -1,8 +1,8 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -15,13 +15,14 @@ import {
 } from '@/components/ui/dialog';
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
   SelectContent,
@@ -31,17 +32,17 @@ import {
 } from '@/components/ui/select';
 import {
   AlertCircle,
-  UserCheck,
-  User,
-  Mail,
-  Phone,
-  MapPin,
   CreditCard,
-  X,
-  Save
+  Mail,
+  MapPin,
+  Phone,
+  Save,
+  User,
+  UserCheck,
+  X
 } from 'lucide-react';
 
-import { guarantorSchema, GuarantorFormData } from '../../validations/saleValidation';
+import { GuarantorFormData, guarantorSchema } from '../../validations/saleValidation';
 
 interface AddGuarantorModalProps {
   isOpen: boolean;
@@ -98,8 +99,8 @@ export default function AddGuarantorModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="px-6 pt-6">
+      <DialogContent className="flex h-[90vh] max-h-[700px] w-[95vw] max-w-md flex-col p-0 sm:h-auto sm:max-h-[85vh]">
+        <DialogHeader className="flex-shrink-0 border-b border-gray-100 px-4 py-4 sm:px-6 dark:border-gray-800">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
               <UserCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -113,7 +114,7 @@ export default function AddGuarantorModal({
           </div>
         </DialogHeader>
 
-        <div className="px-6 pb-6">
+        <ScrollArea className="flex-1 px-4 py-4 sm:px-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               {error && (
@@ -126,26 +127,25 @@ export default function AddGuarantorModal({
                 </Alert>
               )}
 
-              {/* Nombres */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormField
                   control={form.control}
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nombre</FormLabel>
+                      <FormLabel className="text-sm font-medium">Nombre</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                           <Input
                             placeholder="Nombre del garante"
-                            className="pl-9"
+                            className="h-10 pl-9"
                             {...field}
                             disabled={isCreating}
                           />
                         </div>
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
@@ -155,62 +155,60 @@ export default function AddGuarantorModal({
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Apellido</FormLabel>
+                      <FormLabel className="text-sm font-medium">Apellido</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                           <Input
                             placeholder="Apellido del garante"
-                            className="pl-9"
+                            className="h-10 pl-9"
                             {...field}
                             disabled={isCreating}
                           />
                         </div>
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
               </div>
 
-              {/* Email */}
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="text-sm font-medium">Email</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                         <Input
                           type="email"
                           placeholder="email@ejemplo.com"
-                          className="pl-9"
+                          className="h-10 pl-9"
                           {...field}
                           disabled={isCreating}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />
 
-              {/* Documento */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormField
                   control={form.control}
                   name="documentType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tipo de Documento</FormLabel>
+                      <FormLabel className="text-sm font-medium">Tipo de Documento</FormLabel>
                       <Select
                         value={field.value}
                         onValueChange={field.onChange}
                         disabled={isCreating}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="h-10">
                           <div className="flex items-center">
                             <CreditCard className="mr-2 h-4 w-4 text-gray-400" />
                             <SelectValue placeholder="Seleccionar tipo" />
@@ -224,7 +222,7 @@ export default function AddGuarantorModal({
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormMessage />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
@@ -234,102 +232,103 @@ export default function AddGuarantorModal({
                   name="document"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Número de Documento</FormLabel>
+                      <FormLabel className="text-sm font-medium">Número de Documento</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <CreditCard className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                           <Input
                             placeholder="Número de documento"
-                            className="pl-9"
+                            className="h-10 pl-9"
                             {...field}
                             disabled={isCreating}
                           />
                         </div>
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
               </div>
 
-              {/* Teléfono */}
               <FormField
                 control={form.control}
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Teléfono</FormLabel>
+                    <FormLabel className="text-sm font-medium">Teléfono</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                         <Input
                           placeholder="Número de teléfono"
-                          className="pl-9"
+                          className="h-10 pl-9"
                           {...field}
                           disabled={isCreating}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />
 
-              {/* Dirección */}
               <FormField
                 control={form.control}
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Dirección</FormLabel>
+                    <FormLabel className="text-sm font-medium">Dirección</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <MapPin className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                         <Input
                           placeholder="Dirección completa"
-                          className="pl-9"
+                          className="h-10 pl-9"
                           {...field}
                           disabled={isCreating}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />
-
-              <DialogFooter className="gap-2 border-t pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleClose}
-                  disabled={isCreating}
-                  className="flex items-center gap-2"
-                >
-                  <X className="h-4 w-4" />
-                  Cancelar
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={isCreating || !form.formState.isValid}
-                  className="flex items-center gap-2"
-                >
-                  {isCreating ? (
-                    <>
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                      Guardando...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="h-4 w-4" />
-                      Guardar Garante
-                    </>
-                  )}
-                </Button>
-              </DialogFooter>
             </form>
           </Form>
-        </div>
+        </ScrollArea>
+
+        <DialogFooter className="flex-shrink-0 flex-col gap-2 border-t border-gray-100 bg-gray-50 px-4 py-4 sm:flex-row sm:px-6 dark:border-gray-800 dark:bg-gray-900/50">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleClose}
+            disabled={isCreating}
+            className="flex w-full items-center justify-center gap-2 sm:w-auto"
+            size="sm"
+          >
+            <X className="h-4 w-4" />
+            Cancelar
+          </Button>
+          <Button
+            type="submit"
+            onClick={form.handleSubmit(onSubmit)}
+            disabled={isCreating || !form.formState.isValid}
+            className="flex w-full items-center justify-center gap-2 sm:w-auto"
+            size="sm"
+          >
+            {isCreating ? (
+              <>
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                Guardando...
+              </>
+            ) : (
+              <>
+                <Save className="h-4 w-4" />
+                Guardar Garante
+              </>
+            )}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

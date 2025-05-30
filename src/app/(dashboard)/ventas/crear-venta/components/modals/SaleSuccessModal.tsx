@@ -1,6 +1,8 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -8,19 +10,8 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import {
-  CheckCircle,
-  Download,
-  FileText,
-  User,
-  DollarSign,
-  Calendar,
-  Building
-} from 'lucide-react';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Calendar, CheckCircle, DollarSign, Download, FileText, User } from 'lucide-react';
 
 import { SaleResponse } from '@/types/sales';
 
@@ -30,8 +21,7 @@ interface SaleSuccessModalProps {
   saleData: SaleResponse;
 }
 
-// Función helper para convertir valores a números de manera segura
-const safeNumber = (value: any): number => {
+const safeNumber = (value: string | number | undefined | null): number => {
   if (value === undefined || value === null || value === '') return 0;
   const num = typeof value === 'string' ? parseFloat(value) : Number(value);
   return isNaN(num) ? 0 : num;
@@ -39,12 +29,10 @@ const safeNumber = (value: any): number => {
 
 export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSuccessModalProps) {
   const handleDownloadContract = () => {
-    // Aquí iría la lógica para descargar el contrato
     console.log('Downloading contract for sale:', saleData.id);
   };
 
   const handleViewDetails = () => {
-    // Aquí iría la navegación a los detalles de la venta
     console.log('Viewing sale details:', saleData.id);
   };
 
@@ -58,14 +46,15 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl">
-        <DialogHeader className="px-6 pt-6">
+      <DialogContent className="flex h-[90vh] max-h-[800px] w-[95vw] max-w-2xl flex-col p-0 sm:h-auto sm:max-h-[85vh]">
+        {/* Header - Fixed */}
+        <DialogHeader className="flex-shrink-0 border-b border-gray-100 px-4 py-4 sm:px-6 dark:border-gray-800">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-              <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 sm:h-12 sm:w-12 dark:bg-green-900/30">
+              <CheckCircle className="h-5 w-5 text-green-600 sm:h-6 sm:w-6 dark:text-green-400" />
             </div>
             <div>
-              <DialogTitle className="text-xl font-semibold text-green-800 dark:text-green-200">
+              <DialogTitle className="text-lg font-semibold text-green-800 sm:text-xl dark:text-green-200">
                 ¡Venta Creada Exitosamente!
               </DialogTitle>
               <p className="text-sm text-green-600 dark:text-green-400">
@@ -75,41 +64,42 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
           </div>
         </DialogHeader>
 
-        <div className="px-6 pb-6">
-          <div className="space-y-6">
-            {/* Información Principal */}
+        <ScrollArea className="flex-1 px-4 py-4 sm:px-6">
+          <div className="space-y-4 sm:space-y-6">
             <Card>
-              <CardHeader>
+              <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-sm">
                   <FileText className="h-4 w-4" />
                   Información de la Venta
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">Tipo de Venta:</span>
+                    <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        Tipo de Venta:
+                      </span>
                       <Badge variant={saleData.type === 'FINANCED' ? 'default' : 'secondary'}>
                         {saleData.type === 'FINANCED' ? 'Financiada' : 'Pago Directo'}
                       </Badge>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">Monto Total:</span>
+                    <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Monto Total:</span>
                       <span className="font-medium">S/ {totalAmount.toFixed(2)}</span>
                     </div>
                     {saleData.guarantor && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Garante:</span>
-                        <span className="font-medium">
+                      <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Garante:</span>
+                        <span className="text-right font-medium">
                           {saleData.guarantor.firstName} {saleData.guarantor.lastName}
                         </span>
                       </div>
                     )}
                     {saleData.client && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Cliente:</span>
-                        <span className="font-medium">
+                      <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Cliente:</span>
+                        <span className="text-right font-medium">
                           {saleData.client.firstName} {saleData.client.lastName}
                         </span>
                       </div>
@@ -118,20 +108,24 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
                   <div className="space-y-2">
                     {saleData.lot && (
                       <>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600 dark:text-gray-400">Lote:</span>
-                          <span className="font-medium">{saleData.lot.name}</span>
+                        <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Lote:</span>
+                          <span className="text-right font-medium">{saleData.lot.name}</span>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600 dark:text-gray-400">Precio Lote:</span>
-                          <span className="font-medium">S/ {lotPrice.toFixed(2)}</span>
+                        <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">
+                            Precio Lote:
+                          </span>
+                          <span className="text-right font-medium">S/ {lotPrice.toFixed(2)}</span>
                         </div>
                       </>
                     )}
                     {saleData.client?.address && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Dirección:</span>
-                        <span className="text-xs font-medium">{saleData.client.address}</span>
+                      <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Dirección:</span>
+                        <span className="text-right text-xs font-medium break-words">
+                          {saleData.client.address}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -139,27 +133,26 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
               </CardContent>
             </Card>
 
-            {/* Información del Vendedor */}
             {saleData.vendor && (
               <Card>
-                <CardHeader>
+                <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm">
                     <User className="h-4 w-4" />
                     Información del Vendedor
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Vendedor:</span>
-                        <span className="font-medium">
+                      <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Vendedor:</span>
+                        <span className="text-right font-medium">
                           {saleData.vendor.firstName} {saleData.vendor.lastName}
                         </span>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Documento:</span>
-                        <span className="font-medium">{saleData.vendor.document}</span>
+                      <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Documento:</span>
+                        <span className="text-right font-medium">{saleData.vendor.document}</span>
                       </div>
                     </div>
                   </div>
@@ -167,37 +160,46 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
               </Card>
             )}
 
-            {/* Información de Financiamiento (solo si aplica) */}
             {saleData.financing && (
               <Card>
-                <CardHeader>
+                <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm">
                     <DollarSign className="h-4 w-4" />
                     Información de Financiamiento
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Monto Inicial:</span>
-                        <span className="font-medium">S/ {initialAmount.toFixed(2)}</span>
+                      <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                          Monto Inicial:
+                        </span>
+                        <span className="text-right font-medium">
+                          S/ {initialAmount.toFixed(2)}
+                        </span>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Tasa de Interés:</span>
-                        <span className="font-medium">{interestRate}%</span>
+                      <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                          Tasa de Interés:
+                        </span>
+                        <span className="text-right font-medium">{interestRate}%</span>
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">
+                      <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
                           Cantidad de Cuotas:
                         </span>
-                        <span className="font-medium">{quantityCoutes}</span>
+                        <span className="text-right font-medium">{quantityCoutes}</span>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">ID Financiamiento:</span>
-                        <span className="font-mono text-xs">{saleData.financing.id}</span>
+                      <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                          ID Financiamiento:
+                        </span>
+                        <span className="text-right font-mono text-xs break-all">
+                          {saleData.financing.id}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -205,28 +207,30 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
               </Card>
             )}
 
-            {/* Información de Reserva (si aplica) */}
             {saleData.reservation && (
               <Card>
-                <CardHeader>
+                <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm">
                     <Calendar className="h-4 w-4" />
                     Información de Reserva
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Monto de Reserva:</span>
-                    <span className="font-medium">S/ {reservationAmount.toFixed(2)}</span>
+                  <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      Monto de Reserva:
+                    </span>
+                    <span className="text-right font-medium">
+                      S/ {reservationAmount.toFixed(2)}
+                    </span>
                   </div>
                 </CardContent>
               </Card>
             )}
 
-            {/* Mensaje de éxito */}
             <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-950/20">
               <div className="flex items-start gap-3">
-                <CheckCircle className="mt-0.5 h-5 w-5 text-green-600 dark:text-green-400" />
+                <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-600 dark:text-green-400" />
                 <div>
                   <h4 className="font-medium text-green-900 dark:text-green-100">
                     Venta registrada exitosamente
@@ -243,33 +247,40 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
               </div>
             </div>
           </div>
+        </ScrollArea>
 
-          <DialogFooter className="mt-6 gap-3 border-t pt-6">
+        <DialogFooter className="flex-shrink-0 flex-col gap-2 border-t border-gray-100 bg-gray-50 px-4 py-4 sm:flex-row sm:px-6 dark:border-gray-800 dark:bg-gray-900/50">
+          <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
             <Button
               variant="outline"
               onClick={handleDownloadContract}
-              className="flex items-center gap-2"
+              className="flex items-center justify-center gap-2"
+              size="sm"
             >
               <Download className="h-4 w-4" />
-              Descargar Contrato
+              <span className="hidden sm:inline">Descargar Contrato</span>
+              <span className="sm:hidden">Contrato</span>
             </Button>
             <Button
               variant="outline"
               onClick={handleViewDetails}
-              className="flex items-center gap-2"
+              className="flex items-center justify-center gap-2"
+              size="sm"
             >
               <FileText className="h-4 w-4" />
-              Ver Detalles
+              <span className="hidden sm:inline">Ver Detalles</span>
+              <span className="sm:hidden">Detalles</span>
             </Button>
             <Button
               onClick={onClose}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+              className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700"
+              size="sm"
             >
               <CheckCircle className="h-4 w-4" />
               Finalizar
             </Button>
-          </DialogFooter>
-        </div>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

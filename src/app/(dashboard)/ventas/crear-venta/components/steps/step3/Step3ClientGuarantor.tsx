@@ -100,12 +100,21 @@ export default function Step3ClientGuarantor({
     await handleLeadChange(leadId);
   };
 
-  const handleGuarantorModalSuccess = async (guarantorFormData: any) => {
+  const handleGuarantorModalSuccess = async (guarantorFormData: {
+    address: string;
+    document: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    documentType: 'DNI' | 'CE' | 'RUC';
+    phone: string;
+  }) => {
     try {
       await handleGuarantorSuccess(guarantorFormData);
       setShowGuarantorModal(false);
     } catch (error) {
       // Error ya manejado en el hook
+      console.error('Error al manejar el éxito del garante:', error);
     }
   };
 

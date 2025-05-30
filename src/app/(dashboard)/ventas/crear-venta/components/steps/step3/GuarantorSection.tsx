@@ -50,7 +50,7 @@ export default function GuarantorSection({
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
             Aún no se ha agregado un garante
           </p>
-          <p className="text-xs text-gray-400">Haz clic en "Agregar Garante" para continuar</p>
+          <p className="text-xs text-gray-400">Haz clic en Agregar Garante para continuar</p>
         </div>
       )}
     </div>

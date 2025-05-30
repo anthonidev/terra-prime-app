@@ -1,6 +1,6 @@
 'use client';
 
-import { FormField, FormItem, FormLabel, FormControl } from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import {
   Select,
   SelectContent,
@@ -8,14 +8,14 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { Building, Layers, Square, MapPin } from 'lucide-react';
+import { Building, Layers, MapPin, Square } from 'lucide-react';
 import { Control, FieldErrors } from 'react-hook-form';
 
 import {
-  ProyectsActivesItems,
-  ProyectStagesItems,
   ProyectBlocksItems,
-  ProyectLotsItems
+  ProyectLotsItems,
+  ProyectsActivesItems,
+  ProyectStagesItems
 } from '@/types/sales';
 import { Step1FormData } from '../../../validations/saleValidation';
 

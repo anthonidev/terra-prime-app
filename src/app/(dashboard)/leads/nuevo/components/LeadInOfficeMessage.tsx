@@ -1,14 +1,14 @@
 'use client';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Info, User, Calendar, Clock, MapPin, CreditCard } from 'lucide-react';
+import { Lead } from '@/types/leads.types';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Lead } from '@/types/leads.types';
 import { motion } from 'framer-motion';
+import { Calendar, CheckCircle, Clock, CreditCard, Info, MapPin, User } from 'lucide-react';
 
 interface LeadInOfficeMessageProps {
   lead: Lead;
@@ -33,10 +33,6 @@ const itemVariants = {
 };
 
 export default function LeadInOfficeMessage({ lead, onContinue }: LeadInOfficeMessageProps) {
-  const formatDate = (dateString: string) => {
-    return format(new Date(dateString), "PPP 'a las' HH:mm", { locale: es });
-  };
-
   const formatTime = (dateString: string) => {
     return format(new Date(dateString), 'HH:mm', { locale: es });
   };

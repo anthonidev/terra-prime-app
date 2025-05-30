@@ -18,7 +18,6 @@ interface ClientConfigurationProps {
 
 export default function ClientConfiguration({
   control,
-  errors,
   isLoadingClient,
   existingClient,
   clientAddress,

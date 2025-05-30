@@ -62,7 +62,7 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
       setExistingClient(client);
       setClientAddress(client.address);
       toast.success('Cliente existente encontrado');
-    } catch (error) {
+    } catch {
       setExistingClient(null);
       console.log('Client not found, will be created');
     } finally {

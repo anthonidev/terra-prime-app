@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { VendorsActivesItem } from '@/types/sales';
 import { AlertCircle, Loader2, RefreshCw, Search, User, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { assignLeadsToVendor, getVendorsActives } from '../action';
 
@@ -43,7 +43,7 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
     );
   }, [vendors, searchTerm]);
 
-  const loadVendors = async () => {
+  const loadVendors = useCallback(async () => {
     if (vendors.length > 0) return;
 
     setIsLoadingVendors(true);
@@ -59,7 +59,7 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
     } finally {
       setIsLoadingVendors(false);
     }
-  };
+  }, [vendors.length]);
 
   const handleAssign = async () => {
     if (!selectedVendorId) {
@@ -104,7 +104,7 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
     if (isOpen) {
       loadVendors();
     }
-  }, [isOpen, vendors.length]);
+  }, [isOpen, loadVendors]);
 
   const selectedVendor = vendors.find((v) => v.id === selectedVendorId);
 

@@ -14,11 +14,25 @@ interface UseFormSynchronizationProps {
   updateStepValidation: (step: 'step2', isValid: boolean) => void;
 }
 
-// Función helper para convertir valores a números de manera segura
-const safeNumber = (value: any): number => {
+const safeNumber = (value: string | number | undefined | null): number => {
   if (value === undefined || value === null || value === '') return 0;
   const num = typeof value === 'string' ? parseFloat(value) : Number(value);
   return isNaN(num) ? 0 : num;
+};
+
+const isFinancedFormData = (
+  data: Step2FormData
+): data is Step2FormData & {
+  saleType: 'FINANCED';
+  initialAmount: number;
+  interestRate: number;
+  quantitySaleCoutes: number;
+  financingInstallments: Array<{
+    couteAmount: number;
+    expectedPaymentDate: string;
+  }>;
+} => {
+  return data.saleType === 'FINANCED';
 };
 
 export function useFormSynchronization({
@@ -34,7 +48,7 @@ export function useFormSynchronization({
 
   // Función para validar el formulario usando useCallback para evitar recreaciones
   const validateForm = useCallback(
-    (value: any) => {
+    (value: Step2FormData) => {
       if (isValidatingRef.current) return; // Evitar validaciones concurrentes
       isValidatingRef.current = true;
 
@@ -44,12 +58,12 @@ export function useFormSynchronization({
         if (value.saleType === 'DIRECT_PAYMENT') {
           const totalAmount = safeNumber(value.totalAmount);
           isValid = totalAmount > 0;
-        } else if (value.saleType === 'FINANCED') {
+        } else if (value.saleType === 'FINANCED' && isFinancedFormData(value)) {
           const totalAmount = safeNumber(value.totalAmount);
-          const initialAmount = safeNumber((value as any).initialAmount);
-          const interestRate = safeNumber((value as any).interestRate);
-          const quantitySaleCoutes = safeNumber((value as any).quantitySaleCoutes);
-          const financingInstallments = (value as any).financingInstallments;
+          const initialAmount = safeNumber(value.initialAmount);
+          const interestRate = safeNumber(value.interestRate);
+          const quantitySaleCoutes = safeNumber(value.quantitySaleCoutes);
+          const financingInstallments = value.financingInstallments;
 
           isValid = !!(
             totalAmount > 0 &&
@@ -67,30 +81,37 @@ export function useFormSynchronization({
           updateStepValidation('step2', isValid);
         }
 
-        if (value) {
-          updateFormData({
-            totalAmount: safeNumber(value.totalAmount),
-            totalAmountUrbanDevelopment: safeNumber(value.totalAmountUrbanDevelopment),
-            firstPaymentDateHu: value.firstPaymentDateHu,
-            initialAmountUrbanDevelopment: safeNumber(value.initialAmountUrbanDevelopment),
-            quantityHuCuotes: safeNumber(value.quantityHuCuotes),
-            initialAmount: safeNumber((value as any).initialAmount),
-            interestRate: safeNumber((value as any).interestRate),
-            quantitySaleCoutes: safeNumber((value as any).quantitySaleCoutes),
-            financingInstallments: (value as any).financingInstallments
-          });
+        // Construir datos para updateFormData de manera type-safe
+        const formDataUpdate: Partial<CreateSaleFormData> = {
+          totalAmount: safeNumber(value.totalAmount),
+          totalAmountUrbanDevelopment: safeNumber(value.totalAmountUrbanDevelopment),
+          firstPaymentDateHu: value.firstPaymentDateHu,
+          initialAmountUrbanDevelopment: safeNumber(value.initialAmountUrbanDevelopment),
+          quantityHuCuotes: safeNumber(value.quantityHuCuotes)
+        };
+
+        // Agregar campos de financiamiento solo si es financiado
+        if (isFinancedFormData(value)) {
+          formDataUpdate.initialAmount = safeNumber(value.initialAmount);
+          formDataUpdate.interestRate = safeNumber(value.interestRate);
+          formDataUpdate.quantitySaleCoutes = safeNumber(value.quantitySaleCoutes);
+          formDataUpdate.financingInstallments = value.financingInstallments;
         }
+
+        updateFormData(formDataUpdate);
       } finally {
         isValidatingRef.current = false;
       }
     },
-    [updateFormData, updateStepValidation]
+    [updateFormData, updateStepValidation, form]
   );
 
   // Validar formulario cuando cambie - solo una vez
   useEffect(() => {
     const subscription = form.watch((value) => {
-      validateForm(value);
+      if (value) {
+        validateForm(value as Step2FormData);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -111,37 +132,42 @@ export function useFormSynchronization({
     if (!isFinanced) return;
 
     const subscription = form.watch((values) => {
+      if (!values) return;
+
+      // Sincronizar totalAmount
       if (values.totalAmount !== undefined) {
         amortizationForm.setValue('totalAmount', safeNumber(values.totalAmount), {
           shouldValidate: false
         });
       }
-      if (
-        values.saleType === 'FINANCED' &&
-        'initialAmount' in values &&
-        values.initialAmount !== undefined
-      ) {
-        amortizationForm.setValue('initialAmount', safeNumber(values.initialAmount), {
+
+      // Solo sincronizar campos de financiamiento si es un formulario financiado
+      if (isFinancedFormData(values as Step2FormData)) {
+        const financedValues = values as Step2FormData & {
+          saleType: 'FINANCED';
+          initialAmount: number;
+          interestRate: number;
+          quantitySaleCoutes: number;
+          financingInstallments: Array<{
+            couteAmount: number;
+            expectedPaymentDate: string;
+          }>;
+        };
+        amortizationForm.setValue('initialAmount', safeNumber(financedValues.initialAmount), {
           shouldValidate: false
         });
-      }
-      if (
-        values.saleType === 'FINANCED' &&
-        'interestRate' in values &&
-        values.interestRate !== undefined
-      ) {
-        amortizationForm.setValue('interestRate', safeNumber(values.interestRate), {
+
+        amortizationForm.setValue('interestRate', safeNumber(financedValues.interestRate), {
           shouldValidate: false
         });
-      }
-      if (
-        values.saleType === 'FINANCED' &&
-        'quantitySaleCoutes' in values &&
-        values.quantitySaleCoutes !== undefined
-      ) {
-        amortizationForm.setValue('quantitySaleCoutes', safeNumber(values.quantitySaleCoutes), {
-          shouldValidate: false
-        });
+
+        amortizationForm.setValue(
+          'quantitySaleCoutes',
+          safeNumber(financedValues.quantitySaleCoutes),
+          {
+            shouldValidate: false
+          }
+        );
       }
     });
 

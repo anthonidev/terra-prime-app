@@ -20,8 +20,7 @@ export function useClients(): TUseClients {
       const response = await getClients(documentClient);
       toast.success('Cliente encontrado correctamente');
       setClient(response);
-    } catch (error) {
-      toast.error('Cliente no encontrado');
+    } catch {
       setClient(null);
     } finally {
       setIsLoading(false);

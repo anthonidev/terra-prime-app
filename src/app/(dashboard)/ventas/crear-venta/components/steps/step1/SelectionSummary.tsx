@@ -16,12 +16,11 @@ interface SelectionSummaryProps {
   saleType: 'DIRECT_PAYMENT' | 'FINANCED';
 }
 
-const safeNumber = (value: any): number => {
+const safeNumber = (value: string | number | undefined | null): number => {
   if (value === undefined || value === null || value === '') return 0;
   const num = typeof value === 'string' ? parseFloat(value) : Number(value);
   return isNaN(num) ? 0 : num;
 };
-
 export default function SelectionSummary({
   selectedProject,
   selectedStage,
