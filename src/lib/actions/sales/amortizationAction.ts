@@ -5,12 +5,13 @@ import { AmortizationDTO, AmortizationResponse } from '@/types/sales';
 
 export async function calculateAmortization(data: AmortizationDTO): Promise<AmortizationResponse> {
   try {
+    console.log(data);
+    console.table(data);
     return await httpClient<AmortizationResponse>('/api/sales/financing/calculate-amortization', {
       method: 'POST',
       body: {
         totalAmount: data.totalAmount,
         initialAmount: data.initialAmount,
-        reservationAmount: data.reservationAmount,
         interestRate: data.interestRate,
         numberOfPayments: data.numberOfPayments,
         firstPaymentDate: data.firstPaymentDate,

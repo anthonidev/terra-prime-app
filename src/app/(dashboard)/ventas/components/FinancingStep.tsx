@@ -23,12 +23,11 @@ interface Props {
 }
 
 export function FinancingStep({ form }: Props) {
-  const [includeDecimal, setIncludeDecimal] = React.useState<boolean>(false);
+  const [includeDecimal, setIncludeDecimal] = React.useState<boolean>(true);
 
   const { data, meta, isLoading, calculateAmortization } = useAmortization({
     totalAmount: form.getValues().totalAmount,
     initialAmount: form.getValues().initialAmount,
-    reservationAmount: 200.0,
     interestRate: form.getValues().interestRate,
     numberOfPayments: form.getValues().quantitySaleCoutes,
     firstPaymentDate: form.getValues().paymentDate,

@@ -17,22 +17,16 @@ export const createSaleFinanceSchema = z.object({
   lotId: z.string(),
   saleType: z.enum(['DIRECT_PAYMENT', 'FINANCED']),
   clientId: z.number(),
-  reservationId: z.string().optional(),
   guarantorId: z.number(),
   paymentDate: z.string(),
   saleDate: z.string(),
   contractDate: z.string(),
-  methodPayment: z.enum(['VOUCHER']),
   totalAmount: z
     .union([z.number(), z.string().transform((val) => Number(val))])
     .pipe(z.number().min(0).default(0)),
   totalAmountUrbanDevelopment: z.number().min(0),
-  quantityHuCuotes: z
-    .union([z.number(), z.string().transform((val) => Number(val))])
-    .pipe(z.number().min(0).optional()),
-  initialAmountUrbanDevelopment: z
-    .union([z.number(), z.string().transform((val) => Number(val))])
-    .pipe(z.number().min(0).optional()),
+  quantityHuCuotes: z.number().min(0).optional(),
+  initialAmountUrbanDevelopment: z.number().min(0).optional(),
   firstPaymentDateHu: z.string().optional(),
   initialAmount: z
     .union([z.number(), z.string().transform((val) => Number(val))])

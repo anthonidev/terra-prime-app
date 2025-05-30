@@ -25,9 +25,7 @@ export function SaleModal({ isOpen, onClose }: Props) {
             Notificación
           </DialogTitle>
         </DialogHeader>
-        <div className="rounded-md bg-gray-50 p-4 text-center text-gray-500">
-          No hay vendedores disponibles
-        </div>
+        <div className="rounded-md bg-gray-50 p-4 text-center text-gray-500">Mantenimiento...</div>
         <DialogFooter className="gap-3 pt-4">
           <Button
             variant="outline"

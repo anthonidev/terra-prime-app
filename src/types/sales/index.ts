@@ -151,7 +151,6 @@ export interface ClientFindDTO {
 export interface AmortizationDTO {
   totalAmount: number;
   initialAmount: number;
-  reservationAmount: number;
   interestRate: number;
   numberOfPayments: number;
   firstPaymentDate: string;
@@ -188,7 +187,6 @@ export interface CreateSaleDirectDTO {
   paymentDate: string;
   saleDate: string;
   contractDate: string;
-  methodPayment: 'VOUCHER';
   totalAmount: number;
   totalAmountUrbanDevelopment: number;
 }
@@ -197,12 +195,10 @@ export interface CreateSaleFinancedDTO {
   lotId: string;
   saleType: 'DIRECT_PAYMENT' | 'FINANCED';
   clientId: number;
-  reservationId?: string | undefined;
   guarantorId: number;
   paymentDate: string;
   saleDate: string;
   contractDate: string;
-  methodPayment: 'VOUCHER';
   totalAmount: number;
   totalAmountUrbanDevelopment: number;
   quantityHuCuotes?: number | undefined;

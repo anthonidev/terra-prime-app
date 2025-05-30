@@ -43,7 +43,12 @@ export default function Page() {
   const form = useForm<SaleFormData>({
     resolver: zodResolver(createSaleFinanceSchema),
     defaultValues: {
-      methodPayment: 'VOUCHER',
+      quantityHuCuotes: 0,
+      initialAmount: 0,
+      quantitySaleCoutes: 0,
+      interestRate: 13,
+      paymentDate: '',
+      initialAmountUrbanDevelopment: 0,
       saleDate: new Date().toISOString().split('T')[0],
       contractDate: new Date().toISOString().split('T')[0]
     }
@@ -55,15 +60,13 @@ export default function Page() {
   const [selectedStage, setSelectedStage] = React.useState<ProyectStagesItems | null>(null);
   const [selectedBlock, setSelectedBlock] = React.useState<ProyectBlocksItems | null>(null);
   const [selectedLeadVendor, setSelectedLeadVendor] = React.useState<LeadsVendorItems | null>(null);
-  const [openModal, setOpenModal] = React.useState<boolean>(true);
+  const [openModal, setOpenModal] = React.useState<boolean>(false);
   const { data: leadsData } = useLeadsVendor();
   const { client, searchClient, createClientGuarantor } = useClients();
 
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-
-  console.error(error);
 
   React.useEffect(() => {
     if (selectedLeadVendor?.document) {
@@ -284,21 +287,32 @@ export default function Page() {
           <div className="container">
             <Stepper steps={steps} currentStepId={currentStepId} className="mb-4" />
             <div className="rounded-lg border bg-white p-4 dark:bg-gray-900">
-              <Alert
-                variant="destructive"
-                className="bg-destructive/10 not-only:border-destructive/30 mb-4"
-              >
-                <AlertCircle className="text-destructive h-4 w-4" />
-                <AlertDescription className="text-destructive text-sm">
-                  <ul className="list-disc space-y-1 pl-5">
-                    {Object.entries(form.formState.errors).map(([fieldName, error]) => (
-                      <li key={fieldName}>
+              {error && (
+                <Alert
+                  variant="destructive"
+                  className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
+                >
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription className="text-sm">{error}</AlertDescription>
+                </Alert>
+              )}
+              {Object.entries(form.formState.errors).map(([fieldName, error]) => (
+                <Alert
+                  key={fieldName}
+                  variant="destructive"
+                  className="bg-destructive/10 not-only:border-destructive/30 mb-4"
+                >
+                  <AlertCircle className="text-destructive h-4 w-4" />
+                  <AlertDescription className="text-destructive text-sm">
+                    <ul className="list-disc space-y-1 pl-5">
+                      <li>
                         {fieldName}: {error.message}
                       </li>
-                    ))}
-                  </ul>
-                </AlertDescription>
-              </Alert>
+                    </ul>
+                  </AlertDescription>
+                </Alert>
+              ))}
+
               {stepContent()}
               <div className="mt-8 flex justify-between">
                 <Button

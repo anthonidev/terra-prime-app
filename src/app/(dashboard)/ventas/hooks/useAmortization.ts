@@ -23,6 +23,7 @@ export function useAmortization(params: AmortizationDTO): TData {
     try {
       setIsLoading(true);
       const response = await calculateAmortization(params);
+      console.table(response.installments);
       setData(response.installments);
       setMeta(response.meta);
 
