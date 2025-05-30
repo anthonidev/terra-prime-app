@@ -22,7 +22,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { CreateUpdateLeadDto, DocumentType, Lead } from '@/types/leads.types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertCircle, Calendar, Mail, Phone, Save, User, X } from 'lucide-react';
+import { AlertCircle, Calendar, Mail, Phone, Save, User, X, CreditCard } from 'lucide-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -154,239 +154,281 @@ export default function LeadEditForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-h-[90vh] w-full max-w-2xl">
-        <DialogHeader className="pb-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
-              <User className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+      <DialogContent className="flex h-[90vh] w-full max-w-3xl flex-col overflow-hidden">
+        {/* Header - Fixed */}
+        <DialogHeader className="flex-shrink-0 border-b border-gray-200 px-8 pt-8 pb-6 dark:border-gray-700">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/50 dark:to-blue-800/50">
+              <User className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
-            <div>
-              <DialogTitle className="text-xl font-semibold">
+            <div className="flex-1">
+              <DialogTitle className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 Editar información de contacto
               </DialogTitle>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Actualiza los datos de contacto del lead
               </p>
             </div>
           </div>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[60vh] pr-4">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {error && (
-                <Alert
-                  variant="destructive"
-                  className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
-                >
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription className="text-sm">{error}</AlertDescription>
-                </Alert>
-              )}
+        {/* Content - Scrollable */}
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea className="h-full px-8 py-6">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                {/* Error Alert */}
+                {error && (
+                  <Alert
+                    variant="destructive"
+                    className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
+                  >
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription className="text-sm">{error}</AlertDescription>
+                  </Alert>
+                )}
 
-              {/* Personal Information Section */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <User className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    Información personal
-                  </h3>
-                </div>
-                <Separator />
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <FormField
-                    control={form.control}
-                    name="firstName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium">Nombre</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="Nombre del lead"
-                              {...field}
-                              disabled
-                              className="bg-gray-50 pl-9 dark:bg-gray-800/50"
-                            />
-                            <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                          </div>
-                        </FormControl>
-                        <FormMessage className="text-xs" />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="lastName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium">Apellido</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="Apellido del lead"
-                              {...field}
-                              disabled
-                              className="bg-gray-50 pl-9 dark:bg-gray-800/50"
-                            />
-                            <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                          </div>
-                        </FormControl>
-                        <FormMessage className="text-xs" />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="age"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium">Edad</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="Edad"
-                              type="number"
-                              min="18"
-                              max="120"
-                              {...field}
-                              className="pl-9 transition-colors focus:border-blue-500 focus:ring-blue-500"
-                            />
-                            <Calendar className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                          </div>
-                        </FormControl>
-                        <FormMessage className="text-xs" />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium">Correo electrónico</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="correo@ejemplo.com"
-                              type="email"
-                              {...field}
-                              className="pl-9 transition-colors focus:border-blue-500 focus:ring-blue-500"
-                            />
-                            <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                          </div>
-                        </FormControl>
-                        <FormMessage className="text-xs" />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-
-              {/* Contact Information Section */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Phone className="h-5 w-5 text-green-600 dark:text-green-400" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    Teléfonos de contacto
-                  </h3>
-                </div>
-                <Separator />
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium">Teléfono principal</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="999999999"
-                              {...field}
-                              className="pl-9 transition-colors focus:border-blue-500 focus:ring-blue-500"
-                            />
-                            <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                          </div>
-                        </FormControl>
-                        <FormMessage className="text-xs" />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="phone2"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium">Teléfono alternativo</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="999999999"
-                              {...field}
-                              className="pl-9 transition-colors focus:border-blue-500 focus:ring-blue-500"
-                            />
-                            <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                          </div>
-                        </FormControl>
-                        <FormMessage className="text-xs" />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-
-              {/* Document Information (Read-only) */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <User className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    Información de identificación
-                  </h3>
-                </div>
-                <Separator />
-
-                <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-800/50">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Tipo de documento
-                      </label>
-                      <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                        {lead.documentType}
-                      </p>
+                {/* Personal Information Section */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                      <User className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Número de documento
-                      </label>
-                      <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                        {lead.document}
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      Información personal
+                    </h3>
+                  </div>
+
+                  <Separator className="bg-gray-200 dark:bg-gray-700" />
+
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="firstName"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Nombre
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Nombre del lead"
+                                {...field}
+                                disabled
+                                className="h-11 border-gray-200 bg-gray-50 pl-11 text-gray-600 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-400"
+                              />
+                              <User className="absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                            </div>
+                          </FormControl>
+                          <FormMessage className="text-xs" />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="lastName"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Apellido
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Apellido del lead"
+                                {...field}
+                                disabled
+                                className="h-11 border-gray-200 bg-gray-50 pl-11 text-gray-600 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-400"
+                              />
+                              <User className="absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                            </div>
+                          </FormControl>
+                          <FormMessage className="text-xs" />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="age"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Edad
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="Edad"
+                                type="number"
+                                min="18"
+                                max="120"
+                                {...field}
+                                className="h-11 border-gray-200 pl-11 transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700"
+                              />
+                              <Calendar className="absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                            </div>
+                          </FormControl>
+                          <FormMessage className="text-xs" />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Correo electrónico
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="correo@ejemplo.com"
+                                type="email"
+                                {...field}
+                                className="h-11 border-gray-200 pl-11 transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700"
+                              />
+                              <Mail className="absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                            </div>
+                          </FormControl>
+                          <FormMessage className="text-xs" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* Contact Information Section */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/30">
+                      <Phone className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      Teléfonos de contacto
+                    </h3>
+                  </div>
+
+                  <Separator className="bg-gray-200 dark:bg-gray-700" />
+
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Teléfono principal
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="999999999"
+                                {...field}
+                                className="h-11 border-gray-200 pl-11 transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700"
+                              />
+                              <Phone className="absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                            </div>
+                          </FormControl>
+                          <FormMessage className="text-xs" />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="phone2"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Teléfono alternativo
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="999999999"
+                                {...field}
+                                className="h-11 border-gray-200 pl-11 transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700"
+                              />
+                              <Phone className="absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                            </div>
+                          </FormControl>
+                          <FormMessage className="text-xs" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* Document Information (Read-only) */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/30">
+                      <CreditCard className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      Información de identificación
+                    </h3>
+                  </div>
+
+                  <Separator className="bg-gray-200 dark:bg-gray-700" />
+
+                  <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 p-6 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/50">
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Tipo de documento
+                        </label>
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-sm dark:bg-gray-800">
+                            <CreditCard className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                          </div>
+                          <span className="text-base font-medium text-gray-900 dark:text-gray-100">
+                            {lead.documentType}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Número de documento
+                        </label>
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-sm dark:bg-gray-800">
+                            <span className="font-mono text-sm font-medium text-gray-600 dark:text-gray-400">
+                              #
+                            </span>
+                          </div>
+                          <span className="text-base font-medium text-gray-900 dark:text-gray-100">
+                            {lead.document}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-4 flex items-center gap-2 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                      <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      <p className="text-xs text-blue-700 dark:text-blue-300">
+                        La información de identificación no puede ser modificada por seguridad
                       </p>
                     </div>
                   </div>
-                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                    La información de identificación no puede ser modificada
-                  </p>
                 </div>
-              </div>
-            </form>
-          </Form>
-        </ScrollArea>
+              </form>
+            </Form>
+          </ScrollArea>
+        </div>
 
-        <DialogFooter className="gap-3 pt-4">
+        {/* Footer - Fixed */}
+        <DialogFooter className="flex-shrink-0 gap-4 border-t border-gray-200 bg-white px-8 pt-6 pb-8 dark:border-gray-700 dark:bg-gray-900">
           <Button
             type="button"
             variant="outline"
             onClick={handleClose}
             disabled={isUpdating}
-            className="flex items-center gap-2"
+            className="flex h-11 items-center gap-2 border-gray-300 px-6 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800"
           >
             <X className="h-4 w-4" />
             Cancelar
@@ -395,7 +437,7 @@ export default function LeadEditForm({
             type="submit"
             onClick={form.handleSubmit(onSubmit)}
             disabled={isUpdating || !form.formState.isDirty}
-            className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="flex h-11 items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 px-6 text-white hover:from-blue-700 hover:to-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isUpdating ? (
               <>
