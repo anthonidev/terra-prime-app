@@ -1,9 +1,9 @@
 'use client';
 
 import { PageHeader } from '@/components/common/PageHeader';
-import BienvenidosTable from '@/app/(dashboard)/ventas/components/BienvenidosTable';
-import { useBienvenidos } from '@/app/(dashboard)/ventas/hooks/useBienvenidos';
 import { ShoppingBag } from 'lucide-react';
+import BienvenidosTable from './components/BienvenidosTable';
+import { useBienvenidos } from './hooks/useBienvenidos';
 
 export default function BienvenidosPage() {
   const {
