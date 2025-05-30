@@ -21,6 +21,13 @@ interface Step1Props {
   updateStepValidation: (step: 'step1', isValid: boolean) => void;
 }
 
+// Función helper para convertir valores a números de manera segura
+const safeNumber = (value: any): number => {
+  if (value === undefined || value === null || value === '') return 0;
+  const num = typeof value === 'string' ? parseFloat(value) : Number(value);
+  return isNaN(num) ? 0 : num;
+};
+
 export default function Step1ProjectSelection({
   formData,
   updateFormData,
@@ -108,9 +115,13 @@ export default function Step1ProjectSelection({
 
     // Actualizar datos del lote en el formulario general
     if (selectedLot) {
+      // Convertir los precios a números de manera segura
+      const lotPrice = safeNumber(selectedLot.lotPrice);
+      const urbanizationPrice = safeNumber(selectedLot.urbanizationPrice);
+
       updateFormData({
-        totalAmount: parseFloat(selectedLot.lotPrice),
-        totalAmountUrbanDevelopment: parseFloat(selectedLot.urbanizationPrice)
+        totalAmount: lotPrice,
+        totalAmountUrbanDevelopment: urbanizationPrice
       });
     }
   };

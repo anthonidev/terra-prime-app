@@ -30,6 +30,13 @@ interface SaleSuccessModalProps {
   saleData: SaleResponse;
 }
 
+// Función helper para convertir valores a números de manera segura
+const safeNumber = (value: any): number => {
+  if (value === undefined || value === null || value === '') return 0;
+  const num = typeof value === 'string' ? parseFloat(value) : Number(value);
+  return isNaN(num) ? 0 : num;
+};
+
 export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSuccessModalProps) {
   const handleDownloadContract = () => {
     // Aquí iría la lógica para descargar el contrato
@@ -40,6 +47,14 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
     // Aquí iría la navegación a los detalles de la venta
     console.log('Viewing sale details:', saleData.id);
   };
+
+  // Convertir valores a números de manera segura
+  const totalAmount = safeNumber(saleData.totalAmount);
+  const lotPrice = safeNumber(saleData.lot?.lotPrice);
+  const initialAmount = saleData.financing ? safeNumber(saleData.financing.initialAmount) : 0;
+  const interestRate = saleData.financing ? safeNumber(saleData.financing.interestRate) : 0;
+  const quantityCoutes = saleData.financing ? safeNumber(saleData.financing.quantityCoutes) : 0;
+  const reservationAmount = saleData.reservation ? safeNumber(saleData.reservation.amount) : 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -74,45 +89,83 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">Garante:</span>
-                      <span className="font-medium">
-                        {saleData.guarantor.firstName} {saleData.guarantor.lastName}
-                      </span>
+                      <span className="text-gray-600 dark:text-gray-400">Tipo de Venta:</span>
+                      <Badge variant={saleData.type === 'FINANCED' ? 'default' : 'secondary'}>
+                        {saleData.type === 'FINANCED' ? 'Financiada' : 'Pago Directo'}
+                      </Badge>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">Dirección:</span>
-                      <span className="text-xs font-medium">{saleData.client.address}</span>
+                      <span className="text-gray-600 dark:text-gray-400">Monto Total:</span>
+                      <span className="font-medium">S/ {totalAmount.toFixed(2)}</span>
                     </div>
+                    {saleData.guarantor && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">Garante:</span>
+                        <span className="font-medium">
+                          {saleData.guarantor.firstName} {saleData.guarantor.lastName}
+                        </span>
+                      </div>
+                    )}
+                    {saleData.client && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">Cliente:</span>
+                        <span className="font-medium">
+                          {saleData.client.firstName} {saleData.client.lastName}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    {saleData.lot && (
+                      <>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600 dark:text-gray-400">Lote:</span>
+                          <span className="font-medium">{saleData.lot.name}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600 dark:text-gray-400">Precio Lote:</span>
+                          <span className="font-medium">S/ {lotPrice.toFixed(2)}</span>
+                        </div>
+                      </>
+                    )}
+                    {saleData.client?.address && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">Dirección:</span>
+                        <span className="text-xs font-medium">{saleData.client.address}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Información del Vendedor */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-sm">
-                  <User className="h-4 w-4" />
-                  Información del Vendedor
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">Vendedor:</span>
-                      <span className="font-medium">
-                        {saleData.vendor.firstName} {saleData.vendor.lastName}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">Documento:</span>
-                      <span className="font-medium">{saleData.vendor.document}</span>
+            {saleData.vendor && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-sm">
+                    <User className="h-4 w-4" />
+                    Información del Vendedor
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">Vendedor:</span>
+                        <span className="font-medium">
+                          {saleData.vendor.firstName} {saleData.vendor.lastName}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">Documento:</span>
+                        <span className="font-medium">{saleData.vendor.document}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Información de Financiamiento (solo si aplica) */}
             {saleData.financing && (
@@ -128,13 +181,11 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600 dark:text-gray-400">Monto Inicial:</span>
-                        <span className="font-medium">
-                          S/ {saleData.financing.initialAmount.toFixed(2)}
-                        </span>
+                        <span className="font-medium">S/ {initialAmount.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600 dark:text-gray-400">Tasa de Interés:</span>
-                        <span className="font-medium">{saleData.financing.interestRate}%</span>
+                        <span className="font-medium">{interestRate}%</span>
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -142,7 +193,7 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
                         <span className="text-gray-600 dark:text-gray-400">
                           Cantidad de Cuotas:
                         </span>
-                        <span className="font-medium">{saleData.financing.quantityCoutes}</span>
+                        <span className="font-medium">{quantityCoutes}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600 dark:text-gray-400">ID Financiamiento:</span>
@@ -166,7 +217,7 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
                 <CardContent>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">Monto de Reserva:</span>
-                    <span className="font-medium">S/ {saleData.reservation.amount.toFixed(2)}</span>
+                    <span className="font-medium">S/ {reservationAmount.toFixed(2)}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -182,7 +233,7 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
                   </h4>
                   <p className="mt-1 text-sm text-green-800 dark:text-green-200">
                     {saleData.financing
-                      ? `Se ha creado el cronograma de ${saleData.financing.quantityCoutes} cuotas de financiamiento automáticamente.`
+                      ? `Se ha creado el cronograma de ${quantityCoutes} cuotas de financiamiento automáticamente.`
                       : 'El pago directo ha sido registrado correctamente.'}
                   </p>
                   <p className="mt-1 text-sm text-green-800 dark:text-green-200">

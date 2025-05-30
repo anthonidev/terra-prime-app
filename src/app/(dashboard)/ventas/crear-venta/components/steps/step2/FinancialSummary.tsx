@@ -5,13 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign } from 'lucide-react';
 
 interface FinancialSummaryProps {
-  totalAmount: number;
-  totalAmountUrbanDevelopment: number;
+  totalAmount: number | string;
+  totalAmountUrbanDevelopment: number | string;
   isFinanced: boolean;
   hasUrbanization: boolean;
-  initialAmount?: number;
-  interestRate?: number;
-  quantitySaleCoutes?: number;
+  initialAmount?: number | string;
+  interestRate?: number | string;
+  quantitySaleCoutes?: number | string;
 }
 
 export default function FinancialSummary({
@@ -23,7 +23,14 @@ export default function FinancialSummary({
   interestRate = 0,
   quantitySaleCoutes = 0
 }: FinancialSummaryProps) {
-  const totalSum = totalAmount + totalAmountUrbanDevelopment;
+  // Convertir valores a números de manera segura
+  const totalAmountNum = Number(totalAmount) || 0;
+  const totalAmountUrbanDevelopmentNum = Number(totalAmountUrbanDevelopment) || 0;
+  const initialAmountNum = Number(initialAmount) || 0;
+  const interestRateNum = Number(interestRate) || 0;
+  const quantitySaleCoutesNum = Number(quantitySaleCoutes) || 0;
+
+  const totalSum = totalAmountNum + totalAmountUrbanDevelopmentNum;
 
   return (
     <Card>
@@ -38,14 +45,16 @@ export default function FinancialSummary({
           <div className="space-y-2">
             <div className="flex justify-between">
               <span className="text-sm text-gray-600 dark:text-gray-400">Monto del Lote:</span>
-              <span className="font-semibold">S/ {totalAmount.toFixed(2)}</span>
+              <span className="font-semibold">S/ {totalAmountNum.toFixed(2)}</span>
             </div>
             {hasUrbanization && (
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600 dark:text-gray-400">
                   Habilitación Urbana:
                 </span>
-                <span className="font-semibold">S/ {totalAmountUrbanDevelopment.toFixed(2)}</span>
+                <span className="font-semibold">
+                  S/ {totalAmountUrbanDevelopmentNum.toFixed(2)}
+                </span>
               </div>
             )}
             <div className="flex justify-between border-t pt-2">
@@ -63,15 +72,15 @@ export default function FinancialSummary({
               <div className="space-y-1">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600 dark:text-gray-400">Monto Inicial:</span>
-                  <span>S/ {initialAmount.toFixed(2)}</span>
+                  <span>S/ {initialAmountNum.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600 dark:text-gray-400">Tasa de Interés:</span>
-                  <span>{interestRate}%</span>
+                  <span>{interestRateNum}%</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600 dark:text-gray-400">Cuotas:</span>
-                  <span>{quantitySaleCoutes} pagos</span>
+                  <span>{quantitySaleCoutesNum} pagos</span>
                 </div>
               </div>
             )}

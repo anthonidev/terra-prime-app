@@ -18,6 +18,13 @@ export default function SaleSummaryCards({
   hasUrbanization,
   totalAmount
 }: SaleSummaryCardsProps) {
+  // Convertir valores a números de manera segura
+  const totalAmountNum = Number(formData.totalAmount) || 0;
+  const totalAmountUrbanDevelopmentNum = Number(formData.totalAmountUrbanDevelopment) || 0;
+  const initialAmountNum = Number(formData.initialAmount) || 0;
+  const interestRateNum = Number(formData.interestRate) || 0;
+  const quantitySaleCoutesNum = Number(formData.quantitySaleCoutes) || 0;
+
   return (
     <div className="space-y-4">
       <h3 className="text-md font-medium text-gray-800 dark:text-gray-200">Resumen de la Venta</h3>
@@ -51,14 +58,12 @@ export default function SaleSummaryCards({
         <CardContent className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-400">Monto del Lote:</span>
-            <span className="font-medium">S/ {formData.totalAmount?.toFixed(2) || '0.00'}</span>
+            <span className="font-medium">S/ {totalAmountNum.toFixed(2)}</span>
           </div>
           {hasUrbanization && (
             <div className="flex justify-between text-sm">
               <span className="text-gray-600 dark:text-gray-400">Habilitación Urbana:</span>
-              <span className="font-medium">
-                S/ {formData.totalAmountUrbanDevelopment?.toFixed(2) || '0.00'}
-              </span>
+              <span className="font-medium">S/ {totalAmountUrbanDevelopmentNum.toFixed(2)}</span>
             </div>
           )}
           <div className="flex justify-between border-t pt-2 text-sm">
@@ -70,17 +75,15 @@ export default function SaleSummaryCards({
             <div className="space-y-1 border-t pt-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">Monto Inicial:</span>
-                <span className="font-medium">
-                  S/ {formData.initialAmount?.toFixed(2) || '0.00'}
-                </span>
+                <span className="font-medium">S/ {initialAmountNum.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">Tasa de Interés:</span>
-                <span className="font-medium">{formData.interestRate || 0}%</span>
+                <span className="font-medium">{interestRateNum}%</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">Número de Cuotas:</span>
-                <span className="font-medium">{formData.quantitySaleCoutes || 0}</span>
+                <span className="font-medium">{quantitySaleCoutesNum}</span>
               </div>
             </div>
           )}

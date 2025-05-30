@@ -1,5 +1,11 @@
 import * as z from 'zod';
 
+// Función helper para transformar valores a números
+const numberTransform = z.union([z.string(), z.number()]).transform((val) => {
+  const num = typeof val === 'string' ? parseFloat(val) : val;
+  return isNaN(num) ? 0 : num;
+});
+
 // Paso 1: Selección de proyecto y tipo de venta
 export const step1Schema = z.object({
   lotId: z.string().min(1, 'Debe seleccionar un lote'),
@@ -10,34 +16,51 @@ export const step1Schema = z.object({
 
 // Paso 2: Configuración financiera
 export const step2BaseSchema = z.object({
-  totalAmount: z.number().min(1, 'El monto total debe ser mayor a 0'),
-  totalAmountUrbanDevelopment: z
-    .number()
-    .min(0, 'El monto de habilitación urbana debe ser mayor o igual a 0'),
+  totalAmount: numberTransform.refine((val) => val > 0, 'El monto total debe ser mayor a 0'),
+  totalAmountUrbanDevelopment: numberTransform.refine(
+    (val) => val >= 0,
+    'El monto de habilitación urbana debe ser mayor o igual a 0'
+  ),
   firstPaymentDateHu: z.string().optional(),
-  initialAmountUrbanDevelopment: z
-    .number()
-    .min(0, 'El monto inicial de HU debe ser mayor o igual a 0')
+  initialAmountUrbanDevelopment: numberTransform
+    .refine((val) => val >= 0, 'El monto inicial de HU debe ser mayor o igual a 0')
     .optional(),
-  quantityHuCuotes: z
-    .number()
-    .min(0, 'La cantidad de cuotas de HU debe ser mayor o igual a 0')
+  quantityHuCuotes: numberTransform
+    .refine((val) => val >= 0, 'La cantidad de cuotas de HU debe ser mayor o igual a 0')
     .optional()
 });
 
 // Esquema para calcular amortización (separado del esquema de venta)
 export const amortizationCalculationSchema = z.object({
-  totalAmount: z.number().min(1, 'El monto total debe ser mayor a 0'),
-  initialAmount: z.number().min(0, 'El monto inicial debe ser mayor o igual a 0'),
-  interestRate: z.number().min(0).max(100, 'La tasa de interés debe estar entre 0 y 100'),
-  quantitySaleCoutes: z.number().min(1).max(74, 'La cantidad de cuotas debe estar entre 1 y 74'),
+  totalAmount: numberTransform.refine((val) => val > 0, 'El monto total debe ser mayor a 0'),
+  initialAmount: numberTransform.refine(
+    (val) => val >= 0,
+    'El monto inicial debe ser mayor o igual a 0'
+  ),
+  interestRate: numberTransform.refine(
+    (val) => val >= 0 && val <= 100,
+    'La tasa de interés debe estar entre 0 y 100'
+  ),
+  quantitySaleCoutes: numberTransform.refine(
+    (val) => val >= 1 && val <= 74,
+    'La cantidad de cuotas debe estar entre 1 y 74'
+  ),
   firstPaymentDate: z.string().min(1, 'La fecha del primer pago es requerida')
 });
 
 export const step2FinancedSchema = step2BaseSchema.extend({
-  initialAmount: z.number().min(0, 'El monto inicial debe ser mayor o igual a 0'),
-  interestRate: z.number().min(0).max(100, 'La tasa de interés debe estar entre 0 y 100'),
-  quantitySaleCoutes: z.number().min(1).max(74, 'La cantidad de cuotas debe estar entre 1 y 74'),
+  initialAmount: numberTransform.refine(
+    (val) => val >= 0,
+    'El monto inicial debe ser mayor o igual a 0'
+  ),
+  interestRate: numberTransform.refine(
+    (val) => val >= 0 && val <= 100,
+    'La tasa de interés debe estar entre 0 y 100'
+  ),
+  quantitySaleCoutes: numberTransform.refine(
+    (val) => val >= 1 && val <= 74,
+    'La cantidad de cuotas debe estar entre 1 y 74'
+  ),
   financingInstallments: z
     .array(
       z.object({
@@ -94,18 +117,19 @@ export const createSaleSchema = z.object({
   saleType: z.enum(['DIRECT_PAYMENT', 'FINANCED']),
 
   // Paso 2
-  totalAmount: z.number().min(1, 'El monto total debe ser mayor a 0'),
-  totalAmountUrbanDevelopment: z
-    .number()
-    .min(0, 'El monto de habilitación urbana debe ser mayor o igual a 0'),
+  totalAmount: numberTransform.refine((val) => val > 0, 'El monto total debe ser mayor a 0'),
+  totalAmountUrbanDevelopment: numberTransform.refine(
+    (val) => val >= 0,
+    'El monto de habilitación urbana debe ser mayor o igual a 0'
+  ),
   firstPaymentDateHu: z.string().optional(),
-  initialAmountUrbanDevelopment: z.number().min(0).optional(),
-  quantityHuCuotes: z.number().min(0).optional(),
+  initialAmountUrbanDevelopment: numberTransform.refine((val) => val >= 0).optional(),
+  quantityHuCuotes: numberTransform.refine((val) => val >= 0).optional(),
 
   // Campos de financiamiento (solo si saleType es FINANCED)
-  initialAmount: z.number().min(0).optional(),
-  interestRate: z.number().min(0).max(100).optional(),
-  quantitySaleCoutes: z.number().min(1).max(74).optional(),
+  initialAmount: numberTransform.refine((val) => val >= 0).optional(),
+  interestRate: numberTransform.refine((val) => val >= 0 && val <= 100).optional(),
+  quantitySaleCoutes: numberTransform.refine((val) => val >= 1 && val <= 74).optional(),
   financingInstallments: z
     .array(
       z.object({
