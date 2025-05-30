@@ -1,4 +1,4 @@
-'use client';
+'use server';
 import { httpClient } from '@/lib/api/http-client';
 import { SaleResponse } from '@/types/sales';
 

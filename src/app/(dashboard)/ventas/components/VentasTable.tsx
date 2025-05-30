@@ -12,7 +12,7 @@ import {
 } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Building2, Calendar, CreditCard, DollarSign, User } from 'lucide-react';
+import { Building2, Calendar, DollarSign, User } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import VentasActionsButton from './VentasActionsButton';
 
