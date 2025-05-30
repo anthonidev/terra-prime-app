@@ -23,18 +23,15 @@ interface ProjectLocationSelectorProps {
   control: Control<Step1FormData>;
   errors: FieldErrors<Step1FormData>;
 
-  // Data
   projects: ProyectsActivesItems[];
   stages: ProyectStagesItems[];
   blocks: ProyectBlocksItems[];
   lots: ProyectLotsItems[];
 
-  // Selected items
   selectedProject: ProyectsActivesItems | null;
   selectedStage: ProyectStagesItems | null;
   selectedBlock: ProyectBlocksItems | null;
 
-  // Loading states
   loading: {
     projects: boolean;
     stages: boolean;
@@ -42,7 +39,6 @@ interface ProjectLocationSelectorProps {
     lots: boolean;
   };
 
-  // Event handlers
   onProjectChange: (projectId: string) => void;
   onStageChange: (stageId: string) => void;
   onBlockChange: (blockId: string) => void;
@@ -69,7 +65,6 @@ export default function ProjectLocationSelector({
     <div className="space-y-4">
       <h3 className="text-md font-medium text-gray-800 dark:text-gray-200">Ubicación del Lote</h3>
 
-      {/* Proyecto */}
       <FormField
         control={control}
         name="lotId"
@@ -104,7 +99,6 @@ export default function ProjectLocationSelector({
         )}
       />
 
-      {/* Etapa */}
       <FormField
         control={control}
         name="lotId"
@@ -143,7 +137,6 @@ export default function ProjectLocationSelector({
         )}
       />
 
-      {/* Manzana */}
       <FormField
         control={control}
         name="lotId"
@@ -182,7 +175,6 @@ export default function ProjectLocationSelector({
         )}
       />
 
-      {/* Lote */}
       <FormField
         control={control}
         name="lotId"

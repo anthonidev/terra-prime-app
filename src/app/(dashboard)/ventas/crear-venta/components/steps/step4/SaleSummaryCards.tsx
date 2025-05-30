@@ -18,7 +18,6 @@ export default function SaleSummaryCards({
   hasUrbanization,
   totalAmount
 }: SaleSummaryCardsProps) {
-  // Convertir valores a números de manera segura
   const totalAmountNum = Number(formData.totalAmount) || 0;
   const totalAmountUrbanDevelopmentNum = Number(formData.totalAmountUrbanDevelopment) || 0;
   const initialAmountNum = Number(formData.initialAmount) || 0;
@@ -29,7 +28,6 @@ export default function SaleSummaryCards({
     <div className="space-y-4">
       <h3 className="text-md font-medium text-gray-800 dark:text-gray-200">Resumen de la Venta</h3>
 
-      {/* Información del Lote */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-sm">
@@ -47,7 +45,6 @@ export default function SaleSummaryCards({
         </CardContent>
       </Card>
 
-      {/* Información Financiera */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-sm">
@@ -90,7 +87,6 @@ export default function SaleSummaryCards({
         </CardContent>
       </Card>
 
-      {/* Información del Cliente */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-sm">

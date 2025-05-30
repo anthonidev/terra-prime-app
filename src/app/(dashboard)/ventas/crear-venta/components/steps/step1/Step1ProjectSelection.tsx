@@ -1,10 +1,11 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Form } from '@/components/ui/form';
+import { useProjectData } from '../../../hooks/useProjectData';
 import {
   CreateSaleFormData,
   Step1FormData,
@@ -13,7 +14,6 @@ import {
 import ProjectLocationSelector from './ProjectLocationSelector';
 import SaleTypeSelector from './SaleTypeSelector';
 import SelectionSummary from './SelectionSummary';
-import { useProjectData } from '../../../hooks/useProjectData';
 
 interface Step1Props {
   formData: Partial<CreateSaleFormData>;
@@ -21,7 +21,6 @@ interface Step1Props {
   updateStepValidation: (step: 'step1', isValid: boolean) => void;
 }
 
-// Función helper para convertir valores a números de manera segura
 const safeNumber = (value: any): number => {
   if (value === undefined || value === null || value === '') return 0;
   const num = typeof value === 'string' ? parseFloat(value) : Number(value);
@@ -34,28 +33,23 @@ export default function Step1ProjectSelection({
   updateStepValidation
 }: Step1Props) {
   const {
-    // Data
     projects,
     stages,
     blocks,
     lots,
 
-    // Selected items
     selectedProject,
     selectedStage,
     selectedBlock,
     selectedLot,
 
-    // Loading states
     loading,
 
-    // Actions
     loadProjects,
     loadStages,
     loadBlocks,
     loadLots,
 
-    // Selection handlers
     selectProject,
     selectStage,
     selectBlock,
@@ -70,12 +64,10 @@ export default function Step1ProjectSelection({
     }
   });
 
-  // Cargar proyectos al montar el componente
   useEffect(() => {
     loadProjects();
   }, [loadProjects]);
 
-  // Validar formulario cuando cambie
   useEffect(() => {
     const subscription = form.watch((value) => {
       const isValid = value.lotId && value.saleType;
@@ -90,7 +82,7 @@ export default function Step1ProjectSelection({
     });
 
     return () => subscription.unsubscribe();
-  }, [form, updateFormData, updateStepValidation]);
+  }, []);
 
   const handleProjectChange = (projectId: string) => {
     selectProject(projectId);
@@ -113,11 +105,11 @@ export default function Step1ProjectSelection({
   const handleLotChange = (lotId: string) => {
     selectLot(lotId);
 
-    // Actualizar datos del lote en el formulario general
-    if (selectedLot) {
-      // Convertir los precios a números de manera segura
-      const lotPrice = safeNumber(selectedLot.lotPrice);
-      const urbanizationPrice = safeNumber(selectedLot.urbanizationPrice);
+    const foundLot = lots.find((lot) => lot.id === lotId);
+
+    if (foundLot) {
+      const lotPrice = safeNumber(foundLot.lotPrice);
+      const urbanizationPrice = safeNumber(foundLot.urbanizationPrice);
 
       updateFormData({
         totalAmount: lotPrice,
@@ -139,7 +131,6 @@ export default function Step1ProjectSelection({
 
       <Form {...form}>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* Selección de ubicación */}
           <ProjectLocationSelector
             control={form.control}
             errors={form.formState.errors}
@@ -157,11 +148,9 @@ export default function Step1ProjectSelection({
             onLotChange={handleLotChange}
           />
 
-          {/* Tipo de venta y resumen */}
           <div className="space-y-4">
             <SaleTypeSelector control={form.control} errors={form.formState.errors} />
 
-            {/* Resumen de selección */}
             <SelectionSummary
               selectedProject={selectedProject}
               selectedStage={selectedStage}

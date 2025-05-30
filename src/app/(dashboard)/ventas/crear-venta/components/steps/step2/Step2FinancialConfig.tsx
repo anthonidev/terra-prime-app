@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -39,6 +40,12 @@ interface Step2Props {
   updateStepValidation: (step: 'step2', isValid: boolean) => void;
 }
 
+const safeNumber = (value: any): number => {
+  if (value === undefined || value === null || value === '') return 0;
+  const num = typeof value === 'string' ? parseFloat(value) : Number(value);
+  return isNaN(num) ? 0 : num;
+};
+
 export default function Step2FinancialConfig({
   formData,
   updateFormData,
@@ -51,42 +58,90 @@ export default function Step2FinancialConfig({
     resolver: zodResolver(step2Schema),
     defaultValues: {
       saleType: formData.saleType || 'DIRECT_PAYMENT',
-      totalAmount: formData.totalAmount || 0,
-      totalAmountUrbanDevelopment: formData.totalAmountUrbanDevelopment || 0,
+      totalAmount: safeNumber(formData.totalAmount),
+      totalAmountUrbanDevelopment: safeNumber(formData.totalAmountUrbanDevelopment),
       firstPaymentDateHu: formData.firstPaymentDateHu || '',
-      initialAmountUrbanDevelopment: formData.initialAmountUrbanDevelopment || 0,
-      quantityHuCuotes: formData.quantityHuCuotes || 0,
-      // Campos de financiamiento - siempre presentes
-      initialAmount: formData.initialAmount || 0,
-      interestRate: formData.interestRate || 12,
-      quantitySaleCoutes: formData.quantitySaleCoutes || 12,
+      initialAmountUrbanDevelopment: safeNumber(formData.initialAmountUrbanDevelopment),
+      quantityHuCuotes: safeNumber(formData.quantityHuCuotes),
+      initialAmount: safeNumber(formData.initialAmount),
+      interestRate: safeNumber(formData.interestRate) || 12,
+      quantitySaleCoutes: safeNumber(formData.quantitySaleCoutes) || 12,
       financingInstallments: formData.financingInstallments || []
     }
   });
 
-  // Formulario separado para el cálculo de amortización
   const amortizationForm = useForm<AmortizationCalculationData>({
     resolver: zodResolver(amortizationCalculationSchema),
     defaultValues: {
-      totalAmount: 0,
-      initialAmount: 0,
-      interestRate: 12,
-      quantitySaleCoutes: 12,
+      totalAmount: safeNumber(formData.totalAmount),
+      initialAmount: safeNumber(formData.initialAmount),
+      interestRate: safeNumber(formData.interestRate) || 12,
+      quantitySaleCoutes: safeNumber(formData.quantitySaleCoutes) || 12,
       firstPaymentDate: ''
     }
   });
 
-  // Hook para manejar el cálculo de amortización
+  useEffect(() => {
+    const currentTotalAmount = form.getValues('totalAmount');
+    const newTotalAmount = safeNumber(formData.totalAmount);
+
+    if (currentTotalAmount !== newTotalAmount && newTotalAmount > 0) {
+      form.setValue('totalAmount', newTotalAmount, { shouldValidate: false });
+    }
+
+    form.setValue('totalAmountUrbanDevelopment', safeNumber(formData.totalAmountUrbanDevelopment), {
+      shouldValidate: false
+    });
+    form.setValue('firstPaymentDateHu', formData.firstPaymentDateHu || '', {
+      shouldValidate: false
+    });
+    form.setValue(
+      'initialAmountUrbanDevelopment',
+      safeNumber(formData.initialAmountUrbanDevelopment),
+      { shouldValidate: false }
+    );
+    form.setValue('quantityHuCuotes', safeNumber(formData.quantityHuCuotes), {
+      shouldValidate: false
+    });
+
+    if (isFinanced) {
+      form.setValue('initialAmount', safeNumber(formData.initialAmount), { shouldValidate: false });
+      form.setValue('interestRate', safeNumber(formData.interestRate) || 12, {
+        shouldValidate: false
+      });
+      form.setValue('quantitySaleCoutes', safeNumber(formData.quantitySaleCoutes) || 12, {
+        shouldValidate: false
+      });
+      form.setValue('financingInstallments', formData.financingInstallments || [], {
+        shouldValidate: false
+      });
+
+      const currentAmortizationTotal = amortizationForm.getValues('totalAmount');
+      if (currentAmortizationTotal !== newTotalAmount && newTotalAmount > 0) {
+        amortizationForm.setValue('totalAmount', newTotalAmount, { shouldValidate: false });
+      }
+      amortizationForm.setValue('initialAmount', safeNumber(formData.initialAmount), {
+        shouldValidate: false
+      });
+      amortizationForm.setValue('interestRate', safeNumber(formData.interestRate) || 12, {
+        shouldValidate: false
+      });
+      amortizationForm.setValue(
+        'quantitySaleCoutes',
+        safeNumber(formData.quantitySaleCoutes) || 12,
+        { shouldValidate: false }
+      );
+    }
+  }, [formData.totalAmount, formData.totalAmountUrbanDevelopment]);
+
   const { amortizationTable, isCalculating, showAmortization, handleCalculateAmortization } =
     useFinancialConfig({
       amortizationForm,
       onAmortizationCalculated: (installments: AmortizationItem[]) => {
-        // Actualizar formulario principal con las cuotas calculadas
         form.setValue('financingInstallments', installments);
       }
     });
 
-  // Hook para sincronización de formularios
   useFormSynchronization({
     form,
     amortizationForm,
@@ -95,7 +150,6 @@ export default function Step2FinancialConfig({
     updateStepValidation
   });
 
-  // Obtener valores actuales para el resumen
   const watchedValues = form.watch();
 
   return (
@@ -111,14 +165,12 @@ export default function Step2FinancialConfig({
 
       <Form {...form}>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* Configuración de montos */}
           <AmountConfiguration
             control={form.control}
             errors={form.formState.errors}
             hasUrbanization={hasUrbanization}
           />
 
-          {/* Configuración de Financiamiento - Solo para ventas financiadas */}
           {isFinanced && (
             <FinancingConfiguration
               control={form.control}
@@ -129,22 +181,22 @@ export default function Step2FinancialConfig({
             />
           )}
 
-          {/* Resumen - Ocupa toda la fila */}
           <div className="lg:col-span-2">
             <FinancialSummary
               totalAmount={watchedValues.totalAmount || 0}
               totalAmountUrbanDevelopment={watchedValues.totalAmountUrbanDevelopment || 0}
               isFinanced={isFinanced}
               hasUrbanization={hasUrbanization}
-              initialAmount={watchedValues.initialAmount}
-              interestRate={watchedValues.interestRate}
-              quantitySaleCoutes={watchedValues.quantitySaleCoutes}
+              initialAmount={'initialAmount' in watchedValues ? watchedValues.initialAmount : 0}
+              interestRate={'interestRate' in watchedValues ? watchedValues.interestRate : 0}
+              quantitySaleCoutes={
+                'quantitySaleCoutes' in watchedValues ? watchedValues.quantitySaleCoutes : 0
+              }
             />
           </div>
         </div>
       </Form>
 
-      {/* Tabla de Amortización */}
       <AmortizationTable installments={amortizationTable} visible={showAmortization} />
     </div>
   );

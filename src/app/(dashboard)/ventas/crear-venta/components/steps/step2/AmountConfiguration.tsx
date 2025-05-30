@@ -21,7 +21,6 @@ export default function AmountConfiguration({
     <div className="space-y-4">
       <h3 className="text-md font-medium text-gray-800 dark:text-gray-200">Montos de Venta</h3>
 
-      {/* Monto Total del Lote */}
       <FormInputField<Step2FormData>
         name="totalAmount"
         label="Monto Total del Lote"
@@ -32,7 +31,6 @@ export default function AmountConfiguration({
         errors={errors}
       />
 
-      {/* Campos de Habilitación Urbana - Solo si el monto es mayor a 0 */}
       {hasUrbanization && (
         <>
           <FormInputField<Step2FormData>

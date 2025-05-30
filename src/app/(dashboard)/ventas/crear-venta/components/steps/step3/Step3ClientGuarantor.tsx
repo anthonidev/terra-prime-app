@@ -32,7 +32,6 @@ export default function Step3ClientGuarantor({
   const [showGuarantorModal, setShowGuarantorModal] = useState(false);
 
   const {
-    // Data
     leads,
     selectedLead,
     existingClient,

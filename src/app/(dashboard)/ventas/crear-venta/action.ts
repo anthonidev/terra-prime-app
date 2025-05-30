@@ -70,7 +70,7 @@ export const getProyectBlocks = async (data: ProyectBlocksDTO): Promise<ProyectB
 
 export const getProyectLots = async (data: ProyectLotsDTO): Promise<ProyectLotsResponse> => {
   try {
-    return await httpClient<ProyectLotsResponse>(`/api/sales/lots/${data.id}`, {
+    return await httpClient<ProyectLotsResponse>(`/api/sales/lots/${data.id}?status=Activo`, {
       next: {
         tags: [PROYECT_LOTS_CACHE_TAG],
         revalidate: 300

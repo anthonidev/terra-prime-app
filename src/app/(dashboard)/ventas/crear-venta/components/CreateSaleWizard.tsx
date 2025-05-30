@@ -181,7 +181,6 @@ export default function CreateSaleWizard() {
 
   return (
     <div className="space-y-6">
-      {/* Step Indicator */}
       <StepIndicator
         steps={steps}
         currentStep={currentStep}
@@ -189,12 +188,10 @@ export default function CreateSaleWizard() {
         stepValidation={stepValidation}
       />
 
-      {/* Form Content */}
       <Card>
         <CardContent className="p-6">{renderCurrentStep()}</CardContent>
       </Card>
 
-      {/* Navigation */}
       <div className="flex justify-between">
         <Button
           variant="outline"
@@ -235,7 +232,6 @@ export default function CreateSaleWizard() {
         </div>
       </div>
 
-      {/* Success Modal */}
       {saleResult && (
         <SaleSuccessModal
           isOpen={showSuccessModal}

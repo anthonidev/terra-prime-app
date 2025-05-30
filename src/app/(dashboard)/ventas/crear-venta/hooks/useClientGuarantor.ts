@@ -6,27 +6,23 @@ import { GuarantorFormData } from '../validations/saleValidation';
 import { createClientAndGuarantor, getClients, getLeadsVendor } from '../action';
 
 interface UseClientGuarantorReturn {
-  // Data
   leads: LeadsVendorItems[];
   selectedLead: LeadsVendorItems | null;
   existingClient: { id: number; address: string } | null;
   guarantorData: { id: number; name: string } | null;
   clientAddress: string;
 
-  // Loading states
   loading: {
     leads: boolean;
     client: boolean;
     creating: boolean;
   };
 
-  // Actions
   loadLeads: () => Promise<void>;
   handleLeadChange: (leadId: string) => Promise<void>;
   handleAddressChange: (address: string) => void;
   handleGuarantorSuccess: (guarantorFormData: GuarantorFormData) => Promise<void>;
 
-  // Getters
   getClientId: () => number;
   getGuarantorId: () => number;
 }
@@ -67,7 +63,6 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
       setClientAddress(client.address);
       toast.success('Cliente existente encontrado');
     } catch (error) {
-      // No existe el cliente, se puede continuar manualmente
       setExistingClient(null);
       console.log('Client not found, will be created');
     } finally {
@@ -80,7 +75,6 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
       const lead = leads.find((l) => l.id === leadId);
       setSelectedLead(lead || null);
 
-      // Reset client and guarantor data
       setExistingClient(null);
       setGuarantorData(null);
       setClientAddress('');
@@ -143,23 +137,19 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
   }, [guarantorData]);
 
   return {
-    // Data
     leads,
     selectedLead,
     existingClient,
     guarantorData,
     clientAddress,
 
-    // Loading states
     loading,
 
-    // Actions
     loadLeads,
     handleLeadChange,
     handleAddressChange,
     handleGuarantorSuccess,
 
-    // Getters
     getClientId,
     getGuarantorId
   };

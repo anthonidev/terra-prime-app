@@ -1,9 +1,8 @@
 'use client';
 
+import { Clock, CreditCard, FileText } from 'lucide-react';
 import { Control, FieldErrors } from 'react-hook-form';
-import { Clock, FileText, CreditCard } from 'lucide-react';
 
-import { Form } from '@/components/ui/form';
 import FormInputField from '@/components/common/form/FormInputField';
 import { Step4FormData } from '../../../validations/saleValidation';
 
@@ -18,7 +17,6 @@ export default function DateConfiguration({ control, errors }: DateConfiguration
       <h3 className="text-md font-medium text-gray-800 dark:text-gray-200">Fechas de la Venta</h3>
 
       <div className="space-y-4">
-        {/* Fecha de Venta */}
         <FormInputField<Step4FormData>
           name="saleDate"
           label="Fecha de Venta"
@@ -29,7 +27,6 @@ export default function DateConfiguration({ control, errors }: DateConfiguration
           errors={errors}
         />
 
-        {/* Fecha de Contrato */}
         <FormInputField<Step4FormData>
           name="contractDate"
           label="Fecha de Contrato"
@@ -40,7 +37,6 @@ export default function DateConfiguration({ control, errors }: DateConfiguration
           errors={errors}
         />
 
-        {/* Fecha de Pago */}
         <FormInputField<Step4FormData>
           name="paymentDate"
           label="Fecha de Pago"

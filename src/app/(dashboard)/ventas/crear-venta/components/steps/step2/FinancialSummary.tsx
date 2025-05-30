@@ -23,7 +23,6 @@ export default function FinancialSummary({
   interestRate = 0,
   quantitySaleCoutes = 0
 }: FinancialSummaryProps) {
-  // Convertir valores a números de manera segura
   const totalAmountNum = Number(totalAmount) || 0;
   const totalAmountUrbanDevelopmentNum = Number(totalAmountUrbanDevelopment) || 0;
   const initialAmountNum = Number(initialAmount) || 0;

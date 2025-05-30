@@ -10,19 +10,16 @@ import {
 import { getProyectBlocks, getProyectLots, getProyectsActives, getProyectStages } from '../action';
 
 interface UseProjectDataReturn {
-  // Data
   projects: ProyectsActivesItems[];
   stages: ProyectStagesItems[];
   blocks: ProyectBlocksItems[];
   lots: ProyectLotsItems[];
 
-  // Selected items
   selectedProject: ProyectsActivesItems | null;
   selectedStage: ProyectStagesItems | null;
   selectedBlock: ProyectBlocksItems | null;
   selectedLot: ProyectLotsItems | null;
 
-  // Loading states
   loading: {
     projects: boolean;
     stages: boolean;
@@ -30,13 +27,11 @@ interface UseProjectDataReturn {
     lots: boolean;
   };
 
-  // Actions
   loadProjects: () => Promise<void>;
   loadStages: (projectId: string) => Promise<void>;
   loadBlocks: (stageId: string) => Promise<void>;
   loadLots: (blockId: string) => Promise<void>;
 
-  // Selection handlers
   selectProject: (projectId: string) => void;
   selectStage: (stageId: string) => void;
   selectBlock: (blockId: string) => void;
@@ -161,28 +156,23 @@ export function useProjectData(): UseProjectDataReturn {
   );
 
   return {
-    // Data
     projects,
     stages,
     blocks,
     lots,
 
-    // Selected items
     selectedProject,
     selectedStage,
     selectedBlock,
     selectedLot,
 
-    // Loading states
     loading,
 
-    // Actions
     loadProjects,
     loadStages,
     loadBlocks,
     loadLots,
 
-    // Selection handlers
     selectProject,
     selectStage,
     selectBlock,

@@ -59,7 +59,6 @@ export default function FinancingConfiguration({
         errors={errors}
       />
 
-      {/* Campo separado para fecha de primer pago (solo para cálculo) */}
       <Form {...amortizationForm}>
         <FormInputField<AmortizationCalculationData>
           name="firstPaymentDate"

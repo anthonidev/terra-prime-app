@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import {
   AmortizationCalculationData,
@@ -28,82 +28,123 @@ export function useFormSynchronization({
   updateFormData,
   updateStepValidation
 }: UseFormSynchronizationProps) {
-  // Validar formulario cuando cambie
+  // Usar ref para evitar llamadas múltiples
+  const lastValidationRef = useRef<boolean | null>(null);
+  const isValidatingRef = useRef(false);
+
+  // Función para validar el formulario usando useCallback para evitar recreaciones
+  const validateForm = useCallback(
+    (value: any) => {
+      if (isValidatingRef.current) return; // Evitar validaciones concurrentes
+      isValidatingRef.current = true;
+
+      try {
+        let isValid = false;
+
+        if (value.saleType === 'DIRECT_PAYMENT') {
+          const totalAmount = safeNumber(value.totalAmount);
+          isValid = totalAmount > 0;
+        } else if (value.saleType === 'FINANCED') {
+          const totalAmount = safeNumber(value.totalAmount);
+          const initialAmount = safeNumber((value as any).initialAmount);
+          const interestRate = safeNumber((value as any).interestRate);
+          const quantitySaleCoutes = safeNumber((value as any).quantitySaleCoutes);
+          const financingInstallments = (value as any).financingInstallments;
+
+          isValid = !!(
+            totalAmount > 0 &&
+            initialAmount >= 0 &&
+            interestRate > 0 &&
+            quantitySaleCoutes > 0 &&
+            financingInstallments &&
+            financingInstallments.length > 0
+          );
+        }
+
+        // Solo actualizar si el estado de validación realmente cambió
+        if (lastValidationRef.current !== isValid) {
+          lastValidationRef.current = isValid;
+          updateStepValidation('step2', isValid);
+        }
+
+        if (value) {
+          updateFormData({
+            totalAmount: safeNumber(value.totalAmount),
+            totalAmountUrbanDevelopment: safeNumber(value.totalAmountUrbanDevelopment),
+            firstPaymentDateHu: value.firstPaymentDateHu,
+            initialAmountUrbanDevelopment: safeNumber(value.initialAmountUrbanDevelopment),
+            quantityHuCuotes: safeNumber(value.quantityHuCuotes),
+            initialAmount: safeNumber((value as any).initialAmount),
+            interestRate: safeNumber((value as any).interestRate),
+            quantitySaleCoutes: safeNumber((value as any).quantitySaleCoutes),
+            financingInstallments: (value as any).financingInstallments
+          });
+        }
+      } finally {
+        isValidatingRef.current = false;
+      }
+    },
+    [updateFormData, updateStepValidation]
+  );
+
+  // Validar formulario cuando cambie - solo una vez
   useEffect(() => {
     const subscription = form.watch((value) => {
-      let isValid = false;
+      validateForm(value);
+    });
 
-      if (value.saleType === 'DIRECT_PAYMENT') {
-        const totalAmount = safeNumber(value.totalAmount);
-        isValid = totalAmount > 0;
-      } else if (value.saleType === 'FINANCED') {
-        const totalAmount = safeNumber(value.totalAmount);
-        const initialAmount = safeNumber((value as any).initialAmount);
-        const interestRate = safeNumber((value as any).interestRate);
-        const quantitySaleCoutes = safeNumber((value as any).quantitySaleCoutes);
-        const financingInstallments = (value as any).financingInstallments;
+    return () => subscription.unsubscribe();
+  }, [form, validateForm]);
 
-        isValid = !!(
-          totalAmount > 0 &&
-          initialAmount >= 0 &&
-          interestRate > 0 &&
-          quantitySaleCoutes > 0 &&
-          financingInstallments &&
-          financingInstallments.length > 0
-        );
+  // Validación inicial - solo una vez y con delay
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      const currentValues = form.getValues();
+      validateForm(currentValues);
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, []); // Solo se ejecuta una vez
+
+  // Sincronizar datos para el cálculo de amortización - solo cuando sea necesario
+  useEffect(() => {
+    if (!isFinanced) return;
+
+    const subscription = form.watch((values) => {
+      if (values.totalAmount !== undefined) {
+        amortizationForm.setValue('totalAmount', safeNumber(values.totalAmount), {
+          shouldValidate: false
+        });
       }
-
-      updateStepValidation('step2', isValid);
-
-      if (value) {
-        updateFormData({
-          totalAmount: safeNumber(value.totalAmount),
-          totalAmountUrbanDevelopment: safeNumber(value.totalAmountUrbanDevelopment),
-          firstPaymentDateHu: value.firstPaymentDateHu,
-          initialAmountUrbanDevelopment: safeNumber(value.initialAmountUrbanDevelopment),
-          quantityHuCuotes: safeNumber(value.quantityHuCuotes),
-          initialAmount: safeNumber((value as any).initialAmount),
-          interestRate: safeNumber((value as any).interestRate),
-          quantitySaleCoutes: safeNumber((value as any).quantitySaleCoutes),
-          financingInstallments: (value as any).financingInstallments
+      if (
+        values.saleType === 'FINANCED' &&
+        'initialAmount' in values &&
+        values.initialAmount !== undefined
+      ) {
+        amortizationForm.setValue('initialAmount', safeNumber(values.initialAmount), {
+          shouldValidate: false
+        });
+      }
+      if (
+        values.saleType === 'FINANCED' &&
+        'interestRate' in values &&
+        values.interestRate !== undefined
+      ) {
+        amortizationForm.setValue('interestRate', safeNumber(values.interestRate), {
+          shouldValidate: false
+        });
+      }
+      if (
+        values.saleType === 'FINANCED' &&
+        'quantitySaleCoutes' in values &&
+        values.quantitySaleCoutes !== undefined
+      ) {
+        amortizationForm.setValue('quantitySaleCoutes', safeNumber(values.quantitySaleCoutes), {
+          shouldValidate: false
         });
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [form, updateFormData, updateStepValidation, isFinanced]);
-
-  // Sincronizar datos para el cálculo de amortización
-  useEffect(() => {
-    if (isFinanced) {
-      const subscription = form.watch((values) => {
-        if (values.totalAmount !== undefined) {
-          amortizationForm.setValue('totalAmount', safeNumber(values.totalAmount));
-        }
-        if (
-          values.saleType === 'FINANCED' &&
-          'initialAmount' in values &&
-          values.initialAmount !== undefined
-        ) {
-          amortizationForm.setValue('initialAmount', safeNumber(values.initialAmount));
-        }
-        if (
-          values.saleType === 'FINANCED' &&
-          'interestRate' in values &&
-          values.interestRate !== undefined
-        ) {
-          amortizationForm.setValue('interestRate', safeNumber(values.interestRate));
-        }
-        if (
-          values.saleType === 'FINANCED' &&
-          'quantitySaleCoutes' in values &&
-          values.quantitySaleCoutes !== undefined
-        ) {
-          amortizationForm.setValue('quantitySaleCoutes', safeNumber(values.quantitySaleCoutes));
-        }
-      });
-
-      return () => subscription.unsubscribe();
-    }
   }, [isFinanced, form, amortizationForm]);
 }

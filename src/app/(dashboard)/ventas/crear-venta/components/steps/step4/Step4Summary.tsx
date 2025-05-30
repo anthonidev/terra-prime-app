@@ -6,15 +6,15 @@ import { useForm } from 'react-hook-form';
 
 import { Form } from '@/components/ui/form';
 
-import DateConfiguration from './DateConfiguration';
-import SaleSummaryCards from './SaleSummaryCards';
-import PaymentScheduleSummary from './PaymentScheduleSummary';
-import ConfirmationMessage from './ConfirmationMessage';
 import {
   CreateSaleFormData,
   Step4FormData,
   step4Schema
 } from '../../../validations/saleValidation';
+import ConfirmationMessage from './ConfirmationMessage';
+import DateConfiguration from './DateConfiguration';
+import PaymentScheduleSummary from './PaymentScheduleSummary';
+import SaleSummaryCards from './SaleSummaryCards';
 
 interface Step4Props {
   formData: Partial<CreateSaleFormData>;
@@ -36,7 +36,6 @@ export default function Step4Summary({
     }
   });
 
-  // Validar formulario cuando cambie
   useEffect(() => {
     const subscription = form.watch((value) => {
       const isValid = !!(value.saleDate && value.contractDate && value.paymentDate);
@@ -55,7 +54,6 @@ export default function Step4Summary({
     return () => subscription.unsubscribe();
   }, [form, updateFormData, updateStepValidation]);
 
-  // Cálculos derivados
   const isFinanced = formData.saleType === 'FINANCED';
   const hasUrbanization = (formData.totalAmountUrbanDevelopment || 0) > 0;
   const totalAmount = (formData.totalAmount || 0) + (formData.totalAmountUrbanDevelopment || 0);
@@ -73,7 +71,6 @@ export default function Step4Summary({
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Resumen de la Venta */}
         <SaleSummaryCards
           formData={formData}
           isFinanced={isFinanced}
@@ -81,13 +78,11 @@ export default function Step4Summary({
           totalAmount={totalAmount}
         />
 
-        {/* Configuración de Fechas */}
         <div className="space-y-4">
           <Form {...form}>
             <DateConfiguration control={form.control} errors={form.formState.errors} />
           </Form>
 
-          {/* Resumen de Cronograma (solo para ventas financiadas) */}
           <PaymentScheduleSummary
             isFinanced={isFinanced}
             financingInstallments={formData.financingInstallments}
@@ -95,7 +90,6 @@ export default function Step4Summary({
         </div>
       </div>
 
-      {/* Mensaje de confirmación */}
       <ConfirmationMessage isFinanced={isFinanced} installmentsCount={installmentsCount} />
     </div>
   );
