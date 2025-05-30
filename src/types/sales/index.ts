@@ -287,3 +287,13 @@ export const PLACEHOLDER_MESSAGES = {
     DISABLED: 'Primero selecciona una manzana'
   }
 } as const;
+
+export interface SalesListVendorResponse {
+  items: SaleResponse[];
+  meta: {
+    totalItems: number;
+    itemsPerPage: number;
+    totalPages: number;
+    currentPage: number;
+  };
+}

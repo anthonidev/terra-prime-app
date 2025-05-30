@@ -18,12 +18,14 @@ import {
   ProyectStagesResponse,
   SaleResponse
 } from '@/types/sales';
+import { revalidateTag } from 'next/cache';
 
 const PROJECTS_ACTIVES_CACHE_TAG = 'projects-actives';
 const PROYECT_STAGES_CACHE_TAG = 'proyect-stages';
 const PROYECT_BLOCKS_CACHE_TAG = 'proyect-blocks';
 const PROYECT_LOTS_CACHE_TAG = 'proyect-lots';
 const SALES_LEADS_CACHE_TAG = 'sales-leads';
+const SALES_VENDOR_CACHE_TAG = 'sales-vendor';
 
 // paso 1
 export const getProyectsActives = async (): Promise<ProyectsActivesResponse> => {
@@ -171,6 +173,8 @@ export async function createSale(data: CreateSalePayload) {
       cache: 'no-store',
       body: data
     });
+    revalidateTag(SALES_VENDOR_CACHE_TAG);
+
     return { success: true, data: response };
   } catch (error) {
     console.error('Error al crear la venta:', error);
