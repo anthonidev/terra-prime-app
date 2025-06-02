@@ -41,7 +41,7 @@ export function TableQueryPagination({
   const onPageSizeChange = (newSize: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('limit', newSize.toString());
-    params.set('page', '1'); // Reset to first page when changing page size
+    params.set('page', '1');
     router.push(`${pathname}?${params.toString()}`);
   };
 
