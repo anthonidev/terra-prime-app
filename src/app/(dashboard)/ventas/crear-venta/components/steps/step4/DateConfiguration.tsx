@@ -12,40 +12,46 @@ interface DateConfigurationProps {
 }
 
 export default function DateConfiguration({ control, errors }: DateConfigurationProps) {
+  const formFields = [
+    {
+      name: 'saleDate',
+      label: 'Fecha de Venta',
+      placeholder: 'YYYY-MM-DD',
+      icon: <Clock className="h-4 w-4" />,
+      type: 'date'
+    },
+    {
+      name: 'contractDate',
+      label: 'Fecha de Contrato',
+      placeholder: 'YYYY-MM-DD',
+      icon: <FileText className="h-4 w-4" />,
+      type: 'date'
+    },
+    {
+      name: 'paymentDate',
+      label: 'Fecha de Pago',
+      placeholder: 'YYYY-MM-DD',
+      icon: <CreditCard className="h-4 w-4" />,
+      type: 'date'
+    }
+  ] as const;
+
   return (
     <div className="space-y-4">
       <h3 className="text-md font-medium text-gray-800 dark:text-gray-200">Fechas de la Venta</h3>
-
       <div className="space-y-4">
-        <FormInputField<Step4FormData>
-          name="saleDate"
-          label="Fecha de Venta"
-          placeholder="YYYY-MM-DD"
-          type="date"
-          icon={<Clock className="h-4 w-4" />}
-          control={control}
-          errors={errors}
-        />
-
-        <FormInputField<Step4FormData>
-          name="contractDate"
-          label="Fecha de Contrato"
-          placeholder="YYYY-MM-DD"
-          type="date"
-          icon={<FileText className="h-4 w-4" />}
-          control={control}
-          errors={errors}
-        />
-
-        <FormInputField<Step4FormData>
-          name="paymentDate"
-          label="Fecha de Pago"
-          placeholder="YYYY-MM-DD"
-          type="date"
-          icon={<CreditCard className="h-4 w-4" />}
-          control={control}
-          errors={errors}
-        />
+        {formFields.map((field, index) => (
+          <FormInputField<Step4FormData>
+            key={index}
+            name={field.name}
+            placeholder={field.placeholder}
+            type={field.type}
+            label={field.label}
+            icon={field.icon}
+            control={control}
+            errors={errors}
+          />
+        ))}
       </div>
     </div>
   );

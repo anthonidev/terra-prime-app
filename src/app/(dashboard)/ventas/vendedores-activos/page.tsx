@@ -1,20 +1,26 @@
-'use client';
+import { PageHeader } from '@components/common/PageHeader';
+import { TableSkeleton } from '@components/common/table/TableSkeleton';
+import { Suspense } from 'react';
+import VendorsActivesData from './components/VendorsActivesData';
 
-import { PageHeader } from '@/components/common/PageHeader';
-import { User } from 'lucide-react';
-import { useVendors } from './hooks/useVendors';
-import VendorsActivesTable from './components/VendorsActivesTable';
-export default function VendorsActivesPage() {
-  const { data, isLoading, error, refresh } = useVendors();
+export default async function VendorsActives({
+  searchParams
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const filters = await searchParams;
+
   return (
     <div className="container pt-8">
       <PageHeader
-        icon={User}
-        title="Vendedores activos"
-        subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        title="Vendedores Activos"
+        subtitle="Lista los vendedores activos en el sistema"
         variant="default"
       />
-      <VendorsActivesTable data={data} isLoading={isLoading} error={error} onRefresh={refresh} />
+
+      <Suspense fallback={<TableSkeleton />}>
+        <VendorsActivesData searchParams={filters} />
+      </Suspense>
     </div>
   );
 }

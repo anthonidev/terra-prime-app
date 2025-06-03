@@ -27,7 +27,7 @@ export default function PaymentScheduleSummary({
   const lastInstallment = financingInstallments[financingInstallments.length - 1];
 
   return (
-    <Card>
+    <Card className="dark:bg-gray-900">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-sm">
           <UserCheck className="h-4 w-4" />
