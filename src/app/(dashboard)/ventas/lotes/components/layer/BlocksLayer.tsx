@@ -8,7 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import ProjectsSkeleton from '@/components/project/list/ProjectsSkeleton';
 import * as React from 'react';
 import { Input } from '@/components/ui/input';
-import { useProyectBlocks } from '../hooks/useProyectBlocks';
+import { useProyectBlocks } from '../../hooks/useProyectBlocks';
 
 interface Props {
   stageId: string;

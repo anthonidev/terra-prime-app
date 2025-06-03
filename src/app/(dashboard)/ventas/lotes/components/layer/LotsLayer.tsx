@@ -2,22 +2,26 @@
 
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Search } from 'lucide-react';
-import { useProyectLots } from '../hooks/useProyectLots';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import * as React from 'react';
 import { Input } from '@/components/ui/input';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table';
 import { StatusBadge } from '@/components/common/table/StatusBadge';
 import { TableSkeleton } from '@/components/common/table/TableSkeleton';
+import { useProyectLots } from '../../hooks/useProyectLots';
+import {
+  ColumnDef,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
+  VisibilityState
+} from '@tanstack/react-table';
+import TableTemplate from '@/components/common/table/TableTemplate';
+import { ProyectLotsItems } from '@/types/sales';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { Badge } from '@/components/ui/badge';
 
 interface Props {
   blockId: string;
@@ -25,14 +29,85 @@ interface Props {
 }
 
 export default function LotsLayer({ blockId, onBack }: Props) {
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({
+    id: false
+  });
   const [searchData, setSearchData] = React.useState<string>('');
-  const { lots, isLoading } = useProyectLots(blockId);
+  const { lots = [], isLoading } = useProyectLots(blockId);
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   const filteredData = React.useMemo(() => {
+    if (!searchData) return lots;
     return lots.filter((lot) => lot.name.toLowerCase().includes(searchData.toLowerCase()));
   }, [lots, searchData]);
 
+  const columns = React.useMemo<ColumnDef<ProyectLotsItems>[]>(
+    () => [
+      {
+        id: 'index',
+        header: () => 'Nº',
+        cell: ({ row }) => row.index + 1
+      },
+      {
+        accessorKey: 'name',
+        header: 'Nombre',
+        cell: ({ row }) => <div className="text-sm">{row.getValue('name')}</div>,
+        enableHiding: false
+      },
+      {
+        accessorKey: 'area',
+        header: 'Area m2',
+        cell: ({ row }) => <div className="text-sm font-medium">{row.getValue('area')}</div>,
+        enableHiding: true
+      },
+      {
+        accessorKey: 'lotPrice',
+        header: 'Precio',
+        cell: ({ row }) => <div className="text-sm font-medium">{row.getValue('lotPrice')}</div>,
+        enableHiding: true
+      },
+      {
+        accessorKey: 'urbanizationPrice',
+        header: 'Precio HU',
+        cell: ({ row }) => (
+          <div className="text-sm font-medium">{row.getValue('urbanizationPrice')}</div>
+        ),
+        enableHiding: true
+      },
+      {
+        accessorKey: 'status',
+        header: 'Estado',
+        cell: ({ row }) => (
+          <Badge variant={row.getValue('status') ? 'default' : 'destructive'}>
+            {row.getValue('status')}
+          </Badge>
+        ),
+        enableHiding: true
+      },
+      {
+        accessorKey: 'createdAt',
+        header: 'Fecha de creación',
+        cell: ({ row }) => (
+          <div className="text-sm">
+            {format(new Date(row.getValue('createdAt')), 'PPP', { locale: es })}
+          </div>
+        ),
+        enableHiding: true
+      }
+    ],
+    []
+  );
+
+  const table = useReactTable({
+    data: filteredData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    state: {
+      columnVisibility
+    }
+  });
   return (
     <div>
       <div className="inline-flex h-auto w-full items-center justify-between pb-4">
@@ -100,38 +175,18 @@ export default function LotsLayer({ blockId, onBack }: Props) {
               ))
             ) : (
               <div className="rounded-lg border p-6 text-center">
-                <p className="text-muted-foreground">No hay reconsumos registrados</p>
+                <p className="text-muted-foreground">No hay registros</p>
               </div>
             )}
           </div>
         ) : (
-          <div className="overflow-hidden rounded-md border bg-white dark:bg-gray-900">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Lote</TableHead>
-                  <TableHead>Area</TableHead>
-                  <TableHead>Precio Lote</TableHead>
-                  <TableHead>Precio HU</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead>Precio Final Lote</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredData.map((lot) => (
-                  <TableRow key={lot.id}>
-                    <TableCell className="font-medium">Lt {lot.name}</TableCell>
-                    <TableCell className="font-medium">{lot.area} m²</TableCell>
-                    <TableCell className="font-medium">{lot.lotPrice}</TableCell>
-                    <TableCell className="font-medium">{lot.urbanizationPrice}</TableCell>
-                    <TableCell>
-                      <StatusBadge status={lot.status} />
-                    </TableCell>
-                    <TableCell className="font-medium">{lot.totalPrice}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <div className="rounded-md border bg-white p-2 dark:bg-gray-900">
+            <TableTemplate<ProyectLotsItems>
+              table={table}
+              columns={columns}
+              showColumnVisibility={true}
+              columnVisibilityLabel="Mostrar columnas"
+            />
           </div>
         )}
       </motion.div>

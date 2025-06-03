@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { ProyectStagesItems } from '@/types/sales';
 import { ArrowLeft, Calendar, Search } from 'lucide-react';
-import { useProyectStages } from '../hooks/useProyectStages';
+import { useProyectStages } from '../../hooks/useProyectStages';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import ProjectsSkeleton from '@/components/project/list/ProjectsSkeleton';
