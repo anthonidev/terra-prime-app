@@ -7,3 +7,7 @@ export interface FindPinRepository {
 export interface CreatePinRepository {
   create(): Promise<PinResponse>;
 }
+
+export interface ValidatePinRepository {
+  validate(pin: string): Promise<boolean>;
+}

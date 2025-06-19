@@ -13,8 +13,8 @@ export default async function Page({
   return (
     <div className="container py-8">
       <PageHeader
-        title="Clientes"
-        subtitle="Lorem ipsum dolor amet sit dom"
+        title="Asignación de cobradores"
+        subtitle="asigna cobradores a un cliente"
         className="mb-6"
         variant="gradient"
       />

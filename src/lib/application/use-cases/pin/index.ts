@@ -1,5 +1,9 @@
 import { PinResponse } from '@infrastructure/types/pin';
-import { CreatePinRepository, FindPinRepository } from '@domain/repositories/pin';
+import {
+  CreatePinRepository,
+  FindPinRepository,
+  ValidatePinRepository
+} from '@domain/repositories/pin';
 
 export class CreatePinUseCase {
   constructor(private readonly repository: CreatePinRepository) {}
@@ -14,5 +18,13 @@ export class FindPinUseCase {
 
   async execute(): Promise<PinResponse> {
     return this.repository.find();
+  }
+}
+
+export class ValidatePinUseCase {
+  constructor(private readonly repository: ValidatePinRepository) {}
+
+  async execute(pin: string): Promise<boolean> {
+    return this.repository.validate(pin);
   }
 }

@@ -13,7 +13,7 @@ export default async function PagosPage({
   return (
     <div className="container py-8">
       <PageHeader
-        title="Pagos"
+        title="Gestion Pagos"
         subtitle="Gestiona la aprobacion de pagos"
         className="mb-6"
         variant="gradient"

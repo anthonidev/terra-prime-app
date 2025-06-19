@@ -6,6 +6,8 @@ import { DollarSign, Calendar as CalendarDays } from 'lucide-react';
 import FormInputField from '@/components/common/form/FormInputField';
 import { Step2FormData } from '../../../validations/saleValidation';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import ValidatePinModal from '../../modals/ValidatePinModal';
 
 interface Props {
   control: Control<Step2FormData>;
@@ -14,6 +16,13 @@ interface Props {
 }
 
 export default function AmountConfiguration({ control, errors, hasUrbanization }: Props) {
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [isPinValid, setIsPinValid] = useState<boolean | null>(null);
+
+  const handlePinValidation = (isValid: boolean) => {
+    setIsPinValid(isValid);
+    if (isValid) setOpenModal(false);
+  };
   return (
     <div className="space-y-4">
       <h3 className="text-xs font-medium text-blue-500">Montos de Venta</h3>
@@ -26,9 +35,9 @@ export default function AmountConfiguration({ control, errors, hasUrbanization }
           icon={<DollarSign className="h-4 w-4" />}
           control={control}
           errors={errors}
-          disabled={true}
+          disabled={!isPinValid}
         />
-        <Button onClick={() => {}} className="bottom-0" variant="default">
+        <Button onClick={() => setOpenModal(true)} className="bottom-0" variant="default">
           Editar precio
         </Button>
       </div>
@@ -76,6 +85,11 @@ export default function AmountConfiguration({ control, errors, hasUrbanization }
           />
         </>
       )}
+      <ValidatePinModal
+        onPinValidated={handlePinValidation}
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+      />
     </div>
   );
 }
