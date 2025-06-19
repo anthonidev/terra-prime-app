@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { Suspense } from 'react';
 import { PageHeader } from '@/components/common/PageHeader';
 import NewLeadSkeleton from './components/NewLeadSkeleton';

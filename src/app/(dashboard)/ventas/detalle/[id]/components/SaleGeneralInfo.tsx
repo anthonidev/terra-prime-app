@@ -1,24 +1,18 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatCurrency } from '@/lib/utils';
-import { SaleResponse } from '@/types/sales';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { Building2, Calendar, DollarSign, Home, Phone, User, Users } from 'lucide-react';
+import { Building2, DollarSign, Home, Phone, User, Users } from 'lucide-react';
+import { CurrencyType, SaleList } from '@domain/entities/sales/salevendor.entity';
 
-interface SaleGeneralInfoProps {
-  sale: SaleResponse;
-}
-
-export default function SaleGeneralInfo({ sale }: SaleGeneralInfoProps) {
-  const formatDate = (dateStr: string) => {
-    return format(new Date(dateStr), 'dd MMMM yyyy', { locale: es });
+export default function SaleGeneralInfo({ sale }: { sale: SaleList }) {
+  const formatCurrency = (amount: number, currency: CurrencyType = CurrencyType.PEN) => {
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
+      currency: currency
+    }).format(amount);
   };
-
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-      {/* Client & Guarantor Details */}
       <Card className="border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
@@ -27,7 +21,6 @@ export default function SaleGeneralInfo({ sale }: SaleGeneralInfoProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Client Section */}
           <div className="space-y-3">
             <h4 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100">
               <User className="h-4 w-4 text-blue-500" />
@@ -63,8 +56,41 @@ export default function SaleGeneralInfo({ sale }: SaleGeneralInfoProps) {
               </div>
             </div>
           </div>
-
-          {/* Guarantor Section */}
+          {sale.secondaryClients && (
+            <div className="space-y-3">
+              <h4 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100">
+                <Users className="h-4 w-4 text-green-500" />
+                Compradores
+              </h4>
+              {sale.secondaryClients.map((item, index) => (
+                <div key={index} className="rounded-lg bg-green-50 p-4 dark:bg-green-950/20">
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <User className="mt-0.5 h-4 w-4 text-green-600" />
+                      <div className="flex-1">
+                        <p className="font-medium text-green-900 dark:text-green-100">
+                          {item.firstName} {item.lastName}
+                        </p>
+                        <p className="text-sm text-green-700 dark:text-green-300">co-comprador</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Phone className="h-4 w-4 text-green-600" />
+                      <span className="text-sm text-green-700 dark:text-green-300">
+                        {item.phone}
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Home className="mt-0.5 h-4 w-4 text-green-600" />
+                      <span className="text-sm text-green-700 dark:text-green-300">
+                        {item.address}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
           {sale.guarantor && (
             <div className="space-y-3">
               <h4 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100">
@@ -86,8 +112,6 @@ export default function SaleGeneralInfo({ sale }: SaleGeneralInfoProps) {
               </div>
             </div>
           )}
-
-          {/* Vendor Section */}
           {sale.vendor && (
             <div className="space-y-3">
               <h4 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100">
@@ -114,7 +138,6 @@ export default function SaleGeneralInfo({ sale }: SaleGeneralInfoProps) {
         </CardContent>
       </Card>
 
-      {/* Property & Financial Details */}
       <Card className="border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
@@ -123,7 +146,6 @@ export default function SaleGeneralInfo({ sale }: SaleGeneralInfoProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Property Section */}
           <div className="space-y-3">
             <h4 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100">
               <Building2 className="h-4 w-4 text-green-500" />
@@ -144,7 +166,7 @@ export default function SaleGeneralInfo({ sale }: SaleGeneralInfoProps) {
                   <DollarSign className="h-4 w-4 text-green-600" />
                   <div>
                     <p className="font-medium text-green-900 dark:text-green-100">
-                      {formatCurrency(sale.lot.lotPrice)}
+                      {formatCurrency(Number(sale.lot.lotPrice), sale.currency)}
                     </p>
                     <p className="text-sm text-green-700 dark:text-green-300">Precio del lote</p>
                   </div>
@@ -153,7 +175,6 @@ export default function SaleGeneralInfo({ sale }: SaleGeneralInfoProps) {
             </div>
           </div>
 
-          {/* Financial Section */}
           <div className="space-y-3">
             <h4 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100">
               <DollarSign className="h-4 w-4 text-yellow-500" />
@@ -166,14 +187,14 @@ export default function SaleGeneralInfo({ sale }: SaleGeneralInfoProps) {
                     Precio del lote:
                   </span>
                   <span className="font-medium text-yellow-900 dark:text-yellow-100">
-                    {formatCurrency(sale.lot.lotPrice)}
+                    {formatCurrency(Number(sale.lot.lotPrice), sale.currency)}
                   </span>
                 </div>
                 {sale.reservation && (
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-yellow-700 dark:text-yellow-300">Reserva:</span>
                     <span className="font-medium text-yellow-900 dark:text-yellow-100">
-                      {formatCurrency(sale.reservation.amount)}
+                      {formatCurrency(Number(sale.reservation.amount), sale.currency)}
                     </span>
                   </div>
                 )}
@@ -183,38 +204,8 @@ export default function SaleGeneralInfo({ sale }: SaleGeneralInfoProps) {
                       Total de la venta:
                     </span>
                     <span className="text-lg font-bold text-yellow-900 dark:text-yellow-100">
-                      {formatCurrency(sale.totalAmount)}
+                      {formatCurrency(Number(sale.totalAmount), sale.currency)}
                     </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Dates Section */}
-          <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100">
-              <Calendar className="h-4 w-4 text-blue-500" />
-              Fechas importantes
-            </h4>
-            <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-950/20">
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <Calendar className="h-4 w-4 text-blue-600" />
-                  <div>
-                    <p className="font-medium text-blue-900 dark:text-blue-100">
-                      {formatDate(sale.contractDate)}
-                    </p>
-                    <p className="text-sm text-blue-700 dark:text-blue-300">Fecha de contrato</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Calendar className="h-4 w-4 text-blue-600" />
-                  <div>
-                    <p className="font-medium text-blue-900 dark:text-blue-100">
-                      {formatDate(sale.saleDate)}
-                    </p>
-                    <p className="text-sm text-blue-700 dark:text-blue-300">Fecha de venta</p>
                   </div>
                 </div>
               </div>

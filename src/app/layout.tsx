@@ -42,7 +42,15 @@ export default function RootLayout({
           >
             <SidebarProvider>
               {children}
-              <Toaster richColors />
+              <Toaster
+                richColors
+                position="top-right"
+                closeButton
+                containerAriaLabel="notification-toast"
+                className="cursor-grab select-none"
+                duration={8000}
+                expand
+              />
             </SidebarProvider>
           </ThemeProvider>
         </AuthProvider>

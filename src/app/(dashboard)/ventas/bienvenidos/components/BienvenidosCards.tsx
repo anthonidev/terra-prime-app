@@ -1,17 +1,17 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { LeadsByDayItem } from '@/types/sales';
+import { LeadsOfDay } from '@domain/entities/sales/leadsvendors.entity';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Building2, Calendar, CreditCard, Phone, User } from 'lucide-react';
 import AssignVendorButton from './AssignVendorButton';
 
 type Props = {
-  data: LeadsByDayItem[];
+  data: LeadsOfDay[];
 };
 
 export default function BienvenidosCards({ data }: Props) {
-  const hasVendorAssigned = (lead: LeadsByDayItem): boolean => {
+  const hasVendorAssigned = (lead: LeadsOfDay): boolean => {
     const vendor = lead.vendor;
     return vendor !== null && typeof vendor === 'object' && !Array.isArray(vendor);
   };

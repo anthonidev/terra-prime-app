@@ -1,4 +1,5 @@
-import { PaginatedMeta } from './user';
+import { Meta } from '@infrastructure/types/pagination.types';
+
 export interface ExcelValidationResponse {
   isValid: boolean;
   data?: ProjectData;
@@ -85,7 +86,7 @@ export interface LotResponseDto {
 }
 export interface PaginatedLotsResponseDto {
   items: LotResponseDto[];
-  meta: PaginatedMeta;
+  meta: Meta;
 }
 export enum LotStatus {
   ACTIVE = 'Activo',

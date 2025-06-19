@@ -43,21 +43,13 @@ export async function httpClient<T>(
 
   const headers: HeadersInit = {};
 
-  if (session?.accessToken) {
-    headers['Authorization'] = `Bearer ${session.accessToken}`;
-  }
-
-  if (!(body instanceof FormData)) {
-    headers['Content-Type'] = contentType;
-  }
+  if (session?.accessToken) headers['Authorization'] = `Bearer ${session.accessToken}`;
+  if (!(body instanceof FormData)) headers['Content-Type'] = contentType;
 
   let requestBody: BodyInit | undefined;
   if (body !== undefined) {
-    if (skipJsonStringify || body instanceof FormData) {
-      requestBody = body as BodyInit;
-    } else {
-      requestBody = JSON.stringify(body);
-    }
+    if (skipJsonStringify || body instanceof FormData) requestBody = body as BodyInit;
+    else requestBody = JSON.stringify(body);
   }
 
   const options: RequestInit = {
@@ -72,7 +64,7 @@ export async function httpClient<T>(
     const response = await fetch(url, options);
     if (!response.ok) {
       const errorText = await response.json();
-      throw new Error(`${errorText.message || response.statusText}`);
+      throw new Error(errorText.message);
     }
     return response.json();
   } catch (error) {

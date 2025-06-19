@@ -97,9 +97,70 @@ export default function AddGuarantorModal({
     { value: 'RUC', label: 'RUC' }
   ];
 
+  const formFields = [
+    {
+      name: 'firstName',
+      label: 'Nombre',
+      placeholder: 'Nombre del garante',
+      icon: <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />,
+      type: 'text',
+      colSpan: 'col-span-1'
+    },
+    {
+      name: 'lastName',
+      label: 'Apellido',
+      placeholder: 'Apellido del garante',
+      icon: <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />,
+      type: 'text',
+      colSpan: 'col-span-1'
+    },
+    {
+      name: 'email',
+      label: 'Email',
+      placeholder: 'email@ejemplo.com',
+      icon: <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />,
+      type: 'email',
+      colSpan: 'col-span-2'
+    },
+    {
+      name: 'documentType',
+      label: 'Tipo de Documento',
+      type: 'select',
+      options: documentTypeOptions,
+      colSpan: 'col-span-1'
+    },
+    {
+      name: 'document',
+      label: 'Número de Documento',
+      placeholder: 'Número de documento',
+      icon: (
+        <CreditCard className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+      ),
+      type: 'text',
+      colSpan: 'col-span-1'
+    },
+    {
+      name: 'phone',
+      label: 'Teléfono',
+      placeholder: 'Número de teléfono',
+      icon: <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />,
+      type: 'tel',
+      colSpan: 'col-span-2'
+    },
+
+    {
+      name: 'address',
+      label: 'Dirección',
+      placeholder: 'Dirección completa',
+      icon: <MapPin className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />,
+      type: 'text',
+      colSpan: 'col-span-2'
+    }
+  ] as const;
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="flex h-[90vh] max-h-[700px] w-[95vw] max-w-md flex-col p-0 sm:h-auto sm:max-h-[85vh]">
+      <DialogContent className="flex w-[95vw] max-w-md flex-col p-0 sm:h-auto sm:max-h-[85vh]">
         <DialogHeader className="flex-shrink-0 border-b border-gray-100 px-4 py-4 sm:px-6 dark:border-gray-800">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
@@ -114,7 +175,7 @@ export default function AddGuarantorModal({
           </div>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 px-4 py-4 sm:px-6">
+        <ScrollArea className="flex-1 overflow-y-auto px-4 py-4 sm:px-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               {error && (
@@ -128,171 +189,56 @@ export default function AddGuarantorModal({
               )}
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="firstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm font-medium">Nombre</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                          <Input
-                            placeholder="Nombre del garante"
-                            className="h-10 pl-9"
-                            {...field}
-                            disabled={isCreating}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="lastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm font-medium">Apellido</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                          <Input
-                            placeholder="Apellido del garante"
-                            className="h-10 pl-9"
-                            {...field}
-                            disabled={isCreating}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
+                {formFields.map((field, index) => (
+                  <div key={index} className={field.colSpan}>
+                    <FormField
+                      control={form.control}
+                      name={field.name}
+                      render={({ field: formField }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium">{field.label}</FormLabel>
+                          <FormControl>
+                            {field.type === 'select' ? (
+                              <Select
+                                value={formField.value}
+                                onValueChange={formField.onChange}
+                                disabled={isCreating}
+                              >
+                                <SelectTrigger className="h-10">
+                                  <div className="flex items-center">
+                                    <SelectValue
+                                      placeholder={`Seleccionar ${field.label.toLowerCase()}`}
+                                    />
+                                  </div>
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {field.options?.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            ) : (
+                              <div className="relative">
+                                {field.icon}
+                                <Input
+                                  placeholder={field.placeholder}
+                                  className="bg-white pl-9 dark:bg-gray-900"
+                                  type={field.type}
+                                  {...formField}
+                                  disabled={isCreating}
+                                />
+                              </div>
+                            )}
+                          </FormControl>
+                          <FormMessage className="text-xs" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                ))}
               </div>
-
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm font-medium">Email</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                        <Input
-                          type="email"
-                          placeholder="email@ejemplo.com"
-                          className="h-10 pl-9"
-                          {...field}
-                          disabled={isCreating}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
-              />
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="documentType"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm font-medium">Tipo de Documento</FormLabel>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        disabled={isCreating}
-                      >
-                        <SelectTrigger className="h-10">
-                          <div className="flex items-center">
-                            <CreditCard className="mr-2 h-4 w-4 text-gray-400" />
-                            <SelectValue placeholder="Seleccionar tipo" />
-                          </div>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {documentTypeOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="document"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm font-medium">Número de Documento</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <CreditCard className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                          <Input
-                            placeholder="Número de documento"
-                            className="h-10 pl-9"
-                            {...field}
-                            disabled={isCreating}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm font-medium">Teléfono</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Phone className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                        <Input
-                          placeholder="Número de teléfono"
-                          className="h-10 pl-9"
-                          {...field}
-                          disabled={isCreating}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm font-medium">Dirección</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <MapPin className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                        <Input
-                          placeholder="Dirección completa"
-                          className="h-10 pl-9"
-                          {...field}
-                          disabled={isCreating}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
-              />
             </form>
           </Form>
         </ScrollArea>

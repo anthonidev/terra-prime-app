@@ -2,17 +2,17 @@ import { useCallback, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import { AmortizationItem } from '@/types/sales';
-import { calculateAmortization } from '../action';
+import { Amortization } from '@domain/entities/sales/amortization.entity';
+import { calculateAmortization } from '@infrastructure/server-actions/sales.actions';
 import { AmortizationCalculationData } from '../validations/saleValidation';
 
 interface UseFinancialConfigProps {
   amortizationForm: UseFormReturn<AmortizationCalculationData>;
-  onAmortizationCalculated: (installments: AmortizationItem[]) => void;
+  onAmortizationCalculated: (installments: Amortization[]) => void;
 }
 
 interface UseFinancialConfigReturn {
-  amortizationTable: AmortizationItem[];
+  amortizationTable: Amortization[];
   isCalculating: boolean;
   showAmortization: boolean;
   handleCalculateAmortization: () => Promise<void>;
@@ -22,7 +22,7 @@ export function useFinancialConfig({
   amortizationForm,
   onAmortizationCalculated
 }: UseFinancialConfigProps): UseFinancialConfigReturn {
-  const [amortizationTable, setAmortizationTable] = useState<AmortizationItem[]>([]);
+  const [amortizationTable, setAmortizationTable] = useState<Amortization[]>([]);
   const [isCalculating, setIsCalculating] = useState(false);
   const [showAmortization, setShowAmortization] = useState(false);
 
@@ -40,7 +40,7 @@ export function useFinancialConfig({
       const result = await calculateAmortization({
         totalAmount: values.totalAmount,
         initialAmount: values.initialAmount,
-        reservationAmount: 0, // Siempre 0 según especificaciones
+        reservationAmount: 0,
         interestRate: values.interestRate,
         numberOfPayments: values.quantitySaleCoutes,
         firstPaymentDate: values.firstPaymentDate,

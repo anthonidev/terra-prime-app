@@ -26,9 +26,7 @@ export default function ClientConfiguration({
   if (isLoadingClient) {
     return (
       <div className="space-y-4">
-        <h3 className="text-md font-medium text-gray-800 dark:text-gray-200">
-          Información del Cliente
-        </h3>
+        <h3 className="text-xs font-medium text-blue-500">Información del Cliente</h3>
         <div className="flex items-center justify-center py-4">
           <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
           <span className="ml-2 text-sm">Verificando cliente...</span>
@@ -39,10 +37,7 @@ export default function ClientConfiguration({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-md font-medium text-gray-800 dark:text-gray-200">
-        Información del Cliente
-      </h3>
-
+      <h3 className="text-xs font-medium text-blue-500">Información del Cliente</h3>
       <div className="space-y-4">
         <div className="flex items-center gap-2">
           <CreditCard className="h-4 w-4" />
@@ -51,7 +46,6 @@ export default function ClientConfiguration({
             {existingClient ? 'Cliente Existente' : 'Cliente Nuevo'}
           </Badge>
         </div>
-
         {existingClient && (
           <div className="rounded-lg border border-green-200 bg-green-50 p-3 dark:border-green-800 dark:bg-green-950/20">
             <p className="text-sm text-green-800 dark:text-green-200">
@@ -59,8 +53,6 @@ export default function ClientConfiguration({
             </p>
           </div>
         )}
-
-        {/* Dirección del Cliente */}
         <FormField
           control={control}
           name="clientAddress"

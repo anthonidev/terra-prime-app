@@ -1,6 +1,6 @@
 'use client';
 
-import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import {
   Select,
   SelectContent,
@@ -8,29 +8,28 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { Building, Layers, MapPin, Square } from 'lucide-react';
+import { Building, CreditCard, Layers, MapPin, Square } from 'lucide-react';
 import { Control, FieldErrors } from 'react-hook-form';
+import { Project } from '@domain/entities/lotes/project.entity';
+import { Stage } from '@domain/entities/lotes/stage.entity';
+import { Block } from '@domain/entities/lotes/block.entity';
+import { Lot } from '@domain/entities/lotes/lot.entity';
 
-import {
-  ProyectBlocksItems,
-  ProyectLotsItems,
-  ProyectsActivesItems,
-  ProyectStagesItems
-} from '@/types/sales';
-import { Step1FormData } from '../../../validations/saleValidation';
+import { Step1FormData } from '@sales/crear-venta/validations/saleValidation';
+import { CurrencyType } from '@/lib/domain/entities/sales/payment.entity';
 
-interface ProjectLocationSelectorProps {
+interface Props {
   control: Control<Step1FormData>;
   errors: FieldErrors<Step1FormData>;
 
-  projects: ProyectsActivesItems[];
-  stages: ProyectStagesItems[];
-  blocks: ProyectBlocksItems[];
-  lots: ProyectLotsItems[];
+  projects: Project[];
+  stages: Stage[];
+  blocks: Block[];
+  lots: Lot[];
 
-  selectedProject: ProyectsActivesItems | null;
-  selectedStage: ProyectStagesItems | null;
-  selectedBlock: ProyectBlocksItems | null;
+  selectedProject: Project | null;
+  selectedStage: Stage | null;
+  selectedBlock: Block | null;
 
   loading: {
     projects: boolean;
@@ -60,11 +59,40 @@ export default function ProjectLocationSelector({
   onStageChange,
   onBlockChange,
   onLotChange
-}: ProjectLocationSelectorProps) {
+}: Props) {
   return (
     <div className="space-y-4">
-      <h3 className="text-md font-medium text-gray-800 dark:text-gray-200">Ubicación del Lote</h3>
-
+      <h3 className="text-xs font-medium text-blue-500 dark:text-blue-600">
+        Configuración de Venta
+      </h3>
+      <FormField
+        control={control}
+        name="saleType"
+        render={({ field }) => (
+          <FormItem className="text-sm">
+            <FormLabel className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4" />
+              Tipo de Venta
+            </FormLabel>
+            <FormControl>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona el tipo de venta" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="DIRECT_PAYMENT">
+                    <span className="text-sm">Pago Directo</span>
+                  </SelectItem>
+                  <SelectItem value="FINANCED">
+                    <span className="text-sm">Financiado</span>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
       <FormField
         control={control}
         name="lotId"
@@ -77,11 +105,7 @@ export default function ProjectLocationSelector({
             <FormControl>
               <Select onValueChange={onProjectChange} disabled={loading.projects}>
                 <SelectTrigger>
-                  <SelectValue
-                    placeholder={
-                      loading.projects ? 'Cargando proyectos...' : 'Selecciona un proyecto'
-                    }
-                  />
+                  <SelectValue placeholder={loading.projects ? 'cargando...' : 'Seleccionar'} />
                 </SelectTrigger>
                 <SelectContent>
                   {projects.map((project) => (
@@ -98,7 +122,6 @@ export default function ProjectLocationSelector({
           </FormItem>
         )}
       />
-
       <FormField
         control={control}
         name="lotId"
@@ -111,15 +134,7 @@ export default function ProjectLocationSelector({
             <FormControl>
               <Select onValueChange={onStageChange} disabled={!selectedProject || loading.stages}>
                 <SelectTrigger>
-                  <SelectValue
-                    placeholder={
-                      !selectedProject
-                        ? 'Primero selecciona un proyecto'
-                        : loading.stages
-                          ? 'Cargando etapas...'
-                          : 'Selecciona una etapa'
-                    }
-                  />
+                  <SelectValue placeholder={loading.stages ? 'cargando...' : 'Seleccionar'} />
                 </SelectTrigger>
                 <SelectContent>
                   {stages.map((stage) => (
@@ -136,30 +151,21 @@ export default function ProjectLocationSelector({
           </FormItem>
         )}
       />
-
       <FormField
         control={control}
         name="lotId"
         render={() => (
           <FormItem>
             <FormLabel className="flex items-center gap-2">
-              <Square className="h-4 w-4" />
+              <Square className="h-4 w-4 text-gray-700" />
               Manzana
             </FormLabel>
             <FormControl>
               <Select onValueChange={onBlockChange} disabled={!selectedStage || loading.blocks}>
                 <SelectTrigger>
-                  <SelectValue
-                    placeholder={
-                      !selectedStage
-                        ? 'Primero selecciona una etapa'
-                        : loading.blocks
-                          ? 'Cargando manzanas...'
-                          : 'Selecciona una manzana'
-                    }
-                  />
+                  <SelectValue placeholder={loading.stages ? 'cargando...' : 'Seleccionar'} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-72 overflow-y-auto">
                   {blocks.map((block) => (
                     <SelectItem key={block.id} value={block.id}>
                       <div className="flex items-center gap-2">
@@ -174,7 +180,6 @@ export default function ProjectLocationSelector({
           </FormItem>
         )}
       />
-
       <FormField
         control={control}
         name="lotId"
@@ -194,15 +199,7 @@ export default function ProjectLocationSelector({
                 disabled={!selectedBlock || loading.lots}
               >
                 <SelectTrigger>
-                  <SelectValue
-                    placeholder={
-                      !selectedBlock
-                        ? 'Primero selecciona una manzana'
-                        : loading.lots
-                          ? 'Cargando lotes...'
-                          : 'Selecciona un lote'
-                    }
-                  />
+                  <SelectValue placeholder={loading.stages ? 'cargando...' : 'Seleccionar'} />
                 </SelectTrigger>
                 <SelectContent>
                   {lots.map((lot) => (
@@ -212,8 +209,10 @@ export default function ProjectLocationSelector({
                           <MapPin className="h-4 w-4" />
                           {lot.name}
                         </div>
-                        <div className="text-sm text-gray-500">
-                          {lot.area}m² - S/ {lot.lotPrice}
+                        <div className="text-sm">
+                          {lot.area}m² -&nbsp;
+                          {selectedProject?.currency == CurrencyType.PEN ? 'PEN' : 'USD'}&nbsp;
+                          {lot.lotPrice}
                         </div>
                       </div>
                     </SelectItem>

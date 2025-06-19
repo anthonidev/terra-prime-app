@@ -13,12 +13,24 @@ import GuarantorSection from './GuarantorSection';
 import { useClientGuarantor } from '../../../hooks/useClientGuarantor';
 import {
   CreateSaleFormData,
+  GuarantorFormData,
+  SecondaryClientFormData,
   Step3FormData,
   step3Schema
 } from '../../../validations/saleValidation';
 import AddGuarantorModal from '../../modals/AddGuarantorModal';
+import SecondaryClientSection from './SecondaryClientSection';
+import AddSecondaryClientModal from '../../modals/AddSecondaryClientModal';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 
-interface Step3Props {
+interface Props {
   formData: Partial<CreateSaleFormData>;
   updateFormData: (data: Partial<CreateSaleFormData>) => void;
   updateStepValidation: (step: 'step3', isValid: boolean) => void;
@@ -28,28 +40,42 @@ export default function Step3ClientGuarantor({
   formData,
   updateFormData,
   updateStepValidation
-}: Step3Props) {
-  const [showGuarantorModal, setShowGuarantorModal] = useState(false);
+}: Props) {
+  const [secondaryClientsFormData, setSecondaryClientsFormData] = useState<
+    SecondaryClientFormData[]
+  >([]);
+
+  const handleAddSecondaryClient = (data: SecondaryClientFormData) => {
+    setSecondaryClientsFormData((prev) => [...prev, data]);
+    setModal({ ...modal, compradorModal: false });
+  };
+
+  const [modal, setModal] = useState<{
+    guarantorModal: boolean;
+    compradorModal: boolean;
+  }>({
+    guarantorModal: false,
+    compradorModal: false
+  });
 
   const {
     leads,
     selectedLead,
     existingClient,
     guarantorData,
+    secondaryClientsData,
     clientAddress,
 
-    // Loading states
     loading,
 
-    // Actions
     loadLeads,
     handleLeadChange,
     handleAddressChange,
-    handleGuarantorSuccess,
+    handleGuarantorClientSuccess,
 
-    // Getters
     getClientId,
-    getGuarantorId
+    getGuarantorId,
+    getSecondaryClientsId
   } = useClientGuarantor();
 
   const form = useForm<Step3FormData>({
@@ -57,65 +83,76 @@ export default function Step3ClientGuarantor({
     defaultValues: {
       clientId: formData.clientId || 0,
       guarantorId: formData.guarantorId || 0,
+      secondaryClientIds: formData.secondaryClientIds,
       leadId: '',
       clientAddress: ''
     }
   });
 
-  // Cargar leads al montar el componente
   useEffect(() => {
     loadLeads();
   }, [loadLeads]);
 
-  // Validar formulario cuando cambie
   useEffect(() => {
     const subscription = form.watch((value) => {
       const clientId = getClientId();
       const guarantorId = getGuarantorId();
+      const secondaryClientIds = getSecondaryClientsId();
 
-      const isValid = !!(value.leadId && clientId > 0 && guarantorId > 0 && clientAddress);
+      const basicValidation = !!(
+        value.leadId &&
+        clientId > 0 &&
+        secondaryClientIds.length > 0 &&
+        clientAddress
+      );
+      const isValid = basicValidation;
 
       updateStepValidation('step3', isValid);
 
       if (isValid) {
         updateFormData({
           clientId,
-          guarantorId
+          guarantorId,
+          secondaryClientIds
         });
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [form, updateFormData, updateStepValidation, getClientId, getGuarantorId, clientAddress]);
+  }, [
+    form,
+    updateFormData,
+    updateStepValidation,
+    getClientId,
+    getGuarantorId,
+    getSecondaryClientsId,
+    secondaryClientsFormData,
+    clientAddress
+  ]);
 
-  // Actualizar valores del formulario cuando cambien los datos
   useEffect(() => {
     form.setValue('clientId', getClientId());
     form.setValue('guarantorId', getGuarantorId());
+    form.setValue('secondaryClientIds', getSecondaryClientsId());
     form.setValue('clientAddress', clientAddress);
-  }, [form, getClientId, getGuarantorId, clientAddress]);
+  }, [form, getClientId, getGuarantorId, getSecondaryClientsId, clientAddress]);
 
   const handleLeadSelection = async (leadId: string) => {
     form.setValue('leadId', leadId);
     await handleLeadChange(leadId);
   };
 
-  const handleGuarantorModalSuccess = async (guarantorFormData: {
-    address: string;
-    document: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    documentType: 'DNI' | 'CE' | 'RUC';
-    phone: string;
-  }) => {
+  const handleAction = async (guarantorFormData?: GuarantorFormData) => {
     try {
-      await handleGuarantorSuccess(guarantorFormData);
-      setShowGuarantorModal(false);
+      await handleGuarantorClientSuccess(secondaryClientsFormData, guarantorFormData);
+      setModal({ ...modal, guarantorModal: false });
     } catch (error) {
-      // Error ya manejado en el hook
       console.error('Error al manejar el éxito del garante:', error);
     }
+  };
+
+  const handleGenerate = async () => {
+    await await handleGuarantorClientSuccess(secondaryClientsFormData);
   };
 
   return (
@@ -131,7 +168,6 @@ export default function Step3ClientGuarantor({
 
       <Form {...form}>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* Selección de Lead */}
           <div className="space-y-4">
             <ClientLeadSelector
               control={form.control}
@@ -140,12 +176,40 @@ export default function Step3ClientGuarantor({
               loading={loading.leads}
               onLeadChange={handleLeadSelection}
             />
-
-            {/* Información del Lead Seleccionado */}
             {selectedLead && <LeadInfoCard lead={selectedLead} />}
+            {selectedLead && (
+              <div className="rounded-md border p-4">
+                <h3 className="text-xs font-medium text-blue-500">Co-Compradores</h3>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nº</TableHead>
+                      <TableHead>Nombre</TableHead>
+                      <TableHead>Apellido</TableHead>
+                      <TableHead>Documento</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {secondaryClientsFormData.length > 0 ? (
+                      secondaryClientsFormData.map((item, i) => (
+                        <TableRow key={i}>
+                          <TableCell>{i + 1}</TableCell>
+                          <TableCell>{item.firstName}</TableCell>
+                          <TableCell>{item.lastName}</TableCell>
+                          <TableCell>{item.document}</TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={4}>No hay registros guardados</TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </div>
 
-          {/* Configuración de Cliente */}
           <div className="space-y-4">
             {selectedLead && (
               <>
@@ -157,26 +221,36 @@ export default function Step3ClientGuarantor({
                   clientAddress={clientAddress}
                   onAddressChange={handleAddressChange}
                 />
-
-                {/* Sección de Garante */}
-                {clientAddress && (
-                  <GuarantorSection
-                    guarantorData={guarantorData}
-                    isCreating={loading.creating}
-                    onAddGuarantor={() => setShowGuarantorModal(true)}
-                  />
-                )}
+                <SecondaryClientSection
+                  secondaryClientsData={secondaryClientsData}
+                  disabled={!clientAddress}
+                  isCreating={loading.creating}
+                  isGenerated={secondaryClientsFormData.length > 0}
+                  onGenerated={handleGenerate}
+                  onAddSecondaryClient={() => setModal({ ...modal, compradorModal: true })}
+                />
+                <GuarantorSection
+                  guarantorData={guarantorData}
+                  disabled={!clientAddress}
+                  isCreating={loading.creating}
+                  onAddGuarantor={() => setModal({ ...modal, guarantorModal: true })}
+                />
               </>
             )}
           </div>
         </div>
       </Form>
 
-      {/* Modal para agregar garante */}
+      <AddSecondaryClientModal
+        isOpen={modal.compradorModal}
+        onClose={() => setModal({ ...modal, compradorModal: false })}
+        onSuccess={handleAddSecondaryClient}
+        isCreating={loading.creating}
+      />
       <AddGuarantorModal
-        isOpen={showGuarantorModal}
-        onClose={() => setShowGuarantorModal(false)}
-        onSuccess={handleGuarantorModalSuccess}
+        isOpen={modal.guarantorModal}
+        onClose={() => setModal({ ...modal, guarantorModal: false })}
+        onSuccess={handleAction}
         isCreating={loading.creating}
       />
     </div>

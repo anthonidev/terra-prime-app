@@ -18,10 +18,8 @@ export default function LayoutAuth({ children }: { children: React.ReactNode }) 
           </aside>
           <div className="flex flex-1 flex-shrink-0 flex-col items-center pt-4">
             <div className="flex w-[330px] flex-1 flex-col justify-center sm:w-[384px]">
-              {' '}
               {children}
             </div>
-
             <div className="z-10 mx-auto my-8">
               <ThemeSwitch />
             </div>

@@ -94,7 +94,7 @@ const TableTemplate = <T,>({
         )}
       </div>
 
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-hidden rounded-md border bg-white dark:bg-gray-900">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader className="bg-muted/30">

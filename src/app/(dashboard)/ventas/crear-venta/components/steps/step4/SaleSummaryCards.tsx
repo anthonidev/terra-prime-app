@@ -28,7 +28,7 @@ export default function SaleSummaryCards({
     <div className="space-y-4">
       <h3 className="text-md font-medium text-gray-800 dark:text-gray-200">Resumen de la Venta</h3>
 
-      <Card>
+      <Card className="dark:bg-gray-900">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-sm">
             <Building className="h-4 w-4" />
@@ -45,7 +45,7 @@ export default function SaleSummaryCards({
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="dark:bg-gray-900">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-sm">
             <DollarSign className="h-4 w-4" />
@@ -87,7 +87,7 @@ export default function SaleSummaryCards({
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="dark:bg-gray-900">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-sm">
             <User className="h-4 w-4" />

@@ -1,3 +1,5 @@
+import { Meta } from '@infrastructure/types/pagination.types';
+
 export interface LeadSource {
   id: number;
   name: string;
@@ -5,16 +7,11 @@ export interface LeadSource {
   createdAt: string;
   updatedAt: string;
 }
-export interface PaginatedMeta {
-  totalItems: number;
-  itemsPerPage: number;
-  totalPages: number;
-  currentPage: number;
-}
+
 export interface LeadSourcesResponse {
   success: boolean;
   data: LeadSource[];
-  meta: PaginatedMeta;
+  meta: Meta;
 }
 export interface GetLeadSourcesParams {
   search?: string;
@@ -61,16 +58,11 @@ export interface Liner {
   updatedAt: string;
   fullName: string;
 }
-export interface PaginatedMeta {
-  totalItems: number;
-  itemsPerPage: number;
-  totalPages: number;
-  currentPage: number;
-}
+
 export interface LinersResponse {
   success: boolean;
   data: Liner[];
-  meta: PaginatedMeta;
+  meta: Meta;
 }
 export interface ActiveLinersResponse {
   success: boolean;
@@ -193,12 +185,7 @@ export interface CreateUpdateLeadResponse {
 export interface PaginatedLeadsResponse {
   success: boolean;
   data: Lead[];
-  meta: {
-    totalItems: number;
-    itemsPerPage: number;
-    totalPages: number;
-    currentPage: number;
-  };
+  meta: Meta;
 }
 export interface GetLeadsParams {
   search?: string;

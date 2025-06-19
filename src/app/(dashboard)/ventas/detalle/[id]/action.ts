@@ -1,18 +1,12 @@
 'use server';
 import { httpClient } from '@/lib/api/http-client';
-import { SaleResponse } from '@/types/sales';
+import { SaleList } from '@domain/entities/sales/salevendor.entity';
 
-const SALES_CACHE_TAG = 'sales';
 export async function detailSale(saleId: string) {
   try {
     console.log('Viendo detalle de la venta:', saleId);
 
-    const result = await httpClient<SaleResponse>(`/api/sales/${saleId}`, {
-      next: {
-        tags: [`${SALES_CACHE_TAG}-${saleId}`],
-        revalidate: 300
-      }
-    });
+    const result = await httpClient<SaleList>(`/api/sales/${saleId}`);
 
     return { success: true, data: result };
   } catch (error) {

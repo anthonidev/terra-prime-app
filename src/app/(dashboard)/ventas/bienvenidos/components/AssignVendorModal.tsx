@@ -1,6 +1,5 @@
 'use client';
 
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,12 +10,15 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { VendorsActivesItem } from '@/types/sales';
-import { AlertCircle, Loader2, RefreshCw, Search, User, X } from 'lucide-react';
+import { VendorsActives } from '@domain/entities/sales/leadsvendors.entity';
+import { Loader2, RefreshCw, Search, User, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { assignLeadsToVendor, getVendorsActives } from '../action';
+import {
+  assignLeadsToVendor,
+  getVendorsActives
+} from '@infrastructure/server-actions/sales.actions';
 
 interface AssignVendorModalProps {
   leadIds: string[];
@@ -28,10 +30,9 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
   const router = useRouter();
   const [selectedVendorId, setSelectedVendorId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [vendors, setVendors] = useState<VendorsActivesItem[]>([]);
+  const [vendors, setVendors] = useState<VendorsActives[]>([]);
   const [isLoadingVendors, setIsLoadingVendors] = useState(false);
   const [isAssigning, setIsAssigning] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const filteredVendors = useMemo(() => {
     if (!Array.isArray(vendors)) return [];
@@ -45,16 +46,13 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
 
   const loadVendors = useCallback(async () => {
     if (vendors.length > 0) return;
-
     setIsLoadingVendors(true);
-    setError(null);
 
     try {
       const vendorsList = await getVendorsActives();
       setVendors(vendorsList);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error al cargar vendedores';
-      setError(errorMessage);
       toast.error(errorMessage);
     } finally {
       setIsLoadingVendors(false);
@@ -66,10 +64,7 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
       toast.error('Por favor selecciona un vendedor');
       return;
     }
-
     setIsAssigning(true);
-    setError(null);
-
     try {
       await assignLeadsToVendor({
         leadsId: leadIds,
@@ -84,7 +79,6 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
       router.refresh();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error al asignar vendedor';
-      setError(errorMessage);
       toast.error(errorMessage);
     } finally {
       setIsAssigning(false);
@@ -95,15 +89,12 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
     if (!isAssigning) {
       setSelectedVendorId(null);
       setSearchTerm('');
-      setError(null);
       onClose();
     }
   };
 
   useEffect(() => {
-    if (isOpen) {
-      loadVendors();
-    }
+    if (isOpen) loadVendors();
   }, [isOpen, loadVendors]);
 
   const selectedVendor = vendors.find((v) => v.id === selectedVendorId);
@@ -132,7 +123,7 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
 
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <div className="space-y-4 p-6">
-            <div className="relative">
+            <div className="relative bg-white dark:bg-gray-900">
               <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <Input
                 placeholder="Buscar vendedor por nombre, email o documento..."
@@ -142,17 +133,6 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
                 disabled={isLoadingVendors || isAssigning}
               />
             </div>
-
-            {error && (
-              <Alert
-                variant="destructive"
-                className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
-              >
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
             {selectedVendor && (
               <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/20">
                 <div className="flex items-center gap-3">
@@ -192,14 +172,13 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
                   {filteredVendors.map((vendor) => (
                     <div
                       key={vendor.id}
-                      className={`group relative cursor-pointer rounded-lg border p-3 transition-all ${
+                      className={`group relative cursor-pointer rounded-lg border bg-white p-3 transition-all dark:bg-gray-900 ${
                         selectedVendorId === vendor.id
                           ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200 dark:bg-blue-950/30 dark:ring-blue-800'
                           : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:border-blue-600 dark:hover:bg-gray-800/50'
                       }`}
                       onClick={() => setSelectedVendorId(vendor.id)}
                     >
-                      {/* Radio-style selection indicator */}
                       <div className="absolute top-3 right-3">
                         <div
                           className={`flex h-4 w-4 items-center justify-center rounded-full border-2 ${
@@ -213,9 +192,7 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
                           )}
                         </div>
                       </div>
-
                       <div className="flex items-center gap-3 pr-6">
-                        {/* Avatar */}
                         <div
                           className={`flex h-12 w-12 items-center justify-center rounded-full transition-colors ${
                             selectedVendorId === vendor.id
@@ -225,8 +202,6 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
                         >
                           <User className="h-6 w-6" />
                         </div>
-
-                        {/* Info */}
                         <div className="min-w-0 flex-1">
                           <h4
                             className={`truncate font-semibold ${
@@ -247,8 +222,6 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
                           </div>
                         </div>
                       </div>
-
-                      {/* Hover effect overlay */}
                       <div
                         className={`absolute inset-0 rounded-lg transition-opacity ${
                           selectedVendorId === vendor.id
@@ -283,7 +256,6 @@ export default function AssignVendorModal({ leadIds, isOpen, onClose }: AssignVe
             </div>
           </div>
         </div>
-
         <DialogFooter className="border-t border-gray-100 bg-gray-50 px-6 py-4 dark:border-gray-800 dark:bg-gray-900/50">
           <div className="flex w-full items-center justify-between">
             <div className="text-sm text-gray-500 dark:text-gray-400">

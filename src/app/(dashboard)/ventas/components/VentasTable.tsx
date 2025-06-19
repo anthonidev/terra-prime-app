@@ -1,8 +1,6 @@
 'use client';
 
 import TableTemplate from '@/components/common/table/TableTemplate';
-import { Badge } from '@/components/ui/badge';
-import { SaleResponse } from '@/types/sales';
 import {
   ColumnDef,
   getCoreRowModel,
@@ -10,35 +8,30 @@ import {
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { Building2, Calendar, DollarSign, User } from 'lucide-react';
+import { Building2, User } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import VentasActionsButton from './VentasActionsButton';
+import { CurrencyType, SaleList } from '@domain/entities/sales/salevendor.entity';
+import { StatusBadge } from '@/components/common/table/StatusBadge';
 
 type Props = {
-  data: SaleResponse[];
+  data: SaleList[];
 };
 
 const VentasTable = ({ data }: Props) => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     id: false,
-    type: false,
-    contractDate: false
+    type: false
   });
 
-  const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'dd/MM/yyyy', { locale: es });
-  };
-
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number, currency: CurrencyType = CurrencyType.PEN) => {
     return new Intl.NumberFormat('es-PE', {
       style: 'currency',
-      currency: 'PEN'
+      currency: currency
     }).format(amount);
   };
 
-  const columns = useMemo<ColumnDef<SaleResponse>[]>(
+  const columns = useMemo<ColumnDef<SaleList>[]>(
     () => [
       {
         accessorKey: 'id',
@@ -82,7 +75,7 @@ const VentasTable = ({ data }: Props) => {
               <div className="flex flex-col">
                 <span className="text-sm font-medium">{sale.lot.name}</span>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {formatCurrency(sale.lot.lotPrice)}
+                  {formatCurrency(Number(sale.lot.lotPrice), sale.currency)}
                 </span>
               </div>
             </div>
@@ -93,63 +86,28 @@ const VentasTable = ({ data }: Props) => {
       {
         accessorKey: 'type',
         header: 'Tipo',
-        cell: ({ row }) => (
-          <Badge variant={row.getValue('type') === 'FINANCED' ? 'default' : 'secondary'}>
-            {row.getValue('type') === 'FINANCED' ? 'Financiado' : 'Directo'}
-          </Badge>
-        ),
+        cell: ({ row }) => <StatusBadge status={row.getValue('type')} />,
         enableHiding: true
       },
       {
         accessorKey: 'totalAmount',
         header: 'Monto Total',
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <DollarSign className="h-4 w-4 text-gray-400" />
-            <span className="font-semibold text-green-600">
-              {formatCurrency(row.getValue('totalAmount'))}
-            </span>
-          </div>
-        ),
-        enableHiding: false
-      },
-      {
-        accessorKey: 'status',
-        header: 'Estado',
         cell: ({ row }) => {
-          const status = row.getValue('status') as string;
-          const variant =
-            status === 'COMPLETED' ? 'default' : status === 'PENDING' ? 'secondary' : 'destructive';
-
+          const sale = row.original;
           return (
-            <Badge variant={variant}>
-              {status === 'COMPLETED' ? 'Completada' : status === 'PENDING' ? 'Pendiente' : status}
-            </Badge>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-green-600">
+                {formatCurrency(row.getValue('totalAmount'), sale.currency)}
+              </span>
+            </div>
           );
         },
         enableHiding: false
       },
       {
-        accessorKey: 'saleDate',
-        header: 'Fecha de Venta',
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-gray-400" />
-            <span className="text-sm font-medium">{formatDate(row.getValue('saleDate'))}</span>
-          </div>
-        ),
-        enableHiding: false
-      },
-      {
-        accessorKey: 'contractDate',
-        header: 'Fecha de Contrato',
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-gray-400" />
-            <span className="text-sm">{formatDate(row.getValue('contractDate'))}</span>
-          </div>
-        ),
-        enableHiding: true
+        accessorKey: 'status',
+        header: 'Estado',
+        cell: ({ row }) => <StatusBadge status={row.getValue('status')} />
       },
       {
         id: 'vendorInfo',
@@ -196,7 +154,7 @@ const VentasTable = ({ data }: Props) => {
   });
 
   return (
-    <TableTemplate<SaleResponse>
+    <TableTemplate<SaleList>
       table={table}
       columns={columns}
       showColumnVisibility={true}

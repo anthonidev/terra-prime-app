@@ -14,10 +14,10 @@ import {
 } from '@/components/ui/table';
 import { Calculator } from 'lucide-react';
 
-import { AmortizationItem } from '@/types/sales';
+import { Amortization } from '@domain/entities/sales/amortization.entity';
 
 interface AmortizationTableProps {
-  installments: AmortizationItem[];
+  installments: Amortization[];
   visible: boolean;
 }
 

@@ -1,52 +1,20 @@
-'use client';
-
-import UsersTable from '@/app/(dashboard)/usuarios/components/UsersTable';
 import { PageHeader } from '@components/common/PageHeader';
-import { useUsers } from '@/app/(dashboard)/usuarios/hooks/useUsers';
+import { Suspense } from 'react';
+import TableSkeleton from './components/TableSkeleton';
+import UsersData from './components/UsersData';
 
-export default function Usuarios() {
-  const {
-    usersItems,
-    usersMeta,
-    usersLoading,
-    roles,
-    rolesLoading,
-    search,
-    currentPage,
-    itemsPerPage,
-    isActive,
-    order,
-    handlePageChange,
-    handleItemsPerPageChange,
-    handleSearchChange,
-    handleIsActiveChange,
-    handleOrderChange,
-    handleUpdateUser,
-    handleCreateUser
-  } = useUsers();
-
+export default async function Usuarios({
+  searchParams
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const filters = await searchParams;
   return (
     <div className="container py-8">
       <PageHeader title="Usuarios" subtitle="Gestiona los usuarios del sistema" variant="default" />
-      <UsersTable
-        data={usersItems}
-        isLoading={usersLoading}
-        meta={usersMeta}
-        currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handleItemsPerPageChange}
-        search={search}
-        handleCreateUser={handleCreateUser}
-        handleUpdateUser={handleUpdateUser}
-        handleSearchChange={handleSearchChange}
-        isActive={isActive}
-        handleIsActiveChange={handleIsActiveChange}
-        order={order}
-        handleOrderChange={handleOrderChange}
-        roles={roles}
-        rolesLoading={rolesLoading}
-      />
+      <Suspense fallback={<TableSkeleton />}>
+        <UsersData searchParams={filters} />
+      </Suspense>
     </div>
   );
 }

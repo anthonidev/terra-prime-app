@@ -25,10 +25,7 @@ export default function FinancingConfiguration({
 }: FinancingConfigurationProps) {
   return (
     <div className="space-y-4">
-      <h3 className="text-md font-medium text-gray-800 dark:text-gray-200">
-        Configuración de Financiamiento
-      </h3>
-
+      <h3 className="text-xs font-medium text-blue-500">Configuración de Financiamiento</h3>
       <FormInputField<Step2FormData>
         name="initialAmount"
         label="Monto Inicial"
@@ -38,7 +35,6 @@ export default function FinancingConfiguration({
         control={control}
         errors={errors}
       />
-
       <FormInputField<Step2FormData>
         name="interestRate"
         label="Tasa de Interés (%)"

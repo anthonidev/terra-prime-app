@@ -1,9 +1,9 @@
 import { TableQueryPagination } from '@/components/common/table/TableQueryPagination';
 import { Card, CardContent } from '@/components/ui/card';
-import { getSales } from '../action';
 import VentasTableFilters from './VentasTableFilters';
 import VentasTable from './VentasTable';
 import VentasCards from './VentasCards';
+import { getSaleListVendor } from '@infrastructure/server-actions/sales.actions';
 
 export default async function VentasData({
   searchParams
@@ -18,7 +18,7 @@ export default async function VentasData({
   const page = searchParams?.page ? parseInt(searchParams.page) : 1;
   const limit = searchParams?.limit ? parseInt(searchParams.limit) : 10;
 
-  const { items, meta } = await getSales({
+  const { items, meta } = await getSaleListVendor({
     order,
     page,
     limit
@@ -37,11 +37,7 @@ export default async function VentasData({
       </Card>
 
       <div className="hidden md:block">
-        <Card className="border-gray-200 shadow-sm dark:border-gray-800">
-          <CardContent className="p-0">
-            <VentasTable data={items} />
-          </CardContent>
-        </Card>
+        <VentasTable data={items} />
       </div>
 
       <div className="md:hidden">

@@ -8,12 +8,12 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { PaginatedMeta } from '@/types/global/utils.types';
+import { Meta } from '@infrastructure/types/pagination.types';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 interface TablePaginationProps {
-  meta: PaginatedMeta;
+  meta: Meta;
 }
 
 export function TableQueryPagination({
@@ -41,7 +41,7 @@ export function TableQueryPagination({
   const onPageSizeChange = (newSize: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('limit', newSize.toString());
-    params.set('page', '1'); // Reset to first page when changing page size
+    params.set('page', '1');
     router.push(`${pathname}?${params.toString()}`);
   };
 

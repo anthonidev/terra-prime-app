@@ -4,24 +4,30 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { UserCheck } from 'lucide-react';
 
-interface GuarantorSectionProps {
+interface Props {
   guarantorData: { id: number; name: string } | null;
+  disabled: boolean;
   isCreating: boolean;
   onAddGuarantor: () => void;
 }
 
 export default function GuarantorSection({
   guarantorData,
+  disabled,
   isCreating,
   onAddGuarantor
-}: GuarantorSectionProps) {
+}: Props) {
+  if (disabled) return;
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-medium text-gray-800 dark:text-gray-200">Garante (Aval)</h4>
+        <h4 className="text-sm font-medium text-gray-800 dark:text-gray-200">
+          Garante (Aval - Opcional)
+        </h4>
         <Button
           type="button"
           onClick={onAddGuarantor}
+          variant="secondary"
           className="flex items-center gap-2"
           disabled={isCreating}
         >
@@ -48,7 +54,7 @@ export default function GuarantorSection({
         <div className="rounded-lg border border-dashed border-gray-300 p-4 text-center dark:border-gray-700">
           <UserCheck className="mx-auto h-8 w-8 text-gray-400" />
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Aún no se ha agregado un garante
+            Aún no se ha generado un garante
           </p>
           <p className="text-xs text-gray-400">Haz clic en Agregar Garante para continuar</p>
         </div>

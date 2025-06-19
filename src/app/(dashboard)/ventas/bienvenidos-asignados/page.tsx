@@ -1,21 +1,25 @@
-'use client';
-
+import { TableSkeleton } from '@components/common/table/TableSkeleton';
 import { PageHeader } from '@/components/common/PageHeader';
-import { User } from 'lucide-react';
-import LeadsVendorTable from './components/LeadsVendorTable';
-import { useLeadsVendor } from './hooks/useLeadsVendor';
+import { Suspense } from 'react';
+import LeadsVendorData from './components/LeadsVendorData';
 
-export default function LeadsVendorPage() {
-  const { data, isLoading, error, refresh } = useLeadsVendor();
+export default async function LeadsVendorPage({
+  searchParams
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const filters = await searchParams;
+
   return (
     <div className="container pt-8">
       <PageHeader
-        icon={User}
         title="Bienvenidos asignados"
-        subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        subtitle="Lista de bienvenidos asignados"
         variant="default"
       />
-      <LeadsVendorTable data={data} isLoading={isLoading} error={error} onRefresh={refresh} />
+      <Suspense fallback={<TableSkeleton />}>
+        <LeadsVendorData searchParams={filters} />
+      </Suspense>
     </div>
   );
 }
