@@ -8,20 +8,6 @@ import { revalidateTag } from 'next/cache';
 
 const SALES_VENDOR_CACHE_TAG = 'sales-vendor';
 
-// paso 1
-
-// Migrado a clean arquitecture no olvidarme :/
-
-//paso 2
-
-//Migrado a clean arquitecture no olvidarme -_-
-
-//paso 3
-
-// Migrado a clean arquitecture no olvidarme
-
-//paso 4
-
 export async function createSale(data: CreateSalePayload) {
   try {
     const response = await httpClient<SaleList>('/api/sales', {
