@@ -3,7 +3,7 @@
 import TableTemplate from '@/components/common/table/TableTemplate';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { LeadsByDayItem } from '@/types/sales';
+import { LeadsOfDay } from '@domain/entities/sales/leadsvendors.entity';
 import {
   ColumnDef,
   getCoreRowModel,
@@ -20,7 +20,7 @@ import AssignVendorButton from './AssignVendorButton';
 import AssignVendorModal from './AssignVendorModal';
 
 type Props = {
-  data: LeadsByDayItem[];
+  data: LeadsOfDay[];
 };
 
 export default function BienvenidosTable({ data }: Props) {
@@ -33,16 +33,7 @@ export default function BienvenidosTable({ data }: Props) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
 
-  const hasVendorAssigned = (lead: LeadsByDayItem): boolean => {
-    const vendor = lead.vendor;
-    return vendor !== null && typeof vendor === 'object' && !Array.isArray(vendor);
-  };
-
-  // const canSelectRow = (lead: LeadsByDayItem): boolean => {
-  //   return true;
-  // };
-
-  const columns = useMemo<ColumnDef<LeadsByDayItem>[]>(
+  const columns = useMemo<ColumnDef<LeadsOfDay>[]>(
     () => [
       {
         accessorKey: 'id',
@@ -160,33 +151,26 @@ export default function BienvenidosTable({ data }: Props) {
         header: 'Vendedor',
         cell: ({ row }) => {
           const lead = row.original;
-          const vendor = lead.vendor;
+          const hasVendor = !!lead.vendor?.id;
 
-          if (typeof vendor === 'string') {
-            return <Badge variant="outline">{vendor}</Badge>;
-          }
-
-          if (vendor && typeof vendor === 'object') {
+          if (!hasVendor) {
             return (
-              <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-gray-400" />
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">
-                    {vendor.firstName} {vendor.lastName}
-                  </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">{vendor.email}</span>
-                </div>
-              </div>
+              <Badge variant="secondary" className="border-amber-200 bg-amber-100 text-amber-700">
+                Sin asignar
+              </Badge>
             );
           }
 
           return (
-            <Badge
-              variant="secondary"
-              className="border-amber-200 bg-amber-100 text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400"
-            >
-              Sin asignar
-            </Badge>
+            <div className="flex items-center gap-2">
+              <User className="h-4 w-4 text-gray-400" />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">
+                  {lead.vendor.firstName} {lead.vendor.lastName}
+                </span>
+                <span className="text-xs text-gray-500">{lead.vendor.email}</span>
+              </div>
+            </div>
           );
         },
         enableHiding: false
@@ -214,7 +198,7 @@ export default function BienvenidosTable({ data }: Props) {
         header: 'Acciones',
         cell: ({ row }) => {
           const lead = row.original;
-          const hasVendor = hasVendorAssigned(lead);
+          const hasVendor = !!lead.vendor?.id;
 
           return (
             <div className="flex items-center gap-2">
@@ -268,7 +252,7 @@ export default function BienvenidosTable({ data }: Props) {
 
   return (
     <>
-      <TableTemplate<LeadsByDayItem>
+      <TableTemplate<LeadsOfDay>
         table={table}
         columns={columns}
         showColumnVisibility={true}

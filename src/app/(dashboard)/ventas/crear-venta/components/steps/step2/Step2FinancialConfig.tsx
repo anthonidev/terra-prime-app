@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 
 import { Form } from '@/components/ui/form';
 
-import { AmortizationItem } from '@/types/sales';
+import { Amortization } from '@domain/entities/sales/amortization.entity';
 
 import { useFinancialConfig } from '../../../hooks/useFinancialConfig';
 import { useFormSynchronization } from '../../../hooks/useFormSynchronization';
@@ -137,12 +137,13 @@ export default function Step2FinancialConfig({
         { shouldValidate: false }
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.totalAmount, formData.totalAmountUrbanDevelopment]);
 
   const { amortizationTable, isCalculating, showAmortization, handleCalculateAmortization } =
     useFinancialConfig({
       amortizationForm,
-      onAmortizationCalculated: (installments: AmortizationItem[]) => {
+      onAmortizationCalculated: (installments: Amortization[]) => {
         form.setValue('financingInstallments', installments);
       }
     });

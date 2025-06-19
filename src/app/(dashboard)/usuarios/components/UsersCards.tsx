@@ -1,4 +1,4 @@
-import { Role, UserList } from '@/types/user';
+import { Role, UserList } from '@domain/entities/user';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, FileText, Mail, User } from 'lucide-react';

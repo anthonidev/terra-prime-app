@@ -9,35 +9,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { SaleResponse } from '@/types/sales';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import {
-  Building2,
-  Calendar,
-  CreditCard,
-  DollarSign,
-  Eye,
-  MoreVertical,
-  Receipt,
-  User
-} from 'lucide-react';
+import { SaleList } from '@domain/entities/sales/salevendor.entity';
+import { Building2, CreditCard, DollarSign, Eye, MoreVertical, Receipt, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { toast } from 'sonner';
-import { registrarPago } from '../action';
 
 type Props = {
-  data: SaleResponse[];
+  data: SaleList[];
 };
 
 const VentasCards = ({ data }: Props) => {
   const router = useRouter();
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
-
-  const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'dd/MM/yyyy', { locale: es });
-  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-PE', {
@@ -53,21 +36,6 @@ const VentasCards = ({ data }: Props) => {
 
   const handleRegistrarPago = async (saleId: string) => {
     setLoadingStates((prev) => ({ ...prev, [`${saleId}_pago`]: true }));
-
-    try {
-      const result = await registrarPago(saleId);
-
-      if (result.success) {
-        toast.success('Pago registrado correctamente');
-        router.refresh();
-      } else {
-        toast.error(result.error || 'Error al registrar pago');
-      }
-    } catch {
-      toast.error('Error al registrar pago');
-    } finally {
-      setLoadingStates((prev) => ({ ...prev, [`${saleId}_pago`]: false }));
-    }
   };
 
   if (!data.length) {
@@ -147,20 +115,17 @@ const VentasCards = ({ data }: Props) => {
                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                   <Building2 className="h-4 w-4" />
                   <span>Lote: {sale.lot.name}</span>
-                  <span className="ml-auto font-medium">{formatCurrency(sale.lot.lotPrice)}</span>
+                  <span className="ml-auto font-medium">
+                    {formatCurrency(Number(sale.lot.lotPrice))}
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                   <CreditCard className="h-4 w-4" />
                   <span>Total:</span>
                   <span className="ml-auto font-bold text-green-600">
-                    {formatCurrency(sale.totalAmount)}
+                    {formatCurrency(Number(sale.totalAmount))}
                   </span>
-                </div>
-
-                <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                  <Calendar className="h-4 w-4" />
-                  <span>Fecha de venta: {formatDate(sale.saleDate)}</span>
                 </div>
 
                 {sale.vendor && (
@@ -198,7 +163,7 @@ const VentasCards = ({ data }: Props) => {
                 {sale.financing && (
                   <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-950/20">
                     <div className="text-xs text-blue-600 dark:text-blue-400">
-                      <div>Inicial: {formatCurrency(sale.financing.initialAmount)}</div>
+                      <div>Inicial: {formatCurrency(Number(sale.financing.initialAmount))}</div>
                       <div>Tasa: {sale.financing.interestRate}%</div>
                       <div>Cuotas: {sale.financing.quantityCoutes}</div>
                     </div>

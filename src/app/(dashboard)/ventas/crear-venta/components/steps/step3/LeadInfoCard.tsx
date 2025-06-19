@@ -1,17 +1,17 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LeadsVendorItems } from '@/types/sales';
+import { LeadsVendor } from '@domain/entities/sales/leadsvendors.entity';
 
 interface LeadInfoCardProps {
-  lead: LeadsVendorItems;
+  lead: LeadsVendor;
 }
 
 export default function LeadInfoCard({ lead }: LeadInfoCardProps) {
   return (
-    <Card>
+    <Card className="">
       <CardHeader>
-        <CardTitle className="text-sm">Información del Lead</CardTitle>
+        <CardTitle className="text-xs text-blue-500">Información del Lead</CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
         <div className="flex justify-between text-sm">

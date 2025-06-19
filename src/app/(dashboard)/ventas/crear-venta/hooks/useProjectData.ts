@@ -1,55 +1,79 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'sonner';
 
+import { Project } from '@domain/entities/lotes/project.entity';
+import { Stage } from '@domain/entities/lotes/stage.entity';
+import { Block } from '@domain/entities/lotes/block.entity';
+import { Lot } from '@domain/entities/lotes/lot.entity';
+
 import {
-  ProyectsActivesItems,
-  ProyectStagesItems,
-  ProyectBlocksItems,
-  ProyectLotsItems
-} from '@/types/sales';
-import { getProyectBlocks, getProyectLots, getProyectsActives, getProyectStages } from '../action';
+  getProjectActives,
+  getProyectBlocks,
+  getProyectStages,
+  getProyectLots
+} from '@infrastructure/server-actions/lotes.actions';
+
+type ProjectID = string;
+type StageID = string;
+type BlockID = string;
+type LotID = string;
+
+interface ProjectDataState {
+  projects: Project[];
+  stages: Stage[];
+  blocks: Block[];
+  lots: Lot[];
+}
+
+interface SelectedItems {
+  project: Project | null;
+  stage: Stage | null;
+  block: Block | null;
+  lot: Lot | null;
+  currency: string | null;
+}
+
+interface LoadingState {
+  projects: boolean;
+  stages: boolean;
+  blocks: boolean;
+  lots: boolean;
+}
 
 interface UseProjectDataReturn {
-  projects: ProyectsActivesItems[];
-  stages: ProyectStagesItems[];
-  blocks: ProyectBlocksItems[];
-  lots: ProyectLotsItems[];
-
-  selectedProject: ProyectsActivesItems | null;
-  selectedStage: ProyectStagesItems | null;
-  selectedBlock: ProyectBlocksItems | null;
-  selectedLot: ProyectLotsItems | null;
-
-  loading: {
-    projects: boolean;
-    stages: boolean;
-    blocks: boolean;
-    lots: boolean;
-  };
-
+  projects: Project[];
+  stages: Stage[];
+  blocks: Block[];
+  lots: Lot[];
+  selected: SelectedItems;
+  loading: LoadingState;
   loadProjects: () => Promise<void>;
-  loadStages: (projectId: string) => Promise<void>;
-  loadBlocks: (stageId: string) => Promise<void>;
-  loadLots: (blockId: string) => Promise<void>;
-
-  selectProject: (projectId: string) => void;
-  selectStage: (stageId: string) => void;
-  selectBlock: (blockId: string) => void;
-  selectLot: (lotId: string) => void;
+  loadStages: (projectId: ProjectID) => Promise<void>;
+  loadBlocks: (stageId: StageID) => Promise<void>;
+  loadLots: (blockId: BlockID) => Promise<void>;
+  selectProject: (projectId: ProjectID) => void;
+  selectStage: (stageId: StageID) => void;
+  selectBlock: (blockId: BlockID) => void;
+  selectLot: (lotId: LotID) => void;
 }
 
 export function useProjectData(): UseProjectDataReturn {
-  const [projects, setProjects] = useState<ProyectsActivesItems[]>([]);
-  const [stages, setStages] = useState<ProyectStagesItems[]>([]);
-  const [blocks, setBlocks] = useState<ProyectBlocksItems[]>([]);
-  const [lots, setLots] = useState<ProyectLotsItems[]>([]);
+  const [data, setData] = useState<ProjectDataState>({
+    projects: [],
+    stages: [],
+    blocks: [],
+    lots: []
+  });
 
-  const [selectedProject, setSelectedProject] = useState<ProyectsActivesItems | null>(null);
-  const [selectedStage, setSelectedStage] = useState<ProyectStagesItems | null>(null);
-  const [selectedBlock, setSelectedBlock] = useState<ProyectBlocksItems | null>(null);
-  const [selectedLot, setSelectedLot] = useState<ProyectLotsItems | null>(null);
+  const [selected, setSelected] = useState<SelectedItems>({
+    project: null,
+    stage: null,
+    block: null,
+    lot: null,
+    currency: null
+  });
 
-  const [loading, setLoading] = useState({
+  const [loading, setLoading] = useState<LoadingState>({
     projects: false,
     stages: false,
     blocks: false,
@@ -59,120 +83,132 @@ export function useProjectData(): UseProjectDataReturn {
   const loadProjects = useCallback(async () => {
     setLoading((prev) => ({ ...prev, projects: true }));
     try {
-      const projectsData = await getProyectsActives();
-      setProjects(projectsData);
-    } catch (error) {
-      toast.error('Error al cargar los proyectos');
-      console.error('Error loading projects:', error);
+      const projectsData = await getProjectActives();
+      setData((prev) => ({ ...prev, projects: projectsData }));
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al cargar los proyectos';
+      toast.error(errorMessage);
     } finally {
       setLoading((prev) => ({ ...prev, projects: false }));
     }
   }, []);
 
-  const loadStages = useCallback(async (projectId: string) => {
+  const loadStages = useCallback(async (projectId: ProjectID) => {
     setLoading((prev) => ({ ...prev, stages: true }));
-    setStages([]);
-    setBlocks([]);
-    setLots([]);
-    setSelectedStage(null);
-    setSelectedBlock(null);
-    setSelectedLot(null);
-
     try {
       const stagesData = await getProyectStages({ id: projectId });
-      setStages(stagesData);
-    } catch (error) {
-      toast.error('Error al cargar las etapas');
-      console.error('Error loading stages:', error);
+      setData((prev) => ({
+        ...prev,
+        stages: stagesData,
+        blocks: [],
+        lots: []
+      }));
+      setSelected((prev) => ({
+        ...prev,
+        stage: null,
+        block: null,
+        lot: null
+      }));
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al cargar las etapas';
+      toast.error(errorMessage);
     } finally {
       setLoading((prev) => ({ ...prev, stages: false }));
     }
   }, []);
 
-  const loadBlocks = useCallback(async (stageId: string) => {
+  const loadBlocks = useCallback(async (stageId: StageID) => {
     setLoading((prev) => ({ ...prev, blocks: true }));
-    setBlocks([]);
-    setLots([]);
-    setSelectedBlock(null);
-    setSelectedLot(null);
-
     try {
       const blocksData = await getProyectBlocks({ id: stageId });
-      setBlocks(blocksData);
-    } catch (error) {
-      toast.error('Error al cargar las manzanas');
-      console.error('Error loading blocks:', error);
+      setData((prev) => ({
+        ...prev,
+        blocks: blocksData,
+        lots: []
+      }));
+      setSelected((prev) => ({
+        ...prev,
+        block: null,
+        lot: null
+      }));
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al cargar las manzanas';
+      toast.error(errorMessage);
     } finally {
       setLoading((prev) => ({ ...prev, blocks: false }));
     }
   }, []);
 
-  const loadLots = useCallback(async (blockId: string) => {
+  const loadLots = useCallback(async (blockId: BlockID) => {
     setLoading((prev) => ({ ...prev, lots: true }));
-    setLots([]);
-    setSelectedLot(null);
-
     try {
       const lotsData = await getProyectLots({ id: blockId });
-      setLots(lotsData);
-    } catch (error) {
-      toast.error('Error al cargar los lotes');
-      console.error('Error loading lots:', error);
+      setData((prev) => ({ ...prev, lots: lotsData }));
+      setSelected((prev) => ({ ...prev, lot: null }));
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al cargar los lotes';
+      toast.error(errorMessage);
     } finally {
       setLoading((prev) => ({ ...prev, lots: false }));
     }
   }, []);
 
   const selectProject = useCallback(
-    (projectId: string) => {
-      const project = projects.find((p) => p.id === projectId);
-      setSelectedProject(project || null);
+    (projectId: ProjectID) => {
+      const project = data.projects.find((p) => p.id === projectId) || null;
+      setSelected((prev) => ({
+        ...prev,
+        project,
+        stage: null,
+        block: null,
+        lot: null,
+        currency: project?.currency || null
+      }));
     },
-    [projects]
+    [data.projects]
   );
 
   const selectStage = useCallback(
-    (stageId: string) => {
-      const stage = stages.find((s) => s.id === stageId);
-      setSelectedStage(stage || null);
+    (stageId: StageID) => {
+      setSelected((prev) => ({
+        ...prev,
+        stage: data.stages.find((s) => s.id === stageId) || null,
+        block: null,
+        lot: null
+      }));
     },
-    [stages]
+    [data.stages]
   );
 
   const selectBlock = useCallback(
-    (blockId: string) => {
-      const block = blocks.find((b) => b.id === blockId);
-      setSelectedBlock(block || null);
+    (blockId: BlockID) => {
+      setSelected((prev) => ({
+        ...prev,
+        block: data.blocks.find((b) => b.id === blockId) || null,
+        lot: null
+      }));
     },
-    [blocks]
+    [data.blocks]
   );
 
   const selectLot = useCallback(
-    (lotId: string) => {
-      const lot = lots.find((l) => l.id === lotId);
-      setSelectedLot(lot || null);
+    (lotId: LotID) => {
+      setSelected((prev) => ({
+        ...prev,
+        lot: data.lots.find((l) => l.id === lotId) || null
+      }));
     },
-    [lots]
+    [data.lots]
   );
 
   return {
-    projects,
-    stages,
-    blocks,
-    lots,
-
-    selectedProject,
-    selectedStage,
-    selectedBlock,
-    selectedLot,
-
+    ...data,
+    selected,
     loading,
-
     loadProjects,
     loadStages,
     loadBlocks,
     loadLots,
-
     selectProject,
     selectStage,
     selectBlock,

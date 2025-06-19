@@ -2,10 +2,10 @@
 
 import { useNavigationStack } from '@hooks/navigation/useNavigationStack';
 import { BreadcrumbNav } from './BreadcrumbNav';
-import { ProyectsActivesItems } from '@/types/sales';
+import { Project } from '@domain/entities/lotes/project.entity';
 import RenderLayer from './layer/RenderLayer';
 
-export default function LayerContainer({ data }: { data: ProyectsActivesItems[] }) {
+export default function LayerContainer({ data }: { data: Project[] }) {
   const { stack, currentLayer, pushLayer, popLayer } = useNavigationStack();
 
   const handleBreadcrumbClick = (index: number) => {

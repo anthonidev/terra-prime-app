@@ -9,9 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "format": "npx prettier . --write",
-    "format:check": "npx prettier . --check",
-    "strip-comments": "node scripts/regex-strip-comments.js",
-    "remove-unused": "node scripts/remove-unused-code-flat.mjs"
+    "format:check": "npx prettier . --check"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

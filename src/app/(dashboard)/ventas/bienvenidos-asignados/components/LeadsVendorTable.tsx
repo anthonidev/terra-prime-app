@@ -12,18 +12,14 @@ import { es } from 'date-fns/locale';
 import { useMemo, useState } from 'react';
 
 import TableTemplate from '@/components/common/table/TableTemplate';
-import { LeadsVendorItems } from '@/types/sales';
+import { LeadsVendor } from '@domain/entities/sales/leadsvendors.entity';
 
-type Props = {
-  data: LeadsVendorItems[];
-};
-
-export default function LeadsVendorTable({ data }: Props) {
+export default function LeadsVendorTable({ data }: { data: LeadsVendor[] }) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     id: false
   });
 
-  const columns = useMemo<ColumnDef<LeadsVendorItems>[]>(
+  const columns = useMemo<ColumnDef<LeadsVendor>[]>(
     () => [
       {
         id: 'index',
@@ -80,7 +76,7 @@ export default function LeadsVendorTable({ data }: Props) {
   });
 
   return (
-    <TableTemplate<LeadsVendorItems>
+    <TableTemplate<LeadsVendor>
       table={table}
       columns={columns}
       showColumnVisibility={true}

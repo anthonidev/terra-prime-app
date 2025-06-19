@@ -1,7 +1,7 @@
 import { User } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import CreateUserForm from '../forms/CreateUserForm';
-import { Role } from '@/types/user';
+import { Role } from '@domain/entities/user';
 
 interface Props {
   roles: Role[];

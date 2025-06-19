@@ -1,29 +1,39 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { ProyectBlocksItems } from '@/types/sales';
+import { Block } from '@domain/entities/lotes/block.entity';
 import { ArrowLeft, Calendar, Search } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import ProjectsSkeleton from '@/components/project/list/ProjectsSkeleton';
 import * as React from 'react';
 import { Input } from '@/components/ui/input';
-import { useProyectBlocks } from '../../hooks/useProyectBlocks';
+import { useBlocks } from '@sales/lotes/hooks/useBlocks';
 
 interface Props {
   stageId: string;
-  onPushClick: (stage: ProyectBlocksItems) => void;
+  onPushClick: (stage: Block) => void;
   onBack: () => void;
 }
 
 export default function BlocksLayer({ stageId, onPushClick, onBack }: Props) {
   const [searchData, setSearchData] = React.useState<string>('');
-  const { blocks, isLoading } = useProyectBlocks(stageId);
+  const { blocks, loading, error, fetchBlocks } = useBlocks(stageId);
 
   const filteredData = React.useMemo(() => {
     return blocks.filter((block) => block.name.toLowerCase().includes(searchData.toLowerCase()));
   }, [blocks, searchData]);
 
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8">
+        <p className="mb-4 text-red-500">{error}</p>
+        <Button variant="outline" onClick={() => fetchBlocks(stageId)}>
+          Reintentar
+        </Button>
+      </div>
+    );
+  }
   return (
     <div>
       <div className="inline-flex h-auto w-full items-center justify-between pb-4">
@@ -47,7 +57,7 @@ export default function BlocksLayer({ stageId, onPushClick, onBack }: Props) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
       >
-        {isLoading ? (
+        {loading ? (
           <ProjectsSkeleton header={false} padding={false} />
         ) : (
           <div className="grid grid-cols-1 gap-6 rounded-lg sm:grid-cols-2 lg:grid-cols-3">

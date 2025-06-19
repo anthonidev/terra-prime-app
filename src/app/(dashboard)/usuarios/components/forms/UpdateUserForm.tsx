@@ -10,8 +10,8 @@ import FormSelectField from '@components/common/form/FormSelectField';
 import { Form } from '@/components/ui/form';
 import { DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { updateUser } from '../../action';
-import { UserList } from '@/types/user';
+import { updateUser } from '@/lib/infrastructure/server-actions/user.actions';
+import { UserList } from '@domain/entities/user';
 
 interface Props {
   user: UserList;

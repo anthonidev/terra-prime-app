@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Role, UserList } from '@/types/user';
+import { Role, UserList } from '@domain/entities/user';
 import { User } from 'lucide-react';
 import UpdateUserForm from '../forms/UpdateUserForm';
 

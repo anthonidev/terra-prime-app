@@ -26,7 +26,12 @@
       "@types/*": ["./src/types/*"],
       "@styles/*": ["./src/styles/*"],
       "@context/*": ["./src/context/*"],
-      "@hooks/*": ["./src/hooks/*"]
+      "@hooks/*": ["./src/hooks/*"],
+      "@sales/*": ["./src/app/(dashboard)/ventas/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@domain/*": ["./src/lib/domain/*"],
+      "@infrastructure/*": ["./src/lib/infrastructure/*"],
+      "@application/*": ["./src/lib/application/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

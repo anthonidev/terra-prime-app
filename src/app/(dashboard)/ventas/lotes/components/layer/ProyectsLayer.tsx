@@ -1,4 +1,4 @@
-import type { ProyectsActivesItems } from '@/types/sales';
+import type { Project } from '@domain/entities/lotes/project.entity';
 import { Calendar, Search } from 'lucide-react';
 import { motion } from 'framer-motion';
 import * as React from 'react';
@@ -8,8 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 
 interface Props {
-  data: ProyectsActivesItems[];
-  onPushClick: (project: ProyectsActivesItems) => void;
+  data: Project[];
+  onPushClick: (project: Project) => void;
 }
 
 export default function ProyectsLayer({ data, onPushClick }: Props) {

@@ -1,9 +1,9 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { ProyectStagesItems } from '@/types/sales';
+import { Stage } from '@domain/entities/lotes/stage.entity';
 import { ArrowLeft, Calendar, Search } from 'lucide-react';
-import { useProyectStages } from '../../hooks/useProyectStages';
+import { useStages } from '../../hooks/useStages';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import ProjectsSkeleton from '@/components/project/list/ProjectsSkeleton';
@@ -12,13 +12,13 @@ import { Input } from '@/components/ui/input';
 
 interface Props {
   projectId: string;
-  onPushClick: (stage: ProyectStagesItems) => void;
+  onPushClick: (stage: Stage) => void;
   onBack: () => void;
 }
 
 export default function StagesLayer({ projectId, onPushClick, onBack }: Props) {
   const [searchData, setSearchData] = React.useState<string>('');
-  const { stages, isLoading } = useProyectStages(projectId);
+  const { stages, loading } = useStages(projectId);
 
   const filteredData = React.useMemo(() => {
     return stages.filter((block) => block.name.toLowerCase().includes(searchData.toLowerCase()));
@@ -47,7 +47,7 @@ export default function StagesLayer({ projectId, onPushClick, onBack }: Props) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
       >
-        {isLoading ? (
+        {loading ? (
           <ProjectsSkeleton header={false} padding={false} />
         ) : (
           <div className="grid grid-cols-1 gap-6 rounded-lg sm:grid-cols-2 lg:grid-cols-3">

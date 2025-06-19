@@ -103,6 +103,7 @@ export function useFormSynchronization({
         isValidatingRef.current = false;
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [updateFormData, updateStepValidation, form]
   );
 
@@ -125,6 +126,7 @@ export function useFormSynchronization({
     }, 300);
 
     return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Solo se ejecuta una vez
 
   // Sincronizar datos para el cálculo de amortización - solo cuando sea necesario

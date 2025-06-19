@@ -1,11 +1,11 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { VendorsActivesItem } from '@/types/sales';
+import { VendorsActives } from '@domain/entities/sales/leadsvendors.entity';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Calendar, User } from 'lucide-react';
 
 type Props = {
-  data: VendorsActivesItem[];
+  data: VendorsActives[];
 };
 
 export default function VendorsActivesCard({ data }: Props) {

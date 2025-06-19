@@ -1,14 +1,10 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { LeadsVendorItems } from '@/types/sales';
+import { LeadsVendor } from '@domain/entities/sales/leadsvendors.entity';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Calendar, User } from 'lucide-react';
 
-type Props = {
-  data: LeadsVendorItems[];
-};
-
-export default function LeadsVendorCard({ data }: Props) {
+export default function LeadsVendorCard({ data }: { data: LeadsVendor[] }) {
   if (!data.length) {
     return (
       <Card className="border-dashed">

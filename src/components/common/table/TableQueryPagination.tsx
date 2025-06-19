@@ -8,12 +8,12 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { PaginatedMeta } from '@/types/global/utils.types';
+import { Meta } from '@infrastructure/types/pagination.types';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 interface TablePaginationProps {
-  meta: PaginatedMeta;
+  meta: Meta;
 }
 
 export function TableQueryPagination({

@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { StatusBadge } from '@/components/common/table/StatusBadge';
 import { TableSkeleton } from '@/components/common/table/TableSkeleton';
-import { useProyectLots } from '../../hooks/useProyectLots';
+import { useLots } from '../../hooks/useLots';
 import {
   ColumnDef,
   getCoreRowModel,
@@ -18,7 +18,7 @@ import {
   VisibilityState
 } from '@tanstack/react-table';
 import TableTemplate from '@/components/common/table/TableTemplate';
-import { ProyectLotsItems } from '@/types/sales';
+import { Lot } from '@domain/entities/lotes/lot.entity';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
@@ -33,7 +33,7 @@ export default function LotsLayer({ blockId, onBack }: Props) {
     id: false
   });
   const [searchData, setSearchData] = React.useState<string>('');
-  const { lots = [], isLoading } = useProyectLots(blockId);
+  const { lots = [], loading } = useLots(blockId);
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   const filteredData = React.useMemo(() => {
@@ -41,7 +41,7 @@ export default function LotsLayer({ blockId, onBack }: Props) {
     return lots.filter((lot) => lot.name.toLowerCase().includes(searchData.toLowerCase()));
   }, [lots, searchData]);
 
-  const columns = React.useMemo<ColumnDef<ProyectLotsItems>[]>(
+  const columns = React.useMemo<ColumnDef<Lot>[]>(
     () => [
       {
         id: 'index',
@@ -131,7 +131,7 @@ export default function LotsLayer({ blockId, onBack }: Props) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
       >
-        {isLoading ? (
+        {loading ? (
           <TableSkeleton />
         ) : isMobile ? (
           <div className="space-y-4">
@@ -181,7 +181,7 @@ export default function LotsLayer({ blockId, onBack }: Props) {
           </div>
         ) : (
           <div className="rounded-md border bg-white p-2 dark:bg-gray-900">
-            <TableTemplate<ProyectLotsItems>
+            <TableTemplate<Lot>
               table={table}
               columns={columns}
               showColumnVisibility={true}

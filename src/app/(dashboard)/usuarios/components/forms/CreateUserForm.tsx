@@ -10,7 +10,7 @@ import FormSelectField from '@components/common/form/FormSelectField';
 import { Form } from '@/components/ui/form';
 import { DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { createUser } from '../../action';
+import { createUser } from '@infrastructure/server-actions/user.actions';
 
 interface CreateUserFormProps {
   roleOptions: { value: string; label: string }[];

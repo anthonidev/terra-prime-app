@@ -1,6 +1,5 @@
 'use client';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+
 import {
   Card,
   CardContent,
@@ -8,13 +7,15 @@ import {
   CardFooter,
   CardHeader,
   CardTitle
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { motion } from 'framer-motion';
-import { AlertCircle, Eye, EyeOff, KeyRound, Loader2, Mail } from 'lucide-react';
-import { signIn } from 'next-auth/react';
+} from '@components/ui/card';
 import Link from 'next/link';
+import { AlertCircle, Eye, EyeOff, KeyRound, Loader2, Mail } from 'lucide-react';
+import { Alert, AlertDescription } from '@components/ui/alert';
+import { Button } from '@components/ui/button';
+import { Input } from '@components/ui/input';
+import { Label } from '@components/ui/label';
+import { motion } from 'framer-motion';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -68,13 +69,13 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="border-border">
+      <Card className="border-none shadow-none dark:bg-none">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Card className="border-none bg-transparent shadow-none">
+          <Card className="border-none bg-transparent shadow-none dark:bg-none">
             <CardHeader className="space-y-1 pb-6">
               <CardTitle className="text-center text-2xl font-bold">Iniciar Sesión</CardTitle>
               <CardDescription className="text-center">
@@ -100,7 +101,7 @@ export default function LoginPage() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="bg-background/50 focus:bg-background pl-10 transition-all"
+                      className="focus:bg-background bg-white pl-10 transition-all dark:bg-gray-900"
                     />
                   </div>
                 </motion.div>
@@ -120,7 +121,7 @@ export default function LoginPage() {
                       value={formData.password}
                       onChange={handleChange}
                       required
-                      className="bg-background/50 focus:bg-background pl-10 transition-all"
+                      className="focus:bg-background bg-white pl-10 transition-all dark:bg-gray-900"
                     />
 
                     <Button

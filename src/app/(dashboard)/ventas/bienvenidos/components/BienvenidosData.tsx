@@ -1,6 +1,6 @@
 import { TableQueryPagination } from '@/components/common/table/TableQueryPagination';
 import { Card, CardContent } from '@/components/ui/card';
-import { getLeadsByDay } from '../action';
+import { getLeadsOfDay } from '@infrastructure/server-actions/sales.actions';
 import BienvenidosTable from './BienvenidosTable';
 import BienvenidosTableFilters from './BienvenidosTableFilters';
 import BienvenidosCards from './BienvenidosCards';
@@ -18,7 +18,7 @@ export default async function BienvenidosData({
   const page = searchParams?.page ? parseInt(searchParams.page) : 1;
   const limit = searchParams?.limit ? parseInt(searchParams.limit) : 10;
 
-  const { items, meta } = await getLeadsByDay({
+  const { items, meta } = await getLeadsOfDay({
     order,
     page,
     limit

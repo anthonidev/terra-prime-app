@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import CreateUserModal from '../modal/CreateUserModal';
-import { Role } from '@/types/user';
+import { Role } from '@domain/entities/user';
 
 interface Props {
   roles: Role[];

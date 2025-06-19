@@ -1,32 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-
-import StepIndicator from './StepIndicator';
-
-import SaleSuccessModal from './modals/SaleSuccessModal';
-
-import { CreateSaleFormData } from '../validations/saleValidation';
-import { createSale } from '../action';
-import { SaleResponse } from '@/types/sales';
-import Step1ProjectSelection from './steps/step1/Step1ProjectSelection';
-import Step2FinancialConfig from './steps/step2/Step2FinancialConfig';
-import Step3ClientGuarantor from './steps/step3/Step3ClientGuarantor';
-import Step4Summary from './steps/step4/Step4Summary';
+import { CreateSaleFormData } from '@sales/crear-venta/validations/saleValidation';
+import { createSale } from '@sales/crear-venta/action';
+import StepIndicator from '@sales/crear-venta/components/StepIndicator';
+import SaleSuccessModal from '@sales/crear-venta/components/modals/SaleSuccessModal';
+import Step1ProjectSelection from '@sales/crear-venta/components/steps/step1/Step1ProjectSelection';
+import Step2FinancialConfig from '@sales/crear-venta/components/steps/step2/Step2FinancialConfig';
+import Step3ClientGuarantor from '@sales/crear-venta/components/steps/step3/Step3ClientGuarantor';
+import Step4Summary from '@sales/crear-venta/components/steps/step4/Step4Summary';
+import { SaleList } from '@domain/entities/sales/salevendor.entity';
 
 export default function CreateSaleWizard() {
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [saleResult, setSaleResult] = useState<SaleResponse | null>(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [saleResult, setSaleResult] = useState<SaleList | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
 
-  // Estado del formulario completo
   const [formData, setFormData] = useState<Partial<CreateSaleFormData>>({
     saleType: 'DIRECT_PAYMENT',
     totalAmountUrbanDevelopment: 0,
@@ -35,28 +31,34 @@ export default function CreateSaleWizard() {
     interestRate: 12
   });
 
-  // Estado de validación de cada paso
-  const [stepValidation, setStepValidation] = useState({
+  const [stepValidation, setStepValidation] = useState<{
+    step1: boolean;
+    step2: boolean;
+    step3: boolean;
+    step4: boolean;
+  }>({
     step1: false,
     step2: false,
     step3: false,
     step4: false
   });
 
-  const steps = [
+  const steps: {
+    id: number;
+    title: string;
+    description: string;
+  }[] = [
     { id: 1, title: 'Proyecto y Lote', description: 'Selecciona proyecto, etapa, manzana y lote' },
     { id: 2, title: 'Configuración', description: 'Define montos y forma de pago' },
     { id: 3, title: 'Cliente y Garante', description: 'Asigna cliente y registra garante' },
     { id: 4, title: 'Finalización', description: 'Revisa y confirma la venta' }
   ];
 
-  const updateFormData = (data: Partial<CreateSaleFormData>) => {
+  const updateFormData = (data: Partial<CreateSaleFormData>) =>
     setFormData((prev) => ({ ...prev, ...data }));
-  };
 
-  const updateStepValidation = (step: keyof typeof stepValidation, isValid: boolean) => {
+  const updateStepValidation = (step: keyof typeof stepValidation, isValid: boolean) =>
     setStepValidation((prev) => ({ ...prev, [step]: isValid }));
-  };
 
   const handleNext = () => {
     const currentStepKey = `step${currentStep}` as keyof typeof stepValidation;
@@ -64,16 +66,11 @@ export default function CreateSaleWizard() {
       toast.error('Complete todos los campos requeridos antes de continuar');
       return;
     }
-
-    if (currentStep < 4) {
-      setCurrentStep(currentStep + 1);
-    }
+    if (currentStep < 4) setCurrentStep(currentStep + 1);
   };
 
   const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
   const handleStepClick = (step: number) => {
@@ -99,10 +96,8 @@ export default function CreateSaleWizard() {
         lotId: formData.lotId!,
         saleType: formData.saleType!,
         clientId: formData.clientId!,
+        secondaryClientsIds: formData.secondaryClientIds!,
         guarantorId: formData.guarantorId!,
-        paymentDate: formData.paymentDate!,
-        saleDate: formData.saleDate!,
-        contractDate: formData.contractDate!,
         totalAmount: formData.totalAmount!,
         totalAmountUrbanDevelopment: formData.totalAmountUrbanDevelopment!,
         ...(formData.firstPaymentDateHu && { firstPaymentDateHu: formData.firstPaymentDateHu }),
@@ -124,12 +119,9 @@ export default function CreateSaleWizard() {
         setSaleResult(result.data ?? null);
         setShowSuccessModal(true);
         toast.success('Venta creada exitosamente');
-      } else {
-        toast.error(result.error || 'Error al crear la venta');
-      }
+      } else toast.error(result.error || 'Error al crear la venta');
     } catch (error) {
-      console.error('Error creating sale:', error);
-      toast.error('Error inesperado al crear la venta');
+      if (error instanceof Error) toast.error(error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -187,11 +179,9 @@ export default function CreateSaleWizard() {
         onStepClick={handleStepClick}
         stepValidation={stepValidation}
       />
-
       <Card>
         <CardContent className="p-6">{renderCurrentStep()}</CardContent>
       </Card>
-
       <div className="flex justify-between">
         <Button
           variant="outline"
@@ -202,7 +192,6 @@ export default function CreateSaleWizard() {
           <ChevronLeft className="h-4 w-4" />
           Anterior
         </Button>
-
         <div className="flex gap-3">
           {currentStep < 4 ? (
             <Button

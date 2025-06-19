@@ -1,16 +1,12 @@
 'use client';
 
-import { SaleResponse } from '@/types/sales';
 import { AlertCircle } from 'lucide-react';
 import SaleDetailHeader from './SaleDetailHeader';
 import SaleFinancingInfo from './SaleFinancingInfo';
 import SaleGeneralInfo from './SaleGeneralInfo';
+import { SaleList } from '@domain/entities/sales/salevendor.entity';
 
-interface SaleDetailViewProps {
-  sale: SaleResponse;
-}
-
-export default function SaleDetailView({ sale }: SaleDetailViewProps) {
+export default function SaleDetailView({ sale }: { sale: SaleList }) {
   if (!sale) {
     return (
       <div className="bg-destructive/10 border-destructive/30 mx-auto mb-6 flex max-w-lg flex-col items-center justify-center rounded-md border p-6 text-center">
@@ -25,13 +21,8 @@ export default function SaleDetailView({ sale }: SaleDetailViewProps) {
 
   return (
     <div className="space-y-6">
-      {/* Main Sale Information */}
       <SaleDetailHeader sale={sale} />
-
-      {/* Financing Information */}
       {sale.financing && <SaleFinancingInfo sale={sale} />}
-
-      {/* General Information */}
       <SaleGeneralInfo sale={sale} />
     </div>
   );

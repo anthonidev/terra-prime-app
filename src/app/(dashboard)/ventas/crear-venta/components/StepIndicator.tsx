@@ -10,7 +10,7 @@ interface Step {
   description: string;
 }
 
-interface StepIndicatorProps {
+interface Props {
   steps: Step[];
   currentStep: number;
   onStepClick: (step: number) => void;
@@ -22,12 +22,7 @@ interface StepIndicatorProps {
   };
 }
 
-export default function StepIndicator({
-  steps,
-  currentStep,
-  onStepClick,
-  stepValidation
-}: StepIndicatorProps) {
+export default function StepIndicator({ steps, currentStep, onStepClick, stepValidation }: Props) {
   const getStepStatus = (stepId: number) => {
     if (stepId < currentStep) return 'completed';
     if (stepId === currentStep) return 'current';
@@ -54,12 +49,11 @@ export default function StepIndicator({
             const status = getStepStatus(step.id);
             const isValid = isStepValid(step.id);
             const clickable = isStepClickable(step.id);
-
             return (
               <div key={step.id} className="flex items-center">
                 <div
                   className={cn(
-                    'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-2 transition-all',
+                    'flex aspect-video h-10 w-10 cursor-pointer items-center justify-center rounded-full border-2 transition-all',
                     {
                       'border-green-500 bg-green-500 text-white': status === 'completed' && isValid,
                       'border-blue-500 bg-blue-500 text-white': status === 'current',
@@ -77,7 +71,6 @@ export default function StepIndicator({
                     <span className="text-sm font-semibold">{step.id}</span>
                   )}
                 </div>
-
                 <div className="ml-3 hidden sm:block">
                   <h3
                     className={cn('text-sm font-medium', {
@@ -92,7 +85,6 @@ export default function StepIndicator({
                   <p className="text-xs text-gray-500">{step.description}</p>
                 </div>
 
-                {/* Connector Line */}
                 {index < steps.length - 1 && (
                   <div className="mx-4 hidden sm:block">
                     <div
@@ -108,7 +100,6 @@ export default function StepIndicator({
             );
           })}
         </div>
-
         <div className="mt-4 block sm:hidden">
           <div className="text-center">
             <h3 className="text-sm font-medium text-gray-900">

@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { getVendorsActives } from '../action';
+import { getVendorsActives } from '@infrastructure/server-actions/sales.actions';
 import { VendorsActivesTableFilters } from './VendorsActivesTableFilters';
 import VendorsActivesTable from './VendorsActivesTable';
 import VendorsActivesCards from './VendorsActivesCard';

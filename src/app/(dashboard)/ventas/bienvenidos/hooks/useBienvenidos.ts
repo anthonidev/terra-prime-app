@@ -1,113 +1,120 @@
 'use client';
 
-import { assignLeadsToVendor, getLeadsByDay } from '@/lib/actions/sales/bienvenidosAction';
-import { AssignLeadsToVendorDto, LeadsByDayItem } from '@/types/sales';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { LeadsOfDay } from '@domain/entities/sales/leadsvendors.entity';
+import { assignLeadsToVendor, getLeadsOfDay } from '@infrastructure/server-actions/sales.actions';
+import { Meta } from '@infrastructure/types/pagination.types';
+import { AssignLeadsToVendorDTO } from '@application/dtos/bienvenidos.dto';
 
-interface TData {
-  data: LeadsByDayItem[];
-  dataLoading: boolean;
-  dataError: string | null;
-
-  dataMeta: {
-    totalItems: number;
-    itemsPerPage: number;
-    totalPages: number;
-    currentPage: number;
-  } | null;
-
+interface UseBienvenidosReturn {
+  data: LeadsOfDay[];
+  loading: boolean;
+  error: string | null;
+  meta: Meta | null;
   currentPage: number;
-  dataPerPage: number;
-
+  itemsPerPage: number;
   handlePageChange: (page: number) => void;
-  handleDataPerPageChange: (pageSize: number) => void;
-
+  handleItemsPerPageChange: (pageSize: number) => void;
   refreshData: () => Promise<void>;
-  handleAssignVendor: (data: AssignLeadsToVendorDto) => Promise<LeadsByDayItem[]>;
+  assignLeads: (data: AssignLeadsToVendorDTO) => Promise<LeadsOfDay[]>;
 }
 
-export function useBienvenidos(initialPage: number = 1, initialLimit: number = 10): TData {
-  const [data, setDataItems] = useState<LeadsByDayItem[]>([]);
-  const [dataLoading, setDataLoading] = useState<boolean>(true);
-  const [dataError, setDataError] = useState<string | null>(null);
-  const [dataMeta, setDataMeta] = useState<TData['dataMeta']>(null);
+export function useBienvenidos(
+  initialPage: number = 1,
+  initialLimit: number = 10
+): UseBienvenidosReturn {
+  const [state, setState] = useState<{
+    data: LeadsOfDay[];
+    loading: boolean;
+    error: string | null;
+    meta: Meta | null;
+    currentPage: number;
+    itemsPerPage: number;
+  }>({
+    data: [],
+    loading: true,
+    error: null,
+    meta: null,
+    currentPage: initialPage,
+    itemsPerPage: initialLimit
+  });
 
-  const [currentPage, setCurrentPage] = useState<number>(initialPage);
-  const [dataPerPage, setDataPerPage] = useState<number>(initialLimit);
+  const fetchData = useCallback(async () => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
 
-  const fetchData = useCallback(
-    async (page: number = currentPage, limit: number = dataPerPage) => {
+      const response = await getLeadsOfDay({
+        page: state.currentPage,
+        limit: state.itemsPerPage
+      });
+
+      setState((prev) => ({
+        ...prev,
+        data: response.items,
+        meta: response.meta,
+        currentPage: response.meta.currentPage,
+        itemsPerPage: response.meta.itemsPerPage
+      }));
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Error desconocido al obtener las ventas';
+
+      setState((prev) => ({ ...prev, error: errorMessage }));
+      toast.error(errorMessage);
+    } finally {
+      setState((prev) => ({ ...prev, loading: false }));
+    }
+  }, [state.currentPage, state.itemsPerPage]);
+
+  const assignLeads = useCallback(
+    async (data: AssignLeadsToVendorDTO): Promise<LeadsOfDay[]> => {
       try {
-        setDataLoading(true);
-        setDataError(null);
-
-        const params = {
-          page,
-          limit
-        };
-
-        const response = await getLeadsByDay(params);
-
-        setDataItems(response.items);
-        setDataMeta(response.meta);
-
-        setCurrentPage(response.meta.currentPage);
-        setDataPerPage(response.meta.itemsPerPage);
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Error desconocido al obtener las ventas';
-
-        setDataError(errorMessage);
-        toast.error(errorMessage);
-      } finally {
-        setDataLoading(false);
+        const response = await assignLeadsToVendor(data);
+        toast.success('Asignado correctamente');
+        await fetchData();
+        return response;
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error('Error al asignar leads:', error.message);
+          toast.error('Error al asignar leads');
+        }
+        throw error;
       }
     },
-    [currentPage, dataPerPage]
+    [fetchData]
   );
-
-  const handleAssignVendor = async (data: AssignLeadsToVendorDto): Promise<LeadsByDayItem[]> => {
-    try {
-      const response = await assignLeadsToVendor(data);
-      toast.success('Asignado correctamente');
-      await fetchData();
-      return response;
-    } catch (error) {
-      if (error instanceof Error) console.log('Has been error, reason: %s', error.message);
-      throw error;
-    }
-  };
 
   const handlePageChange = useCallback(
     (page: number) => {
-      if (dataMeta && (page < 1 || page > dataMeta.totalPages)) return;
-      setCurrentPage(page);
+      if (state.meta && (page < 1 || page > state.meta.totalPages)) return;
+      setState((prev) => ({ ...prev, currentPage: page }));
     },
-    [dataMeta]
+    [state.meta]
   );
 
-  const handleDataPerPageChange = useCallback((limit: number) => {
-    setDataPerPage(limit);
-    setCurrentPage(1);
+  const handleItemsPerPageChange = useCallback((limit: number) => {
+    setState((prev) => ({
+      ...prev,
+      itemsPerPage: limit,
+      currentPage: 1
+    }));
   }, []);
 
   useEffect(() => {
-    fetchData(currentPage, dataPerPage);
-  }, [fetchData, currentPage, dataPerPage]);
+    fetchData();
+  }, [fetchData]);
 
   return {
-    data,
-    dataLoading,
-    dataError,
-    dataMeta,
-
-    currentPage,
-    dataPerPage,
-
+    data: state.data,
+    loading: state.loading,
+    error: state.error,
+    meta: state.meta,
+    currentPage: state.currentPage,
+    itemsPerPage: state.itemsPerPage,
     handlePageChange,
-    handleDataPerPageChange,
-    refreshData: () => fetchData(currentPage, dataPerPage),
-    handleAssignVendor
+    handleItemsPerPageChange,
+    refreshData: fetchData,
+    assignLeads
   };
 }

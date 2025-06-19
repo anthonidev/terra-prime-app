@@ -1,43 +1,33 @@
-"use client";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useProject } from "@/hooks/project/useProjectReturn";
-import { motion } from "framer-motion";
-import { notFound, useParams } from "next/navigation";
-import { useState } from "react";
-import ProjectDetailHeader from "@/components/project/detalle/ProjectDetailHeader";
-import ProjectLotFilters from "@/components/project/detalle/ProjectLotFilters";
-import ProjectLotsTable from "@/components/project/detalle/ProjectLotsTable";
-import ProjectStages from "@/components/project/detalle/ProjectStages";
-import BlockFormModal from "@/components/project/detalle/modal/BlockFormModal";
-import EditProjectModal from "@/components/project/detalle/modal/EditProjectModal";
-import LotFormModal from "@/components/project/detalle/modal/LotFormModal";
-import StageFormModal from "@/components/project/detalle/modal/StageFormModal";
-import {
-  BlockDetailDto,
-  LotResponseDto,
-  StageDetailDto,
-} from "@/types/project.types";
-import { Info, LayoutGrid } from "lucide-react";
+'use client';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useProject } from '@/hooks/project/useProjectReturn';
+import { motion } from 'framer-motion';
+import { notFound, useParams } from 'next/navigation';
+import { useState } from 'react';
+import ProjectDetailHeader from '@/components/project/detalle/ProjectDetailHeader';
+import ProjectLotFilters from '@/components/project/detalle/ProjectLotFilters';
+import ProjectLotsTable from '@/components/project/detalle/ProjectLotsTable';
+import ProjectStages from '@/components/project/detalle/ProjectStages';
+import BlockFormModal from '@/components/project/detalle/modal/BlockFormModal';
+import EditProjectModal from '@/components/project/detalle/modal/EditProjectModal';
+import LotFormModal from '@/components/project/detalle/modal/LotFormModal';
+import StageFormModal from '@/components/project/detalle/modal/StageFormModal';
+import { BlockDetailDto, LotResponseDto, StageDetailDto } from '@/types/project.types';
+import { Info, LayoutGrid } from 'lucide-react';
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();
-  const [activeTab, setActiveTab] = useState("info");
+  const [activeTab, setActiveTab] = useState('info');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedStage, setSelectedStage] = useState<StageDetailDto | null>(
-    null,
-  );
+  const [selectedStage, setSelectedStage] = useState<StageDetailDto | null>(null);
   const [isStageModalOpen, setIsStageModalOpen] = useState(false);
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
-  const [selectedBlock, setSelectedBlock] = useState<BlockDetailDto | null>(
-    null,
+  const [selectedBlock, setSelectedBlock] = useState<BlockDetailDto | null>(null);
+  const [selectedStageIdForBlock, setSelectedStageIdForBlock] = useState<string | undefined>(
+    undefined
   );
-  const [selectedStageIdForBlock, setSelectedStageIdForBlock] = useState<
-    string | undefined
-  >(undefined);
-  const [selectedBlockIdForLot, setSelectedBlockIdForLot] = useState<
-    string | undefined
-  >(undefined);
+  const [selectedBlockIdForLot, setSelectedBlockIdForLot] = useState<string | undefined>(undefined);
   const [selectedLot, setSelectedLot] = useState<LotResponseDto | null>(null);
   const [isLotModalOpen, setIsLotModalOpen] = useState(false);
   const {
@@ -60,7 +50,7 @@ export default function ProjectDetailPage() {
     createProjectBlock,
     updateProjectBlock,
     createProjectLot,
-    updateProjectLot,
+    updateProjectLot
   } = useProject({ projectId: params.id });
   if (!isLoadingDetail && !projectDetail && !error) {
     notFound();
@@ -75,12 +65,12 @@ export default function ProjectDetailPage() {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
+      transition: { staggerChildren: 0.1 }
+    }
   };
   const itemAnimation = {
     hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0 },
+    show: { opacity: 1, y: 0 }
   };
   const handleOpenCreateStageModal = () => {
     setSelectedStage(null);
@@ -133,51 +123,48 @@ export default function ProjectDetailPage() {
       >
         {isLoadingDetail ? (
           <div className="mb-6">
-            <Skeleton className="h-8 w-1/3 mb-2" />
-            <Skeleton className="h-4 w-1/4 mb-2" />
-            <div className="flex gap-6 mt-4">
+            <Skeleton className="mb-2 h-8 w-1/3" />
+            <Skeleton className="mb-2 h-4 w-1/4" />
+            <div className="mt-4 flex gap-6">
               {[...Array(4)].map((_, i) => (
                 <Skeleton key={i} className="h-4 w-20" />
               ))}
             </div>
           </div>
         ) : (
-          <ProjectDetailHeader
-            project={projectDetail}
-            onEditClick={handleOpenEditModal}
-          />
+          <ProjectDetailHeader project={projectDetail} onEditClick={handleOpenEditModal} />
         )}
         <Separator className="my-6" />
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
-          <div className="border-b relative">
+          <div className="relative border-b">
             {}
             <motion.div
               key="tab-indicator"
-              className="absolute bottom-0 h-0.5 bg-primary"
+              className="bg-primary absolute bottom-0 h-0.5"
               initial={false}
               animate={{
-                left: activeTab === "info" ? "0%" : "50%",
-                right: activeTab === "info" ? "50%" : "0%",
+                left: activeTab === 'info' ? '0%' : '50%',
+                right: activeTab === 'info' ? '50%' : '0%'
               }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
             />
-            <TabsList className="bg-transparent h-auto p-0 w-full">
+            <TabsList className="h-auto w-full bg-transparent p-0">
               <div className="grid w-full grid-cols-2">
                 <TabsTrigger
                   value="info"
-                  className="flex items-center gap-1.5 rounded-none border-0 h-11 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-primary data-[state=active]:font-medium"
+                  className="data-[state=active]:text-primary flex h-11 items-center gap-1.5 rounded-none border-0 data-[state=active]:bg-transparent data-[state=active]:font-medium data-[state=active]:shadow-none"
                 >
                   <Info className="h-4 w-4" />
                   <span>Información General</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="lots"
-                  className="flex items-center gap-1.5 rounded-none border-0 h-11 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-primary data-[state=active]:font-medium"
+                  className="data-[state=active]:text-primary flex h-11 items-center gap-1.5 rounded-none border-0 data-[state=active]:bg-transparent data-[state=active]:font-medium data-[state=active]:shadow-none"
                 >
                   <LayoutGrid className="h-4 w-4" />
                   <span>Lotes</span>
                   {!isLoadingLots && totalLots > 0 && (
-                    <span className="ml-1.5 bg-primary/10 text-primary text-xs py-0.5 px-1.5 rounded-full">
+                    <span className="bg-primary/10 text-primary ml-1.5 rounded-full px-1.5 py-0.5 text-xs">
                       {totalLots}
                     </span>
                   )}
@@ -201,7 +188,7 @@ export default function ProjectDetailPage() {
                   <Skeleton className="h-64 w-full" />
                 </motion.div>
                 <motion.div key="skeleton-2" variants={itemAnimation}>
-                  <Skeleton className="h-64 w-full mt-4" />
+                  <Skeleton className="mt-4 h-64 w-full" />
                 </motion.div>
               </motion.div>
             ) : (
@@ -266,7 +253,7 @@ export default function ProjectDetailPage() {
                   pageSize={Number(filters.limit) || 10}
                   onEditLot={handleOpenEditLotModal}
                   onCreateLot={handleOpenCreateLotModal}
-                  currency={projectDetail?.currency || "USD"}
+                  currency={projectDetail?.currency || 'USD'}
                 />
               </motion.div>
             </motion.div>

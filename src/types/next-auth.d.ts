@@ -1,6 +1,7 @@
-import { DefaultSession, DefaultUser } from "next-auth";
-import { View } from "./user.types";
-declare module "next-auth" {
+import { DefaultSession, DefaultUser } from 'next-auth';
+import { View } from '@domain/entities/user';
+
+declare module 'next-auth' {
   interface Session extends DefaultSession {
     accessToken: string;
     refreshToken: string;
@@ -19,7 +20,7 @@ declare module "next-auth" {
         name: string;
       };
       views: View[];
-    } & DefaultSession["user"];
+    } & DefaultSession['user'];
   }
   interface User extends DefaultUser {
     accessToken: string;
@@ -39,7 +40,7 @@ declare module "next-auth" {
     views: View[];
   }
 }
-declare module "next-auth/jwt" {
+declare module 'next-auth/jwt' {
   interface JWT {
     accessToken: string;
     refreshToken: string;

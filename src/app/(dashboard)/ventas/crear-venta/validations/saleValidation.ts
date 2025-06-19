@@ -86,6 +86,7 @@ export const step2Schema = z.discriminatedUnion('saleType', [
 export const step3Schema = z.object({
   clientId: z.number().min(1, 'Debe seleccionar o crear un cliente'),
   guarantorId: z.number().min(1, 'Debe agregar un garante'),
+  secondaryClientIds: z.array(z.number()).min(1, 'Debe tener al menos un co-comprador'),
   leadId: z.string().min(1, 'Debe seleccionar un lead'),
   clientAddress: z.string().min(1, 'La dirección del cliente es requerida')
 });
@@ -103,11 +104,17 @@ export const guarantorSchema = z.object({
   address: z.string().min(1, 'La dirección es requerida')
 });
 
-// Paso 4: Finalización
-export const step4Schema = z.object({
-  saleDate: z.string().min(1, 'La fecha de venta es requerida'),
-  contractDate: z.string().min(1, 'La fecha de contrato es requerida'),
-  paymentDate: z.string().min(1, 'La fecha de pago es requerida')
+// Cliente Secundario
+export const secondaryClientSchema = z.object({
+  firstName: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
+  lastName: z.string().min(2, 'El apellido debe tener al menos 2 caracteres'),
+  email: z.string().email('Email inválido'),
+  document: z.string().min(8, 'El documento debe tener al menos 8 caracteres'),
+  documentType: z.enum(['DNI', 'CE', 'RUC'], {
+    errorMap: () => ({ message: 'Tipo de documento inválido' })
+  }),
+  phone: z.string().min(9, 'El teléfono debe tener al menos 9 dígitos'),
+  address: z.string().min(1, 'La dirección es requerida')
 });
 
 // Schema completo para la venta final
@@ -141,18 +148,14 @@ export const createSaleSchema = z.object({
 
   // Paso 3
   clientId: z.number().min(1, 'Debe seleccionar o crear un cliente'),
-  guarantorId: z.number().min(1, 'Debe agregar un garante'),
-
-  // Paso 4
-  paymentDate: z.string().min(1, 'La fecha de pago es requerida'),
-  saleDate: z.string().min(1, 'La fecha de venta es requerida'),
-  contractDate: z.string().min(1, 'La fecha de contrato es requerida')
+  guarantorId: z.number().min(0, 'Debe agregar un garante').optional(),
+  secondaryClientIds: z.array(z.number()).min(1, 'Debe tener al menos un co-comprador')
 });
 
 export type Step1FormData = z.infer<typeof step1Schema>;
 export type Step2FormData = z.infer<typeof step2Schema>;
 export type Step3FormData = z.infer<typeof step3Schema>;
-export type Step4FormData = z.infer<typeof step4Schema>;
 export type GuarantorFormData = z.infer<typeof guarantorSchema>;
+export type SecondaryClientFormData = z.infer<typeof secondaryClientSchema>;
 export type CreateSaleFormData = z.infer<typeof createSaleSchema>;
 export type AmortizationCalculationData = z.infer<typeof amortizationCalculationSchema>;

@@ -131,7 +131,7 @@ export default function ResetPasswordPage() {
             </CardContent>
             <CardFooter className="flex justify-center">
               <p className="text-muted-foreground text-sm">
-                Regresa a{' '}
+                Regresa a&nbsp;
                 <Link href="/auth/login" className="text-primary hover:underline">
                   Iniciar sesión
                 </Link>

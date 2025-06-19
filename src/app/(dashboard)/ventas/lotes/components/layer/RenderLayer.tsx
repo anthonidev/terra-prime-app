@@ -1,12 +1,12 @@
 import { NavigationLayer } from '@/types/navigation';
-import { ProyectsActivesItems } from '@/types/sales';
+import { Project } from '@domain/entities/lotes/project.entity';
 import ProyectsLayer from './ProyectsLayer';
 import BlocksLayer from './BlocksLayer';
 import LotsLayer from './LotsLayer';
 import StagesLayer from './StagesLayer';
 
 interface Props {
-  data: ProyectsActivesItems[];
+  data: Project[];
   currentLayer: NavigationLayer<unknown>;
   pushLayer: <T>(type: string, title: string, data?: T) => void;
   popLayer: () => void;

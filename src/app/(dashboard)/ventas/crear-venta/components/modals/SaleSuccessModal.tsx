@@ -12,13 +12,12 @@ import {
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Calendar, CheckCircle, DollarSign, Download, FileText, User } from 'lucide-react';
-
-import { SaleResponse } from '@/types/sales';
+import { SaleList } from '@domain/entities/sales/salevendor.entity';
 
 interface SaleSuccessModalProps {
   isOpen: boolean;
   onClose: () => void;
-  saleData: SaleResponse;
+  saleData: SaleList;
 }
 
 const safeNumber = (value: string | number | undefined | null): number => {
@@ -47,8 +46,7 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="flex h-[90vh] max-h-[800px] w-[95vw] max-w-2xl flex-col p-0 sm:h-auto sm:max-h-[85vh]">
-        {/* Header - Fixed */}
-        <DialogHeader className="flex-shrink-0 border-b border-gray-100 px-4 py-4 sm:px-6 dark:border-gray-800">
+        <DialogHeader className="flex-shrink-0 rounded-t-md border-b border-gray-100 bg-white px-4 py-4 sm:px-6 dark:border-gray-800 dark:bg-gray-900">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 sm:h-12 sm:w-12 dark:bg-green-900/30">
               <CheckCircle className="h-5 w-5 text-green-600 sm:h-6 sm:w-6 dark:text-green-400" />
@@ -64,9 +62,9 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
           </div>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 px-4 py-4 sm:px-6">
+        <ScrollArea className="flex-1 overflow-y-auto px-4 py-4 sm:px-6">
           <div className="space-y-4 sm:space-y-6">
-            <Card>
+            <Card className="bg-white dark:bg-gray-900">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-sm">
                   <FileText className="h-4 w-4" />
@@ -134,7 +132,7 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
             </Card>
 
             {saleData.vendor && (
-              <Card>
+              <Card className="bg-white dark:bg-gray-900">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm">
                     <User className="h-4 w-4" />
@@ -161,7 +159,7 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
             )}
 
             {saleData.financing && (
-              <Card>
+              <Card className="bg-white dark:bg-gray-900">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm">
                     <DollarSign className="h-4 w-4" />
@@ -208,7 +206,7 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
             )}
 
             {saleData.reservation && (
-              <Card>
+              <Card className="bg-white dark:bg-gray-900">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm">
                     <Calendar className="h-4 w-4" />
@@ -249,7 +247,7 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
           </div>
         </ScrollArea>
 
-        <DialogFooter className="flex-shrink-0 flex-col gap-2 border-t border-gray-100 bg-gray-50 px-4 py-4 sm:flex-row sm:px-6 dark:border-gray-800 dark:bg-gray-900/50">
+        <DialogFooter className="flex-shrink-0 flex-col gap-2 rounded-b-md border-t border-gray-100 bg-gray-50 px-4 py-4 sm:flex-row sm:px-6 dark:border-gray-800 dark:bg-gray-900/50">
           <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
             <Button
               variant="outline"

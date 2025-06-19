@@ -18,7 +18,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@components/ui/tooltip';
-import { View } from '@/types/user';
+import { View } from '@domain/entities/user';
 
 const ICON_MAPPING = {
   profile: User,

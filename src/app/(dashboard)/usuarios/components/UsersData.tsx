@@ -1,11 +1,10 @@
 import { TableQueryPagination } from '@/components/common/table/TableQueryPagination';
 import { Card, CardContent } from '@/components/ui/card';
-import { getRoles, getUsers } from '../action';
-// import LeadSourceCards from './LeadSourceCards';
 import { UsersTableFilters } from './UsersTableFilters';
 import UsersTable from './UsersTable';
 import CreateUserButton from './buttons/CreateUserButton';
 import UsersCards from './UsersCards';
+import { getUsers, getRoles } from '@/lib/infrastructure/server-actions/user.actions';
 
 export default async function UsersData({
   searchParams

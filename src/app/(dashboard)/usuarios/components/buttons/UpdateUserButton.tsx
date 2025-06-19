@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Edit } from 'lucide-react';
 import { useState } from 'react';
 import UpdateUserModal from '../modal/UpdateUserModal';
-import { Role, UserList } from '@/types/user';
+import { Role, UserList } from '@domain/entities/user';
 
 interface Props {
   user: UserList;

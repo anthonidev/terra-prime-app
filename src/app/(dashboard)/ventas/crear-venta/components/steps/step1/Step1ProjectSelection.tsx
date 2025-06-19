@@ -12,10 +12,9 @@ import {
   step1Schema
 } from '../../../validations/saleValidation';
 import ProjectLocationSelector from './ProjectLocationSelector';
-import SaleTypeSelector from './SaleTypeSelector';
 import SelectionSummary from './SelectionSummary';
 
-interface Step1Props {
+interface Props {
   formData: Partial<CreateSaleFormData>;
   updateFormData: (data: Partial<CreateSaleFormData>) => void;
   updateStepValidation: (step: 'step1', isValid: boolean) => void;
@@ -31,18 +30,14 @@ export default function Step1ProjectSelection({
   formData,
   updateFormData,
   updateStepValidation
-}: Step1Props) {
+}: Props) {
   const {
     projects,
     stages,
     blocks,
     lots,
 
-    selectedProject,
-    selectedStage,
-    selectedBlock,
-    selectedLot,
-
+    selected,
     loading,
 
     loadProjects,
@@ -82,6 +77,7 @@ export default function Step1ProjectSelection({
     });
 
     return () => subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form]);
 
   const handleProjectChange = (projectId: string) => {
@@ -138,27 +134,22 @@ export default function Step1ProjectSelection({
             stages={stages}
             blocks={blocks}
             lots={lots}
-            selectedProject={selectedProject}
-            selectedStage={selectedStage}
-            selectedBlock={selectedBlock}
+            selectedProject={selected.project}
+            selectedStage={selected.stage}
+            selectedBlock={selected.block}
             loading={loading}
             onProjectChange={handleProjectChange}
             onStageChange={handleStageChange}
             onBlockChange={handleBlockChange}
             onLotChange={handleLotChange}
           />
-
-          <div className="space-y-4">
-            <SaleTypeSelector control={form.control} errors={form.formState.errors} />
-
-            <SelectionSummary
-              selectedProject={selectedProject}
-              selectedStage={selectedStage}
-              selectedBlock={selectedBlock}
-              selectedLot={selectedLot}
-              saleType={form.watch('saleType')}
-            />
-          </div>
+          <SelectionSummary
+            selectedProject={selected.project}
+            selectedStage={selected.stage}
+            selectedBlock={selected.block}
+            selectedLot={selected.lot}
+            saleType={form.watch('saleType')}
+          />
         </div>
       </Form>
     </div>

@@ -12,10 +12,10 @@ import { es } from 'date-fns/locale';
 import { useMemo, useState } from 'react';
 
 import TableTemplate from '@/components/common/table/TableTemplate';
-import { VendorsActivesItem } from '@/types/sales';
+import { VendorsActives } from '@domain/entities/sales/leadsvendors.entity';
 
 type Props = {
-  data: VendorsActivesItem[];
+  data: VendorsActives[];
 };
 
 export default function VendorsActivesTable({ data }: Props) {
@@ -23,7 +23,7 @@ export default function VendorsActivesTable({ data }: Props) {
     id: false
   });
 
-  const columns = useMemo<ColumnDef<VendorsActivesItem>[]>(
+  const columns = useMemo<ColumnDef<VendorsActives>[]>(
     () => [
       {
         id: 'index',
@@ -80,7 +80,7 @@ export default function VendorsActivesTable({ data }: Props) {
   });
 
   return (
-    <TableTemplate<VendorsActivesItem>
+    <TableTemplate<VendorsActives>
       table={table}
       columns={columns}
       showColumnVisibility={true}

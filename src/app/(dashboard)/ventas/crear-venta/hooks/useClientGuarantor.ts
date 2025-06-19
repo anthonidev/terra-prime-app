@@ -1,15 +1,20 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'sonner';
-
-import { LeadsVendorItems } from '@/types/sales';
-import { GuarantorFormData } from '../validations/saleValidation';
-import { createClientAndGuarantor, getClients, getLeadsVendor } from '../action';
+import { LeadsVendor } from '@domain/entities/sales/leadsvendors.entity';
+import { GuarantorFormData, SecondaryClientFormData } from '../validations/saleValidation';
+import {
+  getLeadsVendor,
+  getClientsByDocument,
+  createClientGuarantor
+} from '@infrastructure/server-actions/sales.actions';
+import { Client } from '@domain/entities/sales/client.entity';
 
 interface UseClientGuarantorReturn {
-  leads: LeadsVendorItems[];
-  selectedLead: LeadsVendorItems | null;
+  leads: LeadsVendor[];
+  selectedLead: LeadsVendor | null;
   existingClient: { id: number; address: string } | null;
   guarantorData: { id: number; name: string } | null;
+  secondaryClientsData: { id: number; name: string }[];
   clientAddress: string;
 
   loading: {
@@ -21,20 +26,25 @@ interface UseClientGuarantorReturn {
   loadLeads: () => Promise<void>;
   handleLeadChange: (leadId: string) => Promise<void>;
   handleAddressChange: (address: string) => void;
-  handleGuarantorSuccess: (guarantorFormData: GuarantorFormData) => Promise<void>;
+  handleGuarantorClientSuccess: (
+    secondaryClientFormData: SecondaryClientFormData[],
+    guarantorFormData?: GuarantorFormData
+  ) => Promise<void>;
 
   getClientId: () => number;
   getGuarantorId: () => number;
+  getSecondaryClientsId: () => number[];
 }
 
 export function useClientGuarantor(): UseClientGuarantorReturn {
-  const [leads, setLeads] = useState<LeadsVendorItems[]>([]);
-  const [selectedLead, setSelectedLead] = useState<LeadsVendorItems | null>(null);
+  const [leads, setLeads] = useState<LeadsVendor[]>([]);
+  const [selectedLead, setSelectedLead] = useState<LeadsVendor | null>(null);
   const [clientAddress, setClientAddress] = useState<string>('');
-  const [existingClient, setExistingClient] = useState<{ id: number; address: string } | null>(
-    null
-  );
+  const [existingClient, setExistingClient] = useState<Client | null>(null);
   const [guarantorData, setGuarantorData] = useState<{ id: number; name: string } | null>(null);
+  const [secondaryClientsData, setSecondaryClientsData] = useState<{ id: number; name: string }[]>(
+    []
+  );
 
   const [loading, setLoading] = useState({
     leads: false,
@@ -58,7 +68,7 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
   const checkExistingClient = useCallback(async (document: string) => {
     setLoading((prev) => ({ ...prev, client: true }));
     try {
-      const client = await getClients(parseInt(document));
+      const client = await getClientsByDocument(parseInt(document));
       setExistingClient(client);
       setClientAddress(client.address);
       toast.success('Cliente existente encontrado');
@@ -77,6 +87,7 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
 
       setExistingClient(null);
       setGuarantorData(null);
+      setSecondaryClientsData([]);
       setClientAddress('');
 
       if (lead) {
@@ -90,8 +101,11 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
     setClientAddress(address);
   }, []);
 
-  const handleGuarantorSuccess = useCallback(
-    async (guarantorFormData: GuarantorFormData) => {
+  const handleGuarantorClientSuccess = useCallback(
+    async (
+      secondaryClientsFormData: SecondaryClientFormData[],
+      guarantorFormData?: GuarantorFormData
+    ) => {
       if (!selectedLead) {
         toast.error('Debe seleccionar un lead primero');
         return;
@@ -105,20 +119,28 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
             address: clientAddress
           },
           createGuarantor: guarantorFormData,
+          createSecondaryClient: secondaryClientsFormData,
           document: selectedLead.document
         };
 
-        const result = await createClientAndGuarantor(payload);
+        const result = await createClientGuarantor(payload);
 
         setExistingClient({ id: result.clientId, address: clientAddress });
-        setGuarantorData({
-          id: result.guarantorId,
-          name: `${guarantorFormData.firstName} ${guarantorFormData.lastName}`
-        });
+        if (guarantorFormData) {
+          setGuarantorData({
+            id: result.guarantorId,
+            name: `${guarantorFormData.firstName} ${guarantorFormData.lastName}`
+          });
+        }
+        setSecondaryClientsData(
+          result.secondaryClientIds.map((id, index) => ({
+            id,
+            name: `${secondaryClientsFormData[index].firstName} ${secondaryClientsFormData[index].lastName}`
+          }))
+        );
 
         toast.success('Cliente y garante creados/actualizados correctamente');
       } catch (error) {
-        console.error('Error creating client and guarantor:', error);
         toast.error('Error al crear cliente y garante');
         throw error;
       } finally {
@@ -136,11 +158,16 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
     return guarantorData?.id || 0;
   }, [guarantorData]);
 
+  const getSecondaryClientsId = useCallback(() => {
+    return secondaryClientsData.map((client) => client.id);
+  }, [secondaryClientsData]);
+
   return {
     leads,
     selectedLead,
     existingClient,
     guarantorData,
+    secondaryClientsData,
     clientAddress,
 
     loading,
@@ -148,9 +175,10 @@ export function useClientGuarantor(): UseClientGuarantorReturn {
     loadLeads,
     handleLeadChange,
     handleAddressChange,
-    handleGuarantorSuccess,
+    handleGuarantorClientSuccess,
 
     getClientId,
-    getGuarantorId
+    getGuarantorId,
+    getSecondaryClientsId
   };
 }
