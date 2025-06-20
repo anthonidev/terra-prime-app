@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { PaymentImageModalType } from '../../validations/suscription.zod';
+import { PaymentImageModalType } from '../validations/suscription.zod';
 import { ProcessPaymentDto } from '@application/dtos/create-payment.dto';
 import { createPayment } from '@infrastructure/server-actions/sales.actions';
 import { SaleList } from '@domain/entities/sales/salevendor.entity';
