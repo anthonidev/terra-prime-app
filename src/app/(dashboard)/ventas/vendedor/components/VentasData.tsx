@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import VentasTableFilters from './VentasTableFilters';
 import VentasTable from './VentasTable';
 import VentasCards from './VentasCards';
-import { getSaleList } from '@infrastructure/server-actions/sales.actions';
+import { getSaleListVendor } from '@infrastructure/server-actions/sales.actions';
 
 export default async function VentasData({
   searchParams
@@ -18,7 +18,7 @@ export default async function VentasData({
   const page = searchParams?.page ? parseInt(searchParams.page) : 1;
   const limit = searchParams?.limit ? parseInt(searchParams.limit) : 10;
 
-  const { items, meta } = await getSaleList({
+  const { items, meta } = await getSaleListVendor({
     order,
     page,
     limit

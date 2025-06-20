@@ -13,6 +13,7 @@ import {
   HttpPaymentListRepository,
   HttpPaymentRepository,
   HttpRejectPaymentRepository,
+  HttpSaleListRepository,
   HttpSaleVendorRepository,
   HttpVendorsActivesRepository
 } from '@infrastructure/api/http-sales.repository';
@@ -27,6 +28,7 @@ import {
   PaymentCompletedResponse,
   PaymentListResponse,
   PaymentResponse,
+  SalesListResponse,
   SalesListVendorResponse,
   VendorsActivesResponse
 } from '@infrastructure/types/sales/api-response.types';
@@ -54,7 +56,10 @@ import {
   PaymentCompleteUseCase,
   RejectPaymentUseCase
 } from '@/lib/application/use-cases/payment.usecase';
-import { SaleVendorUseCase } from '@/lib/application/use-cases/list-salevendor.usecase';
+import {
+  SaleListUseCase,
+  SaleVendorUseCase
+} from '@/lib/application/use-cases/list-salevendor.usecase';
 import { PaymentDetailItem } from '@/lib/domain/entities/sales/payment.entity';
 import { ApprovePaymentDTO } from '@/lib/application/dtos/approve-payment.dto';
 import { RejectPaymentDTO } from '@/lib/application/dtos/reject-payment.dto';
@@ -244,6 +249,22 @@ export async function getSaleListVendor(params?: {
   return {
     items: saleListVendor.items,
     meta: saleListVendor.meta
+  };
+}
+
+export async function getSaleList(params?: {
+  order?: string;
+  page?: number;
+  limit?: number;
+}): Promise<SalesListResponse> {
+  const repository = new HttpSaleListRepository();
+  const useCase = new SaleListUseCase(repository);
+
+  const saleList = await useCase.execute(params);
+
+  return {
+    items: saleList.items,
+    meta: saleList.meta
   };
 }
 

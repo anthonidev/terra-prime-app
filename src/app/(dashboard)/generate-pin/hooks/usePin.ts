@@ -2,52 +2,91 @@
 
 import { createPin, findPin } from '@infrastructure/server-actions/pin.actions';
 import { PinResponse } from '@infrastructure/types/pin';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-export function usePin() {
-  const [pinGenerated, setPinGenerated] = useState<PinResponse | null>(null);
-  const [existingPin, setExistingPin] = useState<PinResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingExisting, setIsLoadingExisting] = useState(false);
+interface UsePinState {
+  pinGenerated: PinResponse | null;
+  existingPin: PinResponse | null;
+  isLoading: boolean;
+  isLoadingExisting: boolean;
+  error: string | null;
+}
 
-  const onGenerated = async () => {
-    setIsLoading(true);
+export function usePin() {
+  const [state, setState] = useState<UsePinState>({
+    pinGenerated: null,
+    existingPin: null,
+    isLoading: false,
+    isLoadingExisting: false,
+    error: null
+  });
+
+  const handleError = useCallback((error: unknown, action: string) => {
+    const message = error instanceof Error ? error.message : `Error al ${action}`;
+    setState((prev) => ({ ...prev, error: message }));
+    toast.error(message);
+  }, []);
+
+  const generatePin = useCallback(async () => {
+    setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
     try {
       const response = await createPin();
-      setPinGenerated(response);
-      toast.info('Pin generado correctamente!');
+      setState((prev) => ({
+        ...prev,
+        pinGenerated: response,
+        isLoading: false
+      }));
+
+      toast.success('PIN generado correctamente!');
+
+      // Recargar el PIN existente después de generar uno nuevo
       await loadExistingPin();
     } catch (error) {
-      if (error instanceof Error) toast.error(error.message);
-    } finally {
-      setIsLoading(false);
+      handleError(error, 'generar el PIN');
+      setState((prev) => ({ ...prev, isLoading: false }));
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handleError]);
 
-  const loadExistingPin = async () => {
-    setIsLoadingExisting(true);
+  const loadExistingPin = useCallback(async () => {
+    setState((prev) => ({ ...prev, isLoadingExisting: true, error: null }));
+
     try {
       const response = await findPin();
-      setExistingPin(response);
+      setState((prev) => ({
+        ...prev,
+        existingPin: response,
+        isLoadingExisting: false
+      }));
     } catch (error) {
-      if (error instanceof Error) toast.error(error.message);
-      setExistingPin(null);
-    } finally {
-      setIsLoadingExisting(false);
+      handleError(error, 'cargar el PIN existente');
+      setState((prev) => ({
+        ...prev,
+        existingPin: null,
+        isLoadingExisting: false
+      }));
     }
-  };
+  }, [handleError]);
+
+  const clearGeneratedPin = useCallback(() => {
+    setState((prev) => ({ ...prev, pinGenerated: null }));
+  }, []);
+
+  const clearError = useCallback(() => {
+    setState((prev) => ({ ...prev, error: null }));
+  }, []);
 
   useEffect(() => {
     loadExistingPin();
-  }, []);
+  }, [loadExistingPin]);
 
   return {
-    isLoading,
-    isLoadingExisting,
-    pinGenerated,
-    existingPin,
-    onGenerated,
-    reloadPin: loadExistingPin
+    ...state,
+    generatePin,
+    loadExistingPin,
+    clearGeneratedPin,
+    clearError
   };
 }
