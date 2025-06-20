@@ -1,68 +1,118 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { motion } from 'framer-motion';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, AlertTriangle, Home, ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface ErrorProps {
+  error?: Error & { digest?: string };
   reset: () => void;
 }
 
-export default function Error({ reset }: ErrorProps) {
-  return (
-    <motion.div
-      className="container py-8"
-      initial="hidden"
-      animate="visible"
-      variants={{
-        hidden: { opacity: 0, scale: 0.95 },
-        visible: {
-          opacity: 1,
-          scale: 1,
-          transition: {
-            duration: 0.3,
-            staggerChildren: 0.1
-          }
-        }
-      }}
-    >
-      <div className="mx-auto mb-6 flex w-full flex-col items-center justify-center rounded-md text-center">
-        <div className="relative mx-auto max-w-2xl">
-          <div className="relative z-10 flex items-center justify-center gap-8">
-            <div className="-rotate-12 transform transition-transform duration-300 hover:rotate-0">
-              <div className="relative rounded-lg border-2 border-blue-200 bg-blue-100 p-8 shadow-lg">
-                <div className="absolute top-3 left-3 flex gap-1">
-                  <div className="h-2 w-2 rounded-full bg-blue-400"></div>
-                  <div className="h-2 w-2 rounded-full bg-blue-400"></div>
-                  <div className="h-2 w-2 rounded-full bg-blue-400"></div>
-                </div>
-                <div className="absolute top-0 right-0 h-6 w-6 border-b-2 border-l-2 border-blue-300 bg-blue-200"></div>
-                <div className="mt-4 text-8xl font-bold text-gray-800">4</div>
-              </div>
-            </div>
-            <div className="text-9xl font-bold text-black dark:text-slate-100">0</div>
-            <div className="rotate-12 transform transition-transform duration-300 hover:rotate-0">
-              <div className="relative rounded-lg border-2 border-yellow-300 bg-yellow-200 p-8 shadow-lg">
-                <div className="absolute top-3 right-3 left-3 h-0.5 bg-yellow-400"></div>
-                <div className="absolute top-0 right-0 h-6 w-6 border-b-2 border-l-2 border-yellow-400 bg-yellow-300"></div>
-                <div className="mt-4 text-8xl font-bold text-gray-800">4</div>
-              </div>
-            </div>
-          </div>
+export default function Error({ error, reset }: ErrorProps) {
+  const router = useRouter();
 
-          <div className="mt-12 space-y-4 text-center">
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-slate-100">Ups!</h1>
-            <p className="mx-auto max-w-md text-base text-gray-600 dark:text-slate-400">
-              Parece que el recurso que no se puede mostrar, por favor refrezca la pagina o intenta
-              nuevamente.
-            </p>
-            <Button variant="outline" onClick={reset} className="gap-2">
-              <RefreshCw className="h-4 w-4" />
-              Reintentar
-            </Button>
-          </div>
-        </div>
-      </div>
-    </motion.div>
+  const handleGoHome = () => router.push('/');
+  const handleGoBack = () => router.back();
+
+  return (
+    <div className="container flex min-h-[60vh] items-center justify-center py-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md"
+      >
+        <Card className="border-red-200 bg-white shadow-lg dark:border-red-800 dark:bg-gray-900">
+          <CardContent className="p-8 text-center">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+              className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20"
+            >
+              <AlertTriangle className="h-10 w-10 text-red-600 dark:text-red-400" />
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100"
+            >
+              ¡Ups! Algo salió mal
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="mb-6 text-gray-600 dark:text-gray-400"
+            >
+              Ocurrió un error inesperado. No te preocupes, puedes intentar nuevamente o volver al
+              inicio.
+            </motion.p>
+
+            {error?.message && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="mb-6 rounded-lg bg-gray-50 p-3 dark:bg-gray-800"
+              >
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="font-medium">Error:</span> {error.message}
+                </p>
+                {error.digest && (
+                  <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                    ID: {error.digest}
+                  </p>
+                )}
+              </motion.div>
+            )}
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="space-y-3"
+            >
+              <Button
+                onClick={reset}
+                className="w-full gap-2 bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Intentar nuevamente
+              </Button>
+
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={handleGoBack} className="flex-1 gap-2">
+                  <ArrowLeft className="h-4 w-4" />
+                  Volver
+                </Button>
+
+                <Button variant="outline" onClick={handleGoHome} className="flex-1 gap-2">
+                  <Home className="h-4 w-4" />
+                  Inicio
+                </Button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+              className="mt-6 border-t border-gray-200 pt-4 dark:border-gray-700"
+            >
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Si el problema persiste, contacta al soporte técnico
+              </p>
+            </motion.div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </div>
   );
 }

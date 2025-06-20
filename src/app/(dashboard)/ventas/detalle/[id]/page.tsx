@@ -1,14 +1,22 @@
-import { PageHeader } from '@/components/common/PageHeader';
+import { PageHeader } from '@components/common/PageHeader';
 import { Suspense } from 'react';
-import SaleDetailContent from './components/SaleDetailContent';
 import SaleDetailSkeleton from './components/SaleDetailSkeleton';
+import SaleNotFound from './components/SaleNotFound';
+import SaleDetailHeader from './components/SaleDetailHeader';
+import SaleGeneralInfo from './components/SaleGeneralInfo';
+import SaleFinancingInfo from './components/SaleFinancingInfo';
+import { getSaleDetail } from '@infrastructure/server-actions/sales.actions';
 
-interface SaleDetailPageProps {
+interface Props {
   params: Promise<{ id: string }>;
 }
 
-export default async function SaleDetailPage({ params }: SaleDetailPageProps) {
+export default async function SaleDetailPage({ params }: Props) {
   const { id } = await params;
+
+  const data = await getSaleDetail(id);
+
+  if (!data) return <SaleNotFound saleId={id} />;
 
   return (
     <div className="container py-8">
@@ -21,7 +29,11 @@ export default async function SaleDetailPage({ params }: SaleDetailPageProps) {
       />
 
       <Suspense fallback={<SaleDetailSkeleton />}>
-        <SaleDetailContent saleId={id} />
+        <div className="space-y-6">
+          <SaleDetailHeader sale={data} />
+          {data.financing && <SaleFinancingInfo sale={data} />}
+          <SaleGeneralInfo sale={data} />
+        </div>
       </Suspense>
     </div>
   );

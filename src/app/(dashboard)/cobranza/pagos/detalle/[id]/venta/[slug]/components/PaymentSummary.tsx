@@ -10,17 +10,19 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
-import { SaleList } from '@domain/entities/sales/salevendor.entity';
-import { usePayment } from '../hooks/usePayment';
-import { PaymentImageModalType } from '../../validations/suscription.zod';
+import { usePaidCollection } from '../hooks/usePaidCollection';
+import { SalesCollector, UrbanFinancing } from '@domain/entities/cobranza';
+import { PaymentImageModalType } from '../validations/suscription.zod';
 
 interface Props {
-  sale: SaleList;
+  isUrban?: boolean;
+  urbanFinancing?: UrbanFinancing;
+  sale: SalesCollector;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function PaymentSummary({ sale, isOpen, onClose }: Props) {
+export function PaymentSummary({ isUrban = false, urbanFinancing, sale, isOpen, onClose }: Props) {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const {
     requiredAmount,
@@ -28,25 +30,33 @@ export function PaymentSummary({ sale, isOpen, onClose }: Props) {
     isAmountReached,
     isSubmitting,
     payments,
+    remainingAmount,
     isPaymentComplete,
     addPayment,
     deletePayment,
     editPayment,
     handleAction,
     resetPayments
-  } = usePayment(sale);
-
-  const isExceeded = totalPaid > requiredAmount;
+  } = usePaidCollection(isUrban, urbanFinancing, sale);
 
   const [editingPayment, setEditingPayment] = useState<{
     index: number;
     payment: PaymentImageModalType;
   } | null>(null);
 
-  const handleEditPayment = (payment: Omit<PaymentImageModalType, 'fileIndex'>) => {
+  const handleEditPayment = async (payment: Omit<PaymentImageModalType, 'fileIndex'>) => {
     if (editingPayment) {
-      editPayment(editingPayment.index, payment);
-      setEditingPayment(null);
+      const success = editPayment(editingPayment.index, payment);
+      if (success) {
+        setEditingPayment(null);
+      }
+    }
+  };
+
+  const handleAddPayment = (payment: Omit<PaymentImageModalType, 'fileIndex'>) => {
+    const success = addPayment(payment);
+    if (success) {
+      setOpenModal(false);
     }
   };
 
@@ -58,59 +68,82 @@ export function PaymentSummary({ sale, isOpen, onClose }: Props) {
     }
   };
 
+  // Show remaining amount instead of debt when there's a balance
+  const showRemainingAmount = remainingAmount > 0;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-lg">
             <File className="h-5 w-5" />
-            <span>Registrar pago ({sale.type === 'FINANCED' ? 'Financiado' : 'Directo'})</span>
+            <span>Registrar pago</span>
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 px-4">
-          <div>
-            Total a cancelar:&nbsp;
-            <span className="font-semibold">
-              {new Intl.NumberFormat('es-PE', {
-                style: 'currency',
-                currency: 'PEN'
-              }).format(requiredAmount || 0)}
-            </span>
-          </div>
-          <div>
-            Total pagado:&nbsp;
-            <span
-              className={
-                isAmountReached ? 'font-semibold text-green-600' : 'font-semibold text-orange-600'
-              }
-            >
-              {new Intl.NumberFormat('es-PE', {
-                style: 'currency',
-                currency: 'PEN'
-              }).format(totalPaid)}
-            </span>
-            {!isAmountReached && (
-              <span className="block text-xs text-red-500">
-                (Faltan:&nbsp;
+          <div className="grid grid-cols-3 gap-4">
+            <div className="rounded-md border bg-white p-2 dark:bg-gray-900">
+              <p className="text-sm">Total a cancelar:&nbsp;</p>
+              <span className="font-semibold text-blue-500">
                 {new Intl.NumberFormat('es-PE', {
                   style: 'currency',
-                  currency: 'PEN'
-                }).format((requiredAmount || 0) - totalPaid)}
-                )
+                  currency: sale.currency
+                }).format(requiredAmount || 0)}
               </span>
-            )}
+            </div>
+            <div className="rounded-md border bg-white p-2 dark:bg-gray-900">
+              <p className="text-sm">Total pagado:&nbsp;</p>
+              <span
+                className={
+                  isAmountReached ? 'font-semibold text-green-600' : 'font-semibold text-orange-600'
+                }
+              >
+                {new Intl.NumberFormat('es-PE', {
+                  style: 'currency',
+                  currency: sale.currency
+                }).format(totalPaid)}
+              </span>
+            </div>
+            <div className="rounded-md border bg-white p-2 dark:bg-gray-900">
+              <p className="text-sm">{showRemainingAmount ? 'Restante:' : 'Completo:'}&nbsp;</p>
+              <span
+                className={`font-semibold ${showRemainingAmount ? 'text-orange-500' : 'text-green-600'}`}
+              >
+                {showRemainingAmount ? (
+                  new Intl.NumberFormat('es-PE', {
+                    style: 'currency',
+                    currency: sale.currency
+                  }).format(remainingAmount)
+                ) : (
+                  <span className="text-green-600">✓ Pagado</span>
+                )}
+              </span>
+            </div>
           </div>
+
           <Button
             className="w-full gap-2 bg-gradient-to-r from-[#025864] to-[#00CA7C] hover:from-[#014751] hover:to-[#00b56e]"
             onClick={() => {
               setOpenModal(true);
             }}
-            disabled={isPaymentComplete}
+            disabled={remainingAmount === 0}
           >
             <Plus className="h-4 w-4" />
-            Agregar comprobante
+            {remainingAmount === 0 ? 'Pago Completo' : 'Agregar comprobante'}
           </Button>
+
+          {remainingAmount > 0 && (
+            <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-950">
+              <p className="text-sm text-blue-700 dark:text-blue-300">
+                <strong>Monto disponible para pagar:</strong>{' '}
+                {new Intl.NumberFormat('es-PE', {
+                  style: 'currency',
+                  currency: sale.currency
+                }).format(remainingAmount)}
+              </p>
+            </div>
+          )}
 
           {payments.length === 0 ? (
             <div className="flex h-32 flex-col items-center justify-center rounded-lg border border-dashed bg-gray-50 dark:border-gray-800 dark:bg-gray-900/50">
@@ -182,9 +215,15 @@ export function PaymentSummary({ sale, isOpen, onClose }: Props) {
             disabled={isSubmitting || !isPaymentComplete}
           >
             {isSubmitting ? 'Registrando pago...' : 'Registrar Pago'}
-            {isExceeded && <span className="ml-2 text-xs">(Monto excedido)</span>}
-            {totalPaid > 0 && totalPaid < requiredAmount && (
-              <span className="ml-2 text-xs">(Monto insuficiente)</span>
+            {totalPaid > 0 && remainingAmount > 0 && (
+              <span className="ml-2 text-xs">
+                (Pago parcial - Restante:{' '}
+                {new Intl.NumberFormat('es-PE', {
+                  style: 'currency',
+                  currency: sale.currency
+                }).format(remainingAmount)}
+                )
+              </span>
             )}
           </Button>
         </DialogFooter>
@@ -192,7 +231,8 @@ export function PaymentSummary({ sale, isOpen, onClose }: Props) {
         <PaymentImageModal
           isOpen={openModal}
           onClose={() => setOpenModal(false)}
-          onSubmit={addPayment}
+          onSubmit={handleAddPayment}
+          maxAmount={remainingAmount}
         />
         {editingPayment && (
           <PaymentImageModal
@@ -200,6 +240,7 @@ export function PaymentSummary({ sale, isOpen, onClose }: Props) {
             onClose={() => setEditingPayment(null)}
             onSubmit={(payment) => handleEditPayment(payment)}
             initialData={editingPayment.payment}
+            maxAmount={remainingAmount + editingPayment.payment.amount}
           />
         )}
       </DialogContent>

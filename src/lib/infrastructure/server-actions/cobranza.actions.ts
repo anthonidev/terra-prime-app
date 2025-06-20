@@ -7,6 +7,8 @@ import {
   CollectorsListUseCase,
   ListByClientUseCase,
   PaidInstallmentsUseCase,
+  PaymentByCollectorUseCase,
+  PaymentsByCollectorUseCase,
   SaleCollectorUseCase
 } from '@application/use-cases/cobranza';
 import {
@@ -16,6 +18,8 @@ import {
   HttpCollectorsListRepository,
   HttpListByClientRepository,
   HttpPaidInstallmentsRepository,
+  HttpPaymentByCollectorRepository,
+  HttpPaymentsByColletorRepository,
   HttpSaleCollectorRepository
 } from '@infrastructure/api/http-cobranza.repository';
 
@@ -23,10 +27,12 @@ import {
   CollectionsClientResponse,
   CollectorsListResponse,
   PaidInstallmentsResponse,
+  PaymentsByCollectorResponse,
   SalesCollectorResponse
 } from '@infrastructure/types/cobranza';
 import { AssignClientsCollectorDTO, PaidInstallmentsDTO } from '@application/dtos/cobranza';
 import { ClientByUser, CollectionsClient, ListByClient } from '@domain/entities/cobranza';
+import { PaymentDetailItem } from '@/lib/domain/entities/sales/payment.entity';
 
 export async function getCollectors(params?: {
   order?: string;
@@ -154,4 +160,29 @@ export async function paidInstallments(
       transactionDate: item.transactionDate
     }))
   };
+}
+
+export async function getPaymentsByCollector(params?: {
+  order?: string;
+  page?: number;
+  limit?: number;
+}): Promise<PaymentsByCollectorResponse> {
+  const repository = new HttpPaymentsByColletorRepository();
+  const useCase = new PaymentsByCollectorUseCase(repository);
+
+  const response = await useCase.execute(params);
+
+  return {
+    items: response.items,
+    meta: response.meta
+  };
+}
+
+export async function getPaymentByCollector(id: number): Promise<PaymentDetailItem> {
+  const repository = new HttpPaymentByCollectorRepository();
+  const useCase = new PaymentByCollectorUseCase(repository);
+
+  const response = await useCase.execute(id);
+
+  return response;
 }

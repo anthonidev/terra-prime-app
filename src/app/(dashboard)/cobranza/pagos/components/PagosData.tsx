@@ -1,11 +1,11 @@
-import { TableQueryPagination } from '@/components/common/table/TableQueryPagination';
+import PagosTable from './PagosTable';
+import { getPaymentsByCollector } from '@infrastructure/server-actions/cobranza.actions';
+import PagosCard from './PagosCard';
 import { Card, CardContent } from '@/components/ui/card';
-import VentasTableFilters from './VentasTableFilters';
-import VentasTable from './VentasTable';
-import VentasCards from './VentasCards';
-import { getSaleListVendor } from '@infrastructure/server-actions/sales.actions';
+import PagosFilters from './PagosFilters';
+import { TableQueryPagination } from '@components/common/table/TableQueryPagination';
 
-export default async function VentasData({
+export default async function PagosData({
   searchParams
 }: {
   searchParams?: {
@@ -18,7 +18,7 @@ export default async function VentasData({
   const page = searchParams?.page ? parseInt(searchParams.page) : 1;
   const limit = searchParams?.limit ? parseInt(searchParams.limit) : 10;
 
-  const { items, meta } = await getSaleListVendor({
+  const { items, meta } = await getPaymentsByCollector({
     order,
     page,
     limit
@@ -30,18 +30,17 @@ export default async function VentasData({
         <CardContent className="p-6">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div className="flex-1">
-              <VentasTableFilters order={order} />
+              <PagosFilters order={order} />
             </div>
           </div>
         </CardContent>
       </Card>
 
       <div className="hidden md:block">
-        <VentasTable data={items} />
+        <PagosTable data={items} />
       </div>
-
       <div className="md:hidden">
-        <VentasCards data={items} />
+        <PagosCard data={items} />
       </div>
 
       <TableQueryPagination meta={meta} />

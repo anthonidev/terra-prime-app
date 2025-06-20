@@ -13,6 +13,7 @@ import {
   HttpPaymentListRepository,
   HttpPaymentRepository,
   HttpRejectPaymentRepository,
+  HttpSaleDetailRepository,
   HttpSaleListRepository,
   HttpSaleVendorRepository,
   HttpVendorsActivesRepository
@@ -57,6 +58,7 @@ import {
   RejectPaymentUseCase
 } from '@/lib/application/use-cases/payment.usecase';
 import {
+  SaleDetailUseCase,
   SaleListUseCase,
   SaleVendorUseCase
 } from '@/lib/application/use-cases/list-salevendor.usecase';
@@ -67,6 +69,7 @@ import { PaymentCompleteDTO } from '@/lib/application/dtos/complete-payment.dto'
 import { AssignLeadsToVendorDTO } from '@/lib/application/dtos/bienvenidos.dto';
 import { AssignLeadsVendorUseCase } from '@/lib/application/use-cases/assign-salevendor.usecase';
 import { LeadsOfDay } from '@/lib/domain/entities/sales/leadsvendors.entity';
+import { SaleList } from '@/lib/domain/entities/sales/salevendor.entity';
 
 /**
  * Calcula el cronograma de pagos
@@ -266,6 +269,13 @@ export async function getSaleList(params?: {
     items: saleList.items,
     meta: saleList.meta
   };
+}
+
+export async function getSaleDetail(id: string): Promise<SaleList> {
+  const repository = new HttpSaleDetailRepository();
+  const useCase = new SaleDetailUseCase(repository);
+
+  return await useCase.execute(id);
 }
 
 export async function getPaymentList(params?: {

@@ -12,11 +12,7 @@ import { SortAsc, SortDesc, X } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
-interface VentasTableFiltersProps {
-  order: 'ASC' | 'DESC';
-}
-
-export default function VentasTableFilters({ order: initialOrder }: VentasTableFiltersProps) {
+export default function TableFilters({ order: initialOrder }: { order: 'ASC' | 'DESC' }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -30,9 +26,7 @@ export default function VentasTableFilters({ order: initialOrder }: VentasTableF
       Object.entries(updates).forEach(([name, value]) => {
         if (value === '' || value === 'all') {
           params.delete(name);
-        } else {
-          params.set(name, value);
-        }
+        } else params.set(name, value);
       });
 
       params.set('page', '1');

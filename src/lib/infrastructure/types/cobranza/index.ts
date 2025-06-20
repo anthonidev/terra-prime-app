@@ -1,4 +1,4 @@
-import { Voucher } from '@domain/entities/sales/payment.entity';
+import { PaymentListItem, Voucher } from '@domain/entities/sales/payment.entity';
 import {
   CollectionsClient,
   Collector,
@@ -34,4 +34,9 @@ export interface PaidInstallmentsResponse {
   status: string;
   createdAt: string;
   vouchers: Voucher[];
+}
+
+export interface PaymentsByCollectorResponse {
+  items: PaymentListItem[];
+  meta: Meta;
 }

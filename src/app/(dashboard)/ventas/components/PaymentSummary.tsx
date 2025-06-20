@@ -11,7 +11,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { SaleList } from '@domain/entities/sales/salevendor.entity';
-import { usePayment } from '../vendedor/hooks/usePayment';
+import { usePayment } from '../hooks/usePayment';
 import { PaymentImageModalType } from '../validations/suscription.zod';
 
 interface Props {

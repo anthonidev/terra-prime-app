@@ -2,10 +2,12 @@ import {
   CollectionsClientResponse,
   CollectorsListResponse,
   PaidInstallmentsResponse,
+  PaymentsByCollectorResponse,
   SalesCollectorResponse
 } from '@infrastructure/types/cobranza';
 import { ClientByUser, CollectionsClient, ListByClient } from '@domain/entities/cobranza';
 import { AssignClientsCollectorDTO, PaidInstallmentsDTO } from '@application/dtos/cobranza';
+import { PaymentDetailItem } from '@domain/entities/sales/payment.entity';
 
 export interface CollectorsListRepository {
   getData(params?: {
@@ -41,4 +43,16 @@ export interface SaleCollectorRepository {
 
 export interface PaidInstallmentsRepository {
   paid(id: string, dto: PaidInstallmentsDTO): Promise<PaidInstallmentsResponse>;
+}
+
+export interface PaymentsByCollectorRepository {
+  getData(params?: {
+    order?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<PaymentsByCollectorResponse>;
+}
+
+export interface PaymentByCollectorRepository {
+  getData(id: number): Promise<PaymentDetailItem>;
 }

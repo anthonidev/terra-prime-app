@@ -1,4 +1,5 @@
 import {
+  SaleDetailRepository,
   SaleListRepository,
   SaleVendorRepository
 } from '@domain/repositories/salevendor.repository';
@@ -34,5 +35,13 @@ export class SaleListUseCase {
       items: result.items,
       meta: result.meta
     };
+  }
+}
+
+export class SaleDetailUseCase {
+  constructor(private readonly repository: SaleDetailRepository) {}
+
+  async execute(id: string): Promise<SaleList> {
+    return this.repository.getData(id);
   }
 }

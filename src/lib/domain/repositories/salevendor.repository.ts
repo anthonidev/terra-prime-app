@@ -16,3 +16,7 @@ export interface SaleListRepository {
     limit?: number;
   }): Promise<{ items: SaleList[]; meta: Meta }>;
 }
+
+export interface SaleDetailRepository {
+  getData(id: string): Promise<SaleList>;
+}

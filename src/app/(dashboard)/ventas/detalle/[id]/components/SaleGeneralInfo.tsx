@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 import { Building2, DollarSign, Home, Phone, User, Users } from 'lucide-react';
 import { CurrencyType, SaleList } from '@domain/entities/sales/salevendor.entity';
 

@@ -47,6 +47,7 @@ import {
 } from '@domain/repositories/payments.repository';
 import { ProcessPaymentDto } from '@application/dtos/create-payment.dto';
 import {
+  SaleDetailRepository,
   SaleListRepository,
   SaleVendorRepository
 } from '@domain/repositories/salevendor.repository';
@@ -341,6 +342,17 @@ export class HttpSaleListRepository implements SaleListRepository {
         items: response.items,
         meta: response.meta
       };
+    } catch (error) {
+      if (error instanceof Error) throw new Error(error.message);
+      throw error;
+    }
+  }
+}
+
+export class HttpSaleDetailRepository implements SaleDetailRepository {
+  async getData(id: string): Promise<SaleList> {
+    try {
+      return await httpClient<SaleList>(`/api/sales/${id}`);
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
       throw error;

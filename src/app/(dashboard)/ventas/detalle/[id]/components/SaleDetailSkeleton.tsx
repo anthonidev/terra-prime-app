@@ -14,7 +14,6 @@ import {
 export default function SaleDetailSkeleton() {
   return (
     <div className="space-y-6">
-      {/* Back button skeleton */}
       <div className="mb-6">
         <Skeleton className="mb-2 h-8 w-32" />
         <div className="flex items-center gap-2">
@@ -26,11 +25,9 @@ export default function SaleDetailSkeleton() {
 
       <Separator className="mb-6" />
 
-      {/* Main header card skeleton */}
       <Card className="bg-card">
         <CardContent className="p-6">
           <div className="flex flex-col justify-between gap-6 md:flex-row">
-            {/* Left side - Sale info */}
             <div className="flex-1">
               <div className="mb-4 flex items-start gap-4">
                 <Skeleton className="h-16 w-16 rounded-full" />
@@ -47,7 +44,6 @@ export default function SaleDetailSkeleton() {
                 </div>
               </div>
 
-              {/* Sale and client info */}
               <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
@@ -84,7 +80,6 @@ export default function SaleDetailSkeleton() {
               </div>
             </div>
 
-            {/* Right side - Action buttons */}
             <div className="flex min-w-[200px] flex-col gap-3">
               <Skeleton className="h-10 w-full" />
               <Skeleton className="h-10 w-full" />

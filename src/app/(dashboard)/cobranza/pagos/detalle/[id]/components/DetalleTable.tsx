@@ -1,6 +1,7 @@
 'use client';
 
 import TableTemplate from '@/components/common/table/TableTemplate';
+import { Button } from '@/components/ui/button';
 import {
   ColumnDef,
   getCoreRowModel,
@@ -8,46 +9,39 @@ import {
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table';
-import { Building2, User } from 'lucide-react';
+import { Building2, Eye, User } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import VentasActionsButton from './VentasActionsButton';
-import { CurrencyType, SaleList } from '@domain/entities/sales/salevendor.entity';
+import { ListByClient } from '@domain/entities/cobranza';
+import { useRouter } from 'next/navigation';
 import { StatusBadge } from '@/components/common/table/StatusBadge';
 
-type Props = {
-  data: SaleList[];
-};
-
-const VentasTable = ({ data }: Props) => {
+export default function DetalleTable({ id, data }: { id: number; data: ListByClient[] }) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    id: false,
-    type: false
+    id: true
   });
 
-  const formatCurrency = (amount: number, currency: CurrencyType = CurrencyType.PEN) => {
+  const router = useRouter();
+
+  const formatCurrency = (amount: number, currency: string) => {
     return new Intl.NumberFormat('es-PE', {
       style: 'currency',
       currency: currency
     }).format(amount);
   };
 
-  const columns = useMemo<ColumnDef<SaleList>[]>(
+  const columns = useMemo<ColumnDef<ListByClient>[]>(
     () => [
       {
-        accessorKey: 'id',
+        accessorKey: 'index',
         header: 'ID',
-        cell: ({ row }) => (
-          <div className="text-sm font-medium">
-            # {(row.getValue('id') as string).substring(0, 8)}...
-          </div>
-        ),
+        cell: ({ row }) => <div className="text-sm font-medium">{row.index + 1}</div>,
         enableHiding: true
       },
       {
         id: 'clientInfo',
         header: 'Cliente',
         cell: ({ row }) => {
-          const sale = row.original;
+          const data = row.original;
           return (
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
@@ -55,9 +49,9 @@ const VentasTable = ({ data }: Props) => {
               </div>
               <div>
                 <div className="font-medium text-gray-900 dark:text-gray-100">
-                  {sale.client.firstName} {sale.client.lastName}
+                  {data.client.firstName} {data.client.lastName}
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">{sale.client.phone}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">{data.client.phone}</div>
               </div>
             </div>
           );
@@ -73,7 +67,10 @@ const VentasTable = ({ data }: Props) => {
             <div className="flex items-center gap-2">
               <Building2 className="h-4 w-4 text-gray-400" />
               <div className="flex flex-col">
-                <span className="text-sm font-medium">{sale.lot.name}</span>
+                <span className="text-xs font-medium">proyecto: {sale.lot.project}</span>
+                <span className="text-xs font-medium">etapa: {sale.lot.stage}</span>
+                <span className="text-xs font-medium">lote: {sale.lot.name}</span>
+                <span className="text-xs font-medium">manzana: {sale.lot.block}</span>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
                   {formatCurrency(Number(sale.lot.lotPrice), sale.currency)}
                 </span>
@@ -88,26 +85,6 @@ const VentasTable = ({ data }: Props) => {
         header: 'Tipo',
         cell: ({ row }) => <StatusBadge status={row.getValue('type')} />,
         enableHiding: true
-      },
-      {
-        accessorKey: 'totalAmount',
-        header: 'Monto Total',
-        cell: ({ row }) => {
-          const sale = row.original;
-          return (
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-green-600">
-                {formatCurrency(row.getValue('totalAmount'), sale.currency)}
-              </span>
-            </div>
-          );
-        },
-        enableHiding: false
-      },
-      {
-        accessorKey: 'status',
-        header: 'Estado',
-        cell: ({ row }) => <StatusBadge status={row.getValue('status')} />
       },
       {
         id: 'vendorInfo',
@@ -133,13 +110,32 @@ const VentasTable = ({ data }: Props) => {
         enableHiding: false
       },
       {
+        accessorKey: 'status',
+        header: 'Estado',
+        cell: ({ row }) => <StatusBadge status={row.getValue('status')} />
+      },
+      {
         id: 'actions',
         header: 'Acciones',
-        cell: ({ row }) => <VentasActionsButton sale={row.original} />,
-        enableHiding: false
+        cell: ({ row }) => {
+          return (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() =>
+                router.push(`/cobranza/clientes-asignados/detalle/${id}/venta/${row.original.id}`)
+              }
+              className="hover:bg-primary/10 hover:text-primary"
+              title="Ver detalles"
+            >
+              <Eye className="h-4 w-4" />
+              <span className="sr-only">Ver detalles</span>
+            </Button>
+          );
+        }
       }
     ],
-    []
+    [router, id]
   );
 
   const table = useReactTable({
@@ -154,13 +150,11 @@ const VentasTable = ({ data }: Props) => {
   });
 
   return (
-    <TableTemplate<SaleList>
+    <TableTemplate<ListByClient>
       table={table}
       columns={columns}
       showColumnVisibility={true}
       columnVisibilityLabel="Mostrar columnas"
     />
   );
-};
-
-export default VentasTable;
+}
