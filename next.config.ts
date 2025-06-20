@@ -13,6 +13,16 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'inmobiliariahuertas-files-2025-dev.s3.us-east-2.amazonaws.com',
         pathname: '**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'inmobiliariahuertas-files-2025.s3.us-east-2.amazonaws.com',
+        pathname: '**'
+      }
+    ],
+    localPatterns: [
+      {
+        pathname: '/imgs/**'
       }
     ]
   }

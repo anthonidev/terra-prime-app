@@ -39,9 +39,9 @@ const SidebarContent = ({ isCollapsed, setIsCollapsed, isMobile = false }: Props
             width: isCollapsed ? 0 : 'auto'
           }}
           transition={{ duration: 0.2 }}
-          className="overflow-hidden bg-gradient-to-r from-[#025864] to-[#00CA7C] bg-clip-text text-xl font-bold whitespace-nowrap text-transparent"
+          className="overflow-hidden bg-clip-text text-xl font-bold whitespace-nowrap"
         >
-          Property Pro
+          SMART
         </motion.span>
         {!isMobile && (
           <motion.button
