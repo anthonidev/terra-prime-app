@@ -16,7 +16,7 @@ import {
 import { CurrencyType, SaleList } from '@domain/entities/sales/salevendor.entity';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { StatusBadge } from '@/components/common/table/StatusBadge';
+import { StatusBadge } from '@components/common/table/StatusBadge';
 
 export default function SaleGeneralInfo({ sale }: { sale: SaleList }) {
   const formatCurrency = (amount: number, currency: CurrencyType = CurrencyType.PEN) => {

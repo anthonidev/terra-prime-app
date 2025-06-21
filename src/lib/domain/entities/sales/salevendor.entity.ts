@@ -15,6 +15,11 @@ export enum CurrencyType {
   PEN = 'PEN'
 }
 
+export enum SaleType {
+  FINANCED = 'FINANCED',
+  DIRECT_PAYMENT = 'DIRECT_PAYMENT'
+}
+
 export class FinancingInstallment {
   constructor(
     public readonly id: string,
@@ -107,7 +112,7 @@ export class PaymentSummary {
 export class SaleList {
   constructor(
     public readonly id: string,
-    public readonly type: 'DIRECT_PAYMENT' | 'FINANCED',
+    public readonly type: SaleType,
     public readonly totalAmount: string,
     public readonly status: StatusSale,
     public readonly currency: CurrencyType,
