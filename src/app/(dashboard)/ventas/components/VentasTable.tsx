@@ -8,7 +8,7 @@ import {
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table';
-import { Building2, User } from 'lucide-react';
+import { SquareActivity, User } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import VentasActionsButton from './VentasActionsButton';
 import { CurrencyType, SaleList } from '@domain/entities/sales/salevendor.entity';
@@ -65,20 +65,24 @@ const VentasTable = ({ data }: Props) => {
         enableHiding: false
       },
       {
-        id: 'lotInfo',
+        id: 'lot',
         header: 'Lote',
         cell: ({ row }) => {
-          const sale = row.original;
-          return (
+          const lote = row.original;
+          return lote.lot ? (
             <div className="flex items-center gap-2">
-              <Building2 className="h-4 w-4 text-gray-400" />
+              <SquareActivity className="text-muted-foreground h-4 w-4" />
               <div className="flex flex-col">
-                <span className="text-sm font-medium">{sale.lot.name}</span>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {formatCurrency(Number(sale.lot.lotPrice), sale.currency)}
+                <span className="text-sm font-medium">
+                  <span className="text-xs">Pro: </span>
+                  {lote.lot.project ?? '--'}
                 </span>
+                <span className="text-muted-foreground text-xs">Et: {lote.lot.stage ?? '--'}</span>
+                <span className="text-muted-foreground text-xs">Ma: {lote.lot.block ?? '--'}</span>
               </div>
             </div>
+          ) : (
+            <span className="text-muted-foreground text-xs">Sin asignar</span>
           );
         },
         enableHiding: false
@@ -109,29 +113,7 @@ const VentasTable = ({ data }: Props) => {
         header: 'Estado',
         cell: ({ row }) => <StatusBadge status={row.getValue('status')} />
       },
-      {
-        id: 'vendorInfo',
-        header: 'Vendedor',
-        cell: ({ row }) => {
-          const sale = row.original;
-          return sale.vendor ? (
-            <div className="flex items-center gap-2">
-              <User className="h-4 w-4 text-gray-400" />
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">
-                  {sale.vendor.firstName} {sale.vendor.lastName}
-                </span>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {sale.vendor.document}
-                </span>
-              </div>
-            </div>
-          ) : (
-            <span className="text-xs text-gray-400">Sin asignar</span>
-          );
-        },
-        enableHiding: false
-      },
+
       {
         id: 'actions',
         header: 'Acciones',

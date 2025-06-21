@@ -69,38 +69,46 @@ export function PaymentSummary({ sale, isOpen, onClose }: Props) {
         </DialogHeader>
 
         <div className="space-y-4 px-4">
-          <div>
-            Total a cancelar:&nbsp;
-            <span className="font-semibold">
-              {new Intl.NumberFormat('es-PE', {
-                style: 'currency',
-                currency: 'PEN'
-              }).format(requiredAmount || 0)}
-            </span>
-          </div>
-          <div>
-            Total pagado:&nbsp;
-            <span
-              className={
-                isAmountReached ? 'font-semibold text-green-600' : 'font-semibold text-orange-600'
-              }
-            >
-              {new Intl.NumberFormat('es-PE', {
-                style: 'currency',
-                currency: 'PEN'
-              }).format(totalPaid)}
-            </span>
-            {!isAmountReached && (
-              <span className="block text-xs text-red-500">
-                (Faltan:&nbsp;
+          <div className="grid grid-cols-3 gap-4">
+            <div className="rounded-md border bg-white p-2 dark:bg-gray-900">
+              <p className="text-sm">Total a cancelar:&nbsp;</p>
+              <span className="font-semibold text-blue-500">
                 {new Intl.NumberFormat('es-PE', {
                   style: 'currency',
-                  currency: 'PEN'
-                }).format((requiredAmount || 0) - totalPaid)}
-                )
+                  currency: sale.currency
+                }).format(requiredAmount || 0)}
               </span>
-            )}
+            </div>
+            <div className="rounded-md border bg-white p-2 dark:bg-gray-900">
+              <p className="text-sm">Total pagado:&nbsp;</p>
+              <span
+                className={
+                  isAmountReached ? 'font-semibold text-green-600' : 'font-semibold text-orange-600'
+                }
+              >
+                {new Intl.NumberFormat('es-PE', {
+                  style: 'currency',
+                  currency: sale.currency
+                }).format(totalPaid)}
+              </span>
+            </div>
+            <div className="rounded-md border bg-white p-2 dark:bg-gray-900">
+              <p className="text-sm">{!isAmountReached ? 'Restante:' : 'Completo:'}&nbsp;</p>
+              <span
+                className={`font-semibold ${!isAmountReached ? 'text-orange-500' : 'text-green-600'}`}
+              >
+                {!isAmountReached ? (
+                  new Intl.NumberFormat('es-PE', {
+                    style: 'currency',
+                    currency: sale.currency
+                  }).format((requiredAmount || 0) - totalPaid)
+                ) : (
+                  <span className="text-green-600">✓ Pagado</span>
+                )}
+              </span>
+            </div>
           </div>
+
           <Button
             className="w-full gap-2 bg-gradient-to-r from-[#025864] to-[#00CA7C] hover:from-[#014751] hover:to-[#00b56e]"
             onClick={() => {

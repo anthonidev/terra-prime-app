@@ -1,8 +1,22 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
-import { Building2, DollarSign, Home, Phone, User, Users } from 'lucide-react';
+import {
+  AlertCircle,
+  Building2,
+  Calendar,
+  CreditCard,
+  DollarSign,
+  FileText,
+  Home,
+  Phone,
+  User,
+  Users
+} from 'lucide-react';
 import { CurrencyType, SaleList } from '@domain/entities/sales/salevendor.entity';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { StatusBadge } from '@/components/common/table/StatusBadge';
 
 export default function SaleGeneralInfo({ sale }: { sale: SaleList }) {
   const formatCurrency = (amount: number, currency: CurrencyType = CurrencyType.PEN) => {
@@ -11,6 +25,23 @@ export default function SaleGeneralInfo({ sale }: { sale: SaleList }) {
       currency: currency
     }).format(amount);
   };
+
+  const formatDate = (dateString: string) => {
+    return format(new Date(dateString), 'dd/MM/yyyy', { locale: es });
+  };
+
+  const getTotalPaid = () => {
+    return (
+      sale.paymentsSummary
+        ?.filter((payment) => payment.status === 'APPROVED')
+        .reduce((total, payment) => total + payment.amount, 0) || 0
+    );
+  };
+
+  const getPendingAmount = () => {
+    return Number(sale.totalAmount) - getTotalPaid();
+  };
+
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <Card className="border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -210,6 +241,113 @@ export default function SaleGeneralInfo({ sale }: { sale: SaleList }) {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="space-y-3">
+            <h4 className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100">
+              <CreditCard className="h-4 w-4 text-indigo-500" />
+              Resumen de pagos
+            </h4>
+
+            {/* Estadísticas generales */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="rounded-lg bg-emerald-50 p-3 dark:bg-emerald-950/20">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-emerald-600" />
+                  <div>
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400">Total pagado</p>
+                    <p className="font-bold text-emerald-800 dark:text-emerald-200">
+                      {formatCurrency(getTotalPaid(), sale.currency)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-lg bg-amber-50 p-3 dark:bg-amber-950/20">
+                <div className="flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4 text-amber-600" />
+                  <div>
+                    <p className="text-xs text-amber-600 dark:text-amber-400">Pendiente</p>
+                    <p className="font-bold text-amber-800 dark:text-amber-200">
+                      {formatCurrency(getPendingAmount(), sale.currency)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Lista de pagos */}
+            {sale.paymentsSummary && sale.paymentsSummary.length > 0 ? (
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Pagos registrados ({sale.paymentsSummary.length})
+                </p>
+                <div className="max-h-64 space-y-2 overflow-y-auto">
+                  {sale.paymentsSummary.map((payment) => (
+                    <div
+                      key={payment.id}
+                      className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-gray-900 dark:text-gray-100">
+                              {formatCurrency(payment.amount, sale.currency)}
+                            </span>
+                            {<StatusBadge status={payment.status} />}
+                          </div>
+
+                          <div className="grid grid-cols-1 gap-1 text-xs text-gray-500 sm:grid-cols-2 dark:text-gray-400">
+                            {payment.banckName && (
+                              <div className="flex items-center gap-1">
+                                <CreditCard className="h-3 w-3" />
+                                <span>{payment.banckName}</span>
+                              </div>
+                            )}
+                            {payment.codeOperation && (
+                              <div className="flex items-center gap-1">
+                                <FileText className="h-3 w-3" />
+                                <span>Op: {payment.codeOperation}</span>
+                              </div>
+                            )}
+                            {payment.dateOperation && (
+                              <div className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                <span>{formatDate(payment.dateOperation)}</span>
+                              </div>
+                            )}
+                            {payment.paymentConfig && (
+                              <div className="flex items-center gap-1">
+                                <span className="truncate">{payment.paymentConfig}</span>
+                              </div>
+                            )}
+                          </div>
+
+                          {payment.numberTicket && (
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              Boleta: {payment.numberTicket}
+                            </div>
+                          )}
+
+                          {payment.reason && (
+                            <div className="rounded bg-red-50 p-2 text-xs text-red-700 dark:bg-red-950/20 dark:text-red-400">
+                              <strong>Motivo:</strong> {payment.reason}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-lg border-2 border-dashed border-gray-200 p-6 text-center dark:border-gray-700">
+                <CreditCard className="mx-auto h-8 w-8 text-gray-400" />
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                  No hay pagos registrados
+                </p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
