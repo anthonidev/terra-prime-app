@@ -53,7 +53,7 @@ export default function Error({ reset }: ErrorProps) {
           <div className="mt-12 space-y-4 text-center">
             <h1 className="text-3xl font-bold text-gray-800 dark:text-slate-100">Ups!</h1>
             <p className="mx-auto max-w-md text-base text-gray-600 dark:text-slate-400">
-              Parece que el recurso no se puede mostrar, por favor refrezca la pagina o intenta
+              Parece que el recurso que no se puede mostrar, por favor refrezca la pagina o intenta
               nuevamente.
             </p>
             <Button variant="outline" onClick={reset} className="gap-2">

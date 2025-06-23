@@ -226,10 +226,7 @@ export class HttpPaymentByCollectorRepository implements PaymentByCollectorRepos
   async getData(id: number): Promise<PaymentDetailItem> {
     try {
       const response = await httpClient<PaymentDetailItem>(
-        `/api/collections/payments/details/${id}`,
-        {
-          method: 'POST'
-        }
+        `/api/collections/payments/details/${id}`
       );
 
       return response;
