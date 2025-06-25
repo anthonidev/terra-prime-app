@@ -1,8 +1,7 @@
-import type { Project } from '@domain/entities/lotes/project.entity';
-import { Calendar, Search } from 'lucide-react';
+import { Project } from '@domain/entities/lotes/project.entity';
+import { Calendar, MapPin, DollarSign, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
@@ -13,100 +12,124 @@ interface Props {
 }
 
 export default function ProyectsLayer({ data, onPushClick }: Props) {
-  const [searchTerm, setSearchTerm] = React.useState<string>('');
-
-  const filteredProjects = React.useMemo(() => {
-    return data.filter(
-      (project) =>
-        project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (project.projectCode &&
-          project.projectCode.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-  }, [data, searchTerm]);
-
-  if (data.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-900/50">
-        <h3 className="text-lg font-medium text-gray-500 dark:text-gray-400">
-          No hay proyectos disponibles
-        </h3>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6">
-      <div className="relative">
-        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-        <Input
-          type="text"
-          placeholder="Buscar proyectos por nombre o código..."
-          className="bg-white pl-10 dark:bg-gray-900"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-      {filteredProjects.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-900/50">
-          <h3 className="text-lg font-medium text-gray-500 dark:text-gray-400">
-            No se encontraron proyectos
-          </h3>
-          <p className="text-sm text-gray-400">Intenta con otro término de búsqueda</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredProjects.map((project, index) => (
+    <div className="space-y-8">
+      {
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {data.map((project, index) => (
             <motion.div
               key={project.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ delay: index * 0.05 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{
+                delay: index * 0.1,
+                duration: 0.4,
+                ease: 'easeOut'
+              }}
+              whileHover={{
+                y: -8,
+                transition: { duration: 0.2 }
+              }}
             >
               <Card
                 onClick={() => onPushClick(project)}
-                className="group flex h-full cursor-pointer flex-col overflow-hidden py-0 transition-colors duration-200 hover:border-green-200 hover:shadow-md hover:shadow-green-200 hover:transition-colors hover:duration-700 dark:hover:border-green-800 dark:hover:duration-200"
+                className="group relative cursor-pointer overflow-hidden border-0 bg-white py-0 shadow-lg transition-all duration-300 hover:shadow-2xl dark:bg-gray-900"
               >
-                <CardHeader className="bg-gradient-to-r from-[#025864] to-[#00CA7C] bg-[length:200%_100%] bg-left py-4 transition-all duration-200 ease-in-out group-hover:bg-right">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="line-clamp-1 text-lg text-slate-50 transition-colors">
-                      {project.name}
-                    </CardTitle>
-                    <Badge variant={'secondary'} className="text-xs">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#025864]/5 via-transparent to-[#00CA7C]/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                <CardHeader className="relative bg-gradient-to-r from-[#025864] to-[#00CA7C] p-6 text-white">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0 flex-1">
+                      <CardTitle className="mb-2 text-lg leading-tight font-semibold transition-colors group-hover:text-yellow-100">
+                        {project.name}
+                      </CardTitle>
+                      {project.projectCode && (
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4 opacity-75" />
+                          <span className="text-sm font-medium opacity-90">
+                            {project.projectCode}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <Badge
+                      variant="secondary"
+                      className="border-white/30 bg-white/20 text-white backdrop-blur-sm"
+                    >
                       {project.currency}
                     </Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="flex-grow pb-4">
-                  <div className="flex items-center gap-3">
-                    {project.logo ? (
-                      <div className="bg-secondary/50 flex h-14 w-14 items-center justify-center rounded-md p-1">
+
+                <CardContent className="space-y-4 p-6">
+                  {project.logo ? (
+                    <div className="flex items-center gap-4">
+                      <div className="flex-shrink-0 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-3 shadow-inner dark:from-gray-800 dark:to-gray-700">
                         <Image
                           width={48}
                           height={48}
                           src={project.logo}
                           alt={`Logo de ${project.name}`}
-                          className="max-h-12 max-w-12 object-contain"
+                          className="h-12 w-12 object-contain"
                         />
                       </div>
-                    ) : (
-                      <p className="text-sm text-gray-600 dark:text-slate-300">
-                        Lorem ipsum dolor amet sit undescribe lorem amet pir pa
-                      </p>
-                    )}
-                  </div>
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                          <DollarSign className="h-4 w-4" />
+                          <span>Moneda: {project.currency}</span>
+                        </div>
+                        <div className="text-sm leading-relaxed text-gray-500 dark:text-gray-500">
+                          Proyecto inmobiliario con múltiples etapas y opciones de inversión
+                          disponibles.
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-4">
+                      <div className="flex-shrink-0 rounded-xl bg-gradient-to-br from-[#025864]/10 to-[#00CA7C]/10 p-3">
+                        <Building2 className="h-12 w-12 text-[#025864]" />
+                      </div>
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                          <DollarSign className="h-4 w-4" />
+                          <span>Moneda: {project.currency}</span>
+                        </div>
+                        <p className="text-sm leading-relaxed text-gray-500 dark:text-gray-500">
+                          Proyecto inmobiliario con múltiples etapas y opciones de inversión
+                          disponibles.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
-                <CardFooter className="mt-auto border-t py-4">
-                  <div className="text-muted-foreground flex items-center text-xs">
-                    <Calendar className="mr-1.5 h-3.5 w-3.5" />
-                    <span>{new Date(project.createdAt).toLocaleDateString()}</span>
+
+                <CardFooter className="px-6 pt-0 pb-6">
+                  <div className="flex w-full items-center justify-between border-t border-gray-100 pt-4 dark:border-gray-800">
+                    <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                      <Calendar className="h-4 w-4" />
+                      <span className="text-xs font-medium">
+                        {new Date(project.createdAt).toLocaleDateString('es-ES', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-[#025864] transition-colors group-hover:text-[#00CA7C]">
+                      <span className="text-xs font-semibold">Ver detalles</span>
+                      <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-current" />
+                    </div>
                   </div>
                 </CardFooter>
+
+                {/* Borde animado en hover */}
+                <div className="pointer-events-none absolute inset-0 rounded-lg border-2 border-transparent transition-colors duration-300 group-hover:border-[#00CA7C]/30" />
               </Card>
             </motion.div>
           ))}
         </div>
-      )}
+      }
     </div>
   );
 }
