@@ -23,7 +23,7 @@ import { es } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
 
 interface Props {
-  currency?: string;
+  currency: string;
   blockId: string;
   onBack: () => void;
 }

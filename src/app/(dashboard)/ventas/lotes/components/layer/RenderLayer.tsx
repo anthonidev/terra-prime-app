@@ -17,29 +17,40 @@ export default function RenderLayer({ data, currentLayer, pushLayer, popLayer }:
     return (
       <ProyectsLayer
         data={data}
-        onPushClick={(project) => pushLayer('proyect-stages', project.name, project.id)}
+        onPushClick={(project) => pushLayer('proyect-stages', project.name, project)}
       />
     );
 
   switch (currentLayer.type) {
     case 'proyect-stages':
+      const project = currentLayer.data as Project;
       return (
         <StagesLayer
-          projectId={currentLayer.data as string}
-          onPushClick={(stage) => pushLayer('proyect-blocks', stage.name, stage.id)}
+          projectId={project.id}
+          onPushClick={(stage) =>
+            pushLayer('proyect-blocks', stage.name, {
+              stageId: stage.id,
+              currency: project.currency
+            })
+          }
           onBack={popLayer}
         />
       );
     case 'proyect-blocks':
+      const { stageId, currency } = currentLayer.data as { stageId: string; currency: string };
       return (
         <BlocksLayer
-          stageId={currentLayer.data as string}
-          onPushClick={(block) => pushLayer('proyect-lots', block.name, block.id)}
+          stageId={stageId}
+          onPushClick={(block) =>
+            pushLayer('proyect-lots', block.name, { blockId: block.id, currency })
+          }
           onBack={popLayer}
         />
       );
-    case 'proyect-lots':
-      return <LotsLayer blockId={currentLayer.data as string} onBack={popLayer} />;
+    case 'proyect-lots': {
+      const { blockId, currency } = currentLayer.data as { blockId: string; currency: string };
+      return <LotsLayer blockId={blockId} currency={currency} onBack={popLayer} />;
+    }
     default:
       return null;
   }

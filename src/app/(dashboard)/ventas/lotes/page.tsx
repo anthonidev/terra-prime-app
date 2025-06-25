@@ -1,20 +1,31 @@
-export const dynamic = 'force-dynamic';
+'use client';
 
 import { PageHeader } from '@/components/common/PageHeader';
 import LayerContainer from '@sales/lotes/components/LayerContainer';
-import { Suspense } from 'react';
-import ProjectsSkeleton from '@/components/project/list/ProjectsSkeleton';
+import { useEffect, useState } from 'react';
 import { getProjectActives } from '@infrastructure/server-actions/lotes.actions';
+import { Project } from '@/lib/domain/entities/lotes/project.entity';
 
-export default async function LotesPage() {
-  const data = await getProjectActives();
+export default function LotesPage() {
+  const [data, setData] = useState<Project[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const projects = await getProjectActives();
+        setData(projects);
+      } catch (error) {
+        console.error('Error loading projects:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div>
       <PageHeader title="Lotes" subtitle="listado de lotes por precio" variant="gradient" />
-      <Suspense fallback={<ProjectsSkeleton />}>
-        <LayerContainer data={data} />
-      </Suspense>
+      <LayerContainer data={data} />
     </div>
   );
 }
