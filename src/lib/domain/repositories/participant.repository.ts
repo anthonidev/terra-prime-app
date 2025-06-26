@@ -15,5 +15,17 @@ export interface ParticipantRepository {
 
   getActives(type: string): Promise<Participant[]>;
 
-  assign(saleId: string, participantId: string): Promise<SalesListResponse>;
+  assign(
+    saleId: string,
+    assignmentData: {
+      linerId?: string;
+      telemarketingSupervisorId?: string;
+      telemarketingConfirmerId?: string;
+      telemarketerId?: string;
+      fieldManagerId?: string;
+      fieldSupervisorId?: string;
+      fieldSellerId?: string;
+      guarantorId?: string;
+    }
+  ): Promise<SalesListResponse>;
 }

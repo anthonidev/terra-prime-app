@@ -65,12 +65,21 @@ export async function getActiveParticipants(type: string): Promise<Participant[]
 
 export async function assignParticipantToSale(
   saleId: string,
-  participantId: string
+  assignmentData: {
+    linerId?: string;
+    telemarketingSupervisorId?: string;
+    telemarketingConfirmerId?: string;
+    telemarketerId?: string;
+    fieldManagerId?: string;
+    fieldSupervisorId?: string;
+    fieldSellerId?: string;
+    guarantorId?: string;
+  }
 ): Promise<SalesListResponse> {
   const repository = new HttpParticipantRepository();
   const useCase = new AssignParticipantToSaleUseCase(repository);
 
-  const response = await useCase.execute(saleId, participantId);
+  const response = await useCase.execute(saleId, assignmentData);
 
   return {
     items: response.items,
