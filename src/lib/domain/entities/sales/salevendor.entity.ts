@@ -1,3 +1,14 @@
+import {
+  FieldManager,
+  FieldSeller,
+  FieldSupervisor,
+  Liner,
+  Telemarketer,
+  TelemarketingConfirmer,
+  TelemarketingSupervisor
+} from './participant.entity';
+import { ReviewByBasic, StatusPayment } from './payment.entity';
+
 export enum StatusSale {
   PENDING = 'PENDING',
   PENDING_APPROVAL = 'PENDING_APPROVAL',
@@ -11,6 +22,11 @@ export enum StatusSale {
 export enum CurrencyType {
   USD = 'USD',
   PEN = 'PEN'
+}
+
+export enum SaleType {
+  FINANCED = 'FINANCED',
+  DIRECT_PAYMENT = 'DIRECT_PAYMENT'
 }
 
 export class FinancingInstallment {
@@ -56,7 +72,10 @@ export class Lot {
   constructor(
     public readonly id: string,
     public readonly name: string,
-    public readonly lotPrice: string
+    public readonly lotPrice: string,
+    public readonly block: string,
+    public readonly stage: string,
+    public readonly project: string
   ) {}
 }
 
@@ -82,10 +101,27 @@ export class Vendor {
   ) {}
 }
 
+export class PaymentSummary {
+  constructor(
+    public readonly id: number,
+    public readonly amount: number,
+    public readonly status: StatusPayment,
+    public readonly createdAt: string,
+    public readonly reviewedAt: string,
+    public readonly reviewBy: ReviewByBasic | null,
+    public readonly codeOperation: string,
+    public readonly banckName: string,
+    public readonly dateOperation: string,
+    public readonly numberTicket: string,
+    public readonly paymentConfig: string,
+    public readonly reason: string | null
+  ) {}
+}
+
 export class SaleList {
   constructor(
     public readonly id: string,
-    public readonly type: 'DIRECT_PAYMENT' | 'FINANCED',
+    public readonly type: SaleType,
     public readonly totalAmount: string,
     public readonly status: StatusSale,
     public readonly currency: CurrencyType,
@@ -93,8 +129,16 @@ export class SaleList {
     public readonly secondaryClients: SecondaryClient[] | null,
     public readonly lot: Lot,
     public readonly financing: Financing | null,
+    public readonly liner: Liner | null,
+    public readonly telemarketingSupervisor: TelemarketingSupervisor | null,
+    public readonly telemarketingConfirmer: TelemarketingConfirmer | null,
+    public readonly telemarketer: Telemarketer | null,
+    public readonly fieldManager: FieldManager | null,
+    public readonly fieldSupervisor: FieldSupervisor | null,
+    public readonly fieldSeller: FieldSeller | null,
     public readonly guarantor: Guarantor | null,
     public readonly reservation: Reservation | null,
-    public readonly vendor: Vendor
+    public readonly vendor: Vendor,
+    public readonly paymentsSummary: PaymentSummary[]
   ) {}
 }

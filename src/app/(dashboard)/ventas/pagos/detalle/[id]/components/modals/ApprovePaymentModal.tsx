@@ -55,15 +55,20 @@ export function ApprovePaymentModal({
   payment,
   isSubmitting
 }: ApprovePaymentModalProps) {
+  const [codeOperation, setCodeOperation] = useState('');
+
   const [selectedBank, setSelectedBank] = useState<string>('');
   const [customBankName, setCustomBankName] = useState<string>('');
   const [dateOperation, setDateOperation] = useState<Date | undefined>(new Date());
+  const [numberTicket, setNumberTicket] = useState('');
 
   useEffect(() => {
     if (isOpen) {
+      setCodeOperation('');
       setSelectedBank('');
       setCustomBankName('');
       setDateOperation(new Date());
+      setNumberTicket('');
     }
   }, [isOpen]);
 
@@ -75,8 +80,10 @@ export function ApprovePaymentModal({
     const bankName = selectedBank === 'OTRO' ? customBankName : selectedBank;
 
     onApprove({
+      codeOperation,
       banckName: bankName,
-      dateOperation: formattedDate
+      dateOperation: formattedDate,
+      numberTicket
     });
   };
 
@@ -125,6 +132,17 @@ export function ApprovePaymentModal({
 
           <div className="space-y-4">
             <div className="space-y-2">
+              <Label htmlFor="codeOperation">Código de operación</Label>
+              <Input
+                className="bg-white dark:bg-gray-900"
+                id="codeOperation"
+                value={codeOperation}
+                onChange={(e) => setCodeOperation(e.target.value)}
+                placeholder="Ingrese el código de operación"
+                disabled={isSubmitting}
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="bankSelect">Banco</Label>
               <Select value={selectedBank} onValueChange={setSelectedBank} disabled={isSubmitting}>
                 <SelectTrigger id="bankSelect" className="w-full bg-white dark:bg-gray-900">
@@ -149,6 +167,7 @@ export function ApprovePaymentModal({
                 </div>
               )}
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="dateOperation">Fecha de operación</Label>
               <Popover>
@@ -173,6 +192,17 @@ export function ApprovePaymentModal({
                   <Calendar mode="single" selected={dateOperation} onSelect={setDateOperation} />
                 </PopoverContent>
               </Popover>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="numberTicket">Número de boleta</Label>
+              <Input
+                className="bg-white dark:bg-gray-900"
+                id="numberTicket"
+                value={numberTicket}
+                onChange={(e) => setNumberTicket(e.target.value)}
+                placeholder="Ingrese el número de ticket"
+                disabled={isSubmitting}
+              />
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 'use client';
-import { PageHeader } from '@/components/common/PageHeader';
+
+import { PageHeader } from '@components/common/PageHeader';
 import { DollarSign } from 'lucide-react';
 import SaleDetailSkeleton from './components/SaleDetailSkeleton';
 

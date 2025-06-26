@@ -25,9 +25,21 @@ export function usePaidCollection(
   const totalPaid = payments.reduce((sum, payment) => sum + payment.amount, 0);
   const remainingAmount = Math.max(0, requiredAmount - totalPaid);
   const isAmountReached = totalPaid >= (requiredAmount || 0);
-  const isPaymentComplete = totalPaid === requiredAmount && payments.length > 0;
+  const isPaymentComplete = payments.length > 0 && totalPaid <= requiredAmount;
 
   const addPayment = (payment: Omit<PaymentImageModalType, 'fileIndex'>) => {
+    const newTotal = totalPaid + payment.amount;
+
+    if (newTotal > requiredAmount) {
+      toast.warning(
+        `El monto ingresado excede el límite. Máximo permitido: ${new Intl.NumberFormat('es-PE', {
+          style: 'currency',
+          currency: sale.currency
+        }).format(remainingAmount)}`
+      );
+      return false;
+    }
+
     const updatedPayments: PaymentImageModalType[] = [
       ...payments,
       {
@@ -37,6 +49,7 @@ export function usePaidCollection(
       }
     ];
     setPayments(updatedPayments);
+    return true;
   };
 
   const deletePayment = (index: number) => {
@@ -50,6 +63,23 @@ export function usePaidCollection(
   };
 
   const editPayment = (index: number, updatedPayment: Omit<PaymentImageModalType, 'fileIndex'>) => {
+    const totalWithoutEditedPayment = payments
+      .filter((_, i) => i !== index)
+      .reduce((sum, payment) => sum + payment.amount, 0);
+
+    const newTotal = totalWithoutEditedPayment + updatedPayment.amount;
+
+    if (newTotal > requiredAmount) {
+      const maxAllowed = requiredAmount - totalWithoutEditedPayment;
+      toast.warning(
+        `El monto ingresado excede el límite. Máximo permitido: ${new Intl.NumberFormat('es-PE', {
+          style: 'currency',
+          currency: sale.currency
+        }).format(maxAllowed)}`
+      );
+      return false;
+    }
+
     const updatedPayments: PaymentImageModalType[] = [...payments];
     updatedPayments[index] = {
       ...updatedPayment,
@@ -57,18 +87,25 @@ export function usePaidCollection(
       fileIndex: index
     };
     setPayments(updatedPayments);
+    return true;
   };
 
   const handleAction = useCallback(async () => {
     try {
       setIsSubmitting(true);
 
-      if (totalPaid > requiredAmount) {
-        toast.warning('El monto total excede el requerido');
+      if (totalPaid === 0) {
+        toast.warning('Debe agregar al menos un pago');
         return false;
       }
 
       const validItems = payments.filter((item) => item.file !== null);
+
+      if (validItems.length === 0) {
+        toast.warning('No hay comprobantes válidos para procesar');
+        return false;
+      }
+
       const dto: PaidInstallmentsDTO = {
         payments: validItems.map((item, index) => ({
           bankName: item.bankName ?? '',
@@ -85,7 +122,15 @@ export function usePaidCollection(
 
       await paidInstallments(paymentId!, dto);
 
-      toast.success('Pago enviado correctamente');
+      const isFullPayment = totalPaid === requiredAmount;
+      toast.success(
+        isFullPayment
+          ? 'Pago completo registrado correctamente'
+          : `Pago parcial registrado correctamente. Restante: ${new Intl.NumberFormat('es-PE', {
+              style: 'currency',
+              currency: sale.currency
+            }).format(remainingAmount)}`
+      );
       return true;
     } catch (error) {
       if (error instanceof Error) toast.warning(error.message);
@@ -93,7 +138,7 @@ export function usePaidCollection(
     } finally {
       setIsSubmitting(false);
     }
-  }, [payments, sale, urbanFinancing, requiredAmount, totalPaid, isUrban]);
+  }, [payments, sale, urbanFinancing, requiredAmount, totalPaid, isUrban, remainingAmount]);
 
   return {
     requiredAmount,

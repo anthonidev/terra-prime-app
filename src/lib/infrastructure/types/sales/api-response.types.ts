@@ -64,6 +64,11 @@ export interface SalesListVendorResponse {
   meta: Meta;
 }
 
+export interface SalesListResponse {
+  items: SaleList[];
+  meta: Meta;
+}
+
 export interface PaymentListResponse {
   items: PaymentListItem[];
   meta: Meta;

@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 import {
   Table,
   TableBody,
@@ -8,13 +8,13 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '@/components/ui/table';
+} from '@components/ui/table';
 import { Calendar, CreditCard, DollarSign, Percent } from 'lucide-react';
 import { CurrencyType, SaleList } from '@domain/entities/sales/salevendor.entity';
-import { StatusBadge } from '@/components/common/table/StatusBadge';
+import { StatusBadge } from '@components/common/table/StatusBadge';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { cn } from '@/lib/utils';
+import { cn } from '@lib/utils';
 
 export default function SaleFinancingInfo({ sale }: { sale: SaleList }) {
   if (!sale.financing) return null;

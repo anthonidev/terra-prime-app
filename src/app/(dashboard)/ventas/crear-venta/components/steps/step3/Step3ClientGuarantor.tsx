@@ -99,12 +99,7 @@ export default function Step3ClientGuarantor({
       const guarantorId = getGuarantorId();
       const secondaryClientIds = getSecondaryClientsId();
 
-      const basicValidation = !!(
-        value.leadId &&
-        clientId > 0 &&
-        secondaryClientIds.length > 0 &&
-        clientAddress
-      );
+      const basicValidation = !!(value.leadId && clientId > 0 && clientAddress);
       const isValid = basicValidation;
 
       updateStepValidation('step3', isValid);

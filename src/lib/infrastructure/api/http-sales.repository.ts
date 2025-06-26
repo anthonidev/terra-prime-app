@@ -27,7 +27,8 @@ import {
   SalesListVendorResponse,
   PaymentListResponse,
   PaymentApproveRejectResponse,
-  PaymentCompletedResponse
+  PaymentCompletedResponse,
+  SalesListResponse
 } from '@infrastructure/types/sales/api-response.types';
 
 import {
@@ -45,7 +46,11 @@ import {
   PaymentRepository
 } from '@domain/repositories/payments.repository';
 import { ProcessPaymentDto } from '@application/dtos/create-payment.dto';
-import { SaleVendorRepository } from '@domain/repositories/salevendor.repository';
+import {
+  SaleDetailRepository,
+  SaleListRepository,
+  SaleVendorRepository
+} from '@domain/repositories/salevendor.repository';
 import { SaleList } from '@domain/entities/sales/salevendor.entity';
 import { PaymentDetailItem } from '@domain/entities/sales/payment.entity';
 import { ApprovePaymentDTO } from '@application/dtos/approve-payment.dto';
@@ -315,6 +320,39 @@ export class HttpSaleVendorRepository implements SaleVendorRepository {
         items: response.items,
         meta: response.meta
       };
+    } catch (error) {
+      if (error instanceof Error) throw new Error(error.message);
+      throw error;
+    }
+  }
+}
+
+export class HttpSaleListRepository implements SaleListRepository {
+  async getData(params?: {
+    order?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ items: SaleList[]; meta: Meta }> {
+    try {
+      const response = await httpClient<SalesListResponse>('/api/sales/all/list', {
+        params
+      });
+
+      return {
+        items: response.items,
+        meta: response.meta
+      };
+    } catch (error) {
+      if (error instanceof Error) throw new Error(error.message);
+      throw error;
+    }
+  }
+}
+
+export class HttpSaleDetailRepository implements SaleDetailRepository {
+  async getData(id: string): Promise<SaleList> {
+    try {
+      return await httpClient<SaleList>(`/api/sales/${id}`);
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
       throw error;

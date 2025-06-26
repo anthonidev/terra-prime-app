@@ -11,7 +11,7 @@ export default async function LotesPage() {
 
   return (
     <div>
-      <PageHeader title="Lotes" subtitle="listado de lotes por precio" variant="default" />
+      <PageHeader title="Lotes" subtitle="listado de lotes por precio" variant="gradient" />
       <Suspense fallback={<ProjectsSkeleton />}>
         <LayerContainer data={data} />
       </Suspense>

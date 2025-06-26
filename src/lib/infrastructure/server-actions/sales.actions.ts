@@ -13,6 +13,8 @@ import {
   HttpPaymentListRepository,
   HttpPaymentRepository,
   HttpRejectPaymentRepository,
+  HttpSaleDetailRepository,
+  HttpSaleListRepository,
   HttpSaleVendorRepository,
   HttpVendorsActivesRepository
 } from '@infrastructure/api/http-sales.repository';
@@ -27,6 +29,7 @@ import {
   PaymentCompletedResponse,
   PaymentListResponse,
   PaymentResponse,
+  SalesListResponse,
   SalesListVendorResponse,
   VendorsActivesResponse
 } from '@infrastructure/types/sales/api-response.types';
@@ -54,7 +57,11 @@ import {
   PaymentCompleteUseCase,
   RejectPaymentUseCase
 } from '@/lib/application/use-cases/payment.usecase';
-import { SaleVendorUseCase } from '@/lib/application/use-cases/list-salevendor.usecase';
+import {
+  SaleDetailUseCase,
+  SaleListUseCase,
+  SaleVendorUseCase
+} from '@/lib/application/use-cases/list-salevendor.usecase';
 import { PaymentDetailItem } from '@/lib/domain/entities/sales/payment.entity';
 import { ApprovePaymentDTO } from '@/lib/application/dtos/approve-payment.dto';
 import { RejectPaymentDTO } from '@/lib/application/dtos/reject-payment.dto';
@@ -62,6 +69,7 @@ import { PaymentCompleteDTO } from '@/lib/application/dtos/complete-payment.dto'
 import { AssignLeadsToVendorDTO } from '@/lib/application/dtos/bienvenidos.dto';
 import { AssignLeadsVendorUseCase } from '@/lib/application/use-cases/assign-salevendor.usecase';
 import { LeadsOfDay } from '@/lib/domain/entities/sales/leadsvendors.entity';
+import { SaleList } from '@/lib/domain/entities/sales/salevendor.entity';
 
 /**
  * Calcula el cronograma de pagos
@@ -245,6 +253,29 @@ export async function getSaleListVendor(params?: {
     items: saleListVendor.items,
     meta: saleListVendor.meta
   };
+}
+
+export async function getSaleList(params?: {
+  order?: string;
+  page?: number;
+  limit?: number;
+}): Promise<SalesListResponse> {
+  const repository = new HttpSaleListRepository();
+  const useCase = new SaleListUseCase(repository);
+
+  const saleList = await useCase.execute(params);
+
+  return {
+    items: saleList.items,
+    meta: saleList.meta
+  };
+}
+
+export async function getSaleDetail(id: string): Promise<SaleList> {
+  const repository = new HttpSaleDetailRepository();
+  const useCase = new SaleDetailUseCase(repository);
+
+  return await useCase.execute(id);
 }
 
 export async function getPaymentList(params?: {

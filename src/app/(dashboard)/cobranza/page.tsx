@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { PageHeader } from '@/components/common/PageHeader';
 import { Suspense } from 'react';
 import CobradoresData from './components/CobradoresData';

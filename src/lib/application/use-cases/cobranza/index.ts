@@ -5,16 +5,20 @@ import {
   CollectorsListRepository,
   ListByClientRepository,
   PaidInstallmentsRepository,
+  PaymentByCollectorRepository,
+  PaymentsByCollectorRepository,
   SaleCollectorRepository
 } from '@domain/repositories/cobranza';
 import {
   CollectionsClientResponse,
   CollectorsListResponse,
   PaidInstallmentsResponse,
+  PaymentsByCollectorResponse,
   SalesCollectorResponse
 } from '@infrastructure/types/cobranza';
 import { AssignClientsCollectorDTO, PaidInstallmentsDTO } from '@application/dtos/cobranza';
 import { ClientByUser, CollectionsClient, ListByClient } from '@domain/entities/cobranza';
+import { PaymentDetailItem } from '@domain/entities/sales/payment.entity';
 
 export class CollectorsListUseCase {
   constructor(private readonly repository: CollectorsListRepository) {}
@@ -77,5 +81,25 @@ export class PaidInstallmentsUseCase {
 
   async execute(id: string, dto: PaidInstallmentsDTO): Promise<PaidInstallmentsResponse> {
     return this.repository.paid(id, dto);
+  }
+}
+
+export class PaymentsByCollectorUseCase {
+  constructor(private readonly repository: PaymentsByCollectorRepository) {}
+
+  async execute(params?: {
+    order?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<PaymentsByCollectorResponse> {
+    return this.repository.getData(params);
+  }
+}
+
+export class PaymentByCollectorUseCase {
+  constructor(private readonly repository: PaymentByCollectorRepository) {}
+
+  async execute(id: number): Promise<PaymentDetailItem> {
+    return this.repository.getData(id);
   }
 }

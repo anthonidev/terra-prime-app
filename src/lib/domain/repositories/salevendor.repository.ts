@@ -8,3 +8,15 @@ export interface SaleVendorRepository {
     limit?: number;
   }): Promise<{ items: SaleList[]; meta: Meta }>;
 }
+
+export interface SaleListRepository {
+  getData(params?: {
+    order?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ items: SaleList[]; meta: Meta }>;
+}
+
+export interface SaleDetailRepository {
+  getData(id: string): Promise<SaleList>;
+}
