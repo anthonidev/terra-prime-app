@@ -2,6 +2,7 @@ import { ParticipantRepository } from '@domain/repositories/participant.reposito
 import { Participant } from '@domain/entities/sales/participant.entity';
 import { CreateParticipantDTO, UpdateParticipantDTO } from '@application/dtos/participant.dto';
 import { httpClient } from '@/lib/api/http-client';
+import { SalesListResponse } from '../types/sales/api-response.types';
 
 export class HttpParticipantRepository implements ParticipantRepository {
   async getAll(params?: {
@@ -114,6 +115,46 @@ export class HttpParticipantRepository implements ParticipantRepository {
       await httpClient(`/api/participants/${id}`, {
         method: 'DELETE'
       });
+    } catch (error) {
+      if (error instanceof Error) throw new Error(error.message);
+      throw error;
+    }
+  }
+
+  async getActives(type: string): Promise<Participant[]> {
+    try {
+      const response = await httpClient<Participant[]>('/api/participants/actives', {
+        params: { type },
+        next: { revalidate: 0 }
+      });
+
+      return response.map((item) => ({
+        id: item.id,
+        firstName: item.firstName,
+        lastName: item.lastName,
+        email: item.email,
+        document: item.document,
+        documentType: item.documentType,
+        phone: item.phone,
+        address: item.address,
+        participantType: item.participantType,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt
+      }));
+    } catch (error) {
+      if (error instanceof Error) throw new Error(error.message);
+      throw error;
+    }
+  }
+
+  async assign(saleId: string, participantId: string): Promise<SalesListResponse> {
+    try {
+      const response = await httpClient<SalesListResponse>(`/sales/assign/participants/${saleId}`, {
+        body: { participantId },
+        method: 'POST'
+      });
+
+      return response;
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
       throw error;

@@ -5,11 +5,14 @@ import {
   GetParticipantByIdUseCase,
   CreateParticipantUseCase,
   UpdateParticipantUseCase,
-  DeleteParticipantUseCase
+  DeleteParticipantUseCase,
+  AssignParticipantToSaleUseCase,
+  GetActiveParticipantsUseCase
 } from '@application/use-cases/participant.usecase';
 import { HttpParticipantRepository } from '@infrastructure/api/http-participant.repository';
 import { Participant } from '@domain/entities/sales/participant.entity';
 import { CreateParticipantDTO, UpdateParticipantDTO } from '@application/dtos/participant.dto';
+import { SalesListResponse } from '../types/sales/api-response.types';
 
 export async function getParticipants(params?: {
   page?: number;
@@ -51,4 +54,21 @@ export async function deleteParticipant(id: string): Promise<void> {
   const useCase = new DeleteParticipantUseCase(repository);
 
   return await useCase.execute(id);
+}
+
+export async function getActiveParticipants(type: string): Promise<Participant[]> {
+  const repository = new HttpParticipantRepository();
+  const useCase = new GetActiveParticipantsUseCase(repository);
+
+  return await useCase.execute(type);
+}
+
+export async function assignParticipantToSale(
+  saleId: string,
+  participantId: string
+): Promise<SalesListResponse> {
+  const repository = new HttpParticipantRepository();
+  const useCase = new AssignParticipantToSaleUseCase(repository);
+
+  return await useCase.execute(saleId, participantId);
 }

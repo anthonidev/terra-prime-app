@@ -1,3 +1,12 @@
+import {
+  FieldManager,
+  FieldSeller,
+  FieldSupervisor,
+  Liner,
+  Telemarketer,
+  TelemarketingConfirmer,
+  TelemarketingSupervisor
+} from './participant.entity';
 import { ReviewByBasic, StatusPayment } from './payment.entity';
 
 export enum StatusSale {
@@ -120,6 +129,13 @@ export class SaleList {
     public readonly secondaryClients: SecondaryClient[] | null,
     public readonly lot: Lot,
     public readonly financing: Financing | null,
+    public readonly liner: Liner | null,
+    public readonly telemarketingSupervisor: TelemarketingSupervisor | null,
+    public readonly telemarketingConfirmer: TelemarketingConfirmer | null,
+    public readonly telemarketer: Telemarketer | null,
+    public readonly fieldManager: FieldManager | null,
+    public readonly fieldSupervisor: FieldSupervisor | null,
+    public readonly fieldSeller: FieldSeller | null,
     public readonly guarantor: Guarantor | null,
     public readonly reservation: Reservation | null,
     public readonly vendor: Vendor,
