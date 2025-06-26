@@ -27,7 +27,7 @@ import {
 } from '@infrastructure/server-actions/participant.actions';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, Check, Loader2 } from 'lucide-react';
+import { User, Check, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AssignParticipantModalProps {
@@ -58,6 +58,30 @@ export default function AssignParticipantModal({
   const [availableParticipants, setAvailableParticipants] = useState<Participant[]>([]);
   const [selectedParticipant, setSelectedParticipant] = useState<string>('');
   const [assignedParticipants, setAssignedParticipants] = useState<ParticipantType[]>([]);
+  const [currentAssignedParticipant, setCurrentAssignedParticipant] = useState<Participant | null>(
+    null
+  );
+
+  const getCurrentAssignedParticipant = (type: ParticipantType): Participant | null => {
+    switch (type) {
+      case ParticipantType.LINER:
+        return (sale.liner as Participant) || null;
+      case ParticipantType.TELEMARKETING_SUPERVISOR:
+        return (sale.telemarketingSupervisor as Participant) || null;
+      case ParticipantType.TELEMARKETING_CONFIRMER:
+        return (sale.telemarketingConfirmer as Participant) || null;
+      case ParticipantType.TELEMARKETER:
+        return (sale.telemarketer as Participant) || null;
+      case ParticipantType.FIELD_MANAGER:
+        return (sale.fieldManager as Participant) || null;
+      case ParticipantType.FIELD_SUPERVISOR:
+        return (sale.fieldSupervisor as Participant) || null;
+      case ParticipantType.FIELD_SELLER:
+        return (sale.fieldSeller as Participant) || null;
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     if (isOpen && sale) {
@@ -77,21 +101,25 @@ export default function AssignParticipantModal({
 
   useEffect(() => {
     if (selectedType) {
+      const currentParticipant = getCurrentAssignedParticipant(selectedType as ParticipantType);
+      setCurrentAssignedParticipant(currentParticipant);
       loadActiveParticipants(selectedType);
       setSelectedParticipant('');
     } else {
       setAvailableParticipants([]);
       setSelectedParticipant('');
+      setCurrentAssignedParticipant(null);
     }
-  }, [selectedType]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedType, sale]);
 
   const loadActiveParticipants = async (type: string) => {
     setIsLoading(true);
     try {
       const participants = await getActiveParticipants(type);
       setAvailableParticipants(participants);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
     } catch (error) {
+      console.error(error);
       toast.error('Error al cargar participantes');
       setAvailableParticipants([]);
     } finally {
@@ -102,6 +130,11 @@ export default function AssignParticipantModal({
   const handleSubmit = async () => {
     if (!selectedParticipant) {
       toast.error('Debe seleccionar un participante');
+      return;
+    }
+
+    if (currentAssignedParticipant && selectedParticipant === currentAssignedParticipant.id) {
+      toast.info('El participante seleccionado ya está asignado');
       return;
     }
 
@@ -159,15 +192,16 @@ export default function AssignParticipantModal({
     }
   }, [isOpen]);
 
-  const availableParticipantTypes = Object.values(ParticipantType).filter(
-    (type) => !assignedParticipants.includes(type)
-  );
+  const availableParticipantTypes = Object.values(ParticipantType);
+  const isReassigning = currentAssignedParticipant !== null;
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-h-[70vh] max-w-2xl overflow-auto">
         <DialogHeader>
-          <DialogTitle>Asignar Participante</DialogTitle>
+          <DialogTitle>
+            {isReassigning ? 'Cambiar Participante' : 'Asignar Participante'}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 px-4">
@@ -204,52 +238,114 @@ export default function AssignParticipantModal({
                 </Select>
               </div>
 
+              {selectedType && currentAssignedParticipant && (
+                <div className="rounded-lg border border-orange-200 bg-orange-50 p-3 dark:border-orange-800 dark:bg-orange-950/30">
+                  <div className="mb-2 flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4 text-orange-600" />
+                    <p className="text-sm font-medium text-orange-800 dark:text-orange-200">
+                      Participante actual asignado:
+                    </p>
+                  </div>
+                  <Card className="border-orange-300 bg-white dark:bg-gray-900">
+                    <CardContent className="px-3">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900">
+                          <User className="h-4 w-4 text-orange-600" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                            {currentAssignedParticipant.firstName}&nbsp;
+                            {currentAssignedParticipant.lastName}
+                          </p>
+                        </div>
+                        <Badge variant="outline" className="text-xs">
+                          Actual
+                        </Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
               {selectedType && (
                 <div className="space-y-2">
-                  <Label>Seleccione un Participante</Label>
+                  <Label>
+                    {isReassigning
+                      ? 'Seleccione el nuevo participante'
+                      : 'Seleccione un participante'}
+                  </Label>
 
                   {isLoading ? (
                     <div className="flex justify-center py-8">
                       <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
                     </div>
                   ) : availableParticipants.length > 0 ? (
-                    <div className="grid max-h-60 grid-cols-1 gap-3 overflow-y-auto sm:grid-cols-2">
-                      {availableParticipants.map((participant) => (
-                        <Card
-                          key={participant.id}
-                          className={cn(
-                            'cursor-pointer border transition-all hover:shadow-sm',
-                            selectedParticipant === participant.id
-                              ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
-                              : 'border-gray-200 hover:border-gray-300 dark:border-gray-700'
-                          )}
-                          onClick={() => setSelectedParticipant(participant.id)}
-                        >
-                          <CardContent className="p-3">
-                            <div className="flex items-center justify-between">
-                              <div className="flex min-w-0 flex-1 items-center gap-2">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
-                                  <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                    <div className="grid max-h-60 grid-cols-1 gap-3 sm:grid-cols-2">
+                      {availableParticipants.map((participant) => {
+                        const isCurrentlyAssigned =
+                          currentAssignedParticipant?.id === participant.id;
+                        const isSelected = selectedParticipant === participant.id;
+
+                        return (
+                          <Card
+                            key={participant.id}
+                            className={cn(
+                              'cursor-pointer border transition-all hover:shadow-sm',
+                              isSelected
+                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
+                                : isCurrentlyAssigned
+                                  ? 'border-orange-300 bg-orange-50 dark:bg-orange-950/20'
+                                  : 'border-gray-200 hover:border-gray-300 dark:border-gray-700'
+                            )}
+                            onClick={() => setSelectedParticipant(participant.id)}
+                          >
+                            <CardContent className="p-3">
+                              <div className="flex items-center justify-between">
+                                <div className="flex min-w-0 flex-1 items-center gap-2">
+                                  <div
+                                    className={cn(
+                                      'flex h-8 w-8 items-center justify-center rounded-lg',
+                                      isCurrentlyAssigned
+                                        ? 'bg-orange-100 dark:bg-orange-900'
+                                        : 'bg-gray-100 dark:bg-gray-800'
+                                    )}
+                                  >
+                                    <User
+                                      className={cn(
+                                        'h-4 w-4',
+                                        isCurrentlyAssigned
+                                          ? 'text-orange-600'
+                                          : 'text-gray-600 dark:text-gray-400'
+                                      )}
+                                    />
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
+                                      {participant.firstName} {participant.lastName}
+                                    </p>
+                                    <p className="truncate text-xs text-gray-500 dark:text-gray-400">
+                                      {participant.documentType}: {participant.document}
+                                    </p>
+                                  </div>
                                 </div>
-                                <div className="min-w-0 flex-1">
-                                  <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
-                                    {participant.firstName} {participant.lastName}
-                                  </p>
-                                  <p className="truncate text-xs text-gray-500 dark:text-gray-400">
-                                    {participant.documentType}: {participant.document}
-                                  </p>
+
+                                <div className="flex items-center gap-2">
+                                  {isCurrentlyAssigned && (
+                                    <Badge variant="outline" className="text-xs">
+                                      Actual
+                                    </Badge>
+                                  )}
+                                  {isSelected && (
+                                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-white">
+                                      <Check className="h-3 w-3" />
+                                    </div>
+                                  )}
                                 </div>
                               </div>
-
-                              {selectedParticipant === participant.id && (
-                                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-white">
-                                  <Check className="h-3 w-3" />
-                                </div>
-                              )}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
                     </div>
                   ) : (
                     <div className="rounded-lg bg-gray-50 py-6 text-center dark:bg-gray-900">
@@ -269,7 +365,7 @@ export default function AssignParticipantModal({
           )}
         </div>
 
-        <DialogFooter className="rounded-b-md bg-slate-50 pt-4 dark:bg-gray-800">
+        <DialogFooter className="sticky bottom-0 rounded-b-md bg-slate-50 pt-4 dark:bg-gray-800">
           <Button variant="outline" onClick={handleClose} disabled={isSubmitting}>
             Cancelar
           </Button>
@@ -282,10 +378,19 @@ export default function AssignParticipantModal({
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Asignando...
+                {isReassigning ? 'Cambiando...' : 'Asignando...'}
               </>
             ) : (
-              'Asignar'
+              <>
+                {isReassigning ? (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Cambiar
+                  </>
+                ) : (
+                  'Asignar'
+                )}
+              </>
             )}
           </Button>
         </DialogFooter>
