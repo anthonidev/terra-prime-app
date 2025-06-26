@@ -51,7 +51,7 @@ export default function MisClientesTable({ data }: { data: ClientByUser[] }) {
                 <User className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               </div>
               <div>
-                <div className="font-medium text-gray-900 dark:text-gray-100">
+                <div className="font-medium text-gray-900 lowercase dark:text-gray-100">
                   {lead.firstName} {lead.lastName}
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">
