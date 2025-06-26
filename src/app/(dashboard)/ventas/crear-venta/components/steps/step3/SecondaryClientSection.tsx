@@ -8,18 +8,14 @@ interface Props {
   secondaryClientsData: { id: number; name: string }[];
   disabled: boolean;
   isCreating: boolean;
-  isGenerated: boolean;
   onAddSecondaryClient: () => void;
-  onGenerated: () => void;
 }
 
 export default function SecondaryClientSection({
   secondaryClientsData,
   disabled,
   isCreating,
-  isGenerated,
-  onAddSecondaryClient,
-  onGenerated
+  onAddSecondaryClient
 }: Props) {
   if (disabled) return null;
   return (
@@ -37,17 +33,6 @@ export default function SecondaryClientSection({
             <UserPlus className="h-4 w-4" />
             Agregar
           </Button>
-          {isGenerated && (
-            <Button
-              type="button"
-              onClick={onGenerated}
-              disabled={isCreating}
-              className="flex items-center gap-2"
-            >
-              <UserCheck className="h-4 w-4" />
-              {isCreating ? 'Generando' : 'Generar'}
-            </Button>
-          )}
         </div>
       </div>
 

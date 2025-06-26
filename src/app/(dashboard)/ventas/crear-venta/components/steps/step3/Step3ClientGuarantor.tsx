@@ -29,6 +29,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 
 interface Props {
   formData: Partial<CreateSaleFormData>;
@@ -44,10 +45,16 @@ export default function Step3ClientGuarantor({
   const [secondaryClientsFormData, setSecondaryClientsFormData] = useState<
     SecondaryClientFormData[]
   >([]);
+  const [guarantorFormData, setGuarantorFormData] = useState<GuarantorFormData>();
 
   const handleAddSecondaryClient = (data: SecondaryClientFormData) => {
     setSecondaryClientsFormData((prev) => [...prev, data]);
     setModal({ ...modal, compradorModal: false });
+  };
+
+  const handleAddGuarantor = (data: GuarantorFormData) => {
+    setGuarantorFormData(data);
+    setModal({ ...modal, guarantorModal: false });
   };
 
   const [modal, setModal] = useState<{
@@ -137,17 +144,13 @@ export default function Step3ClientGuarantor({
     await handleLeadChange(leadId);
   };
 
-  const handleAction = async (guarantorFormData?: GuarantorFormData) => {
+  const handleAction = async () => {
     try {
       await handleGuarantorClientSuccess(secondaryClientsFormData, guarantorFormData);
-      setModal({ ...modal, guarantorModal: false });
+      setModal({ compradorModal: false, guarantorModal: false });
     } catch (error) {
-      console.error('Error al manejar el éxito del garante:', error);
+      console.error(error);
     }
-  };
-
-  const handleGenerate = async () => {
-    await await handleGuarantorClientSuccess(secondaryClientsFormData);
   };
 
   return (
@@ -203,6 +206,37 @@ export default function Step3ClientGuarantor({
                 </Table>
               </div>
             )}
+            {selectedLead && (
+              <div className="rounded-md border p-4">
+                <h3 className="text-xs font-medium text-green-500">Garante</h3>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nombre</TableHead>
+                      <TableHead>Apellido</TableHead>
+                      <TableHead>Documento</TableHead>
+                      <TableHead>Email</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {guarantorFormData ? (
+                      <TableRow>
+                        <TableCell>{guarantorFormData.firstName}</TableCell>
+                        <TableCell>{guarantorFormData.lastName}</TableCell>
+                        <TableCell>{guarantorFormData.document}</TableCell>
+                        <TableCell className="max-w-20 truncate">
+                          {guarantorFormData.email}
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={4}>No hay garante guardado</TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </div>
 
           <div className="space-y-4">
@@ -220,8 +254,6 @@ export default function Step3ClientGuarantor({
                   secondaryClientsData={secondaryClientsData}
                   disabled={!clientAddress}
                   isCreating={loading.creating}
-                  isGenerated={secondaryClientsFormData.length > 0}
-                  onGenerated={handleGenerate}
                   onAddSecondaryClient={() => setModal({ ...modal, compradorModal: true })}
                 />
                 <GuarantorSection
@@ -230,6 +262,19 @@ export default function Step3ClientGuarantor({
                   isCreating={loading.creating}
                   onAddGuarantor={() => setModal({ ...modal, guarantorModal: true })}
                 />
+                <div className="pt-4">
+                  <Button
+                    onClick={handleAction}
+                    disabled={
+                      (!guarantorFormData && secondaryClientsFormData.length === 0) ||
+                      loading.creating
+                    }
+                    variant="default"
+                    className="w-full"
+                  >
+                    {loading.creating ? 'Validando...' : 'Validar Cliente'}
+                  </Button>
+                </div>
               </>
             )}
           </div>
@@ -245,7 +290,7 @@ export default function Step3ClientGuarantor({
       <AddGuarantorModal
         isOpen={modal.guarantorModal}
         onClose={() => setModal({ ...modal, guarantorModal: false })}
-        onSuccess={handleAction}
+        onSuccess={handleAddGuarantor}
         isCreating={loading.creating}
       />
     </div>

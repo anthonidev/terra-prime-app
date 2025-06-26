@@ -32,7 +32,7 @@ export default function GuarantorSection({
           disabled={isCreating}
         >
           <UserCheck className="h-4 w-4" />
-          {guarantorData ? 'Editar Garante' : 'Agregar Garante'}
+          {guarantorData ? 'Editar' : 'Agregar'}
         </Button>
       </div>
 

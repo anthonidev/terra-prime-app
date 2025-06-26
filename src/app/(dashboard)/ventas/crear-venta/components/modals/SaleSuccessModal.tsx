@@ -252,7 +252,7 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
             <Button
               variant="outline"
               onClick={handleDownloadContract}
-              className="flex items-center justify-center gap-2"
+              className="hidden items-center justify-center gap-2"
               size="sm"
             >
               <Download className="h-4 w-4" />
