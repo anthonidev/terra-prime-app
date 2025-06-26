@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import {
@@ -11,19 +10,11 @@ import {
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useMemo, useState } from 'react';
-import { User, Mail, IdCard, Calendar, Badge as BadgeIcon, MoreHorizontal } from 'lucide-react';
+import { User, Mail, IdCard, Calendar, Badge as BadgeIcon } from 'lucide-react';
 
 import TableTemplate from '@/components/common/table/TableTemplate';
 import { VendorsActives } from '@domain/entities/sales/leadsvendors.entity';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator
-} from '@/components/ui/dropdown-menu';
 
 type Props = {
   data: VendorsActives[];
@@ -107,27 +98,6 @@ export default function VendorsActivesTable({ data }: Props) {
         },
         enableHiding: false,
         size: 250
-      },
-      {
-        accessorKey: 'firstName',
-        header: 'Nombre',
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <User className="h-4 w-4 text-gray-400" />
-            <span className="text-sm font-medium">{row.getValue('firstName')}</span>
-          </div>
-        ),
-        enableHiding: true
-      },
-      {
-        accessorKey: 'lastName',
-        header: 'Apellido',
-        cell: ({ row }) => (
-          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-            {row.getValue('lastName')}
-          </div>
-        ),
-        enableHiding: true
       },
       {
         accessorKey: 'document',
@@ -214,48 +184,6 @@ export default function VendorsActivesTable({ data }: Props) {
         ),
         enableHiding: true,
         size: 100
-      },
-      {
-        id: 'actions',
-        header: 'Acciones',
-        cell: ({ row }) => {
-          // eslint-disable-next-line unused-imports/no-unused-vars
-          const vendor = row.original;
-          return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  <span className="sr-only">Abrir menú</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem className="cursor-pointer">
-                  <User className="mr-2 h-4 w-4" />
-                  Ver perfil
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  <Mail className="mr-2 h-4 w-4" />
-                  Enviar email
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer text-orange-600">
-                  <Calendar className="mr-2 h-4 w-4" />
-                  Ver ventas
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer text-red-600">
-                  <BadgeIcon className="mr-2 h-4 w-4" />
-                  Desactivar
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          );
-        },
-        enableHiding: false,
-        size: 80
       }
     ],
     []
