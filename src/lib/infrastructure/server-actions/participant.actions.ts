@@ -70,5 +70,10 @@ export async function assignParticipantToSale(
   const repository = new HttpParticipantRepository();
   const useCase = new AssignParticipantToSaleUseCase(repository);
 
-  return await useCase.execute(saleId, participantId);
+  const response = await useCase.execute(saleId, participantId);
+
+  return {
+    items: response.items,
+    meta: response.meta
+  };
 }

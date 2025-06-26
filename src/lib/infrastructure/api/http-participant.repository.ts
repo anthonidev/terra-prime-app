@@ -154,7 +154,10 @@ export class HttpParticipantRepository implements ParticipantRepository {
         method: 'POST'
       });
 
-      return response;
+      return {
+        items: response.items,
+        meta: response.meta
+      };
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
       throw error;
