@@ -134,7 +134,7 @@ export default function DataForm({ sale, urbanDevelopment }: Props) {
               <div
                 className={cn(
                   'grid gap-4',
-                  sale.secondaryClients.length > 0 ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-2'
+                  sale.secondaryClients?.length > 0 ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-2'
                 )}
               >
                 <Card className="border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -205,7 +205,7 @@ export default function DataForm({ sale, urbanDevelopment }: Props) {
                   </CardContent>
                 </Card>
 
-                {sale.secondaryClients.length > 0 && (
+                {sale.secondaryClients?.length > 0 && (
                   <Card className="border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
                     <CardHeader className="pb-4">
                       <div className="flex items-center gap-3">

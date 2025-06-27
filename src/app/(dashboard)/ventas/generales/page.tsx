@@ -2,7 +2,6 @@ import { PageHeader } from '@/components/common/PageHeader';
 import { Suspense } from 'react';
 import VentasData from './components/VentasData';
 import VentasTableSkeleton from './components/VentasTableSkeleton';
-import Link from 'next/link';
 
 export default async function VentasPage({
   searchParams
@@ -18,14 +17,6 @@ export default async function VentasPage({
         subtitle="Todas las ventas realizadas por vendedores"
         className="mb-6"
         variant="gradient"
-        actions={
-          <Link
-            className="rounded-md bg-green-500 p-2 text-sm font-medium text-white hover:bg-green-400"
-            href="/ventas/crear-venta"
-          >
-            Crear Venta
-          </Link>
-        }
       />
 
       <Suspense fallback={<VentasTableSkeleton />}>

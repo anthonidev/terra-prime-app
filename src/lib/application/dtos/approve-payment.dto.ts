@@ -1,6 +1,6 @@
 export interface ApprovePaymentDTO {
-  codeOperation: string;
+  codeOperation?: string;
   banckName: string;
   dateOperation: string;
-  numberTicket: string;
+  numberTicket?: string;
 }

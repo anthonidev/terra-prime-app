@@ -5,11 +5,13 @@ import { motion } from 'framer-motion';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import SidebarLink from './SidebarLink';
 import { cn } from '@/lib/utils';
+
 type Props = {
   isCollapsed: boolean;
   setIsCollapsed: (value: boolean) => void;
   isMobile?: boolean;
 };
+
 const SidebarContent = ({ isCollapsed, setIsCollapsed, isMobile = false }: Props) => {
   const { data: session } = useSession();
   const user = session?.user;

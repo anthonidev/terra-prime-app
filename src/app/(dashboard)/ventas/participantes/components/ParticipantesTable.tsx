@@ -94,14 +94,6 @@ const ParticipantesTable = ({ data }: Props) => {
         cell: ({ row }) => <StatusBadge status={row.getValue('participantType')} />
       },
       {
-        accessorKey: 'createdAt',
-        header: 'Fecha Creación',
-        cell: ({ row }) => {
-          const date = new Date(row.getValue('createdAt'));
-          return <div className="text-sm">{date.toLocaleDateString('es-PE')}</div>;
-        }
-      },
-      {
         id: 'actions',
         header: 'Acciones',
         cell: ({ row }) => <ParticipantActionsButton participant={row.original} />,

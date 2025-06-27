@@ -123,7 +123,7 @@ export class HttpParticipantRepository implements ParticipantRepository {
 
   async getActives(type: string): Promise<Participant[]> {
     try {
-      const response = await httpClient<Participant[]>('/api/participants/actives', {
+      const response = await httpClient<Participant[]>('/api/participants/all/actives', {
         params: { type },
         next: { revalidate: 0 }
       });
@@ -147,14 +147,32 @@ export class HttpParticipantRepository implements ParticipantRepository {
     }
   }
 
-  async assign(saleId: string, participantId: string): Promise<SalesListResponse> {
+  async assign(
+    saleId: string,
+    assignmentData: {
+      linerId?: string;
+      telemarketingSupervisorId?: string;
+      telemarketingConfirmerId?: string;
+      telemarketerId?: string;
+      fieldManagerId?: string;
+      fieldSupervisorId?: string;
+      fieldSellerId?: string;
+      guarantorId?: string;
+    }
+  ): Promise<SalesListResponse> {
     try {
-      const response = await httpClient<SalesListResponse>(`/sales/assign/participants/${saleId}`, {
-        body: { participantId },
-        method: 'POST'
-      });
+      const response = await httpClient<SalesListResponse>(
+        `/api/sales/assign/participants/${saleId}`,
+        {
+          body: assignmentData,
+          method: 'POST'
+        }
+      );
 
-      return response;
+      return {
+        items: response.items,
+        meta: response.meta
+      };
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
       throw error;

@@ -12,6 +12,7 @@ import { CreditCard, DollarSign, SquareActivity, User } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { CurrencyType, SaleList, SaleType } from '@domain/entities/sales/salevendor.entity';
 import { StatusBadge } from '@components/common/table/StatusBadge';
+import SaleActionsButton from './SaleActionsButton';
 
 type Props = {
   data: SaleList[];
@@ -153,6 +154,12 @@ const VentasTable = ({ data }: Props) => {
         accessorKey: 'status',
         header: 'Estado',
         cell: ({ row }) => <StatusBadge status={row.getValue('status')} />
+      },
+      {
+        id: 'actions',
+        header: 'Acciones',
+        cell: ({ row }) => <SaleActionsButton sale={row.original} />,
+        enableHiding: false
       }
     ],
     []

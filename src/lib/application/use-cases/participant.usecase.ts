@@ -58,7 +58,19 @@ export class GetActiveParticipantsUseCase {
 export class AssignParticipantToSaleUseCase {
   constructor(private readonly repository: ParticipantRepository) {}
 
-  async execute(saleId: string, participantId: string): Promise<SalesListResponse> {
-    return this.repository.assign(saleId, participantId);
+  async execute(
+    saleId: string,
+    assignmentData: {
+      linerId?: string;
+      telemarketingSupervisorId?: string;
+      telemarketingConfirmerId?: string;
+      telemarketerId?: string;
+      fieldManagerId?: string;
+      fieldSupervisorId?: string;
+      fieldSellerId?: string;
+      guarantorId?: string;
+    }
+  ): Promise<SalesListResponse> {
+    return this.repository.assign(saleId, assignmentData);
   }
 }
