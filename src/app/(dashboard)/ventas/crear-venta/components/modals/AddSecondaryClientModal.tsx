@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -39,7 +39,8 @@ import {
   Save,
   User,
   UserCheck,
-  X
+  X,
+  Edit
 } from 'lucide-react';
 
 import { SecondaryClientFormData, secondaryClientSchema } from '../../validations/saleValidation';
@@ -49,9 +50,18 @@ interface Props {
   onClose: () => void;
   onSuccess: (data: SecondaryClientFormData) => void;
   isCreating: boolean;
+  editingData?: SecondaryClientFormData;
+  isEditing?: boolean;
 }
 
-export default function AddSecondaryClientModal({ isOpen, onClose, onSuccess, isCreating }: Props) {
+export default function AddSecondaryClientModal({
+  isOpen,
+  onClose,
+  onSuccess,
+  isCreating,
+  editingData,
+  isEditing = false
+}: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<SecondaryClientFormData>({
@@ -67,13 +77,34 @@ export default function AddSecondaryClientModal({ isOpen, onClose, onSuccess, is
     }
   });
 
+  useEffect(() => {
+    if (isEditing && editingData) {
+      form.reset(editingData);
+    } else if (!isEditing) {
+      form.reset({
+        firstName: '',
+        lastName: '',
+        email: '',
+        document: '',
+        documentType: 'DNI',
+        phone: '',
+        address: ''
+      });
+    }
+  }, [isEditing, editingData, form]);
+
   const onSubmit = async (data: SecondaryClientFormData) => {
     setError(null);
     try {
       await onSuccess(data);
-      form.reset();
+      if (!isEditing) {
+        form.reset();
+      }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error al crear el co-comprador';
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : `Error al ${isEditing ? 'actualizar' : 'crear'} el co-comprador`;
       setError(errorMessage);
     }
   };
@@ -142,7 +173,6 @@ export default function AddSecondaryClientModal({ isOpen, onClose, onSuccess, is
       type: 'tel',
       colSpan: 'col-span-2'
     },
-
     {
       name: 'address',
       label: 'Dirección',
@@ -159,12 +189,20 @@ export default function AddSecondaryClientModal({ isOpen, onClose, onSuccess, is
         <DialogHeader className="flex-shrink-0 border-b border-gray-100 px-4 py-4 sm:px-6 dark:border-gray-800">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
-              <UserCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              {isEditing ? (
+                <Edit className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              ) : (
+                <UserCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              )}
             </div>
             <div>
-              <DialogTitle className="text-lg font-semibold">Agregar Co-Comprador</DialogTitle>
+              <DialogTitle className="text-lg font-semibold">
+                {isEditing ? 'Editar Co-Comprador' : 'Agregar Co-Comprador'}
+              </DialogTitle>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Registra la información del co-comprador para la venta
+                {isEditing
+                  ? 'Modifica la información del co-comprador'
+                  : 'Registra la información del co-comprador para la venta'}
               </p>
             </div>
           </div>
@@ -258,12 +296,12 @@ export default function AddSecondaryClientModal({ isOpen, onClose, onSuccess, is
             {isCreating ? (
               <>
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                Guardando...
+                {isEditing ? 'Actualizando...' : 'Guardando...'}
               </>
             ) : (
               <>
                 <Save className="h-4 w-4" />
-                Guardar Co-Comprador
+                {isEditing ? 'Actualizar Co-Comprador' : 'Guardar Co-Comprador'}
               </>
             )}
           </Button>

@@ -56,12 +56,7 @@ export default function SecondaryClientSection({
             </Card>
           ))}
         </div>
-      ) : (
-        <div className="rounded-lg border border-dashed p-4 text-center">
-          <UserCheck className="mx-auto h-8 w-8 text-gray-400" />
-          <p className="mt-2 text-sm text-gray-500">Aún no se han generado co-compradores</p>
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }
