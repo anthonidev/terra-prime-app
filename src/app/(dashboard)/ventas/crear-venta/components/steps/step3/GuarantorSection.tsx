@@ -50,15 +50,7 @@ export default function GuarantorSection({
             </div>
           </CardContent>
         </Card>
-      ) : (
-        <div className="rounded-lg border border-dashed border-gray-300 p-4 text-center dark:border-gray-700">
-          <UserCheck className="mx-auto h-8 w-8 text-gray-400" />
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Aún no se ha generado un garante
-          </p>
-          <p className="text-xs text-gray-400">Haz clic en Agregar Garante para continuar</p>
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }
