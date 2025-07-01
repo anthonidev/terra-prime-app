@@ -166,23 +166,32 @@ export async function getPaymentsByCollector(params?: {
   order?: string;
   page?: number;
   limit?: number;
+  search?: string;
 }): Promise<PaymentsByCollectorResponse> {
-  const repository = new HttpPaymentsByColletorRepository();
-  const useCase = new PaymentsByCollectorUseCase(repository);
+  try {
+    const repository = new HttpPaymentsByColletorRepository();
+    const useCase = new PaymentsByCollectorUseCase(repository);
 
-  const response = await useCase.execute(params);
+    const response = await useCase.execute(params);
 
-  return {
-    items: response.items,
-    meta: response.meta
-  };
+    return {
+      items: response.items,
+      meta: response.meta
+    };
+  } catch (error) {
+    console.error('Error fetching payments by collector:', error);
+    throw new Error('Failed to fetch payments');
+  }
 }
 
 export async function getPaymentByCollector(id: number): Promise<PaymentDetailItem> {
-  const repository = new HttpPaymentByCollectorRepository();
-  const useCase = new PaymentByCollectorUseCase(repository);
+  try {
+    const repository = new HttpPaymentByCollectorRepository();
+    const useCase = new PaymentByCollectorUseCase(repository);
 
-  const response = await useCase.execute(id);
-
-  return response;
+    return await useCase.execute(id);
+  } catch (error) {
+    console.error('Error fetching payment detail:', error);
+    throw new Error('Failed to fetch payment detail');
+  }
 }

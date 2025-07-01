@@ -3,10 +3,10 @@ import { httpClient } from '@/lib/api/http-client';
 import {
   ExcelValidationResponse,
   PaginatedLotsResponseDto,
-  ProjectData,
   ProjectDetailDto,
   ProjectListResponseDto
 } from '@/types/project.types';
+
 export async function validateProjectExcel(formData: FormData): Promise<ExcelValidationResponse> {
   try {
     return await httpClient<ExcelValidationResponse>('/api/projects/validate-excel', {
@@ -19,16 +19,19 @@ export async function validateProjectExcel(formData: FormData): Promise<ExcelVal
     throw error;
   }
 }
-export async function createBulkProject(projectData: ProjectData): Promise<unknown> {
+
+export async function createBulkProject(formData: FormData): Promise<unknown> {
   try {
     return await httpClient('/api/projects/bulk-create', {
       method: 'POST',
-      body: { projectData: projectData }
+      body: formData,
+      skipJsonStringify: true
     });
   } catch (error) {
     throw error;
   }
 }
+
 export async function getProjects(): Promise<ProjectListResponseDto> {
   try {
     const response = await httpClient<ProjectListResponseDto>('/api/projects', {
