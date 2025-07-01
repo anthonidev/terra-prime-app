@@ -6,6 +6,7 @@ import {
   ProjectDetailDto,
   ProjectListResponseDto
 } from '@/types/project.types';
+
 export async function validateProjectExcel(formData: FormData): Promise<ExcelValidationResponse> {
   try {
     return await httpClient<ExcelValidationResponse>('/api/projects/validate-excel', {
@@ -18,19 +19,19 @@ export async function validateProjectExcel(formData: FormData): Promise<ExcelVal
     throw error;
   }
 }
-export async function createBulkProject(file: File): Promise<unknown> {
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
 
+export async function createBulkProject(formData: FormData): Promise<unknown> {
+  try {
     return await httpClient('/api/projects/bulk-create', {
       method: 'POST',
-      body: formData
+      body: formData,
+      skipJsonStringify: true
     });
   } catch (error) {
     throw error;
   }
 }
+
 export async function getProjects(): Promise<ProjectListResponseDto> {
   try {
     const response = await httpClient<ProjectListResponseDto>('/api/projects', {

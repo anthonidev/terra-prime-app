@@ -79,7 +79,9 @@ export function useProjectUpload() {
     }
     setIsCreating(true);
     try {
-      await createBulkProject(file);
+      const formData = new FormData();
+      formData.append('file', file);
+      await createBulkProject(formData);
       setCurrentStep('success');
       toast.success('Proyecto creado correctamente');
     } catch (error) {
