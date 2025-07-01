@@ -90,3 +90,67 @@ export async function registerDeparture(id: string) {
     };
   }
 }
+
+export async function generateReport(leadId: string) {
+  try {
+    const result = await httpClient<{
+      success: string;
+      message: string;
+      data: {
+        leadId: string;
+        documentUrl: string;
+        generatedAt: string;
+        clientName: string;
+        documentNumber: string;
+        leadInfo: {
+          documentType: string;
+          phone: string;
+          source: string;
+        };
+        isNewDocument: boolean;
+      };
+    }>(`/api/reports-leads/generate/${leadId}`, {
+      method: 'POST',
+      cache: 'no-store'
+    });
+
+    revalidateTag('leads');
+    revalidatePath('/leads');
+
+    return result;
+  } catch (error) {
+    if (error instanceof Error) console.log(error.message);
+  }
+}
+
+export async function regenerateReport(leadId: string) {
+  try {
+    const result = await httpClient<{
+      success: string;
+      message: string;
+      data: {
+        leadId: string;
+        documentUrl: string;
+        generatedAt: string;
+        clientName: string;
+        documentNumber: string;
+        leadInfo: {
+          documentType: string;
+          phone: string;
+          source: string;
+        };
+        isNewDocument: boolean;
+      };
+    }>(`/api/reports-leads/regenerate/${leadId}`, {
+      method: 'POST',
+      cache: 'no-store'
+    });
+
+    revalidateTag('leads');
+    revalidatePath('/leads');
+
+    return result;
+  } catch (error) {
+    if (error instanceof Error) console.log(error.message);
+  }
+}
