@@ -1,29 +1,24 @@
-'use client';
-
 import { PageHeader } from '@/components/common/PageHeader';
 import { FileText } from 'lucide-react';
-import { useParams } from 'next/navigation';
-import * as React from 'react';
+import { notFound } from 'next/navigation';
+import { getPaymentByCollector } from '@infrastructure/server-actions/cobranza.actions';
 import PaymentInfoSection from './components/PaymentInfoSection';
 import PaymentDetailSection from './components/PaymentDetailSection';
 import PaymentImagesSection from './components/PaymentImagesSection';
-import { PaymentDetailSkeleton } from './components/PaymentDetailSkeleton';
-import NotFound from './not-found';
-import { usePagoDetail } from '../../hooks/usePagoDetail';
-import { PaymentImageViewer } from './components/PaymentImageViewer';
 
-export default function Page() {
-  const params = useParams<{ id: string }>();
-  const paymentId = Number(params.id);
-  const [selectedImageUrl, setSelectedImageUrl] = React.useState<string | null>(null);
+interface PaymentDetailPageProps {
+  params: Promise<{ id: string }>;
+}
 
-  const { payment, isLoading } = usePagoDetail(paymentId);
+export default async function PaymentDetailPage({ params }: PaymentDetailPageProps) {
+  const { id } = await params;
+  const paymentId = parseInt(id);
 
-  const handleImageClick = (url: string) => setSelectedImageUrl(url);
-  const handleCloseImageViewer = () => setSelectedImageUrl(null);
+  if (isNaN(paymentId)) notFound();
 
-  if (isLoading) return <PaymentDetailSkeleton />;
-  if (!payment) return <NotFound />;
+  const payment = await getPaymentByCollector(paymentId);
+
+  if (!payment) notFound();
 
   return (
     <div className="container py-8">
@@ -41,15 +36,7 @@ export default function Page() {
           <PaymentDetailSection payment={payment} />
         </div>
 
-        <PaymentImagesSection
-          images={payment.vouchers}
-          onImageClick={handleImageClick}
-          currencyType={payment.currency}
-        />
-
-        {selectedImageUrl && (
-          <PaymentImageViewer imageUrl={selectedImageUrl} onClose={handleCloseImageViewer} />
-        )}
+        <PaymentImagesSection images={payment.vouchers} currencyType={payment.currency} />
       </div>
     </div>
   );

@@ -1,28 +1,28 @@
-import PagosTable from './PagosTable';
 import { getPaymentsByCollector } from '@infrastructure/server-actions/cobranza.actions';
-import PagosCard from './PagosCard';
-import { Card, CardContent } from '@/components/ui/card';
-import PagosFilters from './PagosFilters';
 import { TableQueryPagination } from '@components/common/table/TableQueryPagination';
+import { Card, CardContent } from '@/components/ui/card';
+import PagosTable from './PagosTable';
+import PagosCard from './PagosCard';
+import PagosFilters from './PagosFilters';
 
-export default async function PagosData({
-  searchParams
-}: {
+interface PagosDataProps {
   searchParams?: {
     order?: string;
     page?: string;
     limit?: string;
+    search?: string;
   };
-}) {
-  const order = (searchParams?.order === 'ASC' ? 'ASC' : 'DESC') as 'ASC' | 'DESC';
-  const page = searchParams?.page ? parseInt(searchParams.page) : 1;
-  const limit = searchParams?.limit ? parseInt(searchParams.limit) : 10;
+}
 
-  const { items, meta } = await getPaymentsByCollector({
-    order,
-    page,
-    limit
-  });
+export default async function PagosData({ searchParams }: PagosDataProps) {
+  const params = {
+    order: (searchParams?.order === 'ASC' ? 'ASC' : 'DESC') as 'ASC' | 'DESC',
+    page: searchParams?.page ? parseInt(searchParams.page) : 1,
+    limit: searchParams?.limit ? parseInt(searchParams.limit) : 10,
+    search: searchParams?.search
+  };
+
+  const { items, meta } = await getPaymentsByCollector(params);
 
   return (
     <div className="space-y-6">
@@ -30,7 +30,7 @@ export default async function PagosData({
         <CardContent className="p-6">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div className="flex-1">
-              <PagosFilters order={order} />
+              <PagosFilters order={params.order} />
             </div>
           </div>
         </CardContent>

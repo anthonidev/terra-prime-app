@@ -6,28 +6,27 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/u
 import { Badge } from '@/components/ui/badge';
 import { SortAsc, SortDesc, X, Search } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useTransition, useEffect } from 'react';
 
-interface Props {
+interface PagosFiltersProps {
   order: 'ASC' | 'DESC';
-  onSearchChange?: (search: string) => void;
 }
 
-export default function PagosFilters({ order: initialOrder, onSearchChange }: Props) {
+export default function PagosFilters({ order: initialOrder }: PagosFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
 
-  // Estados del filtro
   const [orderValue, setOrderValue] = useState<'ASC' | 'DESC'>(initialOrder);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
 
   const createQueryString = useCallback(
     (updates: { [key: string]: string }) => {
       const params = new URLSearchParams(searchParams.toString());
 
       Object.entries(updates).forEach(([name, value]) => {
-        if (value === '') {
+        if (value === '' || value === 'all') {
           params.delete(name);
         } else {
           params.set(name, value);
@@ -40,22 +39,31 @@ export default function PagosFilters({ order: initialOrder, onSearchChange }: Pr
     [searchParams]
   );
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (searchTerm !== (searchParams.get('search') || '')) {
+        startTransition(() => {
+          router.push(`${pathname}?${createQueryString({ search: searchTerm })}`);
+        });
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, pathname, router, createQueryString, searchParams]);
+
   const handleOrderChange = (value: 'ASC' | 'DESC') => {
     setOrderValue(value);
-    router.push(`${pathname}?${createQueryString({ order: value })}`);
-  };
-
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
-    // Llamar al callback para filtrado local
-    onSearchChange?.(value);
+    startTransition(() => {
+      router.push(`${pathname}?${createQueryString({ order: value })}`);
+    });
   };
 
   const clearAllFilters = () => {
     setOrderValue('DESC');
     setSearchTerm('');
-    onSearchChange?.('');
-    router.push(pathname);
+    startTransition(() => {
+      router.push(pathname);
+    });
   };
 
   const hasActiveFilters = orderValue !== 'DESC' || searchTerm !== '';
@@ -68,17 +76,17 @@ export default function PagosFilters({ order: initialOrder, onSearchChange }: Pr
           <Input
             placeholder="Buscar por cliente, vendedor, código..."
             value={searchTerm}
-            onChange={(e) => handleSearchChange(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="bg-white pl-10 dark:bg-gray-900"
+            disabled={isPending}
           />
         </div>
 
-        {/* Controles de filtro */}
         <div className="flex items-center gap-2">
-          {/* Ordenamiento */}
           <Select
             value={orderValue}
             onValueChange={(value: 'ASC' | 'DESC') => handleOrderChange(value)}
+            disabled={isPending}
           >
             <SelectTrigger className="w-auto gap-2 bg-white dark:bg-gray-900">
               {orderValue === 'DESC' ? (
@@ -96,13 +104,13 @@ export default function PagosFilters({ order: initialOrder, onSearchChange }: Pr
             </SelectContent>
           </Select>
 
-          {/* Limpiar filtros */}
           {hasActiveFilters && (
             <Button
               variant="ghost"
               size="sm"
               onClick={clearAllFilters}
               className="gap-2 text-gray-500 hover:text-gray-700"
+              disabled={isPending}
             >
               <X className="h-4 w-4" />
               <span className="hidden sm:inline">Limpiar</span>
@@ -111,7 +119,6 @@ export default function PagosFilters({ order: initialOrder, onSearchChange }: Pr
         </div>
       </div>
 
-      {/* Chips de filtros activos */}
       {hasActiveFilters && (
         <div className="flex flex-wrap gap-2">
           {searchTerm && (
@@ -119,7 +126,7 @@ export default function PagosFilters({ order: initialOrder, onSearchChange }: Pr
               <Search className="h-3 w-3" />
               Búsqueda: {searchTerm}
               <button
-                onClick={() => handleSearchChange('')}
+                onClick={() => setSearchTerm('')}
                 className="ml-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600"
               >
                 <X className="h-3 w-3" />
