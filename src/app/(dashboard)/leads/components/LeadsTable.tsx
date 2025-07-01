@@ -12,7 +12,18 @@ import {
 } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Building2, Calendar, Clock, CreditCard, Mail, MapPin, Phone, User } from 'lucide-react';
+import {
+  Building2,
+  Calendar,
+  Clock,
+  CreditCard,
+  File,
+  FileText,
+  Mail,
+  MapPin,
+  Phone,
+  User
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 import LeadActionsButton from './buttons/LeadActionsButton';
 
@@ -253,6 +264,31 @@ const LeadsTable = ({ data }: Props) => {
           </Badge>
         ),
         enableHiding: true
+      },
+      {
+        accessorKey: 'reportPdfUrl',
+        header: 'Reporte',
+        cell: ({ row }) => {
+          const pdfUrl = row.getValue('reportPdfUrl') as string;
+
+          return pdfUrl ? (
+            <a
+              href={pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 hover:underline"
+            >
+              <FileText className="h-4 w-4" />
+              Ver PDF
+            </a>
+          ) : (
+            <div className="flex items-center gap-2 text-gray-400">
+              <File className="h-4 w-4" />
+              <span className="text-sm">No disponible</span>
+            </div>
+          );
+        },
+        enableHiding: false
       },
       {
         accessorKey: 'createdAt',

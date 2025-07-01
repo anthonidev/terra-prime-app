@@ -119,6 +119,7 @@ export interface Lead {
   documentType: DocumentType;
   phone: string | null;
   phone2: string | null;
+  reportPdfUrl: string | null;
   age: number | null;
   ubigeo?: Ubigeo;
   source?: LeadSource;
