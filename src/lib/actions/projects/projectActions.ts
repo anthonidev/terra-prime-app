@@ -3,7 +3,6 @@ import { httpClient } from '@/lib/api/http-client';
 import {
   ExcelValidationResponse,
   PaginatedLotsResponseDto,
-  ProjectData,
   ProjectDetailDto,
   ProjectListResponseDto
 } from '@/types/project.types';
@@ -19,11 +18,14 @@ export async function validateProjectExcel(formData: FormData): Promise<ExcelVal
     throw error;
   }
 }
-export async function createBulkProject(projectData: ProjectData): Promise<unknown> {
+export async function createBulkProject(file: File): Promise<unknown> {
   try {
+    const formData = new FormData();
+    formData.append('file', file);
+
     return await httpClient('/api/projects/bulk-create', {
       method: 'POST',
-      body: { projectData: projectData }
+      body: formData
     });
   } catch (error) {
     throw error;
