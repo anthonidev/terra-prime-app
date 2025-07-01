@@ -10,14 +10,25 @@ import {
 } from '@components/ui/select';
 import { SortAsc, SortDesc, X } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 
-export default function TableFilters({ order: initialOrder }: { order: 'ASC' | 'DESC' }) {
+interface TableFiltersProps {
+  order: 'ASC' | 'DESC';
+}
+
+export default function TableFilters({ order: initialOrder }: TableFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const [orderValue, setOrderValue] = useState<'ASC' | 'DESC'>(initialOrder);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+    const urlOrder = searchParams.get('order');
+    if (urlOrder === 'ASC' || urlOrder === 'DESC') setOrderValue(urlOrder);
+  }, [searchParams]);
 
   const createQueryString = useCallback(
     (updates: { [key: string]: string }) => {
@@ -39,15 +50,25 @@ export default function TableFilters({ order: initialOrder }: { order: 'ASC' | '
 
   const handleOrderChange = (value: 'ASC' | 'DESC') => {
     setOrderValue(value);
-    router.push(`${pathname}?${createQueryString({ order: value })}`);
+    if (isHydrated) router.push(`${pathname}?${createQueryString({ order: value })}`);
   };
 
   const clearAllFilters = () => {
     setOrderValue('DESC');
-    router.push(pathname);
+    if (isHydrated) router.push(pathname);
   };
 
   const hasActiveFilters = orderValue !== 'DESC';
+
+  if (!isHydrated) {
+    return (
+      <div className="space-y-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-1">
+          <div className="h-10 w-full animate-pulse rounded-md bg-gray-200 dark:bg-gray-700" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">

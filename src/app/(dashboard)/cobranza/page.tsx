@@ -1,16 +1,20 @@
-export const dynamic = 'force-dynamic';
-
 import { PageHeader } from '@/components/common/PageHeader';
 import { Suspense } from 'react';
 import CobradoresData from './components/CobradoresData';
 import CobradoresTableSkeleton from './components/TableSkeleton';
 
-export default async function Page({
-  searchParams
-}: {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const filters = await searchParams;
+interface SearchParams {
+  order?: string;
+  page?: string;
+  limit?: string;
+}
+
+interface CobranzaPageProps {
+  searchParams: Promise<SearchParams>;
+}
+
+export default async function CobranzaPage({ searchParams }: CobranzaPageProps) {
+  const resolvedSearchParams = await searchParams;
 
   return (
     <div className="container py-8">
@@ -22,7 +26,7 @@ export default async function Page({
       />
 
       <Suspense fallback={<CobradoresTableSkeleton />}>
-        <CobradoresData searchParams={filters} />
+        <CobradoresData searchParams={resolvedSearchParams} />
       </Suspense>
     </div>
   );
