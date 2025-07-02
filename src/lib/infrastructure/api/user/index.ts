@@ -21,6 +21,7 @@ export class HttpGetUsersRepository implements GetUsersRepository {
       const response = await httpClient<UsersResponse>('/api/users', {
         params,
         next: {
+          tags: ['users'],
           revalidate: 0
         }
       });
@@ -41,7 +42,8 @@ export class HttpGetRolesRepository implements GetRolesRespository {
     try {
       const response = await httpClient<Role[]>('/api/users/roles', {
         next: {
-          revalidate: 0
+          tags: ['roles'],
+          revalidate: 60 * 60
         }
       });
       return response.map((item) => ({ id: item.id, code: item.code, name: item.name }));

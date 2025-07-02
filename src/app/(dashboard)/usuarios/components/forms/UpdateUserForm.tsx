@@ -36,7 +36,7 @@ export default function UpdateUserForm({ user, roleOptions, onClose }: Props) {
       await updateUser(user.id, { ...data, roleId: Number(data.roleId) });
       onClose();
     } catch (error) {
-      if (error instanceof Error) toast.error('Error al actualizar el usuario.');
+      if (error instanceof Error) toast.error(error.message);
     }
   };
 

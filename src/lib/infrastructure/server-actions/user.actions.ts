@@ -15,6 +15,7 @@ import {
 import { UsersResponse } from '@infrastructure/types/user';
 import { Role, UserList } from '@domain/entities/user';
 import { CreateUserDTO, UpdateUserDTO } from '@application/dtos/user';
+import { revalidateTag } from 'next/cache';
 
 export const getUsers = async (params?: {
   search?: string;
@@ -49,6 +50,8 @@ export const createUser = async (dto: CreateUserDTO): Promise<UserList> => {
 
   const response = await useCase.execute(dto);
 
+  revalidateTag('users');
+
   return {
     id: response.id,
     email: response.email,
@@ -68,6 +71,8 @@ export const updateUser = async (id: string, dto: UpdateUserDTO): Promise<UserLi
   const useCase = new UpdateUserUseCase(repository);
 
   const response = await useCase.execute(id, dto);
+
+  revalidateTag('users');
 
   return {
     id: response.id,
