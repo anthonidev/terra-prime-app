@@ -14,8 +14,8 @@ export default async function VentasPage({
   return (
     <div className="container py-8">
       <PageHeader
-        title="Ventas"
-        subtitle="Administra todas las ventas realizadas por vendedores"
+        title="Mis Ventas"
+        subtitle="Detalles generales de mis ventas realizadas"
         className="mb-6"
         variant="gradient"
         actions={

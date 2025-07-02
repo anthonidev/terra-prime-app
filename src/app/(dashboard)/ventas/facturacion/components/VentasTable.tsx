@@ -68,7 +68,7 @@ const VentasTable = ({ data }: Props) => {
                     className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
                   >
                     <FileText className="h-4 w-4" />
-                    Ver reporte
+                    bienvenido
                   </a>
                 ) : (
                   <div className="flex items-center gap-1 text-gray-400">

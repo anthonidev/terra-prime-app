@@ -60,11 +60,8 @@ export default function SaleActionsButton({ sale }: Props) {
 
     try {
       const result = await action(sale.id);
-      if (result?.success) {
-        toast.success('Reporte procesado correctamente');
-      } else {
-        toast.error('Error al procesar el reporte');
-      }
+      if (result?.success) toast.success('Reporte procesado correctamente');
+      else toast.error('Error al procesar el reporte');
     } catch (error) {
       console.error(error);
       toast.error('Error al procesar el reporte');

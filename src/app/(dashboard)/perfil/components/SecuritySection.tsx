@@ -13,8 +13,8 @@ interface SecuritySectionProps {
 
 export function SecuritySection({ user }: SecuritySectionProps) {
   return (
-    <Card>
-      <CardContent className="p-6">
+    <Card className="mt-6">
+      <CardContent className="p-6 pt-1">
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
