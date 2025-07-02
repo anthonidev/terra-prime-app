@@ -14,7 +14,7 @@ const figtree = Figtree({
 });
 
 export const metadata: Metadata = {
-  title: 'PropertyPro - Huertas Inmobiliaria',
+  title: 'SMART - Huertas Inmobiliaria',
   description: 'Sistema de gestión de Huertas Inmobiliaria',
   icons: {
     icon: '/favicon.ico',

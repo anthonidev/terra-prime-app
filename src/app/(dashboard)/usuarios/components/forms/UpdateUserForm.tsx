@@ -1,17 +1,17 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { Activity, Mail, ShieldCheck, User } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { DialogFooter } from '@/components/ui/dialog';
+import { Form } from '@/components/ui/form';
+import { updateUser } from '@/lib/infrastructure/server-actions/user.actions';
 import { UpdateUserFormData, updateUserSchema } from '@/lib/validations/user';
 import FormInputField from '@components/common/form/FormInputField';
 import FormSelectField from '@components/common/form/FormSelectField';
-import { Form } from '@/components/ui/form';
-import { DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { updateUser } from '@/lib/infrastructure/server-actions/user.actions';
 import { UserList } from '@domain/entities/user';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Activity, Mail, ShieldCheck, User } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 interface Props {
   user: UserList;
@@ -27,7 +27,9 @@ export default function UpdateUserForm({ user, roleOptions, onClose }: Props) {
       lastName: user.lastName,
       email: user.email,
       isActive: user.isActive.toString(),
-      roleId: user.role.id.toString()
+      roleId: user.role.id.toString(),
+      document: user.document || '',
+      password: undefined
     }
   });
 
@@ -59,6 +61,20 @@ export default function UpdateUserForm({ user, roleOptions, onClose }: Props) {
       placeholder: 'correo@ejemplo.com',
       type: 'email',
       icon: <Mail />
+    },
+    {
+      name: 'document',
+      label: 'Documento',
+      placeholder: 'Ingresa tu documento',
+      type: 'text',
+      icon: <User />
+    },
+    {
+      name: 'password',
+      label: 'Contraseña',
+      placeholder: 'Nueva contraseña (opcional)',
+      type: 'password',
+      icon: <User />
     }
   ] as const;
 

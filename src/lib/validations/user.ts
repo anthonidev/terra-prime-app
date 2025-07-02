@@ -33,7 +33,9 @@ export const updateUserSchema = z.object({
   lastName: z.string().min(2, 'El apellido debe tener al menos 2 caracteres'),
   email: z.string().email('Ingrese un correo válido'),
   isActive: z.string(),
-  roleId: z.string().min(1, 'Debe seleccionar un rol')
+  roleId: z.string().min(1, 'Debe seleccionar un rol'),
+  password: z.string().optional(),
+  document: z.string()
 });
 
 export type CreateUserFormData = z.infer<typeof createUserSchema>;

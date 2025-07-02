@@ -1,41 +1,38 @@
-import type { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import type { NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        document: { label: 'Document', type: 'string' },
+        password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
+        if (!credentials?.document || !credentials?.password) return null;
         try {
-          const res = await fetch(
-            `${process.env.API_BACKENDL_URL}/api/auth/login`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                email: credentials.email,
-                password: credentials.password,
-              }),
-            }
-          );
+          const res = await fetch(`${process.env.API_BACKENDL_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              document: credentials.document,
+              password: credentials.password
+            })
+          });
           const data = await res.json();
           if (res.ok && data.user) {
             return {
               ...data.user,
               accessToken: data.accessToken,
-              refreshToken: data.refreshToken,
+              refreshToken: data.refreshToken
             };
           }
           return null;
         } catch {
           return null;
         }
-      },
-    }),
+      }
+    })
   ],
   callbacks: {
     async jwt({ token, user, account }) {
@@ -53,30 +50,27 @@ export const authOptions: NextAuthOptions = {
             document: user.document,
             role: user.role,
             photo: user.photo,
-            views: user.views,
-          },
+            views: user.views
+          }
         };
       }
       const currentTimestamp = Math.floor(Date.now() / 1000);
-      const tokenData = JSON.parse(atob(token.accessToken.split(".")[1]));
+      const tokenData = JSON.parse(atob(token.accessToken.split('.')[1]));
       if (tokenData.exp < currentTimestamp) {
         try {
-          const response = await fetch(
-            `${process.env.API_BACKENDL_URL}/api/auth/refresh`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ refreshToken: token.refreshToken }),
-            }
-          );
+          const response = await fetch(`${process.env.API_BACKENDL_URL}/api/auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refreshToken: token.refreshToken })
+          });
           const data = await response.json();
           if (response.ok) {
             token.accessToken = data.accessToken;
             token.refreshToken = data.refreshToken;
           }
         } catch (error) {
-          console.error("Error refreshing token:", error);
-          return { ...token, error: "RefreshAccessTokenError" };
+          console.error('Error refreshing token:', error);
+          return { ...token, error: 'RefreshAccessTokenError' };
         }
       }
       return token;
@@ -86,18 +80,18 @@ export const authOptions: NextAuthOptions = {
       session.accessToken = token.accessToken;
       session.error = token.error;
       return session;
-    },
+    }
   },
   jwt: {
-    secret: process.env.JWT_SECRET,
+    secret: process.env.JWT_SECRET
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/",
-    error: "/error",
+    signIn: '/',
+    error: '/error'
   },
   session: {
-    strategy: "jwt",
-    maxAge: 24 * 60 * 60, 
-  },
+    strategy: 'jwt',
+    maxAge: 24 * 60 * 60
+  }
 };

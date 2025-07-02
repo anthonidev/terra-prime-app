@@ -1,5 +1,7 @@
 'use client';
 
+import { Alert, AlertDescription } from '@components/ui/alert';
+import { Button } from '@components/ui/button';
 import {
   Card,
   CardContent,
@@ -8,19 +10,17 @@ import {
   CardHeader,
   CardTitle
 } from '@components/ui/card';
-import Link from 'next/link';
-import { AlertCircle, Eye, EyeOff, KeyRound, Loader2, Mail } from 'lucide-react';
-import { Alert, AlertDescription } from '@components/ui/alert';
-import { Button } from '@components/ui/button';
 import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
 import { motion } from 'framer-motion';
+import { AlertCircle, Eye, EyeOff, IdCard, KeyRound, Loader2 } from 'lucide-react';
 import { signIn } from 'next-auth/react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface FormData {
-  email: string;
+  document: string;
   password: string;
 }
 export default function LoginPage() {
@@ -29,7 +29,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    email: '',
+    document: '',
     password: ''
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +47,7 @@ export default function LoginPage() {
     try {
       const result = await signIn('credentials', {
         redirect: false,
-        email: formData.email,
+        document: formData.document,
         password: formData.password
       });
       if (result?.error) {
@@ -90,15 +90,15 @@ export default function LoginPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
                 >
-                  <Label htmlFor="email">Correo Electrónico</Label>
+                  <Label htmlFor="document">Documento</Label>
                   <div className="relative">
-                    <Mail className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                    <IdCard className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                     <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="correo@ejemplo.com"
-                      value={formData.email}
+                      id="document"
+                      name="document"
+                      type="text"
+                      placeholder="Ingresa tu documento"
+                      value={formData.document}
                       onChange={handleChange}
                       required
                       className="focus:bg-background bg-white pl-10 transition-all dark:bg-gray-900"
@@ -167,7 +167,7 @@ export default function LoginPage() {
                   <Button
                     type="submit"
                     className="w-full"
-                    disabled={loading || !formData.email || !formData.password}
+                    disabled={loading || !formData.document || !formData.password}
                   >
                     {loading ? (
                       <>

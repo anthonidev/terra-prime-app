@@ -1,11 +1,13 @@
 'use server';
 
+import { CreateUserDTO, UpdateUserDTO } from '@application/dtos/user';
 import {
   CreateUserUseCase,
   GetRolesUseCase,
   GetUsersUseCase,
   UpdateUserUseCase
 } from '@application/use-cases/user';
+import { Role, UserList } from '@domain/entities/user';
 import {
   HttpCreateUserRepository,
   HttpGetRolesRepository,
@@ -13,8 +15,6 @@ import {
   HttpUpdateUserRepository
 } from '@infrastructure/api/user';
 import { UsersResponse } from '@infrastructure/types/user';
-import { Role, UserList } from '@domain/entities/user';
-import { CreateUserDTO, UpdateUserDTO } from '@application/dtos/user';
 import { revalidateTag } from 'next/cache';
 
 export const getUsers = async (params?: {

@@ -11,4 +11,5 @@ export interface CreateUserDTO {
 
 export interface UpdateUserDTO extends Omit<Partial<CreateUserDTO>, 'document'> {
   password?: string;
+  document?: string;
 }
