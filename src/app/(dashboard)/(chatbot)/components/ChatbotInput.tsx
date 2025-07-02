@@ -1,9 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { RateLimitStatus } from '@/types/chat/chatbot.types';
-import { Send, Loader2, AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Loader2, Send } from 'lucide-react';
 import React from 'react';
 
 interface ChatbotInputProps {
