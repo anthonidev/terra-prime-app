@@ -1,4 +1,14 @@
 import {
+  ChatMessage,
+  ChatSession,
+  Guide,
+  GuideDetailResponse,
+  MessageRequest,
+  RateLimitStatus,
+  SearchContextRequest
+} from '@/types/chat/chatbot.types';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
   closeSession,
   getAvailableGuides,
   getChatSessions,
@@ -9,48 +19,8 @@ import {
   searchContext,
   sendMessage
 } from '../actions';
-import {
-  ChatMessage,
-  ChatSession,
-  Guide,
-  GuideDetailResponse,
-  MessageRequest,
-  RateLimitStatus,
-  SearchContextRequest
-} from '@/types/chat/chatbot.types';
-import { useCallback, useEffect, useRef, useState } from 'react';
 
-export interface UseChatbotReturn {
-  // State
-  messages: ChatMessage[];
-  isLoading: boolean;
-  error: string | null;
-  currentSessionId: string | null;
-  rateLimitStatus: RateLimitStatus | null;
-  quickHelp: string[];
-  userRole: { code: string; name: string } | null;
-  availableGuides: Guide[];
-  selectedGuide: GuideDetailResponse | null;
-  sessions: ChatSession[];
-
-  // Actions
-  initializeChatbot: () => Promise<void>;
-  sendChatMessage: (message: string) => Promise<void>;
-  loadSessionHistory: (sessionId: string) => Promise<void>;
-  loadGuides: () => Promise<void>;
-  loadGuideDetail: (guideKey: string) => Promise<void>;
-  searchContent: (query: string) => Promise<void>;
-  closeCurrentSession: () => Promise<void>;
-  clearError: () => void;
-  resetChatbot: () => void;
-
-  // UI helpers
-  isRateLimited: boolean;
-  shouldShowWarning: boolean;
-  getRateLimitMessage: () => string | null;
-}
-
-export const useChatbot = (): UseChatbotReturn => {
+export const useChatbot = () => {
   // Core state
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);

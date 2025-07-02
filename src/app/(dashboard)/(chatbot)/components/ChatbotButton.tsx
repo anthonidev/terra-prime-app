@@ -1,10 +1,13 @@
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { RateLimitStatus } from '@/types/chat/chatbot.types';
-import { AlertCircle, MessageCircle } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { AlertCircle, Bot, Sparkles } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { getRateLimitStatus } from '../actions';
-import Chatbot from './ChatBot';
+import { ChatbotSheet } from './ChatbotSheet';
 
-const ChatbotButton: React.FC = () => {
+const ChatbotButton = () => {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [rateLimitStatus, setRateLimitStatus] = useState<RateLimitStatus | null>(null);
   const [hasNewNotification, setHasNewNotification] = useState(false);
@@ -33,14 +36,15 @@ const ChatbotButton: React.FC = () => {
     setHasNewNotification(false);
   };
 
-  const getButtonStyle = () => {
-    if (rateLimitStatus?.isBlocked) {
-      return 'bg-red-500 hover:bg-red-600 cursor-not-allowed';
-    }
-    if (rateLimitStatus && rateLimitStatus.remaining < 10) {
-      return 'bg-yellow-500 hover:bg-yellow-600';
-    }
-    return 'bg-blue-600 hover:bg-blue-700';
+  const getButtonVariant = () => {
+    if (rateLimitStatus?.isBlocked) return 'destructive';
+    if (rateLimitStatus && rateLimitStatus.remaining < 10) return 'secondary';
+    return 'default';
+  };
+
+  const getButtonIcon = () => {
+    if (rateLimitStatus?.isBlocked) return <AlertCircle className="h-5 w-5" />;
+    return <Bot className="h-5 w-5" />;
   };
 
   const getTooltipText = () => {
@@ -55,39 +59,56 @@ const ChatbotButton: React.FC = () => {
 
   return (
     <>
-      {/* Chatbot Button */}
-      <div className="group relative">
-        <button
-          onClick={handleChatbotToggle}
-          disabled={rateLimitStatus?.isBlocked}
-          className={`relative rounded-lg p-2 text-white transition-all duration-200 ${getButtonStyle()} ${rateLimitStatus?.isBlocked ? 'opacity-50' : 'hover:scale-105'} `}
-          title={getTooltipText()}
-        >
-          <MessageCircle className="h-5 w-5" />
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="relative">
+              <Button
+                onClick={handleChatbotToggle}
+                disabled={rateLimitStatus?.isBlocked}
+                variant={getButtonVariant()}
+                size="lg"
+                className="relative rounded-lg shadow-lg transition-all duration-200 hover:scale-105"
+              >
+                {getButtonIcon()}
 
-          {/* Notification dot */}
-          {hasNewNotification && (
-            <div className="absolute -top-1 -right-1 h-3 w-3 animate-pulse rounded-full bg-red-500"></div>
-          )}
+                {/* Animated sparkles for active state */}
+                {!rateLimitStatus?.isBlocked && (
+                  <Sparkles className="text-primary absolute -top-1 -right-1 h-3 w-3 animate-pulse" />
+                )}
+              </Button>
 
-          {/* Warning indicator */}
-          {rateLimitStatus && rateLimitStatus.remaining < 5 && !rateLimitStatus.isBlocked && (
-            <div className="absolute -right-1 -bottom-1">
-              <AlertCircle className="h-3 w-3 text-yellow-300" />
+              {/* Notification dot */}
+              {hasNewNotification && !rateLimitStatus?.isBlocked && (
+                <div className="bg-destructive absolute -top-1 -right-1 h-3 w-3 animate-ping rounded-full"></div>
+              )}
+
+              {/* Rate limit badge */}
+              {rateLimitStatus && rateLimitStatus.remaining < 5 && !rateLimitStatus.isBlocked && (
+                <Badge
+                  variant="destructive"
+                  className="absolute -right-2 -bottom-2 flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
+                >
+                  {rateLimitStatus.remaining}
+                </Badge>
+              )}
             </div>
-          )}
-        </button>
-
-        {/* Rate limit indicator */}
-        {rateLimitStatus && (
-          <div className="absolute top-full right-0 z-50 mt-1 rounded bg-gray-800 px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100">
-            {rateLimitStatus.remaining}/{rateLimitStatus.limit} mensajes
-          </div>
-        )}
-      </div>
+          </TooltipTrigger>
+          <TooltipContent side="left" className="max-w-xs">
+            <div className="space-y-1">
+              <p className="font-medium">{getTooltipText()}</p>
+              {rateLimitStatus && (
+                <p className="text-muted-foreground text-xs">
+                  {rateLimitStatus.remaining}/{rateLimitStatus.limit} mensajes disponibles
+                </p>
+              )}
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       {/* Chatbot Sheet */}
-      <Chatbot isOpen={isChatbotOpen} onOpenChange={setIsChatbotOpen} />
+      <ChatbotSheet isOpen={isChatbotOpen} onOpenChange={setIsChatbotOpen} />
     </>
   );
 };
