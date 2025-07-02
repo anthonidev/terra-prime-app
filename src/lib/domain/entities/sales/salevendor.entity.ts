@@ -55,7 +55,8 @@ export class Client {
     public readonly address: string,
     public readonly firstName: string,
     public readonly lastName: string,
-    public readonly phone: string
+    public readonly phone: string,
+    public readonly reportPdfUrl: string | null
   ) {}
 }
 
@@ -128,6 +129,8 @@ export class SaleList {
     public readonly client: Client,
     public readonly secondaryClients: SecondaryClient[] | null,
     public readonly lot: Lot,
+    public readonly radicationPdfUrl: string | null,
+    public readonly paymentAcordPdfUrl: string | null,
     public readonly financing: Financing | null,
     public readonly liner: Liner | null,
     public readonly telemarketingSupervisor: TelemarketingSupervisor | null,

@@ -3,7 +3,8 @@ import {
   PaymentApproveRejectResponse,
   PaymentCompletedResponse,
   PaymentListResponse,
-  PaymentResponse
+  PaymentResponse,
+  SaleReportResponse
 } from '@infrastructure/types/sales/api-response.types';
 import { PaymentDetailItem } from '@domain/entities/sales/payment.entity';
 import { ApprovePaymentDTO } from '@application/dtos/approve-payment.dto';
@@ -36,4 +37,20 @@ export interface PaymentRejectRepository {
 
 export interface PaymentCompleteRepository {
   completePaymentDetail(id: number, dto: PaymentCompleteDTO): Promise<PaymentCompletedResponse>;
+}
+
+export interface GenerateAcordPaymentRepository {
+  generateAcordPayment(saleId: string): Promise<SaleReportResponse>;
+}
+
+export interface RegenerateAcordPaymentRepository {
+  regenerateAcordPayment(saleId: string): Promise<SaleReportResponse>;
+}
+
+export interface GenerateRadicationPaymentRepository {
+  generateRadicationPayment(saleId: string): Promise<SaleReportResponse>;
+}
+
+export interface RegenerateRadicationPaymentRepository {
+  regenerateRadicationPayment(saleId: string): Promise<SaleReportResponse>;
 }

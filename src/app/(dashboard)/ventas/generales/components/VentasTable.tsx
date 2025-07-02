@@ -8,7 +8,7 @@ import {
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table';
-import { CreditCard, DollarSign, SquareActivity, User } from 'lucide-react';
+import { CreditCard, DollarSign, FileText, File, SquareActivity, User } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { CurrencyType, SaleList, SaleType } from '@domain/entities/sales/salevendor.entity';
 import { StatusBadge } from '@components/common/table/StatusBadge';
@@ -57,7 +57,75 @@ const VentasTable = ({ data }: Props) => {
                 <div className="font-medium text-gray-900 dark:text-gray-100">
                   {sale.client.firstName} {sale.client.lastName}
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">{sale.client.phone}</div>
+                <div className="py-1 text-xs text-gray-500 dark:text-gray-400">
+                  {sale.client.phone}
+                </div>
+                {sale.client.reportPdfUrl ? (
+                  <a
+                    href={sale.client.reportPdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                  >
+                    <FileText className="h-4 w-4" />
+                    Ver reporte
+                  </a>
+                ) : (
+                  <div className="flex items-center gap-1 text-gray-400">
+                    <File className="h-4 w-4" />
+                    <span className="text-xs">sin reporte</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        },
+        enableHiding: false
+      },
+      {
+        accessorKey: 'documents',
+        header: 'Documentos',
+        cell: ({ row }) => {
+          const radication = row.original.radicationPdfUrl;
+          const acord = row.original.paymentAcordPdfUrl;
+
+          return (
+            <div className="space-y-2">
+              <div>
+                {radication ? (
+                  <a
+                    href={radication}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 hover:underline"
+                  >
+                    <FileText className="h-4 w-4" />
+                    <span className="text-sm">H. de Radicación</span>
+                  </a>
+                ) : (
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <File className="h-4 w-4" />
+                    <span className="text-sm">H. de Radicación</span>
+                  </div>
+                )}
+              </div>
+              <div>
+                {acord ? (
+                  <a
+                    href={acord}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-green-600 hover:text-green-800 hover:underline"
+                  >
+                    <FileText className="h-4 w-4" />
+                    <span className="text-sm">A. de Pago</span>
+                  </a>
+                ) : (
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <File className="h-4 w-4" />
+                    <span className="text-sm">A. de Pago</span>
+                  </div>
+                )}
               </div>
             </div>
           );

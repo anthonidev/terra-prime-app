@@ -98,3 +98,21 @@ export interface PaymentCompletedResponse {
   status: StatusSale;
   createdAt: string;
 }
+
+export interface SaleReportResponse {
+  success: boolean;
+  message: string;
+  data: {
+    saleId: string;
+    documentUrl: string;
+    generatedAt: string;
+    clientName: string;
+    lotName: string;
+    saleInfo: {
+      type: string;
+      totalAmount: string;
+      projectName: string;
+    };
+    isNewDocument: boolean;
+  };
+}

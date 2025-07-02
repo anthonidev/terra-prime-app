@@ -7,11 +7,15 @@ import {
   HttpClientGuarantorRepository,
   HttpClientRepository,
   HttpCompletePaymentRepository,
+  HttpGenerateAcordPayment,
+  HttpGenerateRadicationPayment,
   HttpLeadsOfDayRepository,
   HttpLeadsVendorRepository,
   HttpPaymentDetailRepository,
   HttpPaymentListRepository,
   HttpPaymentRepository,
+  HttpRegenerateAcordPayment,
+  HttpRegenerateRadicationPayment,
   HttpRejectPaymentRepository,
   HttpSaleDetailRepository,
   HttpSaleListRepository,
@@ -29,6 +33,7 @@ import {
   PaymentCompletedResponse,
   PaymentListResponse,
   PaymentResponse,
+  SaleReportResponse,
   SalesListResponse,
   SalesListVendorResponse,
   VendorsActivesResponse
@@ -52,24 +57,29 @@ import { ProcessPaymentDto } from '@application/dtos/create-payment.dto';
 import {
   ApprovePaymentUseCase,
   CreatePaymentUseCase,
+  GenerateAcordPaymentUseCase,
+  GenerateRadicationPaymentUseCase,
   GetPaymentDetailUseCase,
   ListPaymentsUseCase,
   PaymentCompleteUseCase,
+  RegenerateAcordPaymentUseCase,
+  RegenerateRadicationPaymentUseCase,
   RejectPaymentUseCase
-} from '@/lib/application/use-cases/payment.usecase';
+} from '@application/use-cases/payment.usecase';
 import {
   SaleDetailUseCase,
   SaleListUseCase,
   SaleVendorUseCase
-} from '@/lib/application/use-cases/list-salevendor.usecase';
-import { PaymentDetailItem } from '@/lib/domain/entities/sales/payment.entity';
-import { ApprovePaymentDTO } from '@/lib/application/dtos/approve-payment.dto';
-import { RejectPaymentDTO } from '@/lib/application/dtos/reject-payment.dto';
-import { PaymentCompleteDTO } from '@/lib/application/dtos/complete-payment.dto';
-import { AssignLeadsToVendorDTO } from '@/lib/application/dtos/bienvenidos.dto';
-import { AssignLeadsVendorUseCase } from '@/lib/application/use-cases/assign-salevendor.usecase';
-import { LeadsOfDay } from '@/lib/domain/entities/sales/leadsvendors.entity';
-import { SaleList } from '@/lib/domain/entities/sales/salevendor.entity';
+} from '@application/use-cases/list-salevendor.usecase';
+import { PaymentDetailItem } from '@domain/entities/sales/payment.entity';
+import { ApprovePaymentDTO } from '@application/dtos/approve-payment.dto';
+import { RejectPaymentDTO } from '@application/dtos/reject-payment.dto';
+import { PaymentCompleteDTO } from '@application/dtos/complete-payment.dto';
+import { AssignLeadsToVendorDTO } from '@application/dtos/bienvenidos.dto';
+import { AssignLeadsVendorUseCase } from '@application/use-cases/assign-salevendor.usecase';
+import { LeadsOfDay } from '@domain/entities/sales/leadsvendors.entity';
+import { SaleList } from '@domain/entities/sales/salevendor.entity';
+import { revalidateTag } from 'next/cache';
 
 /**
  * Calcula el cronograma de pagos
@@ -292,6 +302,50 @@ export async function getPaymentList(params?: {
     items: paymentList.items,
     meta: paymentList.meta
   };
+}
+
+export async function generateAcordPayment(saleId: string): Promise<SaleReportResponse> {
+  const repository = new HttpGenerateAcordPayment();
+  const useCase = new GenerateAcordPaymentUseCase(repository);
+
+  const response = await useCase.execute(saleId);
+
+  revalidateTag('sales_general');
+
+  return response;
+}
+
+export async function regenerateAcordPayment(saleId: string): Promise<SaleReportResponse> {
+  const repository = new HttpRegenerateAcordPayment();
+  const useCase = new RegenerateAcordPaymentUseCase(repository);
+
+  const response = await useCase.execute(saleId);
+
+  revalidateTag('sales_general');
+
+  return response;
+}
+
+export async function generateRadicationPayment(saleId: string): Promise<SaleReportResponse> {
+  const repository = new HttpGenerateRadicationPayment();
+  const useCase = new GenerateRadicationPaymentUseCase(repository);
+
+  const response = await useCase.execute(saleId);
+
+  revalidateTag('sales_general');
+
+  return response;
+}
+
+export async function regenerateRadicationPayment(saleId: string): Promise<SaleReportResponse> {
+  const repository = new HttpRegenerateRadicationPayment();
+  const useCase = new RegenerateRadicationPaymentUseCase(repository);
+
+  const response = await useCase.execute(saleId);
+
+  revalidateTag('sales_general');
+
+  return response;
 }
 
 export async function getPaymentDetail(id: number): Promise<PaymentDetailItem> {

@@ -28,7 +28,8 @@ import {
   PaymentListResponse,
   PaymentApproveRejectResponse,
   PaymentCompletedResponse,
-  SalesListResponse
+  SalesListResponse,
+  SaleReportResponse
 } from '@infrastructure/types/sales/api-response.types';
 
 import {
@@ -38,12 +39,16 @@ import {
 } from '@domain/entities/sales/leadsvendors.entity';
 import { CreateClientGuarantorDTO } from '@application/dtos/create-clientguarantor.dto';
 import {
+  GenerateAcordPaymentRepository,
+  GenerateRadicationPaymentRepository,
   PaymentApproveRepository,
   PaymentCompleteRepository,
   PaymentDetailRepository,
   PaymentListRepository,
   PaymentRejectRepository,
-  PaymentRepository
+  PaymentRepository,
+  RegenerateAcordPaymentRepository,
+  RegenerateRadicationPaymentRepository
 } from '@domain/repositories/payments.repository';
 import { ProcessPaymentDto } from '@application/dtos/create-payment.dto';
 import {
@@ -313,7 +318,11 @@ export class HttpSaleVendorRepository implements SaleVendorRepository {
   }): Promise<{ items: SaleList[]; meta: Meta }> {
     try {
       const response = await httpClient<SalesListVendorResponse>('/api/sales/all/list/vendor', {
-        params
+        params,
+        next: {
+          tags: ['sales_vendor'],
+          revalidate: 0
+        }
       });
 
       return {
@@ -335,7 +344,11 @@ export class HttpSaleListRepository implements SaleListRepository {
   }): Promise<{ items: SaleList[]; meta: Meta }> {
     try {
       const response = await httpClient<SalesListResponse>('/api/sales/all/list', {
-        params
+        params,
+        next: {
+          tags: ['sales_general'],
+          revalidate: 0
+        }
       });
 
       return {
@@ -541,6 +554,75 @@ export class HttpCompletePaymentRepository implements PaymentCompleteRepository 
         status: response.status,
         createdAt: response.createdAt
       };
+    } catch (error) {
+      if (error instanceof Error) throw new Error(error.message);
+      throw error;
+    }
+  }
+}
+
+export class HttpGenerateAcordPayment implements GenerateAcordPaymentRepository {
+  async generateAcordPayment(saleId: string): Promise<SaleReportResponse> {
+    try {
+      const response = await httpClient<SaleReportResponse>(
+        `/api/reports-payment-acord/generate/${saleId}`,
+        {
+          method: 'POST'
+        }
+      );
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error) throw new Error(error.message);
+      throw error;
+    }
+  }
+}
+
+export class HttpRegenerateAcordPayment implements RegenerateAcordPaymentRepository {
+  async regenerateAcordPayment(saleId: string): Promise<SaleReportResponse> {
+    try {
+      const response = await httpClient<SaleReportResponse>(
+        `/api/reports-payment-acord/regenerate/${saleId}`,
+        {
+          method: 'POST'
+        }
+      );
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error) throw new Error(error.message);
+      throw error;
+    }
+  }
+}
+
+export class HttpGenerateRadicationPayment implements GenerateRadicationPaymentRepository {
+  async generateRadicationPayment(saleId: string): Promise<SaleReportResponse> {
+    try {
+      const response = await httpClient<SaleReportResponse>(`/api/radication/generate/${saleId}`, {
+        method: 'POST'
+      });
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error) throw new Error(error.message);
+      throw error;
+    }
+  }
+}
+
+export class HttpRegenerateRadicationPayment implements RegenerateRadicationPaymentRepository {
+  async regenerateRadicationPayment(saleId: string): Promise<SaleReportResponse> {
+    try {
+      const response = await httpClient<SaleReportResponse>(
+        `/api/radication/regenerate/${saleId}`,
+        {
+          method: 'POST'
+        }
+      );
+
+      return response;
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
       throw error;

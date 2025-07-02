@@ -4,14 +4,19 @@ import {
   PaymentListRepository,
   PaymentRejectRepository,
   PaymentRepository,
-  PaymentCompleteRepository
+  PaymentCompleteRepository,
+  GenerateAcordPaymentRepository,
+  RegenerateAcordPaymentRepository,
+  GenerateRadicationPaymentRepository,
+  RegenerateRadicationPaymentRepository
 } from '@domain/repositories/payments.repository';
 import { ProcessPaymentDto } from '@application/dtos/create-payment.dto';
 import {
   PaymentApproveRejectResponse,
   PaymentCompletedResponse,
   PaymentListResponse,
-  PaymentResponse
+  PaymentResponse,
+  SaleReportResponse
 } from '@infrastructure/types/sales/api-response.types';
 import { PaymentDetailItem } from '@domain/entities/sales/payment.entity';
 import { ApprovePaymentDTO } from '@application/dtos/approve-payment.dto';
@@ -67,5 +72,37 @@ export class PaymentCompleteUseCase {
 
   async execute(id: number, dto: PaymentCompleteDTO): Promise<PaymentCompletedResponse> {
     return this.repository.completePaymentDetail(id, dto);
+  }
+}
+
+export class GenerateAcordPaymentUseCase {
+  constructor(private readonly repository: GenerateAcordPaymentRepository) {}
+
+  async execute(saleId: string): Promise<SaleReportResponse> {
+    return this.repository.generateAcordPayment(saleId);
+  }
+}
+
+export class RegenerateAcordPaymentUseCase {
+  constructor(private readonly repository: RegenerateAcordPaymentRepository) {}
+
+  async execute(saleId: string): Promise<SaleReportResponse> {
+    return this.repository.regenerateAcordPayment(saleId);
+  }
+}
+
+export class GenerateRadicationPaymentUseCase {
+  constructor(private readonly repository: GenerateRadicationPaymentRepository) {}
+
+  async execute(saleId: string): Promise<SaleReportResponse> {
+    return this.repository.generateRadicationPayment(saleId);
+  }
+}
+
+export class RegenerateRadicationPaymentUseCase {
+  constructor(private readonly repository: RegenerateRadicationPaymentRepository) {}
+
+  async execute(saleId: string): Promise<SaleReportResponse> {
+    return this.repository.regenerateRadicationPayment(saleId);
   }
 }
