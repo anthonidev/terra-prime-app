@@ -63,7 +63,7 @@ const Navbar = () => {
       </div>
       <div className="flex items-center gap-4">
         {/* <NotificationIcon /> */}
-        <ChatbotButton />
+        {/* <ChatbotButton /> */}
         <Separator orientation="vertical" className="bg-border h-6" />
         <ThemeSwitch />
       </div>

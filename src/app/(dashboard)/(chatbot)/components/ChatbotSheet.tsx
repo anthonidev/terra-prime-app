@@ -7,15 +7,17 @@ import {
   SheetHeader,
   SheetTitle
 } from '@/components/ui/sheet';
-import { MessageCircle } from 'lucide-react';
 import React from 'react';
 import { useChatbot } from '../hooks/useChatbot';
 import { ChatbotHeader } from './ChatbotHeader';
 import { ChatbotInput } from './ChatbotInput';
 import { ChatbotMessages } from './ChatbotMessages';
-import { ChatbotSidebar } from './ChatbotSidebar';
+
 import { RateLimitWarning } from './RateLimitWarning';
 import { VisuallyHidden } from './VisuallyHidden';
+import { ChatbotGuidesView } from './ChatbotGuidesView';
+import { ChatbotGuideDetail } from './ChatbotGuideDetail';
+import { ChatbotHistoryView } from './ChatbotHistoryView';
 
 interface ChatbotSheetProps {
   isOpen: boolean;
@@ -50,7 +52,6 @@ export const ChatbotSheet: React.FC<ChatbotSheetProps> = ({ isOpen, onOpenChange
   } = useChatbot();
 
   const [viewMode, setViewMode] = React.useState<ViewMode>('chat');
-  const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   // Initialize when opened
   React.useEffect(() => {
@@ -63,7 +64,6 @@ export const ChatbotSheet: React.FC<ChatbotSheetProps> = ({ isOpen, onOpenChange
     await closeCurrentSession();
     resetChatbot();
     setViewMode('chat');
-    setSidebarOpen(false);
   };
 
   const handleSendMessage = async (message: string) => {
@@ -72,19 +72,16 @@ export const ChatbotSheet: React.FC<ChatbotSheetProps> = ({ isOpen, onOpenChange
 
   const handleViewHistory = () => {
     setViewMode('history');
-    setSidebarOpen(true);
   };
 
   const handleViewGuides = async () => {
     await loadGuides();
     setViewMode('guides');
-    setSidebarOpen(true);
   };
 
   const handleSelectSession = async (sessionId: string) => {
     await loadSessionHistory(sessionId);
     setViewMode('chat');
-    setSidebarOpen(false);
   };
 
   const handleSelectGuide = async (guideKey: string) => {
@@ -94,7 +91,70 @@ export const ChatbotSheet: React.FC<ChatbotSheetProps> = ({ isOpen, onOpenChange
 
   const handleBackToChat = () => {
     setViewMode('chat');
-    setSidebarOpen(false);
+  };
+
+  const handleBackToGuides = () => {
+    setViewMode('guides');
+  };
+
+  const renderCurrentView = () => {
+    switch (viewMode) {
+      case 'chat':
+        return (
+          <div className="flex h-full flex-col overflow-hidden">
+            {/* Messages Container */}
+            <div className="flex-1 overflow-auto">
+              <ChatbotMessages
+                messages={messages}
+                quickHelp={quickHelp}
+                isLoading={isLoading}
+                onQuickHelpClick={handleSendMessage}
+              />
+            </div>
+
+            {/* Input Container */}
+            <div className="border-border flex-shrink-0 border-t">
+              <ChatbotInput
+                onSendMessage={handleSendMessage}
+                disabled={isLoading || isRateLimited}
+                rateLimitStatus={rateLimitStatus}
+              />
+            </div>
+          </div>
+        );
+
+      case 'history':
+        return (
+          <ChatbotHistoryView
+            sessions={sessions}
+            isLoading={isLoading}
+            onSelectSession={handleSelectSession}
+            onBackToChat={handleBackToChat}
+          />
+        );
+
+      case 'guides':
+        return (
+          <ChatbotGuidesView
+            guides={availableGuides}
+            isLoading={isLoading}
+            onSelectGuide={handleSelectGuide}
+            onBackToChat={handleBackToChat}
+          />
+        );
+
+      case 'guide-detail':
+        return (
+          <ChatbotGuideDetail
+            guide={selectedGuide}
+            onBackToGuides={handleBackToGuides}
+            onBackToChat={handleBackToChat}
+          />
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -112,27 +172,29 @@ export const ChatbotSheet: React.FC<ChatbotSheetProps> = ({ isOpen, onOpenChange
             </SheetDescription>
           </SheetHeader>
         </VisuallyHidden>
+
         {/* Header */}
-        <ChatbotHeader
-          userRole={userRole}
-          onNewChat={handleNewChat}
-          onViewHistory={handleViewHistory}
-          onViewGuides={handleViewGuides}
-          onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-          sidebarOpen={sidebarOpen}
-          currentSessionId={currentSessionId}
-        />
+        <div className="flex-shrink-0">
+          <ChatbotHeader
+            userRole={userRole}
+            currentView={viewMode}
+            onNewChat={handleNewChat}
+            onViewHistory={handleViewHistory}
+            onViewGuides={handleViewGuides}
+            currentSessionId={currentSessionId}
+          />
+        </div>
 
         {/* Rate Limit Warning */}
         {(shouldShowWarning || isRateLimited) && (
-          <div className="border-b px-6 py-3">
+          <div className="border-border flex-shrink-0 border-b px-6 py-3">
             <RateLimitWarning rateLimitStatus={rateLimitStatus} message={getRateLimitMessage()} />
           </div>
         )}
 
         {/* Error Display */}
         {error && (
-          <div className="border-b px-6 py-3">
+          <div className="border-border flex-shrink-0 border-b px-6 py-3">
             <div className="border-destructive/20 bg-destructive/10 flex items-center justify-between rounded-lg border p-3">
               <span className="text-destructive text-sm">{error}</span>
               <Button
@@ -148,94 +210,7 @@ export const ChatbotSheet: React.FC<ChatbotSheetProps> = ({ isOpen, onOpenChange
         )}
 
         {/* Main Content */}
-        <div className="flex min-h-0 flex-1 overflow-hidden">
-          {/* Sidebar */}
-          {sidebarOpen && (
-            <>
-              <div className="border-border w-72 flex-shrink-0 overflow-hidden border-r">
-                <ChatbotSidebar
-                  viewMode={viewMode}
-                  sessions={sessions}
-                  availableGuides={availableGuides}
-                  selectedGuide={selectedGuide}
-                  onSelectSession={handleSelectSession}
-                  onSelectGuide={handleSelectGuide}
-                  onBackToChat={handleBackToChat}
-                  isLoading={isLoading}
-                />
-              </div>
-              <Separator orientation="vertical" />
-            </>
-          )}
-
-          {/* Chat Area */}
-          <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-            {viewMode === 'chat' ? (
-              <>
-                {/* Messages */}
-                <div className="min-h-0 flex-1">
-                  <ChatbotMessages
-                    messages={messages}
-                    quickHelp={quickHelp}
-                    isLoading={isLoading}
-                    onQuickHelpClick={handleSendMessage}
-                  />
-                </div>
-
-                {/* Input */}
-                <div className="border-border border-t">
-                  <ChatbotInput
-                    onSendMessage={handleSendMessage}
-                    disabled={isLoading || isRateLimited}
-                    rateLimitStatus={rateLimitStatus}
-                  />
-                </div>
-              </>
-            ) : viewMode === 'guide-detail' && selectedGuide ? (
-              <div className="flex-1 overflow-y-auto p-6">
-                <div className="mx-auto max-w-2xl">
-                  <div className="mb-6">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setViewMode('guides')}
-                      className="mb-4"
-                    >
-                      ← Volver a guías
-                    </Button>
-                    <h2 className="text-foreground mb-2 text-2xl font-bold">
-                      {selectedGuide.guide.title}
-                    </h2>
-                  </div>
-
-                  <div className="space-y-4">
-                    {selectedGuide.guide.steps.map((step, index) => (
-                      <div
-                        key={index}
-                        className="border-border bg-card flex gap-4 rounded-lg border p-4"
-                      >
-                        <div className="bg-primary text-primary-foreground flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full font-semibold">
-                          {index + 1}
-                        </div>
-                        <p className="text-card-foreground leading-relaxed">{step}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-1 items-center justify-center p-6">
-                <div className="text-center">
-                  <MessageCircle className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
-                  <p className="text-muted-foreground">
-                    {viewMode === 'history' && 'Selecciona una conversación del historial'}
-                    {viewMode === 'guides' && 'Selecciona una guía para ver los detalles'}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        <div className="flex-1 overflow-hidden">{renderCurrentView()}</div>
       </SheetContent>
     </Sheet>
   );

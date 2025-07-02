@@ -1,8 +1,9 @@
+'use client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { RateLimitStatus } from '@/types/chat/chatbot.types';
-import { AlertCircle, Bot, Sparkles } from 'lucide-react';
+import { Bot, MessageCircle, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getRateLimitStatus } from '../actions';
 import { ChatbotSheet } from './ChatbotSheet';
@@ -10,7 +11,7 @@ import { ChatbotSheet } from './ChatbotSheet';
 const ChatbotButton = () => {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [rateLimitStatus, setRateLimitStatus] = useState<RateLimitStatus | null>(null);
-  const [hasNewNotification, setHasNewNotification] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     checkRateLimitStatus();
@@ -18,43 +19,79 @@ const ChatbotButton = () => {
 
   const checkRateLimitStatus = async () => {
     try {
+      setIsLoading(true);
       const response = await getRateLimitStatus();
       if (response.success) {
         setRateLimitStatus(response.rateLimitStatus);
-
-        if (response.rateLimitStatus.remaining < 10 && response.rateLimitStatus.remaining > 0) {
-          setHasNewNotification(true);
-        }
       }
     } catch (error) {
       console.error('Error checking rate limit:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleChatbotToggle = () => {
     setIsChatbotOpen(!isChatbotOpen);
-    setHasNewNotification(false);
   };
 
-  const getButtonVariant = () => {
-    if (rateLimitStatus?.isBlocked) return 'destructive';
-    if (rateLimitStatus && rateLimitStatus.remaining < 10) return 'secondary';
-    return 'default';
+  const getButtonState = () => {
+    if (isLoading) return 'loading';
+    if (rateLimitStatus?.isBlocked) return 'blocked';
+    if (rateLimitStatus && rateLimitStatus.remaining < 5) return 'warning';
+    if (rateLimitStatus && rateLimitStatus.remaining < 15) return 'caution';
+    return 'available';
   };
 
   const getButtonIcon = () => {
-    if (rateLimitStatus?.isBlocked) return <AlertCircle className="h-5 w-5" />;
-    return <Bot className="h-5 w-5" />;
+    const state = getButtonState();
+
+    switch (state) {
+      case 'loading':
+        return <MessageCircle className="h-4 w-4" />;
+      case 'blocked':
+        return <Bot className="h-4 w-4 opacity-50" />;
+      case 'warning':
+        return <Zap className="h-4 w-4" />;
+      default:
+        return <Bot className="h-4 w-4" />;
+    }
   };
 
-  const getTooltipText = () => {
-    if (rateLimitStatus?.isBlocked) {
-      return `Límite alcanzado. Disponible después de ${new Date(rateLimitStatus.resetTime).toLocaleTimeString()}`;
+  const getButtonVariant = () => {
+    const state = getButtonState();
+
+    switch (state) {
+      case 'blocked':
+        return 'secondary';
+      case 'warning':
+        return 'destructive';
+      case 'caution':
+        return 'outline';
+      default:
+        return 'default';
     }
-    if (rateLimitStatus && rateLimitStatus.remaining < 10) {
-      return `⚠️ Te quedan ${rateLimitStatus.remaining} mensajes`;
+  };
+
+  const getTooltipContent = () => {
+    const state = getButtonState();
+
+    switch (state) {
+      case 'loading':
+        return 'Verificando disponibilidad...';
+      case 'blocked':
+        return `Límite alcanzado. Disponible a las ${new Date(rateLimitStatus!.resetTime).toLocaleTimeString()}`;
+      case 'warning':
+        return `⚠️ Solo quedan ${rateLimitStatus!.remaining} mensajes`;
+      case 'caution':
+        return `${rateLimitStatus!.remaining} mensajes restantes`;
+      default:
+        return 'Abrir asistente virtual';
     }
-    return 'Abrir asistente virtual';
+  };
+
+  const showRemainingBadge = () => {
+    return rateLimitStatus && rateLimitStatus.remaining < 10 && !rateLimitStatus.isBlocked;
   };
 
   return (
@@ -65,42 +102,55 @@ const ChatbotButton = () => {
             <div className="relative">
               <Button
                 onClick={handleChatbotToggle}
-                disabled={rateLimitStatus?.isBlocked}
+                disabled={rateLimitStatus?.isBlocked || isLoading}
                 variant={getButtonVariant()}
-                size="lg"
-                className="relative rounded-lg shadow-lg transition-all duration-200 hover:scale-105"
+                size="sm"
+                className="relative h-9 w-9 rounded-lg transition-colors duration-200"
               >
                 {getButtonIcon()}
-
-                {/* Animated sparkles for active state */}
-                {!rateLimitStatus?.isBlocked && (
-                  <Sparkles className="text-primary absolute -top-1 -right-1 h-3 w-3 animate-pulse" />
-                )}
               </Button>
 
-              {/* Notification dot */}
-              {hasNewNotification && !rateLimitStatus?.isBlocked && (
-                <div className="bg-destructive absolute -top-1 -right-1 h-3 w-3 animate-ping rounded-full"></div>
+              {/* Status indicator dot */}
+              {!isLoading && (
+                <div
+                  className={`absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ${
+                    rateLimitStatus?.isBlocked
+                      ? 'bg-gray-400'
+                      : rateLimitStatus && rateLimitStatus.remaining < 5
+                        ? 'bg-red-500'
+                        : rateLimitStatus && rateLimitStatus.remaining < 15
+                          ? 'bg-yellow-500'
+                          : 'bg-green-500'
+                  }`}
+                />
               )}
 
-              {/* Rate limit badge */}
-              {rateLimitStatus && rateLimitStatus.remaining < 5 && !rateLimitStatus.isBlocked && (
+              {/* Remaining messages badge */}
+              {showRemainingBadge() && (
                 <Badge
-                  variant="destructive"
-                  className="absolute -right-2 -bottom-2 flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
+                  variant={rateLimitStatus!.remaining < 5 ? 'destructive' : 'secondary'}
+                  className="absolute -right-2 -bottom-2 flex h-5 w-5 items-center justify-center rounded-full p-0 text-[10px] font-medium"
                 >
-                  {rateLimitStatus.remaining}
+                  {rateLimitStatus!.remaining}
                 </Badge>
               )}
             </div>
           </TooltipTrigger>
+
           <TooltipContent side="left" className="max-w-xs">
             <div className="space-y-1">
-              <p className="font-medium">{getTooltipText()}</p>
-              {rateLimitStatus && (
-                <p className="text-muted-foreground text-xs">
-                  {rateLimitStatus.remaining}/{rateLimitStatus.limit} mensajes disponibles
-                </p>
+              <p className="font-medium">{getTooltipContent()}</p>
+              {rateLimitStatus && !isLoading && (
+                <div className="space-y-1">
+                  <p className="text-xs opacity-80">
+                    {rateLimitStatus.remaining}/{rateLimitStatus.limit} mensajes disponibles
+                  </p>
+                  {rateLimitStatus.isBlocked && (
+                    <p className="text-xs opacity-80">
+                      Se reinicia: {new Date(rateLimitStatus.resetTime).toLocaleTimeString()}
+                    </p>
+                  )}
+                </div>
               )}
             </div>
           </TooltipContent>
