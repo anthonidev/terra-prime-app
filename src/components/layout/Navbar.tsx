@@ -5,6 +5,7 @@ import ThemeSwitch from '@components/common/ThemeSwich';
 import { Separator } from '@/components/ui/separator';
 import { Menu } from 'lucide-react';
 import useSidebar from '@/hooks/sidebar/useSidebar';
+import ChatbotButton from '@/app/(dashboard)/(chatbot)/components/ChatbotButton';
 
 const Navbar = () => {
   const formatDate = () => {
@@ -62,6 +63,7 @@ const Navbar = () => {
       </div>
       <div className="flex items-center gap-4">
         {/* <NotificationIcon /> */}
+        <ChatbotButton />
         <Separator orientation="vertical" className="bg-border h-6" />
         <ThemeSwitch />
       </div>
