@@ -3,8 +3,12 @@ import { PageHeader } from '@/components/common/PageHeader';
 import SkeletonData from './components/SkeletonData';
 import Content from './components/Content';
 
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
-  const param = await params;
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function Page({ params }: PageProps) {
+  const { slug } = await params;
   return (
     <div className="container py-8">
       <PageHeader
@@ -15,7 +19,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         backUrl="/cobranza/clientes-asignados"
       />
       <Suspense fallback={<SkeletonData />}>
-        <Content slug={param.slug} />
+        <Content slug={slug} />
       </Suspense>
     </div>
   );

@@ -14,81 +14,91 @@ export function usePaidCollection(
 ) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [payments, setPayments] = useState<PaymentImageModalType[]>([]);
+
   const resetPayments = useCallback(() => {
     setPayments([]);
   }, []);
 
   const requiredAmount = isUrban
-    ? Number(urbanFinancing?.financing.initialAmount)
-    : Number(sale.financing.initialAmount);
+    ? Number(urbanFinancing?.financing.initialAmount) || 0
+    : Number(sale.financing.initialAmount) || 0;
 
   const totalPaid = payments.reduce((sum, payment) => sum + payment.amount, 0);
   const remainingAmount = Math.max(0, requiredAmount - totalPaid);
-  const isAmountReached = totalPaid >= (requiredAmount || 0);
+  const isAmountReached = totalPaid >= requiredAmount;
   const isPaymentComplete = payments.length > 0 && totalPaid <= requiredAmount;
 
-  const addPayment = (payment: Omit<PaymentImageModalType, 'fileIndex'>) => {
-    const newTotal = totalPaid + payment.amount;
+  const addPayment = useCallback(
+    (payment: Omit<PaymentImageModalType, 'fileIndex'>) => {
+      const newTotal = totalPaid + payment.amount;
 
-    if (newTotal > requiredAmount) {
-      toast.warning(
-        `El monto ingresado excede el límite. Máximo permitido: ${new Intl.NumberFormat('es-PE', {
-          style: 'currency',
-          currency: sale.currency
-        }).format(remainingAmount)}`
-      );
-      return false;
-    }
-
-    const updatedPayments: PaymentImageModalType[] = [
-      ...payments,
-      {
-        ...payment,
-        bankName: payment.bankName ?? '',
-        fileIndex: payments.length
+      if (newTotal > requiredAmount) {
+        toast.warning(
+          `El monto ingresado excede el límite. Máximo permitido: ${new Intl.NumberFormat('es-PE', {
+            style: 'currency',
+            currency: sale.currency
+          }).format(remainingAmount)}`
+        );
+        return false;
       }
-    ];
-    setPayments(updatedPayments);
-    return true;
-  };
 
-  const deletePayment = (index: number) => {
-    const updatedPayments: PaymentImageModalType[] = payments
-      .filter((_, i) => i !== index)
-      .map((payment, newIndex) => ({
-        ...payment,
-        fileIndex: newIndex
-      }));
-    setPayments(updatedPayments);
-  };
+      const updatedPayments: PaymentImageModalType[] = [
+        ...payments,
+        {
+          ...payment,
+          bankName: payment.bankName ?? '',
+          fileIndex: payments.length
+        }
+      ];
+      setPayments(updatedPayments);
+      return true;
+    },
+    [payments, requiredAmount, totalPaid, remainingAmount, sale.currency]
+  );
 
-  const editPayment = (index: number, updatedPayment: Omit<PaymentImageModalType, 'fileIndex'>) => {
-    const totalWithoutEditedPayment = payments
-      .filter((_, i) => i !== index)
-      .reduce((sum, payment) => sum + payment.amount, 0);
+  const deletePayment = useCallback(
+    (index: number) => {
+      const updatedPayments: PaymentImageModalType[] = payments
+        .filter((_, i) => i !== index)
+        .map((payment, newIndex) => ({
+          ...payment,
+          fileIndex: newIndex
+        }));
+      setPayments(updatedPayments);
+    },
+    [payments]
+  );
 
-    const newTotal = totalWithoutEditedPayment + updatedPayment.amount;
+  const editPayment = useCallback(
+    (index: number, updatedPayment: Omit<PaymentImageModalType, 'fileIndex'>) => {
+      const totalWithoutEditedPayment = payments
+        .filter((_, i) => i !== index)
+        .reduce((sum, payment) => sum + payment.amount, 0);
 
-    if (newTotal > requiredAmount) {
-      const maxAllowed = requiredAmount - totalWithoutEditedPayment;
-      toast.warning(
-        `El monto ingresado excede el límite. Máximo permitido: ${new Intl.NumberFormat('es-PE', {
-          style: 'currency',
-          currency: sale.currency
-        }).format(maxAllowed)}`
-      );
-      return false;
-    }
+      const newTotal = totalWithoutEditedPayment + updatedPayment.amount;
 
-    const updatedPayments: PaymentImageModalType[] = [...payments];
-    updatedPayments[index] = {
-      ...updatedPayment,
-      bankName: updatedPayment.bankName ?? '',
-      fileIndex: index
-    };
-    setPayments(updatedPayments);
-    return true;
-  };
+      if (newTotal > requiredAmount) {
+        const maxAllowed = requiredAmount - totalWithoutEditedPayment;
+        toast.warning(
+          `El monto ingresado excede el límite. Máximo permitido: ${new Intl.NumberFormat('es-PE', {
+            style: 'currency',
+            currency: sale.currency
+          }).format(maxAllowed)}`
+        );
+        return false;
+      }
+
+      const updatedPayments: PaymentImageModalType[] = [...payments];
+      updatedPayments[index] = {
+        ...updatedPayment,
+        bankName: updatedPayment.bankName ?? '',
+        fileIndex: index
+      };
+      setPayments(updatedPayments);
+      return true;
+    },
+    [payments, requiredAmount, sale.currency]
+  );
 
   const handleAction = useCallback(async () => {
     try {
@@ -120,7 +130,12 @@ export function usePaidCollection(
 
       const paymentId = isUrban ? urbanFinancing?.financing.id : sale.financing.id;
 
-      await paidInstallments(paymentId!, dto);
+      if (!paymentId) {
+        toast.error('No se encontró el ID del financiamiento');
+        return false;
+      }
+
+      await paidInstallments(paymentId, dto);
 
       const isFullPayment = totalPaid === requiredAmount;
       toast.success(
@@ -133,7 +148,7 @@ export function usePaidCollection(
       );
       return true;
     } catch (error) {
-      if (error instanceof Error) toast.warning(error.message);
+      if (error instanceof Error) toast.error(error.message);
       return false;
     } finally {
       setIsSubmitting(false);

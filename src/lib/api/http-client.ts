@@ -29,7 +29,13 @@ export async function httpClient<T>(
     next
   }: FetchOptions = {}
 ): Promise<T> {
-  const session = await getServerSession(authOptions);
+  let session = null;
+
+  try {
+    session = await getServerSession(authOptions);
+  } catch (error) {
+    console.warn(error);
+  }
 
   const queryParams = params
     ? new URLSearchParams(

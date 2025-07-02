@@ -84,17 +84,22 @@ export async function onAssignClientsCollector(
 }
 
 export async function getClientsByUser(): Promise<ClientByUser[]> {
-  const repository = new HttpClientsByUserRepository();
-  const useCase = new ClientsByUserUseCase(repository);
+  try {
+    const repository = new HttpClientsByUserRepository();
+    const useCase = new ClientsByUserUseCase(repository);
 
-  const response = await useCase.execute();
+    const response = await useCase.execute();
 
-  return response.map((item) => ({
-    id: item.id,
-    address: item.address,
-    lead: item.lead,
-    createdAt: item.createdAt
-  }));
+    return response.map((item) => ({
+      id: item.id,
+      address: item.address,
+      lead: item.lead,
+      createdAt: item.createdAt
+    }));
+  } catch (error) {
+    console.error('Error fetching:', error);
+    throw new Error('Failed to fetch');
+  }
 }
 
 export async function listByClient(id: number): Promise<ListByClient[]> {

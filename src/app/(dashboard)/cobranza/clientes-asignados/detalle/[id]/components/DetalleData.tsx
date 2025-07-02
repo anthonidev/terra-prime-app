@@ -2,7 +2,11 @@ import DetalleTable from './DetalleTable';
 import { listByClient } from '@infrastructure/server-actions/cobranza.actions';
 import DetalleCard from './DetalleCard';
 
-export default async function DetalleData({ id }: { id: number }) {
+interface DetalleDataProps {
+  id: number;
+}
+
+export default async function DetalleData({ id }: DetalleDataProps) {
   const items = await listByClient(id);
 
   return (

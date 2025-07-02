@@ -3,8 +3,15 @@ import { Suspense } from 'react';
 import DetalleData from './components/DetalleData';
 import TableSkeleton from './components/TableSkeleton';
 
-export default async function Page({ params }: { params: Promise<{ id: number }> }) {
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function Page({ params }: PageProps) {
   const { id } = await params;
+  const numericId = parseInt(id, 10);
+
+  if (isNaN(numericId)) throw new Error('ID de cliente inválido');
 
   return (
     <div className="container py-8">
@@ -16,7 +23,7 @@ export default async function Page({ params }: { params: Promise<{ id: number }>
       />
 
       <Suspense fallback={<TableSkeleton />}>
-        <DetalleData id={id} />
+        <DetalleData id={numericId} />
       </Suspense>
     </div>
   );
