@@ -284,6 +284,11 @@ export const useChatbot = () => {
     };
   }, []);
 
+  const handleDeleteSession = async (sessionId: string) => {
+    await closeSession(sessionId);
+    // Refresh sessions list o cualquier lógica adicional
+  };
+
   return {
     // State
     messages,
@@ -311,6 +316,7 @@ export const useChatbot = () => {
     // UI helpers
     isRateLimited,
     shouldShowWarning,
-    getRateLimitMessage
+    getRateLimitMessage,
+    handleDeleteSession
   };
 };

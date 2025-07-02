@@ -1,12 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ChatMessage } from '@/types/chat/chatbot.types';
-import { Bot, HelpCircle, Sparkles, User, ChevronDown } from 'lucide-react';
-import React from 'react';
+import { Bot, HelpCircle, User, ChevronDown } from 'lucide-react';
+import { UIEvent, useEffect, useRef, useState } from 'react';
 
 interface ChatbotMessagesProps {
   messages: ChatMessage[];
@@ -21,12 +19,44 @@ export const ChatbotMessages = ({
   isLoading,
   onQuickHelpClick
 }: ChatbotMessagesProps) => {
-  const scrollAreaRef = React.useRef<HTMLDivElement>(null);
-  const messagesEndRef = React.useRef<HTMLDivElement>(null);
-  const [shouldAutoScroll, setShouldAutoScroll] = React.useState(true);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
 
+  const formatMessageTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    const diffInHours = Math.floor(diffInMinutes / 60);
+
+    if (diffInMinutes < 1) {
+      return 'Ahora';
+    } else if (diffInMinutes < 60) {
+      return `Hace ${diffInMinutes} min`;
+    } else if (diffInHours < 24) {
+      return `Hace ${diffInHours} hora${diffInHours > 1 ? 's' : ''}`;
+    } else {
+      return date.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+  };
+  if (messagesEndRef.current && shouldAutoScroll) {
+    messagesEndRef.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end'
+    });
+  }
+
+  // Detectar si el usuario está haciendo scroll manual
+  const handleScroll = (event: UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+    const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
+    setShouldAutoScroll(isNearBottom);
+  };
   const scrollToBottom = () => {
-    if (messagesEndRef.current && shouldAutoScroll) {
+    if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'end'
@@ -34,15 +64,7 @@ export const ChatbotMessages = ({
     }
   };
 
-  // Detectar si el usuario está haciendo scroll manual
-  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-    const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
-    setShouldAutoScroll(isNearBottom);
-  };
-
-  React.useEffect(() => {
-    // Solo auto-scroll si estamos cerca del bottom o es un mensaje nuevo
+  useEffect(() => {
     if (messages.length > 0) {
       const timer = setTimeout(() => {
         scrollToBottom();
@@ -57,20 +79,21 @@ export const ChatbotMessages = ({
         <div className="space-y-4 px-4 py-4">
           {/* Welcome message and quick help - only show when no messages */}
           {messages.length === 0 && (
-            <div className="mx-auto max-w-full space-y-4">
+            <div className="mx-auto max-w-full space-y-6">
               {/* Welcome card */}
-              <Card className="border-border from-primary/5 to-primary/10 border bg-gradient-to-br">
-                <CardContent className="p-4 text-center">
-                  <div className="mb-3 flex justify-center">
-                    <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-full">
-                      <Bot className="text-primary h-6 w-6" />
+              <Card className="border-border from-card to-muted/50 bg-gradient-to-br">
+                <CardContent className="p-6 text-center">
+                  <div className="mb-4 flex justify-center">
+                    <div className="bg-primary flex h-12 w-12 items-center justify-center rounded-full">
+                      <Bot className="text-primary-foreground h-6 w-6" />
                     </div>
                   </div>
-                  <h3 className="text-foreground mb-2 text-base font-semibold">
+                  <h3 className="text-foreground mb-2 text-lg font-semibold">
                     ¡Hola! Soy tu asistente virtual
                   </h3>
-                  <p className="text-muted-foreground text-sm">
-                    Puedo ayudarte con información sobre el sistema y responder preguntas.
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    Puedo ayudarte con información sobre el sistema, responder preguntas y guiarte
+                    en diferentes procesos.
                   </p>
                 </CardContent>
               </Card>
@@ -78,8 +101,8 @@ export const ChatbotMessages = ({
               {/* Quick help */}
               {quickHelp.length > 0 && (
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="text-primary h-4 w-4" />
+                  <div className="flex items-center gap-2 px-1">
+                    <HelpCircle className="text-muted-foreground h-4 w-4" />
                     <h4 className="text-foreground text-sm font-medium">Preguntas frecuentes</h4>
                   </div>
 
@@ -89,9 +112,9 @@ export const ChatbotMessages = ({
                         key={index}
                         variant="outline"
                         onClick={() => onQuickHelpClick(question)}
-                        className="border-border bg-card hover:bg-card-hover h-auto justify-start p-3 text-left text-sm"
+                        className="group hover:bg-card-hover h-auto justify-start p-3 text-left transition-colors"
                       >
-                        <HelpCircle className="text-primary mt-0.5 mr-2 h-3 w-3 flex-shrink-0" />
+                        <HelpCircle className="text-muted-foreground group-hover:text-foreground mr-3 h-3.5 w-3.5 flex-shrink-0" />
                         <span className="text-card-foreground text-xs leading-relaxed">
                           {question}
                         </span>
@@ -114,18 +137,18 @@ export const ChatbotMessages = ({
                   {/* Avatar for assistant */}
                   {message.role === 'assistant' && (
                     <Avatar className="border-border h-8 w-8 flex-shrink-0 border">
-                      <AvatarFallback className="bg-primary/10">
-                        <Bot className="text-primary h-4 w-4" />
+                      <AvatarFallback className="bg-primary">
+                        <Bot className="text-primary-foreground h-4 w-4" />
                       </AvatarFallback>
                     </Avatar>
                   )}
 
                   {/* Message content */}
                   <div
-                    className={`max-w-[85%] rounded-lg p-3 ${
+                    className={`max-w-[85%] rounded-lg px-3 py-2 ${
                       message.role === 'user'
                         ? 'bg-primary text-primary-foreground'
-                        : 'border-border bg-card border'
+                        : 'bg-card border-border border'
                     }`}
                   >
                     <div className="prose prose-sm max-w-none">
@@ -148,14 +171,8 @@ export const ChatbotMessages = ({
                             : 'text-muted-foreground'
                         }`}
                       >
-                        {new Date(message.createdAt).toLocaleTimeString()}
+                        {formatMessageTime(message.createdAt)}
                       </time>
-
-                      {message.role === 'assistant' && (
-                        <Badge variant="secondary" className="text-xs">
-                          IA
-                        </Badge>
-                      )}
                     </div>
                   </div>
 
@@ -174,12 +191,12 @@ export const ChatbotMessages = ({
               {isLoading && (
                 <div className="flex justify-start">
                   <Avatar className="border-border mr-3 h-8 w-8 flex-shrink-0 border">
-                    <AvatarFallback className="bg-primary/10">
-                      <Bot className="text-primary h-4 w-4" />
+                    <AvatarFallback className="bg-primary">
+                      <Bot className="text-primary-foreground h-4 w-4" />
                     </AvatarFallback>
                   </Avatar>
 
-                  <div className="border-border bg-card rounded-lg border p-3">
+                  <div className="bg-card border-border rounded-lg border px-3 py-2">
                     <div className="flex items-center gap-2">
                       <div className="flex space-x-1">
                         <div className="bg-primary h-1.5 w-1.5 animate-bounce rounded-full"></div>
@@ -214,7 +231,7 @@ export const ChatbotMessages = ({
               scrollToBottom();
             }}
             size="sm"
-            className="bg-primary hover:bg-primary/90 h-10 w-10 rounded-full p-0 shadow-lg"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground h-9 w-9 rounded-full p-0 shadow-lg transition-transform hover:scale-105"
           >
             <ChevronDown className="h-4 w-4" />
           </Button>
@@ -223,4 +240,5 @@ export const ChatbotMessages = ({
     </div>
   );
 };
+
 export default ChatbotMessages;

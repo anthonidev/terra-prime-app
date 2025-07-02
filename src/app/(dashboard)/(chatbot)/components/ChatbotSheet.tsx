@@ -6,17 +6,17 @@ import {
   SheetHeader,
   SheetTitle
 } from '@/components/ui/sheet';
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { useChatbot } from '../hooks/useChatbot';
 import { ChatbotHeader } from './ChatbotHeader';
 import { ChatbotInput } from './ChatbotInput';
 import { ChatbotMessages } from './ChatbotMessages';
 
+import { ChatbotGuideDetail } from './ChatbotGuideDetail';
+import { ChatbotGuidesView } from './ChatbotGuidesView';
+import { ChatbotHistoryView } from './ChatbotHistoryView';
 import { RateLimitWarning } from './RateLimitWarning';
 import { VisuallyHidden } from './VisuallyHidden';
-import { ChatbotGuidesView } from './ChatbotGuidesView';
-import { ChatbotGuideDetail } from './ChatbotGuideDetail';
-import { ChatbotHistoryView } from './ChatbotHistoryView';
 
 interface ChatbotSheetProps {
   isOpen: boolean;
@@ -25,7 +25,7 @@ interface ChatbotSheetProps {
 
 type ViewMode = 'chat' | 'history' | 'guides' | 'guide-detail';
 
-export const ChatbotSheet: React.FC<ChatbotSheetProps> = ({ isOpen, onOpenChange }) => {
+export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
   const {
     messages,
     isLoading,
@@ -47,13 +47,13 @@ export const ChatbotSheet: React.FC<ChatbotSheetProps> = ({ isOpen, onOpenChange
     resetChatbot,
     isRateLimited,
     shouldShowWarning,
-    getRateLimitMessage
+    getRateLimitMessage,
+    handleDeleteSession
   } = useChatbot();
 
-  const [viewMode, setViewMode] = React.useState<ViewMode>('chat');
+  const [viewMode, setViewMode] = useState<ViewMode>('chat');
 
-  // Initialize when opened
-  React.useEffect(() => {
+  useEffect(() => {
     if (isOpen) {
       initializeChatbot();
     }
@@ -96,6 +96,10 @@ export const ChatbotSheet: React.FC<ChatbotSheetProps> = ({ isOpen, onOpenChange
     setViewMode('guides');
   };
 
+  const handleClose = () => {
+    onOpenChange(false);
+  };
+
   const renderCurrentView = () => {
     switch (viewMode) {
       case 'chat':
@@ -129,6 +133,7 @@ export const ChatbotSheet: React.FC<ChatbotSheetProps> = ({ isOpen, onOpenChange
             isLoading={isLoading}
             onSelectSession={handleSelectSession}
             onBackToChat={handleBackToChat}
+            onDeleteSession={handleDeleteSession}
           />
         );
 
@@ -160,9 +165,8 @@ export const ChatbotSheet: React.FC<ChatbotSheetProps> = ({ isOpen, onOpenChange
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="flex h-full w-full max-w-full flex-col p-0 sm:w-[500px] sm:max-w-[500px] lg:w-[600px] lg:max-w-[600px]"
+        className="flex h-full w-full max-w-full flex-col p-0 sm:w-[500px] sm:max-w-[500px] lg:w-[600px] lg:max-w-[600px] [&>button:first-of-type]:hidden"
       >
-        {/* Hidden title for accessibility */}
         <VisuallyHidden>
           <SheetHeader>
             <SheetTitle>Asistente Virtual - Chatbot</SheetTitle>
@@ -180,6 +184,7 @@ export const ChatbotSheet: React.FC<ChatbotSheetProps> = ({ isOpen, onOpenChange
             onNewChat={handleNewChat}
             onViewHistory={handleViewHistory}
             onViewGuides={handleViewGuides}
+            onClose={handleClose}
             currentSessionId={currentSessionId}
           />
         </div>

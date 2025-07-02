@@ -1,8 +1,6 @@
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Book, Bot, History, Plus, Sparkles, ArrowLeft } from 'lucide-react';
+import { Book, Bot, History, Plus, ArrowLeft, X } from 'lucide-react';
 
 interface ChatbotHeaderProps {
   userRole: { code: string; name: string } | null;
@@ -10,167 +8,154 @@ interface ChatbotHeaderProps {
   onNewChat: () => void;
   onViewHistory: () => void;
   onViewGuides: () => void;
+  onClose: () => void;
   currentSessionId: string | null;
 }
 
 export const ChatbotHeader = ({
-  userRole,
   currentView,
   onNewChat,
   onViewHistory,
   onViewGuides,
-  currentSessionId
+  onClose
 }: ChatbotHeaderProps) => {
   const getViewTitle = () => {
     switch (currentView) {
       case 'chat':
-        return 'Asistente Virtual';
+        return 'Asistente';
       case 'history':
-        return 'Historial de Conversaciones';
+        return 'Historial';
       case 'guides':
-        return 'Guías Disponibles';
+        return 'Guías';
       case 'guide-detail':
-        return 'Guía Detallada';
+        return 'Guía';
       default:
-        return 'Asistente Virtual';
+        return 'Asistente';
     }
   };
 
   const getViewIcon = () => {
     switch (currentView) {
       case 'chat':
-        return <Bot className="h-5 w-5" />;
+        return <Bot className="h-4 w-4" />;
       case 'history':
-        return <History className="h-5 w-5" />;
+        return <History className="h-4 w-4" />;
       case 'guides':
       case 'guide-detail':
-        return <Book className="h-5 w-5" />;
+        return <Book className="h-4 w-4" />;
       default:
-        return <Bot className="h-5 w-5" />;
+        return <Bot className="h-4 w-4" />;
     }
   };
 
-  const showBackButton = currentView !== 'chat';
+  const isMainView = currentView === 'chat';
 
   return (
-    <div className="border-border bg-primary text-primary-foreground border-b">
-      <div className="flex items-center justify-between px-6 py-4">
+    <header className="border-b bg-white/80 backdrop-blur-sm dark:bg-gray-900/80">
+      <div className="flex h-14 items-center justify-between px-4">
+        {/* Left: Navigation */}
         <div className="flex items-center gap-3">
-          {/* Back button for non-chat views */}
-          {showBackButton && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onNewChat}
-                    className="text-primary-foreground hover:bg-white/10"
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Volver al chat</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          {!isMainView && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onNewChat}
+              className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
           )}
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm">
-            {getViewIcon()}
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-semibold">{getViewTitle()}</h1>
-              {currentView === 'chat' && (
-                <Sparkles className="text-primary-foreground/80 h-4 w-4" />
-              )}
-            </div>
-
-            {currentView === 'chat' && userRole && (
-              <div className="mt-1 flex items-center gap-2">
-                <Badge
-                  variant="secondary"
-                  className="text-primary-foreground border-white/20 bg-white/20 text-xs"
-                >
-                  {userRole.name}
-                </Badge>
-                {currentSessionId && (
-                  <Badge
-                    variant="outline"
-                    className="text-primary-foreground border-white/30 bg-white/10 text-xs"
-                  >
-                    Sesión activa
-                  </Badge>
-                )}
-              </div>
-            )}
+          <div className="flex items-center gap-2">
+            <div className="text-gray-600 dark:text-gray-400">{getViewIcon()}</div>
+            <h1 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              {getViewTitle()}
+            </h1>
           </div>
         </div>
 
-        {/* Right section - Actions (only show for chat view) */}
-        {currentView === 'chat' && (
-          <div className="flex items-center gap-2">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onNewChat}
-                    className="text-primary-foreground hover:bg-white/10"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Nuevo chat</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+        {/* Right: Actions */}
+        <div className="flex items-center gap-1">
+          {isMainView && (
+            <>
+              <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={onNewChat}
+                      className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    Nuevo chat
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
-            <Separator orientation="vertical" className="h-6 bg-white/20" />
+              <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={onViewHistory}
+                      className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      <History className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    Historial
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onViewHistory}
-                    className="text-primary-foreground hover:bg-white/10"
-                  >
-                    <History className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Ver historial</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+              <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={onViewGuides}
+                      className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      <Book className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    Guías
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onViewGuides}
-                    className="text-primary-foreground hover:bg-white/10"
-                  >
-                    <Book className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Ver guías</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        )}
+              <div className="mx-1 h-4 w-px bg-gray-200 dark:bg-gray-700" />
+            </>
+          )}
+
+          {/* Close button - always visible */}
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onClose}
+                  className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">
+                Cerrar
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
-    </div>
+    </header>
   );
 };

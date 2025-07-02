@@ -1,6 +1,7 @@
 import Navbar from '@/components/layout/Navbar';
 import Sidebar from '@/components/layout/Sidebar';
 import React from 'react';
+import ChatbotButton from './(chatbot)/components/ChatbotButton';
 export default function LayoutDashboard({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex">
@@ -9,9 +10,9 @@ export default function LayoutDashboard({ children }: { children: React.ReactNod
         <Navbar />
         <main className="flex-1 overflow-y-auto bg-gray-50 p-6 dark:bg-gray-800">
           {children}
-          {/* <div className="fixed right-4 bottom-4 z-50 flex items-center justify-center space-x-2">
+          <div className="fixed right-4 bottom-4 z-50 flex items-center justify-center space-x-2">
             <ChatbotButton />
-          </div> */}
+          </div>
         </main>
       </div>
     </div>

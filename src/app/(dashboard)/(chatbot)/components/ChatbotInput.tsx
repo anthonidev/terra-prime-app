@@ -1,10 +1,9 @@
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { RateLimitStatus } from '@/types/chat/chatbot.types';
-import { AlertTriangle, Send, Loader2 } from 'lucide-react';
+import { Send, Loader2, AlertTriangle } from 'lucide-react';
 import React from 'react';
 
 interface ChatbotInputProps {
@@ -57,114 +56,120 @@ export const ChatbotInput = ({ onSendMessage, disabled, rateLimitStatus }: Chatb
   };
 
   const getProgressColor = () => {
-    if (!rateLimitStatus) return 'bg-primary';
+    if (!rateLimitStatus) return 'bg-gray-200 dark:bg-gray-700';
     const percentage = getRateLimitProgress();
-    if (percentage < 20) return 'bg-destructive';
+    if (percentage < 20) return 'bg-red-500';
     if (percentage < 40) return 'bg-yellow-500';
-    return 'bg-primary';
+    return 'bg-green-500';
+  };
+
+  const getPlaceholder = () => {
+    if (rateLimitStatus?.isBlocked) {
+      return 'Límite de mensajes alcanzado. Intenta más tarde...';
+    }
+    return 'Escribe tu pregunta aquí...';
   };
 
   const isButtonDisabled = !inputMessage.trim() || disabled || isSubmitting;
+  const showRateLimit =
+    rateLimitStatus && (rateLimitStatus.remaining < 10 || rateLimitStatus.isBlocked);
 
   return (
-    <div className="border-border bg-background space-y-3 border-t p-4">
-      {/* Rate limit indicator */}
-      {rateLimitStatus && (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground text-xs">
-              Mensajes disponibles: {rateLimitStatus.remaining}/{rateLimitStatus.limit}
-            </span>
-            {rateLimitStatus.remaining < 10 && (
-              <Badge
-                variant={rateLimitStatus.remaining < 5 ? 'destructive' : 'secondary'}
-                className="text-xs"
-              >
-                {rateLimitStatus.remaining < 5 ? (
-                  <>
-                    <AlertTriangle className="mr-1 h-3 w-3" />
-                    Límite crítico
-                  </>
-                ) : (
-                  'Advertencia'
-                )}
-              </Badge>
+    <div className="border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
+      {/* Rate limit indicator - show when relevant */}
+      {showRateLimit && (
+        <div className="border-b border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-800/50">
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+              {rateLimitStatus!.remaining < 5 && <AlertTriangle className="h-3 w-3 text-red-500" />}
+              <span>
+                {rateLimitStatus!.remaining} de {rateLimitStatus!.limit} mensajes restantes
+              </span>
+            </div>
+
+            {rateLimitStatus!.isBlocked && (
+              <span className="text-xs text-red-600 dark:text-red-400">
+                Disponible a las {new Date(rateLimitStatus!.resetTime).toLocaleTimeString()}
+              </span>
             )}
           </div>
 
-          <div className="relative">
-            <Progress value={getRateLimitProgress()} className="h-2" />
-            <div
-              className={`absolute inset-0 h-2 rounded-full transition-all duration-300 ${getProgressColor()}`}
-              style={{ width: `${getRateLimitProgress()}%` }}
-            />
+          <div className="mt-2">
+            <div className="h-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+              <div
+                className={`h-full transition-all duration-300 ${getProgressColor()}`}
+                style={{ width: `${getRateLimitProgress()}%` }}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {/* Input area */}
-      <div className="flex items-end gap-3">
-        <div className="flex-1">
-          <Textarea
-            ref={textareaRef}
-            value={inputMessage}
-            onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
-            placeholder={
-              rateLimitStatus?.isBlocked
-                ? 'Límite de mensajes alcanzado...'
-                : 'Escribe tu pregunta aquí...'
-            }
-            disabled={disabled || isSubmitting}
-            className="border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary max-h-[120px] min-h-[44px] resize-none text-sm focus:ring-1"
-            rows={1}
-          />
-        </div>
+      <div className="p-4">
+        <div className="flex items-end gap-3">
+          <div className="flex-1">
+            <Textarea
+              ref={textareaRef}
+              value={inputMessage}
+              onChange={handleInputChange}
+              onKeyPress={handleKeyPress}
+              placeholder={getPlaceholder()}
+              disabled={disabled || isSubmitting}
+              className={`max-h-[120px] min-h-[44px] resize-none border-gray-300 bg-white text-sm text-gray-900 transition-colors placeholder:text-gray-500 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-400 dark:focus:border-gray-100 dark:focus:ring-gray-100 ${rateLimitStatus?.isBlocked ? 'cursor-not-allowed opacity-50' : ''} `}
+              rows={1}
+            />
+          </div>
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={handleSendMessage}
-                disabled={isButtonDisabled}
-                size="sm"
-                className="h-11 w-11 flex-shrink-0 rounded-lg p-0 transition-all hover:scale-105"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={handleSendMessage}
+                  disabled={isButtonDisabled}
+                  size="sm"
+                  className={`h-11 w-11 flex-shrink-0 rounded-lg p-0 transition-all ${
+                    isButtonDisabled
+                      ? 'cursor-not-allowed bg-gray-300 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-600'
+                      : 'bg-gray-900 hover:scale-105 hover:bg-gray-800 dark:bg-gray-100 dark:hover:bg-gray-200'
+                  } ${!isButtonDisabled ? 'text-white dark:text-gray-900' : 'text-gray-500 dark:text-gray-400'} `}
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="text-xs">
                 {isSubmitting
                   ? 'Enviando...'
                   : isButtonDisabled
                     ? 'Escribe un mensaje'
                     : 'Enviar mensaje'}
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-
-      {/* Help text */}
-      <div className="text-muted-foreground flex items-center justify-between text-xs">
-        <div className="flex items-center gap-2">
-          <kbd className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs">Enter</kbd>
-          <span>para enviar</span>
-          <span className="text-muted-foreground/60">•</span>
-          <kbd className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs">Shift + Enter</kbd>
-          <span>nueva línea</span>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
-        {rateLimitStatus?.isBlocked && (
-          <span className="text-destructive text-xs">
-            Disponible a las {new Date(rateLimitStatus.resetTime).toLocaleTimeString()}
-          </span>
-        )}
+        {/* Help text - simplified */}
+        <div className="mt-2 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1">
+              <kbd className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                Enter
+              </kbd>
+              <span>enviar</span>
+            </div>
+            <span className="text-gray-300 dark:text-gray-600">•</span>
+            <div className="flex items-center gap-1">
+              <kbd className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                Shift + Enter
+              </kbd>
+              <span>nueva línea</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
