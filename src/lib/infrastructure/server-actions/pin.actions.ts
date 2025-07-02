@@ -5,7 +5,7 @@ import {
   HttpCreatePinRepository,
   HttpFindPinRepository,
   HttpValidatePinRepository
-} from '@infrastructure/api/pin';
+} from '@/lib/infrastructure/api/http-pin.repository';
 import { CreatePinUseCase, FindPinUseCase, ValidatePinUseCase } from '@application/use-cases/pin';
 
 export async function createPin(): Promise<PinResponse> {

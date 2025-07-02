@@ -5,7 +5,7 @@ import ThemeSwitch from '@components/common/ThemeSwich';
 import { Separator } from '@/components/ui/separator';
 import { Menu } from 'lucide-react';
 import useSidebar from '@/hooks/sidebar/useSidebar';
-import ChatbotButton from '@/app/(dashboard)/(chatbot)/components/ChatbotButton';
+// import ChatbotButton from '@/app/(dashboard)/(chatbot)/components/ChatbotButton';
 
 const Navbar = () => {
   const formatDate = () => {

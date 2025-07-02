@@ -1,21 +1,23 @@
-import { Button } from "@/components/ui/button";
-import { BlockDetailDto, StageDetailDto } from "@/types/project.types";
-import { Building2, Edit, Plus } from "lucide-react";
+import { BlockDetailDto, StageDetailDto } from '@infrastructure/types/projects/project.types';
+import { Button } from '@components/ui/button';
+import { Building2, Edit, Plus } from 'lucide-react';
+
 interface BlockActionsProps {
   onCreateClick: (stageId?: string) => void;
   onEditClick?: (block: BlockDetailDto) => void;
   block?: BlockDetailDto;
   stage?: StageDetailDto;
-  variant?: "default" | "minimal" | "stage";
+  variant?: 'default' | 'minimal' | 'stage';
 }
+
 export default function BlockActions({
   onCreateClick,
   onEditClick,
   block,
   stage,
-  variant = "default",
+  variant = 'default'
 }: BlockActionsProps) {
-  if (variant === "minimal" && block && onEditClick) {
+  if (variant === 'minimal' && block && onEditClick) {
     return (
       <Button
         variant="ghost"
@@ -28,7 +30,7 @@ export default function BlockActions({
       </Button>
     );
   }
-  if (variant === "stage" && stage) {
+  if (variant === 'stage' && stage) {
     return (
       <Button
         variant="outline"

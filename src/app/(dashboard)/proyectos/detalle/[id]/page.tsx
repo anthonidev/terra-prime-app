@@ -1,21 +1,27 @@
 'use client';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
+
+import { Separator } from '@components/ui/separator';
+import { Skeleton } from '@components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useProject } from '@/hooks/project/useProjectReturn';
+import { useProject } from '@hooks/project/useProjectReturn';
 import { motion } from 'framer-motion';
 import { notFound, useParams } from 'next/navigation';
 import { useState } from 'react';
-import ProjectDetailHeader from '@/components/project/detalle/ProjectDetailHeader';
-import ProjectLotFilters from '@/components/project/detalle/ProjectLotFilters';
-import ProjectLotsTable from '@/components/project/detalle/ProjectLotsTable';
-import ProjectStages from '@/components/project/detalle/ProjectStages';
-import BlockFormModal from '@/components/project/detalle/modal/BlockFormModal';
-import EditProjectModal from '@/components/project/detalle/modal/EditProjectModal';
-import LotFormModal from '@/components/project/detalle/modal/LotFormModal';
-import StageFormModal from '@/components/project/detalle/modal/StageFormModal';
-import { BlockDetailDto, LotResponseDto, StageDetailDto } from '@/types/project.types';
+import ProjectDetailHeader from '@components/project/detalle/ProjectDetailHeader';
+import ProjectLotFilters from '@components/project/detalle/ProjectLotFilters';
+import ProjectLotsTable from '@components/project/detalle/ProjectLotsTable';
+import ProjectStages from '@components/project/detalle/ProjectStages';
+import BlockFormModal from '@components/project/detalle/modal/BlockFormModal';
+import EditProjectModal from '@components/project/detalle/modal/EditProjectModal';
+import LotFormModal from '@components/project/detalle/modal/LotFormModal';
+import StageFormModal from '@components/project/detalle/modal/StageFormModal';
 import { Info, LayoutGrid } from 'lucide-react';
+import {
+  BlockDetailDto,
+  LotResponseDto,
+  StageDetailDto
+} from '@infrastructure/types/projects/project.types';
+
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState('info');
@@ -52,68 +58,63 @@ export default function ProjectDetailPage() {
     createProjectLot,
     updateProjectLot
   } = useProject({ projectId: params.id });
-  if (!isLoadingDetail && !projectDetail && !error) {
-    notFound();
-  }
-  const handleOpenEditModal = () => {
-    setIsEditModalOpen(true);
-  };
-  const handleCloseEditModal = () => {
-    setIsEditModalOpen(false);
-  };
-  const containerAnimation = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-  const itemAnimation = {
-    hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0 }
-  };
+
+  if (!isLoadingDetail && !projectDetail && !error) notFound();
+
+  const handleOpenEditModal = () => setIsEditModalOpen(true);
+  const handleCloseEditModal = () => setIsEditModalOpen(false);
+
   const handleOpenCreateStageModal = () => {
     setSelectedStage(null);
     setIsStageModalOpen(true);
   };
+
   const handleOpenEditStageModal = (stage: StageDetailDto) => {
     setSelectedStage(stage);
     setIsStageModalOpen(true);
   };
+
   const handleCloseStageModal = () => {
     setIsStageModalOpen(false);
     setSelectedStage(null);
   };
+
   const handleOpenCreateBlockModal = (stageId?: string) => {
     setSelectedBlock(null);
     setSelectedStageIdForBlock(stageId);
     setIsBlockModalOpen(true);
   };
+
   const handleOpenEditBlockModal = (block: BlockDetailDto) => {
     setSelectedBlock(block);
     setSelectedStageIdForBlock(undefined);
     setIsBlockModalOpen(true);
   };
+
   const handleCloseBlockModal = () => {
     setIsBlockModalOpen(false);
     setSelectedBlock(null);
     setSelectedStageIdForBlock(undefined);
   };
+
   const handleOpenCreateLotModal = (blockId?: string) => {
     setSelectedLot(null);
     setSelectedBlockIdForLot(blockId);
     setIsLotModalOpen(true);
   };
+
   const handleOpenEditLotModal = (lot: LotResponseDto) => {
     setSelectedLot(lot);
     setSelectedBlockIdForLot(undefined);
     setIsLotModalOpen(true);
   };
+
   const handleCloseLotModal = () => {
     setIsLotModalOpen(false);
     setSelectedLot(null);
     setSelectedBlockIdForLot(undefined);
   };
+
   return (
     <div className="container py-8">
       <motion.div
@@ -137,7 +138,6 @@ export default function ProjectDetailPage() {
         <Separator className="my-6" />
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
           <div className="relative border-b">
-            {}
             <motion.div
               key="tab-indicator"
               className="bg-primary absolute bottom-0 h-0.5"
@@ -172,7 +172,7 @@ export default function ProjectDetailPage() {
               </div>
             </TabsList>
           </div>
-          {}
+
           <TabsContent
             value="info"
             className="mt-4 pt-2 outline-none focus-visible:ring-0 focus-visible:outline-none"
@@ -180,14 +180,32 @@ export default function ProjectDetailPage() {
             {isLoadingDetail ? (
               <motion.div
                 key="loading-container"
-                variants={containerAnimation}
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: { staggerChildren: 0.1 }
+                  }
+                }}
                 initial="hidden"
                 animate="show"
               >
-                <motion.div key="skeleton-1" variants={itemAnimation}>
+                <motion.div
+                  key="skeleton-1"
+                  variants={{
+                    hidden: { opacity: 0, y: 10 },
+                    show: { opacity: 1, y: 0 }
+                  }}
+                >
                   <Skeleton className="h-64 w-full" />
                 </motion.div>
-                <motion.div key="skeleton-2" variants={itemAnimation}>
+                <motion.div
+                  key="skeleton-2"
+                  variants={{
+                    hidden: { opacity: 0, y: 10 },
+                    show: { opacity: 1, y: 0 }
+                  }}
+                >
                   <Skeleton className="mt-4 h-64 w-full" />
                 </motion.div>
               </motion.div>
@@ -209,7 +227,7 @@ export default function ProjectDetailPage() {
               </motion.div>
             )}
           </TabsContent>
-          {}
+
           <TabsContent
             value="lots"
             className="mt-4 pt-2 outline-none focus-visible:ring-0 focus-visible:outline-none"
@@ -221,7 +239,6 @@ export default function ProjectDetailPage() {
               transition={{ duration: 0.3 }}
               className="space-y-4 focus:outline-none"
             >
-              {}
               <motion.div
                 key="lot-filters"
                 initial={{ opacity: 0, y: 10 }}
@@ -236,7 +253,7 @@ export default function ProjectDetailPage() {
                   isLoading={isLoadingDetail}
                 />
               </motion.div>
-              {}
+
               <motion.div
                 key="lot-table"
                 initial={{ opacity: 0, y: 10 }}

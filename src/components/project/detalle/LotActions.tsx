@@ -1,21 +1,23 @@
-import { Button } from "@/components/ui/button";
-import { BlockDetailDto, LotResponseDto } from "@/types/project.types";
-import { Edit, MapPin, Plus } from "lucide-react";
+import { Button } from '@components/ui/button';
+import { BlockDetailDto, LotResponseDto } from '@infrastructure/types/projects/project.types';
+import { Edit, MapPin, Plus } from 'lucide-react';
+
 interface LotActionsProps {
   onCreateClick: (blockId?: string) => void;
   onEditClick?: (lot: LotResponseDto) => void;
   lot?: LotResponseDto;
   block?: BlockDetailDto;
-  variant?: "default" | "minimal" | "block" | "table-header" | "table-cell";
+  variant?: 'default' | 'minimal' | 'block' | 'table-header' | 'table-cell';
 }
+
 export default function LotActions({
   onCreateClick,
   onEditClick,
   lot,
   block,
-  variant = "default",
+  variant = 'default'
 }: LotActionsProps) {
-  if (variant === "minimal" && lot && onEditClick) {
+  if (variant === 'minimal' && lot && onEditClick) {
     return (
       <Button
         variant="ghost"
@@ -28,7 +30,7 @@ export default function LotActions({
       </Button>
     );
   }
-  if (variant === "table-cell" && lot && onEditClick) {
+  if (variant === 'table-cell' && lot && onEditClick) {
     return (
       <Button
         variant="ghost"
@@ -41,7 +43,7 @@ export default function LotActions({
       </Button>
     );
   }
-  if (variant === "block" && block) {
+  if (variant === 'block' && block) {
     return (
       <Button
         variant="outline"
@@ -56,7 +58,7 @@ export default function LotActions({
       </Button>
     );
   }
-  if (variant === "table-header") {
+  if (variant === 'table-header') {
     return (
       <Button
         variant="outline"

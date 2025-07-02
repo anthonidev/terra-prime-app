@@ -1,19 +1,18 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Badge } from '@components/ui/badge';
+import { Button } from '@components/ui/button';
+import { Card, CardContent } from '@components/ui/card';
+import { Input } from '@components/ui/input';
+import { Label } from '@components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
-import { LotStatus, ProjectDetailDto } from "@/types/project.types";
+  SelectValue
+} from '@components/ui/select';
+import { Skeleton } from '@components/ui/skeleton';
 import {
   Activity,
   Building2,
@@ -24,19 +23,12 @@ import {
   Tag,
   X,
   ChevronDown,
-  ArrowDownUp,
-} from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+  ArrowDownUp
+} from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@components/ui/tooltip';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@components/ui/collapsible';
+import { LotStatus, ProjectDetailDto } from '@infrastructure/types/projects/project.types';
+
 interface ProjectLotFiltersProps {
   projectDetail: ProjectDetailDto | null;
   currentFilters: Record<string, unknown>;
@@ -44,16 +36,15 @@ interface ProjectLotFiltersProps {
   onReset: () => void;
   isLoading: boolean;
 }
+
 export default function ProjectLotFilters({
   projectDetail,
   currentFilters,
   onFilterChange,
   onReset,
-  isLoading,
+  isLoading
 }: ProjectLotFiltersProps) {
-  const [searchValue, setSearchValue] = useState<string>(
-    (currentFilters.search as string) || "",
-  );
+  const [searchValue, setSearchValue] = useState<string>((currentFilters.search as string) || '');
   const [isOpen, setIsOpen] = useState(true);
   const getStatsFromProject = () => {
     if (!projectDetail) return { stages: 0, blocks: 0, lots: 0 };
@@ -65,11 +56,8 @@ export default function ProjectLotFilters({
     });
     return {
       stages: projectDetail.stages.length,
-      blocks: projectDetail.stages.reduce(
-        (acc, stage) => acc + stage.blocks.length,
-        0,
-      ),
-      lots: totalLots,
+      blocks: projectDetail.stages.reduce((acc, stage) => acc + stage.blocks.length, 0),
+      lots: totalLots
     };
   };
   const stats = getStatsFromProject();
@@ -78,16 +66,16 @@ export default function ProjectLotFilters({
     onFilterChange({ ...currentFilters, search: searchValue || undefined });
   };
   const handleStageChange = (value: string) => {
-    if (value === "all") {
+    if (value === 'all') {
       onFilterChange({
         ...currentFilters,
         stageId: undefined,
-        blockId: undefined,
+        blockId: undefined
       });
     } else {
       const newFilters: Record<string, unknown> = {
         ...currentFilters,
-        stageId: value,
+        stageId: value
       };
       if (currentFilters.blockId) {
         const blockBelongsToStage = projectDetail?.stages
@@ -101,20 +89,20 @@ export default function ProjectLotFilters({
     }
   };
   const handleBlockChange = (value: string) => {
-    if (value === "all") {
+    if (value === 'all') {
       onFilterChange({
         ...currentFilters,
-        blockId: undefined,
+        blockId: undefined
       });
     } else {
       onFilterChange({ ...currentFilters, blockId: value });
     }
   };
   const handleStatusChange = (value: string) => {
-    if (value === "all") {
+    if (value === 'all') {
       onFilterChange({
         ...currentFilters,
-        status: undefined,
+        status: undefined
       });
     } else {
       onFilterChange({ ...currentFilters, status: value });
@@ -125,14 +113,14 @@ export default function ProjectLotFilters({
     const blocks: { id: string; name: string; stageName: string }[] = [];
     if (currentFilters.stageId) {
       const selectedStage = projectDetail.stages.find(
-        (stage) => stage.id === currentFilters.stageId,
+        (stage) => stage.id === currentFilters.stageId
       );
       if (selectedStage) {
         selectedStage.blocks.forEach((block) => {
           blocks.push({
             id: block.id,
             name: block.name,
-            stageName: selectedStage.name,
+            stageName: selectedStage.name
           });
         });
       }
@@ -142,14 +130,13 @@ export default function ProjectLotFilters({
           blocks.push({
             id: block.id,
             name: block.name,
-            stageName: stage.name,
+            stageName: stage.name
           });
         });
       });
     }
     return blocks.sort(
-      (a, b) =>
-        a.stageName.localeCompare(b.stageName) || a.name.localeCompare(b.name),
+      (a, b) => a.stageName.localeCompare(b.stageName) || a.name.localeCompare(b.name)
     );
   };
   const getActiveFiltersCount = () => {
@@ -165,12 +152,12 @@ export default function ProjectLotFilters({
   if (isLoading) {
     return (
       <Card className="bg-card/60 shadow-sm">
-        <div className="p-3 flex justify-between items-center">
+        <div className="flex items-center justify-between p-3">
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-5 w-24" />
         </div>
-        <CardContent className="pt-0 pb-3 border-t">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-3 gap-y-2">
+        <CardContent className="border-t pt-0 pb-3">
+          <div className="grid grid-cols-1 gap-x-3 gap-y-2 sm:grid-cols-2 md:grid-cols-4">
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
@@ -182,22 +169,19 @@ export default function ProjectLotFilters({
   }
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <Card className="bg-card/60 shadow-sm overflow-hidden">
+      <Card className="bg-card/60 overflow-hidden shadow-sm">
         {}
-        <motion.div
-          className="px-3 py-2 flex justify-between items-center border-b"
-          layout
-        >
+        <motion.div className="flex items-center justify-between border-b px-3 py-2" layout>
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-full bg-primary/10">
-              <Filter className="h-3.5 w-3.5 text-primary" />
+            <div className="bg-primary/10 rounded-full p-1.5">
+              <Filter className="text-primary h-3.5 w-3.5" />
             </div>
-            <h3 className="font-medium text-sm flex items-center gap-1.5">
+            <h3 className="flex items-center gap-1.5 text-sm font-medium">
               Filtros de lotes
               {hasActiveFilters && (
                 <Badge
                   variant="outline"
-                  className="ml-1 px-1.5 py-0 h-5 text-xs bg-primary/10 text-primary"
+                  className="bg-primary/10 text-primary ml-1 h-5 px-1.5 py-0 text-xs"
                 >
                   {activeFiltersCount}
                 </Badge>
@@ -213,7 +197,7 @@ export default function ProjectLotFilters({
                       variant="ghost"
                       size="sm"
                       onClick={onReset}
-                      className="text-xs h-7 px-2 text-muted-foreground hover:text-destructive"
+                      className="text-muted-foreground hover:text-destructive h-7 px-2 text-xs"
                     >
                       <FilterX className="h-3.5 w-3.5" />
                     </Button>
@@ -225,10 +209,10 @@ export default function ProjectLotFilters({
               </TooltipProvider>
             )}
             <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm" className="text-xs h-7 w-7 p-0">
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-xs">
                 <ChevronDown
-                  className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${
-                    isOpen ? "" : "-rotate-90"
+                  className={`text-muted-foreground h-4 w-4 transition-transform duration-200 ${
+                    isOpen ? '' : '-rotate-90'
                   }`}
                 />
               </Button>
@@ -238,23 +222,19 @@ export default function ProjectLotFilters({
         <CollapsibleContent>
           {}
           {hasActiveFilters && (
-            <div className="px-3 py-1.5 border-b bg-muted/20 flex flex-wrap gap-1.5">
+            <div className="bg-muted/20 flex flex-wrap gap-1.5 border-b px-3 py-1.5">
               {(currentFilters.search as string) && (
                 <Badge
                   variant="outline"
-                  className="flex items-center gap-1 bg-primary/5 border-primary/20 pl-2 h-6"
+                  className="bg-primary/5 border-primary/20 flex h-6 items-center gap-1 pl-2"
                 >
-                  <Search className="h-3 w-3 text-primary/70" />
-                  <span className="text-xs">
-                    {`"${currentFilters.search as string}"`}
-                  </span>
+                  <Search className="text-primary/70 h-3 w-3" />
+                  <span className="text-xs">{`"${currentFilters.search as string}"`}</span>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-4 w-4 p-0 ml-1 hover:bg-primary/20 rounded-full"
-                    onClick={() =>
-                      onFilterChange({ ...currentFilters, search: undefined })
-                    }
+                    className="hover:bg-primary/20 ml-1 h-4 w-4 rounded-full p-0"
+                    onClick={() => onFilterChange({ ...currentFilters, search: undefined })}
                   >
                     <X className="h-3 w-3" />
                   </Button>
@@ -263,19 +243,18 @@ export default function ProjectLotFilters({
               {(currentFilters.stageId as string) && projectDetail?.stages && (
                 <Badge
                   variant="outline"
-                  className="flex items-center gap-1 bg-primary/5 border-primary/20 pl-2 h-6"
+                  className="bg-primary/5 border-primary/20 flex h-6 items-center gap-1 pl-2"
                 >
-                  <Building2 className="h-3 w-3 text-primary/70" />
+                  <Building2 className="text-primary/70 h-3 w-3" />
                   <span className="text-xs">
-                    {projectDetail.stages.find(
-                      (s) => s.id === currentFilters.stageId,
-                    )?.name || "Etapa"}
+                    {projectDetail.stages.find((s) => s.id === currentFilters.stageId)?.name ||
+                      'Etapa'}
                   </span>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-4 w-4 p-0 ml-1 hover:bg-primary/20 rounded-full"
-                    onClick={() => handleStageChange("all")}
+                    className="hover:bg-primary/20 ml-1 h-4 w-4 rounded-full p-0"
+                    onClick={() => handleStageChange('all')}
                   >
                     <X className="h-3 w-3" />
                   </Button>
@@ -284,19 +263,18 @@ export default function ProjectLotFilters({
               {(currentFilters.blockId as string) && (
                 <Badge
                   variant="outline"
-                  className="flex items-center gap-1 bg-primary/5 border-primary/20 pl-2 h-6"
+                  className="bg-primary/5 border-primary/20 flex h-6 items-center gap-1 pl-2"
                 >
-                  <Layers className="h-3 w-3 text-primary/70" />
+                  <Layers className="text-primary/70 h-3 w-3" />
                   <span className="text-xs">
-                    {getAvailableBlocks().find(
-                      (b) => b.id === currentFilters.blockId,
-                    )?.name || "Manzana"}
+                    {getAvailableBlocks().find((b) => b.id === currentFilters.blockId)?.name ||
+                      'Manzana'}
                   </span>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-4 w-4 p-0 ml-1 hover:bg-primary/20 rounded-full"
-                    onClick={() => handleBlockChange("all")}
+                    className="hover:bg-primary/20 ml-1 h-4 w-4 rounded-full p-0"
+                    onClick={() => handleBlockChange('all')}
                   >
                     <X className="h-3 w-3" />
                   </Button>
@@ -305,29 +283,27 @@ export default function ProjectLotFilters({
               {(currentFilters.status as string) && (
                 <Badge
                   variant="outline"
-                  className="flex items-center gap-1 bg-primary/5 border-primary/20 pl-2 h-6"
+                  className="bg-primary/5 border-primary/20 flex h-6 items-center gap-1 pl-2"
                 >
-                  <Activity className="h-3 w-3 text-primary/70" />
-                  <span className="text-xs">
-                    {currentFilters.status as string}
-                  </span>
+                  <Activity className="text-primary/70 h-3 w-3" />
+                  <span className="text-xs">{currentFilters.status as string}</span>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-4 w-4 p-0 ml-1 hover:bg-primary/20 rounded-full"
-                    onClick={() => handleStatusChange("all")}
+                    className="hover:bg-primary/20 ml-1 h-4 w-4 rounded-full p-0"
+                    onClick={() => handleStatusChange('all')}
                   >
                     <X className="h-3 w-3" />
                   </Button>
                 </Badge>
               )}
               <div className="flex-1"></div>
-              <div className="flex items-center text-xs text-muted-foreground">
+              <div className="text-muted-foreground flex items-center text-xs">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={onReset}
-                  className="text-xs h-6 px-2 hover:text-destructive hover:bg-destructive/5"
+                  className="hover:text-destructive hover:bg-destructive/5 h-6 px-2 text-xs"
                 >
                   Limpiar todos
                 </Button>
@@ -335,9 +311,9 @@ export default function ProjectLotFilters({
             </div>
           )}
           {}
-          <CardContent className="py-2 px-3">
+          <CardContent className="px-3 py-2">
             <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-3 gap-y-2"
+              className="grid grid-cols-1 gap-x-3 gap-y-2 sm:grid-cols-2 md:grid-cols-4"
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
@@ -347,7 +323,7 @@ export default function ProjectLotFilters({
                 <div className="flex items-center justify-between">
                   <Label
                     htmlFor="search"
-                    className="text-xs font-medium text-muted-foreground mb-0.5 flex items-center gap-1"
+                    className="text-muted-foreground mb-0.5 flex items-center gap-1 text-xs font-medium"
                   >
                     <Search className="h-3 w-3" />
                     <span>Buscar lote</span>
@@ -359,9 +335,9 @@ export default function ProjectLotFilters({
                     placeholder="Nombre, etapa, manzana..."
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
-                    className="pl-7 h-8 text-xs"
+                    className="h-8 pl-7 text-xs"
                   />
-                  <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                  <Search className="text-muted-foreground absolute top-1/2 left-2 h-3 w-3 -translate-y-1/2" />
                   <button type="submit" className="sr-only">
                     Buscar
                   </button>
@@ -372,35 +348,27 @@ export default function ProjectLotFilters({
                 <div className="flex items-center justify-between">
                   <Label
                     htmlFor="stage-filter"
-                    className="text-xs font-medium text-muted-foreground mb-0.5 flex items-center gap-1"
+                    className="text-muted-foreground mb-0.5 flex items-center gap-1 text-xs font-medium"
                   >
                     <Building2 className="h-3 w-3" />
                     <span>Etapa</span>
                   </Label>
                 </div>
                 <Select
-                  value={(currentFilters.stageId as string) || "all"}
+                  value={(currentFilters.stageId as string) || 'all'}
                   onValueChange={handleStageChange}
                 >
                   <SelectTrigger
                     id="stage-filter"
-                    className={`h-8 text-xs ${currentFilters.stageId ? "border-primary text-primary" : ""}`}
+                    className={`h-8 text-xs ${currentFilters.stageId ? 'border-primary text-primary' : ''}`}
                   >
                     <SelectValue placeholder="Todas las etapas" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todas las etapas</SelectItem>
                     {projectDetail?.stages.map((stage) => (
-                      <SelectItem
-                        key={stage.id}
-                        value={stage.id}
-                        className="text-xs"
-                      >
-                        {stage.name} (
-                        {stage.blocks.reduce(
-                          (acc, block) => acc + block.lotCount,
-                          0,
-                        )}{" "}
+                      <SelectItem key={stage.id} value={stage.id} className="text-xs">
+                        {stage.name} ({stage.blocks.reduce((acc, block) => acc + block.lotCount, 0)}{' '}
                         lotes)
                       </SelectItem>
                     ))}
@@ -412,20 +380,20 @@ export default function ProjectLotFilters({
                 <div className="flex items-center justify-between">
                   <Label
                     htmlFor="block-filter"
-                    className="text-xs font-medium text-muted-foreground mb-0.5 flex items-center gap-1"
+                    className="text-muted-foreground mb-0.5 flex items-center gap-1 text-xs font-medium"
                   >
                     <Layers className="h-3 w-3" />
                     <span>Manzana</span>
                   </Label>
                 </div>
                 <Select
-                  value={(currentFilters.blockId as string) || "all"}
+                  value={(currentFilters.blockId as string) || 'all'}
                   onValueChange={handleBlockChange}
                   disabled={getAvailableBlocks().length === 0}
                 >
                   <SelectTrigger
                     id="block-filter"
-                    className={`h-8 text-xs ${currentFilters.blockId ? "border-primary text-primary" : ""}`}
+                    className={`h-8 text-xs ${currentFilters.blockId ? 'border-primary text-primary' : ''}`}
                   >
                     <SelectValue placeholder="Todas las manzanas" />
                   </SelectTrigger>
@@ -434,11 +402,7 @@ export default function ProjectLotFilters({
                       Todas las manzanas
                     </SelectItem>
                     {getAvailableBlocks().map((block) => (
-                      <SelectItem
-                        key={block.id}
-                        value={block.id}
-                        className="text-xs"
-                      >
+                      <SelectItem key={block.id} value={block.id} className="text-xs">
                         {block.stageName} - {block.name}
                       </SelectItem>
                     ))}
@@ -450,54 +414,51 @@ export default function ProjectLotFilters({
                 <div className="flex items-center justify-between">
                   <Label
                     htmlFor="status-filter"
-                    className="text-xs font-medium text-muted-foreground mb-0.5 flex items-center gap-1"
+                    className="text-muted-foreground mb-0.5 flex items-center gap-1 text-xs font-medium"
                   >
                     <Activity className="h-3 w-3" />
                     <span>Estado</span>
                   </Label>
                 </div>
                 <Select
-                  value={(currentFilters.status as string) || "all"}
+                  value={(currentFilters.status as string) || 'all'}
                   onValueChange={handleStatusChange}
                 >
                   <SelectTrigger
                     id="status-filter"
-                    className={`h-8 text-xs ${currentFilters.status ? "border-primary text-primary" : ""}`}
+                    className={`h-8 text-xs ${currentFilters.status ? 'border-primary text-primary' : ''}`}
                   >
                     <SelectValue placeholder="Todos los estados" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem
-                      value="all"
-                      className="text-xs flex items-center gap-1.5"
-                    >
-                      <ArrowDownUp className="h-3 w-3 text-muted-foreground" />
+                    <SelectItem value="all" className="flex items-center gap-1.5 text-xs">
+                      <ArrowDownUp className="text-muted-foreground h-3 w-3" />
                       <span>Todos los estados</span>
                     </SelectItem>
                     <SelectItem
                       value={LotStatus.ACTIVE}
-                      className="text-xs flex items-center gap-1.5"
+                      className="flex items-center gap-1.5 text-xs"
                     >
                       <div className="h-2 w-2 rounded-full bg-green-500" />
                       <span>Activo</span>
                     </SelectItem>
                     <SelectItem
                       value={LotStatus.INACTIVE}
-                      className="text-xs flex items-center gap-1.5"
+                      className="flex items-center gap-1.5 text-xs"
                     >
                       <div className="h-2 w-2 rounded-full bg-gray-400" />
                       <span>Inactivo</span>
                     </SelectItem>
                     <SelectItem
                       value={LotStatus.RESERVED}
-                      className="text-xs flex items-center gap-1.5"
+                      className="flex items-center gap-1.5 text-xs"
                     >
                       <div className="h-2 w-2 rounded-full bg-blue-500" />
                       <span>Separado</span>
                     </SelectItem>
                     <SelectItem
                       value={LotStatus.SOLD}
-                      className="text-xs flex items-center gap-1.5"
+                      className="flex items-center gap-1.5 text-xs"
                     >
                       <div className="h-2 w-2 rounded-full bg-purple-500" />
                       <span>Vendido</span>
@@ -507,8 +468,8 @@ export default function ProjectLotFilters({
               </div>
             </motion.div>
             {}
-            <div className="mt-3 pt-3 border-t flex items-center justify-between">
-              <div className="flex gap-4 text-xs text-muted-foreground">
+            <div className="mt-3 flex items-center justify-between border-t pt-3">
+              <div className="text-muted-foreground flex gap-4 text-xs">
                 <div className="flex items-center gap-1">
                   <Building2 className="h-3 w-3" />
                   <span>{stats.stages} etapas</span>
@@ -526,9 +487,9 @@ export default function ProjectLotFilters({
                 variant="outline"
                 size="sm"
                 onClick={onReset}
-                className="text-xs h-7 py-0 px-2.5"
+                className="h-7 px-2.5 py-0 text-xs"
               >
-                <FilterX className="h-3 w-3 mr-1" />
+                <FilterX className="mr-1 h-3 w-3" />
                 Limpiar
               </Button>
             </div>

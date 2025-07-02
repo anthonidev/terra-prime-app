@@ -1,20 +1,22 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Plus, Edit } from "lucide-react";
-import { StageDetailDto } from "@/types/project.types";
+import React from 'react';
+import { Button } from '@components/ui/button';
+import { Plus, Edit } from 'lucide-react';
+import { StageDetailDto } from '@infrastructure/types/projects/project.types';
+
 interface StageActionsProps {
   onCreateClick: () => void;
   onEditClick?: (stage: StageDetailDto) => void;
   stage?: StageDetailDto;
-  variant?: "default" | "minimal";
+  variant?: 'default' | 'minimal';
 }
+
 export default function StageActions({
   onCreateClick,
   onEditClick,
   stage,
-  variant = "default",
+  variant = 'default'
 }: StageActionsProps) {
-  if (variant === "minimal" && stage && onEditClick) {
+  if (variant === 'minimal' && stage && onEditClick) {
     return (
       <Button
         variant="ghost"
@@ -28,12 +30,7 @@ export default function StageActions({
     );
   }
   return (
-    <Button
-      variant="outline"
-      size="sm"
-      className="flex items-center gap-1"
-      onClick={onCreateClick}
-    >
+    <Button variant="outline" size="sm" className="flex items-center gap-1" onClick={onCreateClick}>
       <Plus className="h-4 w-4" />
       <span>Nueva Etapa</span>
     </Button>

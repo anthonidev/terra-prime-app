@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Book, Bot, History, Plus, Sparkles, ArrowLeft, MessageCircle } from 'lucide-react';
+import { Book, Bot, History, Plus, Sparkles, ArrowLeft } from 'lucide-react';
 
 interface ChatbotHeaderProps {
   userRole: { code: string; name: string } | null;

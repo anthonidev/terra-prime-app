@@ -37,6 +37,7 @@ export const ChatbotHistoryView: React.FC<ChatbotHistoryViewProps> = ({
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
   const getDetailedDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', {

@@ -26,10 +26,9 @@ import { useState, useCallback, useMemo } from 'react';
 interface CopyButtonProps {
   text: string;
   label?: string;
-  variant?: 'default' | 'existing' | 'new';
 }
 
-function CopyButton({ text, label = 'PIN', variant = 'default' }: CopyButtonProps) {
+function CopyButton({ text, label = 'PIN' }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(async () => {
@@ -46,25 +45,15 @@ function CopyButton({ text, label = 'PIN', variant = 'default' }: CopyButtonProp
     }
   }, [text, label]);
 
-  const hoverClass = {
-    default: 'hover:bg-gray-100 dark:hover:bg-gray-800',
-    existing: 'hover:bg-blue-100 dark:hover:bg-blue-900',
-    new: 'hover:bg-emerald-100 dark:hover:bg-emerald-900'
-  }[variant];
-
   return (
     <Button
       variant="ghost"
       size="sm"
       onClick={handleCopy}
-      className={`h-8 w-8 p-0 ${hoverClass}`}
+      className="h-8 w-8 p-0 hover:bg-blue-100 dark:hover:bg-blue-900"
       disabled={!text}
     >
-      {copied ? (
-        <Check className={`h-4 w-4 ${variant === 'new' ? 'text-emerald-600' : 'text-blue-600'}`} />
-      ) : (
-        <Copy className="h-4 w-4" />
-      )}
+      {copied ? <Check className="h-4 w-4 text-blue-600" /> : <Copy className="h-4 w-4" />}
     </Button>
   );
 }
@@ -72,16 +61,13 @@ function CopyButton({ text, label = 'PIN', variant = 'default' }: CopyButtonProp
 interface PinDisplayProps {
   pin: string;
   expiresAt?: string;
-  title: string;
-  variant: 'existing' | 'new';
-  onDismiss?: () => void;
 }
 
-function PinDisplay({ pin, expiresAt, title, variant, onDismiss }: PinDisplayProps) {
+function PinDisplay({ pin, expiresAt }: PinDisplayProps) {
   const isExpiringSoon = useMemo(() => {
     if (!expiresAt) return false;
     const expiryDate = new Date(expiresAt);
-    const warningTime = addMinutes(new Date(), 15); // Advertir si expira en 15 minutos
+    const warningTime = addMinutes(new Date(), 15);
     return isAfter(warningTime, expiryDate);
   }, [expiresAt]);
 
@@ -90,21 +76,13 @@ function PinDisplay({ pin, expiresAt, title, variant, onDismiss }: PinDisplayPro
     return isAfter(new Date(), new Date(expiresAt));
   }, [expiresAt]);
 
-  const cardClass = {
-    existing: 'border-blue-200 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-950/30',
-    new: 'border-emerald-200 bg-emerald-50/50 dark:border-emerald-800 dark:bg-emerald-950/30'
-  }[variant];
-
-  const badgeVariant = variant === 'new' ? 'default' : 'secondary';
-
   return (
-    <Card className={`shadow-sm transition-all duration-200 ${cardClass}`}>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
+    <div className="space-y-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+        <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <Badge variant={badgeVariant} className="px-3 py-1">
-              {title}
-            </Badge>
+            <Shield className="h-4 w-4 text-gray-500" />
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Código PIN</p>
             {isExpired && (
               <Badge variant="destructive" className="px-2 py-1">
                 <AlertCircle className="mr-1 h-3 w-3" />
@@ -118,73 +96,56 @@ function PinDisplay({ pin, expiresAt, title, variant, onDismiss }: PinDisplayPro
               </Badge>
             )}
           </div>
-          {onDismiss && (
-            <Button variant="ghost" size="sm" onClick={onDismiss}>
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-gray-500" />
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Código PIN</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <p
-                className={`font-mono text-2xl font-bold tracking-wider ${isExpired ? 'text-gray-400 line-through' : ''}`}
-              >
-                {pin}
-              </p>
-              <CopyButton text={pin} variant={variant} />
-            </div>
+          <div className="flex items-center gap-2">
+            <p
+              className={`font-mono text-2xl font-bold tracking-wider ${isExpired ? 'text-gray-400 line-through' : ''}`}
+            >
+              {pin}
+            </p>
+            <CopyButton text={pin} />
           </div>
-
-          {expiresAt && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-gray-500" />
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                  {isExpired ? 'Expiró el' : 'Expira el'}
-                </p>
-              </div>
-              <div className="space-y-1">
-                <p className={`text-lg font-semibold ${isExpired ? 'text-red-600' : ''}`}>
-                  {format(new Date(expiresAt), 'PPPP', { locale: es })}
-                </p>
-                <p className={`text-sm ${isExpired ? 'text-red-500' : 'text-blue-600'}`}>
-                  {format(new Date(expiresAt), 'hh:mm a', { locale: es })}
-                </p>
-              </div>
-            </div>
-          )}
         </div>
 
-        {isExpired && (
-          <Alert className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950/30">
-            <AlertCircle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-700 dark:text-red-300">
-              Este PIN ha expirado y ya no es válido para su uso.
-            </AlertDescription>
-          </Alert>
+        {expiresAt && (
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-gray-500" />
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                {isExpired ? 'Expiró el' : 'Expira el'}
+              </p>
+            </div>
+            <div className="space-y-1">
+              <p className={`text-lg font-semibold ${isExpired ? 'text-red-600' : ''}`}>
+                {format(new Date(expiresAt), 'PPPP', { locale: es })}
+              </p>
+              <p className={`text-sm ${isExpired ? 'text-red-500' : 'text-blue-600'}`}>
+                {format(new Date(expiresAt), 'hh:mm a', { locale: es })}
+              </p>
+            </div>
+          </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+
+      {isExpired && (
+        <Alert className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950/30">
+          <AlertCircle className="h-4 w-4 text-red-600" />
+          <AlertDescription className="text-red-700 dark:text-red-300">
+            Este PIN ha expirado y ya no es válido para su uso.
+          </AlertDescription>
+        </Alert>
+      )}
+    </div>
   );
 }
 
 export default function PinPage() {
   const {
-    pinGenerated,
     existingPin,
     isLoading,
     isLoadingExisting,
     error,
     generatePin,
     loadExistingPin,
-    clearGeneratedPin,
     clearError
   } = usePin();
 
@@ -215,7 +176,6 @@ export default function PinPage() {
       )}
 
       <div className="grid gap-6">
-        {/* Sección para generar nuevo PIN */}
         <Card className="shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-semibold">
@@ -257,58 +217,51 @@ export default function PinPage() {
           </CardContent>
         </Card>
 
-        {/* PIN existente */}
-        <Card className="border border-blue-100 bg-blue-50 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-lg font-semibold">
-                <Badge variant="secondary" className="px-3 py-1">
-                  PIN Actual
-                </Badge>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={loadExistingPin}
-                disabled={isLoadingExisting}
-              >
-                <RefreshCw className={`h-4 w-4 ${isLoadingExisting ? 'animate-spin' : ''}`} />
-              </Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isLoadingExisting ? (
-              <div className="space-y-3">
-                <Skeleton className="h-8 w-1/2" />
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-4 w-3/4" />
-              </div>
-            ) : existingPin ? (
-              <PinDisplay
-                pin={existingPin.pin ?? ''}
-                expiresAt={existingPin.expiresAt}
-                title="PIN Actual"
-                variant="existing"
-              />
-            ) : (
-              <div className="py-8 text-center">
-                <Shield className="mx-auto mb-3 h-12 w-12 text-gray-300" />
-                <p className="text-lg text-gray-500">No hay un PIN activo</p>
-                <p className="text-sm text-gray-400">Genera uno nuevo para comenzar</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {(existingPin || isLoadingExisting) && (
+          <Card className="border border-blue-100 bg-blue-50 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-lg font-semibold">
+                  <Badge variant="secondary" className="px-3 py-1">
+                    PIN Actual
+                  </Badge>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={loadExistingPin}
+                  disabled={isLoadingExisting}
+                >
+                  <RefreshCw className={`h-4 w-4 ${isLoadingExisting ? 'animate-spin' : ''}`} />
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoadingExisting ? (
+                <div className="space-y-3">
+                  <Skeleton className="h-8 w-1/2" />
+                  <Skeleton className="h-6 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                </div>
+              ) : existingPin ? (
+                <PinDisplay pin={existingPin.pin ?? ''} expiresAt={existingPin.expiresAt} />
+              ) : null}
+            </CardContent>
+          </Card>
+        )}
 
-        {/* PIN recién generado */}
-        {pinGenerated && (
-          <PinDisplay
-            pin={pinGenerated.pin ?? ''}
-            expiresAt={pinGenerated.expiresAt}
-            title="PIN Recién Generado"
-            variant="new"
-            onDismiss={clearGeneratedPin}
-          />
+        {!existingPin && !isLoadingExisting && (
+          <Card className="border-dashed border-gray-300 bg-gray-50 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+            <CardContent className="py-12 text-center">
+              <Shield className="mx-auto mb-4 h-16 w-16 text-gray-300" />
+              <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">
+                No hay PIN activo
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Genera un nuevo PIN para comenzar a usarlo en validaciones
+              </p>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>

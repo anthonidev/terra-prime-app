@@ -8,6 +8,7 @@ import ReviewStep from './ReviewStep';
 import SuccessStep from './SuccessStep';
 import UploadProgress from './UploadProgress';
 import UploadStep from './UploadStep';
+
 const ProjectUpload: React.FC = () => {
   const {
     file,

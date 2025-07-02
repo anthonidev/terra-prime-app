@@ -1,16 +1,18 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ProjectListItemDto } from '@/types/project.types';
+import { Badge } from '@components/ui/badge';
+import { Button } from '@components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@components/ui/card';
+import { ProjectListItemDto } from '@infrastructure/types/projects/project.types';
 import { motion } from 'framer-motion';
 import { Building, Building2, Calendar, ChevronRight, Layers } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+
 type Props = {
   project: ProjectListItemDto;
   index: number;
   formatDate: (date: Date) => string;
 };
+
 const ProjectCard = ({ project, formatDate, index }: Props) => {
   return (
     <motion.div

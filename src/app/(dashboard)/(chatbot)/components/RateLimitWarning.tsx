@@ -28,6 +28,7 @@ export const RateLimitWarning = ({ rateLimitStatus, message }: RateLimitWarningP
     return (rateLimitStatus.remaining / rateLimitStatus.limit) * 100;
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
   const getProgressColor = () => {
     if (rateLimitStatus.remaining < 5) return 'bg-destructive';
     if (rateLimitStatus.remaining < 10) return 'bg-yellow-500';

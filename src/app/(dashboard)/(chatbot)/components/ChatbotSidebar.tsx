@@ -31,6 +31,7 @@ export const ChatbotSidebar: React.FC<ChatbotSidebarProps> = ({
   viewMode,
   sessions,
   availableGuides,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
   selectedGuide,
   onSelectSession,
   onSelectGuide,

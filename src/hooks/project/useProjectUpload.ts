@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { validateProjectExcel, createBulkProject } from '@/lib/actions/projects/projectActions';
-import { ExcelValidationResponse } from '@/types/project.types';
+import { ExcelValidationResponse } from '@infrastructure/types/projects/project.types';
+import {
+  createBulkProject,
+  validateProjectExcel
+} from '@infrastructure/server-actions/projects.actions';
+
 type UploadStep = 'upload' | 'review' | 'success';
+
 export function useProjectUpload() {
   const [file, setFile] = useState<File | null>(null);
   const [isValidating, setIsValidating] = useState(false);

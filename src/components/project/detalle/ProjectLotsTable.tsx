@@ -16,7 +16,6 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import { LotResponseDto } from '@/types/project.types';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowUpDown,
@@ -29,6 +28,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import LotActions from './LotActions';
+import { LotResponseDto } from '@infrastructure/types/projects/project.types';
 interface ProjectLotsTableProps {
   lots: LotResponseDto[];
   isLoading: boolean;
