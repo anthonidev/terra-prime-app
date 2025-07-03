@@ -170,7 +170,6 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         toast.success('Proyecto actualizado correctamente');
         return updatedProject;
       } catch (error) {
-        console.error('Error al actualizar el proyecto:', error);
         const errorMessage =
           error instanceof Error ? error.message : 'Error al actualizar el proyecto';
         setError(errorMessage);
@@ -215,7 +214,6 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         toast.success('Etapa creada correctamente');
         await fetchProjectDetail();
       } catch (error) {
-        console.error('Error al crear la etapa:', error);
         const errorMessage = error instanceof Error ? error.message : 'Error al crear la etapa';
         setError(errorMessage);
         toast.error(errorMessage);
@@ -235,7 +233,6 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         toast.success('Etapa actualizada correctamente');
         await fetchProjectDetail();
       } catch (error) {
-        console.error('Error al actualizar la etapa:', error);
         const errorMessage =
           error instanceof Error ? error.message : 'Error al actualizar la etapa';
         setError(errorMessage);
@@ -256,7 +253,6 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         toast.success('Manzana creada correctamente');
         await fetchProjectDetail();
       } catch (error) {
-        console.error('Error al crear la manzana:', error);
         const errorMessage = error instanceof Error ? error.message : 'Error al crear la manzana';
         setError(errorMessage);
         toast.error(errorMessage);
@@ -276,7 +272,6 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         toast.success('Manzana actualizada correctamente');
         await fetchProjectDetail();
       } catch (error) {
-        console.error('Error al actualizar la manzana:', error);
         const errorMessage =
           error instanceof Error ? error.message : 'Error al actualizar la manzana';
         setError(errorMessage);
@@ -305,7 +300,6 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         await fetchProjectDetail();
         await fetchProjectLots();
       } catch (error) {
-        console.error('Error al crear el lote:', error);
         const errorMessage = error instanceof Error ? error.message : 'Error al crear el lote';
         setError(errorMessage);
         toast.error(errorMessage);
@@ -335,7 +329,6 @@ export function useProject({ projectId }: UseProjectProps): UseProjectReturn {
         await fetchProjectDetail();
         await fetchProjectLots();
       } catch (error) {
-        console.error('Error al actualizar el lote:', error);
         const errorMessage = error instanceof Error ? error.message : 'Error al actualizar el lote';
         setError(errorMessage);
         toast.error(errorMessage);

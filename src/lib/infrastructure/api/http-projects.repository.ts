@@ -49,7 +49,7 @@ export class HttpProjectRepository implements ProjectRepository {
         total: response.total
       };
     } catch (error) {
-      console.error('Error al obtener proyectos:', error);
+      if (error instanceof Error) throw new Error(error.message);
       throw error;
     }
   }
@@ -65,7 +65,7 @@ export class HttpProjectRepository implements ProjectRepository {
         updatedAt: new Date(response.updatedAt)
       };
     } catch (error) {
-      console.error(`Error al obtener detalle del proyecto ${dto.id}:`, error);
+      if (error instanceof Error) throw new Error(error.message);
       throw error;
     }
   }
@@ -91,7 +91,7 @@ export class HttpProjectRepository implements ProjectRepository {
         meta: response.meta
       };
     } catch (error) {
-      console.error(`Error al obtener lotes del proyecto ${dto.projectId}:`, error);
+      if (error instanceof Error) throw new Error(error.message);
       throw error;
     }
   }
@@ -104,7 +104,7 @@ export class HttpProjectRepository implements ProjectRepository {
         skipJsonStringify: true
       });
     } catch (error) {
-      console.error('Error en validateProjectExcel:', error);
+      if (error instanceof Error) throw new Error(error.message);
       throw error;
     }
   }
@@ -117,6 +117,7 @@ export class HttpProjectRepository implements ProjectRepository {
         skipJsonStringify: true
       });
     } catch (error) {
+      if (error instanceof Error) throw new Error(error.message);
       throw error;
     }
   }
@@ -134,7 +135,7 @@ export class HttpProjectRepository implements ProjectRepository {
         updatedAt: new Date(response.updatedAt)
       };
     } catch (error) {
-      console.error('Error en updateProjectWithImage:', error);
+      if (error instanceof Error) throw new Error(error.message);
       throw error;
     }
   }
@@ -149,7 +150,7 @@ export class HttpStageRepository implements StageRepository {
       });
       return response;
     } catch (error) {
-      console.error('Error al crear la etapa:', error);
+      if (error instanceof Error) throw new Error(error.message);
       throw error;
     }
   }
@@ -162,7 +163,7 @@ export class HttpStageRepository implements StageRepository {
       });
       return response;
     } catch (error) {
-      console.error(`Error al actualizar la etapa ${id}:`, error);
+      if (error instanceof Error) throw new Error(error.message);
       throw error;
     }
   }
@@ -177,7 +178,7 @@ export class HttpBlockRepository implements BlockRepository {
       });
       return response;
     } catch (error) {
-      console.error('Error al crear la manzana:', error);
+      if (error instanceof Error) throw new Error(error.message);
       throw error;
     }
   }
@@ -190,7 +191,7 @@ export class HttpBlockRepository implements BlockRepository {
       });
       return response;
     } catch (error) {
-      console.error(`Error al actualizar la manzana ${id}:`, error);
+      if (error instanceof Error) throw new Error(error.message);
       throw error;
     }
   }
@@ -205,7 +206,7 @@ export class HttpLotRepository implements LotRepository {
       });
       return response;
     } catch (error) {
-      console.error('Error al crear el lote:', error);
+      if (error instanceof Error) throw new Error(error.message);
       throw error;
     }
   }
@@ -218,7 +219,7 @@ export class HttpLotRepository implements LotRepository {
       });
       return response;
     } catch (error) {
-      console.error(`Error al actualizar el lote ${id}:`, error);
+      if (error instanceof Error) throw new Error(error.message);
       throw error;
     }
   }
