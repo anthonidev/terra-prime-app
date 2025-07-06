@@ -2,10 +2,17 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 import { ChatSession } from '@/types/chat/chatbot.types';
-import { MessageSquare, Trash2, Calendar } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow, isToday, isYesterday } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { Clock, MessageSquare, MoreVertical, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 interface SessionsListProps {
   sessions: ChatSession[];
@@ -20,57 +27,114 @@ export const SessionsList = ({
   onDeleteSession,
   isLoading
 }: SessionsListProps) => {
+  const [deletingSessionId, setDeletingSessionId] = useState<string | null>(null);
+
+  const formatSessionDate = (dateString: string) => {
+    const date = new Date(dateString);
+
+    if (isToday(date)) {
+      return format(date, 'HH:mm', { locale: es });
+    } else if (isYesterday(date)) {
+      return 'Ayer';
+    } else {
+      return format(date, 'dd/MM', { locale: es });
+    }
+  };
+
+  const handleDeleteSession = async (sessionId: string) => {
+    setDeletingSessionId(sessionId);
+    try {
+      await onDeleteSession(sessionId);
+    } finally {
+      setDeletingSessionId(null);
+    }
+  };
+
   if (sessions.length === 0) {
     return (
-      <div className="flex h-full flex-col items-center justify-center p-6 text-center">
-        <MessageSquare className="mb-4 h-12 w-12 text-gray-400" />
-        <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">
-          No hay sesiones
-        </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Inicia una nueva conversación para comenzar
+      <div className="flex h-full flex-col items-center justify-center p-8 text-center">
+        <div className="bg-muted mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+          <MessageSquare className="text-muted-foreground h-8 w-8" />
+        </div>
+        <h3 className="text-foreground mb-2 text-lg font-semibold">Sin conversaciones</h3>
+        <p className="text-muted-foreground max-w-[240px] text-sm">
+          Tus conversaciones anteriores aparecerán aquí. Inicia una nueva conversación para
+          comenzar.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="h-full space-y-3 overflow-y-auto p-4">
-      {sessions.map((session) => (
-        <Card key={session.id} className="transition-all hover:shadow-md">
-          <CardContent className="p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex-1 cursor-pointer" onClick={() => onSelectSession(session.id)}>
-                <h4 className="mb-1 line-clamp-2 font-medium text-gray-900 dark:text-gray-100">
-                  {session.title}
-                </h4>
-                <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                  <Calendar className="h-3 w-3" />
-                  <span>
-                    {formatDistanceToNow(new Date(session.updatedAt), {
-                      addSuffix: true,
-                      locale: es
-                    })}
-                  </span>
-                </div>
-              </div>
+    <div className="h-full overflow-y-auto">
+      <div className="space-y-1.5 p-4">
+        {sessions.map((session) => (
+          <Card
+            key={session.id}
+            className="group border-border/50 hover:border-border cursor-pointer py-0 transition-all duration-200 hover:shadow-sm"
+            onClick={() => onSelectSession(session.id)}
+          >
+            <CardContent className="px-4 py-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  {/* Título de la sesión */}
+                  <h4 className="text-foreground group-hover:text-primary mb-0.5 line-clamp-2 text-sm font-medium transition-colors">
+                    {session.title}
+                  </h4>
 
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDeleteSession(session.id);
-                }}
-                className="h-8 w-8 p-0 text-red-500 hover:text-red-600"
-                disabled={isLoading}
-              >
-                <Trash2 className="h-3 w-3" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+                  {/* Metadata de tiempo */}
+                  <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
+                    <Clock className="h-3 w-3" />
+                    <span className="font-medium">{formatSessionDate(session.updatedAt)}</span>
+                    <span className="text-muted-foreground/60">•</span>
+                    <span>
+                      {formatDistanceToNow(new Date(session.updatedAt), {
+                        addSuffix: true,
+                        locale: es
+                      })}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Menú de acciones */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 opacity-0 transition-opacity group-hover:opacity-100"
+                      onClick={(e) => e.stopPropagation()}
+                      disabled={isLoading || deletingSessionId === session.id}
+                    >
+                      {deletingSessionId === session.id ? (
+                        <div className="border-muted-foreground h-3 w-3 animate-spin rounded-full border border-t-transparent" />
+                      ) : (
+                        <MoreVertical className="h-3 w-3" />
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[160px]">
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteSession(session.id);
+                      }}
+                      className="text-destructive focus:text-destructive"
+                      disabled={deletingSessionId === session.id}
+                    >
+                      <Trash2 className="mr-2 h-3 w-3" />
+                      Eliminar
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Espaciado inferior para mejor scroll */}
+      <div className="h-4" />
     </div>
   );
 };

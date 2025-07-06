@@ -19,52 +19,15 @@ import {
 import { getQuickHelp, getAvailableGuides, getGuideDetail } from '../actions/chatbotHelp';
 
 export type ViewType = 'chat' | 'sessions' | 'guides' | 'guide-detail';
-
-export interface UseChatbotReturn {
-  // Estado principal
-  currentView: ViewType;
-  setCurrentView: (view: ViewType) => void;
-
-  // Sesiones y mensajes
-  sessions: ChatSession[];
-  currentSession: ChatSession | null;
-  messages: ChatMessage[];
-
-  // Loading states
-  isLoading: boolean;
-  isSendingMessage: boolean;
-
-  // Rate limit
-  rateLimitStatus: RateLimitStatus | null;
-
-  // Quick help y guías
-  quickHelp: QuickHelpResponse | null;
-  availableGuides: AvailableGuidesResponse | null;
-  currentGuide: GuideDetailResponse | null;
-
-  // Errores
-  error: string | null;
-
-  // Acciones
-  initializeChatbot: () => Promise<void>;
-  createNewChat: () => Promise<void>;
-  selectSession: (sessionId: string) => Promise<void>;
-  handleSendMessage: (message: string) => Promise<void>;
-  handleDeleteSession: (sessionId: string) => Promise<void>;
-  loadGuideDetail: (guideKey: string) => Promise<void>;
-  clearError: () => void;
-
-  // Función para triggear scroll desde componentes externos
-  triggerScrollToBottom?: () => void;
-
-  // Función para registrar la función de scroll
-  registerScrollFunction?: (scrollFunc: () => void) => void;
-
-  // Legacy ref para compatibilidad (ya no se usa directamente)
-  messagesEndRef: React.RefObject<HTMLDivElement | null>;
+export interface TemporalContent {
+  id: string;
+  type: 'quick-help-list' | 'guide-list' | 'guide-detail';
+  title: string;
+  data: any; // QuickHelpResponse | AvailableGuidesResponse | GuideDetailResponse
+  timestamp: string;
 }
 
-export const useChatbot = (): UseChatbotReturn => {
+export const useChatbot = () => {
   const [currentView, setCurrentView] = useState<ViewType>('chat');
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [currentSession, setCurrentSession] = useState<ChatSession | null>(null);
@@ -76,7 +39,58 @@ export const useChatbot = (): UseChatbotReturn => {
   const [availableGuides, setAvailableGuides] = useState<AvailableGuidesResponse | null>(null);
   const [currentGuide, setCurrentGuide] = useState<GuideDetailResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [temporalContent, setTemporalContent] = useState<TemporalContent | null>(null);
 
+  const showQuickHelpList = useCallback(() => {
+    if (quickHelp) {
+      const content: TemporalContent = {
+        id: `temp-help-list-${Date.now()}`,
+        type: 'quick-help-list',
+        title: 'Preguntas Frecuentes',
+        data: quickHelp,
+        timestamp: new Date().toISOString()
+      };
+      setTemporalContent(content);
+    }
+  }, [quickHelp]);
+
+  const showGuidesList = useCallback(() => {
+    if (availableGuides) {
+      const content: TemporalContent = {
+        id: `temp-guides-list-${Date.now()}`,
+        type: 'guide-list',
+        title: 'Guías Disponibles',
+        data: availableGuides,
+        timestamp: new Date().toISOString()
+      };
+      setTemporalContent(content);
+    }
+  }, [availableGuides]);
+
+  const showGuideDetail = useCallback(async (guideKey: string) => {
+    try {
+      setIsLoading(true);
+      const response = await getGuideDetail(guideKey);
+      if (response.success) {
+        const content: TemporalContent = {
+          id: `temp-guide-detail-${Date.now()}`,
+          type: 'guide-detail',
+          title: response.guide.title,
+          data: response,
+          timestamp: new Date().toISOString()
+        };
+        setTemporalContent(content);
+      }
+    } catch (err) {
+      console.error('Error loading guide detail:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const clearTemporalContent = useCallback(() => {
+    setTemporalContent(null);
+  }, []);
   // Legacy ref para compatibilidad con componentes existentes
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -378,7 +392,12 @@ export const useChatbot = (): UseChatbotReturn => {
     clearError,
     triggerScrollToBottom,
     registerScrollFunction,
-    messagesEndRef
+    messagesEndRef,
+    temporalContent,
+    showQuickHelpList,
+    showGuidesList,
+    showGuideDetail,
+    clearTemporalContent
   };
 
   return chatbotReturn;

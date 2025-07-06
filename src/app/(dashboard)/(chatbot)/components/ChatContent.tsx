@@ -1,24 +1,26 @@
 'use client';
 
-import { ChatMessage } from './ChatMessage';
-import { QuickHelpSuggestions } from './QuickHelpSuggestions';
-import { SessionsList } from './SessionsList';
-import { GuidesList } from './GuidesList';
-import { GuideDetail } from './GuideDetail';
-import { ScrollToBottomButton } from './ScrollToBottomButton';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useChatbot } from '../hooks/useChatbot';
 import { useScrollToBottom } from '../hooks/useScrollToBottom';
-import { useEffect, useState } from 'react';
+import { ChatMessage } from './ChatMessage';
+import { GuideDetail } from './GuideDetail';
+import { GuidesList } from './GuidesList';
+import { QuickHelpSuggestions } from './QuickHelpSuggestions';
+import { ScrollToBottomButton } from './ScrollToBottomButton';
+import { SessionsList } from './SessionsList';
+import { TemporalContentDisplay } from './TemporalContentDisplay';
 
 interface ChatContentProps {
   chatbot: ReturnType<typeof useChatbot>;
+  onViewChange: (view: 'chat' | 'sessions' | 'guides' | 'guide-detail') => void;
   isSheetOpen?: boolean;
 }
 
-export const ChatContent = ({ chatbot, isSheetOpen = false }: ChatContentProps) => {
+export const ChatContent = ({ chatbot, isSheetOpen = false, onViewChange }: ChatContentProps) => {
   const {
     currentView,
     sessions,
@@ -161,7 +163,14 @@ export const ChatContent = ({ chatbot, isSheetOpen = false }: ChatContentProps) 
                 )}
               </>
             )}
-
+            {chatbot.temporalContent && (
+              <TemporalContentDisplay
+                content={chatbot.temporalContent}
+                onClose={chatbot.clearTemporalContent}
+                onSendMessage={chatbot.handleSendMessage}
+                onShowGuideDetail={chatbot.showGuideDetail}
+              />
+            )}
             {/* Elemento invisible para scroll automático */}
             <div ref={bottomRef} className="h-1 w-full" style={{ scrollMarginBottom: '1rem' }} />
           </div>
@@ -199,7 +208,13 @@ export const ChatContent = ({ chatbot, isSheetOpen = false }: ChatContentProps) 
 
   // Guide Detail View
   if (currentView === 'guide-detail' && currentGuide) {
-    return <GuideDetail guide={currentGuide} isLoading={isLoading} />;
+    return (
+      <GuideDetail
+        guide={currentGuide}
+        isLoading={isLoading}
+        onBackToGuides={() => onViewChange('guides')}
+      />
+    );
   }
 
   return null;

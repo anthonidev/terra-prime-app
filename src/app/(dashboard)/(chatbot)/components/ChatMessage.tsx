@@ -1,16 +1,19 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { ChatMessage as ChatMessageType } from '@/types/chat/chatbot.types';
-import { Bot, User } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { Bot, Check, Copy, User } from 'lucide-react';
+import { useState } from 'react';
 
 interface ChatMessageProps {
   message: ChatMessageType;
 }
 
 export const ChatMessage = ({ message }: ChatMessageProps) => {
+  const [copied, setCopied] = useState(false);
   const isUser = message.role === 'user';
   const isOlderThanTwoHours =
     new Date().getTime() - new Date(message.createdAt).getTime() > 2 * 60 * 60 * 1000;
@@ -32,48 +35,111 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
     });
   };
 
-  return (
-    <div className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
-      {!isUser && (
-        <div className="flex-shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
-            <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(message.content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Error copying to clipboard:', err);
+    }
+  };
+
+  const getMetadataLabel = (queryType: string) => {
+    switch (queryType) {
+      case 'database':
+        return 'BD';
+      case 'system':
+        return 'Sistema';
+      default:
+        return queryType;
+    }
+  };
+
+  const getMetadataColor = (queryType: string) => {
+    switch (queryType) {
+      case 'database':
+        return 'bg-blue-500/10 text-blue-700 border-blue-200 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-800';
+      case 'system':
+        return 'bg-green-500/10 text-green-700 border-green-200 dark:bg-green-500/20 dark:text-green-300 dark:border-green-800';
+      default:
+        return 'bg-gray-500/10 text-gray-700 border-gray-200 dark:bg-gray-500/20 dark:text-gray-300 dark:border-gray-800';
+    }
+  };
+
+  if (isUser) {
+    return (
+      <div className="group flex justify-end gap-3">
+        <div className="flex max-w-[80%] flex-col items-end space-y-1">
+          {/* Mensaje del usuario */}
+          <div className="relative">
+            <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-md px-4 py-2.5 shadow-sm">
+              <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">
+                {message.content}
+              </p>
+            </div>
+          </div>
+
+          {/* Metadata */}
+          <div className="text-muted-foreground flex items-center gap-2 px-1 text-xs">
+            <span>{formatTime(message.createdAt)}</span>
           </div>
         </div>
-      )}
 
-      <div className={`max-w-[75%] space-y-2 ${isUser ? 'items-end' : 'items-start'}`}>
-        <div
-          className={`rounded-lg px-4 py-2 ${
-            isUser
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-          }`}
-        >
-          <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+        {/* Avatar del usuario */}
+        <div className="flex-shrink-0">
+          <div className="bg-muted flex h-8 w-8 items-center justify-center rounded-full">
+            <User className="text-muted-foreground h-4 w-4" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Mensaje del asistente
+  return (
+    <div className="group flex justify-start gap-3">
+      {/* Avatar del bot */}
+      <div className="flex-shrink-0">
+        <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full">
+          <Bot className="text-primary h-4 w-4" />
+        </div>
+      </div>
+
+      <div className="flex max-w-[80%] flex-col space-y-1">
+        {/* Mensaje del asistente */}
+        <div className="group/message relative">
+          <div className="bg-muted rounded-2xl rounded-tl-md px-4 py-2.5 shadow-sm">
+            <p className="text-foreground text-sm leading-relaxed break-words whitespace-pre-wrap">
+              {message.content}
+            </p>
+          </div>
+
+          {/* Botón de copiar - aparece en hover */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleCopy}
+            className="bg-background/80 border-border/50 hover:bg-muted absolute -top-2 -right-2 h-7 w-7 rounded-full border p-0 opacity-0 shadow-sm backdrop-blur-sm transition-opacity group-hover/message:opacity-100"
+          >
+            {copied ? <Check className="h-3 w-3 text-green-600" /> : <Copy className="h-3 w-3" />}
+          </Button>
         </div>
 
-        <div
-          className={`flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 ${
-            isUser ? 'justify-end' : 'justify-start'
-          }`}
-        >
+        {/* Metadata */}
+        <div className="text-muted-foreground flex items-center gap-2 px-1 text-xs">
           <span>{formatTime(message.createdAt)}</span>
-          {!isUser && message.metadata?.queryType && (
-            <Badge variant="outline" className="text-xs">
-              {message.metadata.queryType === 'database' ? 'BD' : 'Sistema'}
+
+          {message.metadata?.queryType && (
+            <Badge
+              variant="outline"
+              className={`text-xs font-medium ${getMetadataColor(message.metadata.queryType)}`}
+            >
+              {getMetadataLabel(message.metadata.queryType)}
             </Badge>
           )}
         </div>
       </div>
-
-      {isUser && (
-        <div className="flex-shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
-            <User className="h-4 w-4 text-green-600 dark:text-green-400" />
-          </div>
-        </div>
-      )}
     </div>
   );
 };

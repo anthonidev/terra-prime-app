@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { RateLimitStatus } from '@/types/chat/chatbot.types';
 import { Bot, MessageCircle } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { ChatbotSheet } from './ChatbotSheet';
+import { useEffect, useState } from 'react';
 import { getRateLimitStatus } from '../actions/chatbotMessage';
+import { ChatbotSheet } from './ChatbotSheet';
 
 const ChatbotButton = () => {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);

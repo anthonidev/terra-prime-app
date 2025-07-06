@@ -38,16 +38,20 @@ export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
     }
   }, [chatbot.error]);
 
+  // Limpiar contenido temporal cuando cambia la vista
+  useEffect(() => {
+    if (chatbot.currentView !== 'chat') {
+      chatbot.clearTemporalContent();
+    }
+  }, [chatbot.currentView]);
+
   // Detectar cuando se abre el sheet y hay mensajes existentes
   useEffect(() => {
     const wasClosedNowOpen = !previousIsOpenRef.current && isOpen;
 
     if (wasClosedNowOpen && chatbot.messages.length > 0 && chatbot.currentView === 'chat') {
-      // Usar requestAnimationFrame para asegurar que el DOM esté renderizado
       requestAnimationFrame(() => {
-        // Pequeño delay adicional para asegurar que el sheet esté completamente abierto
         setTimeout(() => {
-          // Llamar a la función de scroll que está disponible en el contexto
           chatbot.triggerScrollToBottom?.();
         }, 150);
       });
@@ -56,7 +60,6 @@ export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
     previousIsOpenRef.current = isOpen;
   }, [isOpen, chatbot.messages.length, chatbot.currentView, chatbot.triggerScrollToBottom]);
 
-  // Función para cerrar el chat (reemplaza al "cerrar todas las sesiones")
   const handleCloseChat = () => {
     onOpenChange(false);
   };
@@ -69,7 +72,7 @@ export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
       >
         <VisuallyHidden>
           <SheetHeader>
-            <SheetTitle>Asistente Virtual - Chatbot</SheetTitle>
+            <SheetTitle>SmartBot - Asistente Virtual</SheetTitle>
             <SheetDescription>
               Interfaz de chat para interactuar con el asistente virtual del sistema
             </SheetDescription>
@@ -89,7 +92,11 @@ export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
 
         {/* Main Content */}
         <div className="flex-1 overflow-hidden">
-          <ChatContent chatbot={chatbot} isSheetOpen={isOpen} />
+          <ChatContent
+            chatbot={chatbot}
+            isSheetOpen={isOpen}
+            onViewChange={chatbot.setCurrentView}
+          />
         </div>
 
         {/* Message Input - Solo mostrar en vista de chat */}
@@ -97,8 +104,12 @@ export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
           <div className="flex-shrink-0">
             <MessageInput
               onSendMessage={chatbot.handleSendMessage}
+              onShowQuickHelpList={chatbot.showQuickHelpList}
+              onShowGuidesList={chatbot.showGuidesList}
               isLoading={chatbot.isSendingMessage}
               rateLimitStatus={chatbot.rateLimitStatus}
+              hasQuickHelp={!!chatbot.quickHelp?.help?.length}
+              hasGuides={!!chatbot.availableGuides?.guides?.length}
             />
           </div>
         )}
