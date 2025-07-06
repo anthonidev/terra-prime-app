@@ -6,9 +6,10 @@ import { CheckCircle, BookOpen } from 'lucide-react';
 
 interface GuideDetailProps {
   guide: GuideDetailResponse;
+  isLoading: boolean;
 }
 
-export const GuideDetail = ({ guide }: GuideDetailProps) => {
+export const GuideDetail = ({ guide, isLoading }: GuideDetailProps) => {
   return (
     <div className="h-full overflow-y-auto p-4">
       <div className="space-y-6">

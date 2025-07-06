@@ -12,7 +12,7 @@ import { ChatHeader } from './ChatHeader';
 import { ChatContent } from './ChatContent';
 import { MessageInput } from './MessageInput';
 import { useChatbot } from '../hooks/useChatbot';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface ChatbotSheetProps {
   isOpen: boolean;
@@ -21,6 +21,7 @@ interface ChatbotSheetProps {
 
 export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
   const chatbot = useChatbot();
+  const previousIsOpenRef = useRef(isOpen);
 
   useEffect(() => {
     if (isOpen && !chatbot.sessions.length && !chatbot.isLoading) {
@@ -37,12 +38,27 @@ export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
     }
   }, [chatbot.error]);
 
-  const handleDeleteAllSessions = async () => {
-    if (confirm('¿Estás seguro de que quieres cerrar todas las sesiones?')) {
-      for (const session of chatbot.sessions) {
-        await chatbot.handleDeleteSession(session.id);
-      }
+  // Detectar cuando se abre el sheet y hay mensajes existentes
+  useEffect(() => {
+    const wasClosedNowOpen = !previousIsOpenRef.current && isOpen;
+
+    if (wasClosedNowOpen && chatbot.messages.length > 0 && chatbot.currentView === 'chat') {
+      // Usar requestAnimationFrame para asegurar que el DOM esté renderizado
+      requestAnimationFrame(() => {
+        // Pequeño delay adicional para asegurar que el sheet esté completamente abierto
+        setTimeout(() => {
+          // Llamar a la función de scroll que está disponible en el contexto
+          chatbot.triggerScrollToBottom?.();
+        }, 150);
+      });
     }
+
+    previousIsOpenRef.current = isOpen;
+  }, [isOpen, chatbot.messages.length, chatbot.currentView, chatbot.triggerScrollToBottom]);
+
+  // Función para cerrar el chat (reemplaza al "cerrar todas las sesiones")
+  const handleCloseChat = () => {
+    onOpenChange(false);
   };
 
   return (
@@ -66,14 +82,14 @@ export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
             currentView={chatbot.currentView}
             onViewChange={chatbot.setCurrentView}
             onNewChat={chatbot.createNewChat}
-            onDeleteAllSessions={handleDeleteAllSessions}
+            onCloseChat={handleCloseChat}
             sessionCount={chatbot.sessions.length}
           />
         </div>
 
         {/* Main Content */}
         <div className="flex-1 overflow-hidden">
-          <ChatContent chatbot={chatbot} />
+          <ChatContent chatbot={chatbot} isSheetOpen={isOpen} />
         </div>
 
         {/* Message Input - Solo mostrar en vista de chat */}

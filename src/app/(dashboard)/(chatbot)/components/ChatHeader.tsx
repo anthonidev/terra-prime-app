@@ -2,14 +2,14 @@
 
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { MessageSquarePlus, History, BookOpen, Trash2, ArrowLeft } from 'lucide-react';
+import { MessageSquarePlus, History, BookOpen, X, ArrowLeft } from 'lucide-react';
 import { ViewType } from '../hooks/useChatbot';
 
 interface ChatHeaderProps {
   currentView: ViewType;
   onViewChange: (view: ViewType) => void;
   onNewChat: () => void;
-  onDeleteAllSessions: () => void;
+  onCloseChat: () => void; // Nuevo prop para cerrar el chat
   sessionCount: number;
 }
 
@@ -17,7 +17,7 @@ export const ChatHeader = ({
   currentView,
   onViewChange,
   onNewChat,
-  onDeleteAllSessions,
+  onCloseChat, // Recibimos la función para cerrar
   sessionCount
 }: ChatHeaderProps) => {
   const getTitle = () => {
@@ -94,29 +94,28 @@ export const ChatHeader = ({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Ver Guías</p>
+                  <p>Guías de Ayuda</p>
                 </TooltipContent>
               </Tooltip>
-
-              {sessionCount > 0 && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={onDeleteAllSessions}
-                      className="h-8 w-8 p-0 text-red-500 hover:text-red-600"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Cerrar Todos</p>
-                  </TooltipContent>
-                </Tooltip>
-              )}
             </>
           )}
+
+          {/* Botón cerrar chat - siempre visible */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onCloseChat}
+                className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Cerrar Chat</p>
+            </TooltipContent>
+          </Tooltip>
         </TooltipProvider>
       </div>
     </div>

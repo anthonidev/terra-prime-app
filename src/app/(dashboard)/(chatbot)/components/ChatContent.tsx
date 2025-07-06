@@ -5,21 +5,26 @@ import { QuickHelpSuggestions } from './QuickHelpSuggestions';
 import { SessionsList } from './SessionsList';
 import { GuidesList } from './GuidesList';
 import { GuideDetail } from './GuideDetail';
+import { ScrollToBottomButton } from './ScrollToBottomButton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { useChatbot } from '../hooks/useChatbot';
+import { useScrollToBottom } from '../hooks/useScrollToBottom';
+import { useEffect, useState } from 'react';
 
 interface ChatContentProps {
   chatbot: ReturnType<typeof useChatbot>;
+  isSheetOpen?: boolean;
 }
 
-export const ChatContent = ({ chatbot }: ChatContentProps) => {
+export const ChatContent = ({ chatbot, isSheetOpen = false }: ChatContentProps) => {
   const {
     currentView,
     sessions,
     messages,
     isLoading,
+    isSendingMessage,
     quickHelp,
     availableGuides,
     currentGuide,
@@ -27,9 +32,56 @@ export const ChatContent = ({ chatbot }: ChatContentProps) => {
     selectSession,
     handleSendMessage,
     handleDeleteSession,
-    loadGuideDetail,
-    messagesEndRef
+    loadGuideDetail
   } = chatbot;
+
+  // Hook para manejar el scroll
+  const { showScrollButton, scrollToBottom, containerRef, bottomRef } = useScrollToBottom({
+    threshold: 100,
+    smoothBehavior: true
+  });
+
+  // Estado para contar mensajes nuevos cuando no está en el bottom
+  const [newMessagesCount, setNewMessagesCount] = useState(0);
+  const [lastMessageCount, setLastMessageCount] = useState(0);
+
+  // Registrar la función de scroll en el hook de chatbot para acceso externo
+  useEffect(() => {
+    if (chatbot.registerScrollFunction) {
+      chatbot.registerScrollFunction(scrollToBottom);
+    }
+  }, [scrollToBottom, chatbot.registerScrollFunction]);
+
+  // Hacer scroll automático cuando se abre el sheet y hay mensajes
+  useEffect(() => {
+    if (isSheetOpen && messages.length > 0 && currentView === 'chat') {
+      // Pequeño delay para asegurar que el DOM esté completamente renderizado
+      const timer = setTimeout(() => {
+        scrollToBottom();
+      }, 200);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isSheetOpen, scrollToBottom, messages.length, currentView]);
+
+  // Efecto para contar mensajes nuevos
+  useEffect(() => {
+    if (messages.length > lastMessageCount && !showScrollButton) {
+      // Si está en el bottom, resetear contador
+      setNewMessagesCount(0);
+    } else if (messages.length > lastMessageCount && showScrollButton) {
+      // Si no está en el bottom y hay mensajes nuevos, incrementar contador
+      setNewMessagesCount((prev) => prev + (messages.length - lastMessageCount));
+    }
+
+    setLastMessageCount(messages.length);
+  }, [messages.length, showScrollButton, lastMessageCount]);
+
+  // Reset contador cuando hace scroll to bottom
+  const handleScrollToBottom = () => {
+    scrollToBottom();
+    setNewMessagesCount(0);
+  };
 
   // Error Display
   if (error) {
@@ -63,25 +115,65 @@ export const ChatContent = ({ chatbot }: ChatContentProps) => {
   // Chat View
   if (currentView === 'chat') {
     return (
-      <div className="flex h-full flex-col">
-        <div className="flex-1 space-y-4 overflow-y-auto p-4">
-          {messages.length === 0 ? (
-            quickHelp && (
-              <QuickHelpSuggestions
-                quickHelp={quickHelp}
-                onSendMessage={handleSendMessage}
-                isLoading={isLoading}
-              />
-            )
-          ) : (
-            <>
-              {messages.map((message) => (
-                <ChatMessage key={message.id} message={message} />
-              ))}
-              <div ref={messagesEndRef} />
-            </>
-          )}
+      <div className="relative flex h-full flex-col">
+        {/* Contenedor de mensajes con scroll mejorado */}
+        <div
+          ref={containerRef}
+          className="overscroll-behavior-contain scroll-container chat-scrollbar flex-1 overflow-y-auto"
+        >
+          {/* Contenido del chat */}
+          <div className="space-y-4 p-4 pb-6">
+            {messages.length === 0 ? (
+              quickHelp && (
+                <QuickHelpSuggestions
+                  quickHelp={quickHelp}
+                  onSendMessage={handleSendMessage}
+                  isLoading={isSendingMessage}
+                />
+              )
+            ) : (
+              <>
+                {messages.map((message) => (
+                  <ChatMessage key={message.id} message={message} />
+                ))}
+
+                {/* Indicador de carga cuando está enviando */}
+                {isSendingMessage && (
+                  <div className="animate-fade-in flex justify-start gap-3">
+                    <div className="flex-shrink-0">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent dark:border-blue-400" />
+                      </div>
+                    </div>
+                    <div className="max-w-[75%] space-y-2">
+                      <div className="rounded-lg bg-gray-100 px-4 py-3 dark:bg-gray-800">
+                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                          <span>Escribiendo</span>
+                          <div className="typing-dots">
+                            <div />
+                            <div />
+                            <div />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Elemento invisible para scroll automático */}
+            <div ref={bottomRef} className="h-1 w-full" style={{ scrollMarginBottom: '1rem' }} />
+          </div>
         </div>
+
+        {/* Botón de scroll to bottom */}
+        <ScrollToBottomButton
+          show={showScrollButton}
+          onClick={handleScrollToBottom}
+          newMessagesCount={newMessagesCount}
+          className="absolute right-4 bottom-20" // Ajustado para no chocar con el input
+        />
       </div>
     );
   }
@@ -102,16 +194,12 @@ export const ChatContent = ({ chatbot }: ChatContentProps) => {
   if (currentView === 'guides') {
     return availableGuides ? (
       <GuidesList guides={availableGuides} onSelectGuide={loadGuideDetail} isLoading={isLoading} />
-    ) : (
-      <div className="flex h-full items-center justify-center">
-        <Skeleton className="h-32 w-full max-w-md" />
-      </div>
-    );
+    ) : null;
   }
 
   // Guide Detail View
   if (currentView === 'guide-detail' && currentGuide) {
-    return <GuideDetail guide={currentGuide} />;
+    return <GuideDetail guide={currentGuide} isLoading={isLoading} />;
   }
 
   return null;

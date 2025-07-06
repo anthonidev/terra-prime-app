@@ -41,12 +41,18 @@ export interface ChatMessage {
   };
 }
 
+// Interfaz mejorada para incluir metadatos en la respuesta
 export interface MessageResponse {
   success: boolean;
   message: string;
   sessionId: string;
   response: string;
   timestamp: string;
+  // Añadido para recibir metadatos del backend
+  metadata?: {
+    userId?: string;
+    queryType?: string; // 'database', 'system', etc.
+  };
   error?: string;
 }
 

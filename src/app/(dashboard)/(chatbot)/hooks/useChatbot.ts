@@ -54,7 +54,13 @@ export interface UseChatbotReturn {
   loadGuideDetail: (guideKey: string) => Promise<void>;
   clearError: () => void;
 
-  // Refs
+  // Función para triggear scroll desde componentes externos
+  triggerScrollToBottom?: () => void;
+
+  // Función para registrar la función de scroll
+  registerScrollFunction?: (scrollFunc: () => void) => void;
+
+  // Legacy ref para compatibilidad (ya no se usa directamente)
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -71,10 +77,22 @@ export const useChatbot = (): UseChatbotReturn => {
   const [currentGuide, setCurrentGuide] = useState<GuideDetailResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Legacy ref para compatibilidad con componentes existentes
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  // Ref para almacenar la función de scroll del hook useScrollToBottom
+  const scrollToBottomFuncRef = useRef<(() => void) | null>(null);
+
+  // Función para registrar la función de scroll desde ChatContent
+  const registerScrollFunction = useCallback((scrollFunc: () => void) => {
+    scrollToBottomFuncRef.current = scrollFunc;
+  }, []);
+
+  // Función pública para triggear scroll desde componentes externos
+  const triggerScrollToBottom = useCallback(() => {
+    if (scrollToBottomFuncRef.current) {
+      scrollToBottomFuncRef.current();
+    }
   }, []);
 
   const clearError = useCallback(() => {
@@ -153,7 +171,10 @@ export const useChatbot = (): UseChatbotReturn => {
         const response = await getSessionHistory(sessionId);
         if (response.success) {
           setMessages(response.messages);
-          setTimeout(scrollToBottom, 100);
+          // Pequeño delay para asegurar scroll después de cargar mensajes
+          setTimeout(() => {
+            triggerScrollToBottom();
+          }, 200);
         }
       } catch (err) {
         setError('Error al cargar el historial de la sesión');
@@ -162,7 +183,7 @@ export const useChatbot = (): UseChatbotReturn => {
         setIsLoading(false);
       }
     },
-    [scrollToBottom]
+    [triggerScrollToBottom]
   );
 
   const initializeChatbot = useCallback(async () => {
@@ -259,14 +280,15 @@ export const useChatbot = (): UseChatbotReturn => {
         });
 
         if (response.success) {
-          // Crear mensaje de respuesta
+          // Crear mensaje de respuesta con metadatos correctos del backend
           const assistantMessage: ChatMessage = {
             id: `assistant-${Date.now()}`,
             role: 'assistant',
             content: response.response,
             createdAt: response.timestamp,
-            metadata: {
-              queryType: 'system' // Esto debería venir del backend
+            // Usar metadatos del backend si están disponibles, sino usar 'system' como fallback
+            metadata: (response as any).metadata || {
+              queryType: 'system'
             }
           };
 
@@ -292,7 +314,8 @@ export const useChatbot = (): UseChatbotReturn => {
           // Actualizar rate limit
           await loadRateLimit();
 
-          setTimeout(scrollToBottom, 100);
+          // Scroll automático después de agregar respuesta
+          setTimeout(triggerScrollToBottom, 100);
         } else {
           setError(response.error || 'Error al enviar mensaje');
           // Remover mensaje temporal del usuario
@@ -307,7 +330,7 @@ export const useChatbot = (): UseChatbotReturn => {
         setIsSendingMessage(false);
       }
     },
-    [currentSession, isSendingMessage, loadRateLimit, scrollToBottom]
+    [currentSession, isSendingMessage, loadRateLimit, triggerScrollToBottom]
   );
 
   const handleDeleteSession = useCallback(
@@ -332,7 +355,8 @@ export const useChatbot = (): UseChatbotReturn => {
     [currentSession, createNewChat]
   );
 
-  return {
+  // Añadir registerScrollFunction al return
+  const chatbotReturn = {
     currentView,
     setCurrentView,
     sessions,
@@ -352,6 +376,10 @@ export const useChatbot = (): UseChatbotReturn => {
     handleDeleteSession,
     loadGuideDetail,
     clearError,
+    triggerScrollToBottom,
+    registerScrollFunction,
     messagesEndRef
   };
+
+  return chatbotReturn;
 };
