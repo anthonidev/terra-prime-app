@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
@@ -6,16 +5,7 @@ import {
   SheetHeader,
   SheetTitle
 } from '@/components/ui/sheet';
-import { useEffect, useState } from 'react';
-import { useChatbot } from '../hooks/useChatbot';
-import { ChatbotHeader } from './ChatbotHeader';
-import { ChatbotInput } from './ChatbotInput';
-import { ChatbotMessages } from './ChatbotMessages';
 
-import { ChatbotGuideDetail } from './ChatbotGuideDetail';
-import { ChatbotGuidesView } from './ChatbotGuidesView';
-import { ChatbotHistoryView } from './ChatbotHistoryView';
-import { RateLimitWarning } from './RateLimitWarning';
 import { VisuallyHidden } from './VisuallyHidden';
 
 interface ChatbotSheetProps {
@@ -23,144 +13,7 @@ interface ChatbotSheetProps {
   onOpenChange: (open: boolean) => void;
 }
 
-type ViewMode = 'chat' | 'history' | 'guides' | 'guide-detail';
-
 export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
-  const {
-    messages,
-    isLoading,
-    error,
-    currentSessionId,
-    rateLimitStatus,
-    quickHelp,
-    userRole,
-    availableGuides,
-    selectedGuide,
-    sessions,
-    initializeChatbot,
-    sendChatMessage,
-    loadSessionHistory,
-    loadGuides,
-    loadGuideDetail,
-    closeCurrentSession,
-    clearError,
-    resetChatbot,
-    isRateLimited,
-    shouldShowWarning,
-    getRateLimitMessage,
-    handleDeleteSession
-  } = useChatbot();
-
-  const [viewMode, setViewMode] = useState<ViewMode>('chat');
-
-  useEffect(() => {
-    if (isOpen) {
-      initializeChatbot();
-    }
-  }, [isOpen, initializeChatbot]);
-
-  const handleNewChat = async () => {
-    await closeCurrentSession();
-    resetChatbot();
-    setViewMode('chat');
-  };
-
-  const handleSendMessage = async (message: string) => {
-    await sendChatMessage(message);
-  };
-
-  const handleViewHistory = () => {
-    setViewMode('history');
-  };
-
-  const handleViewGuides = async () => {
-    await loadGuides();
-    setViewMode('guides');
-  };
-
-  const handleSelectSession = async (sessionId: string) => {
-    await loadSessionHistory(sessionId);
-    setViewMode('chat');
-  };
-
-  const handleSelectGuide = async (guideKey: string) => {
-    await loadGuideDetail(guideKey);
-    setViewMode('guide-detail');
-  };
-
-  const handleBackToChat = () => {
-    setViewMode('chat');
-  };
-
-  const handleBackToGuides = () => {
-    setViewMode('guides');
-  };
-
-  const handleClose = () => {
-    onOpenChange(false);
-  };
-
-  const renderCurrentView = () => {
-    switch (viewMode) {
-      case 'chat':
-        return (
-          <div className="flex h-full flex-col overflow-hidden">
-            {/* Messages Container */}
-            <div className="flex-1 overflow-auto">
-              <ChatbotMessages
-                messages={messages}
-                quickHelp={quickHelp}
-                isLoading={isLoading}
-                onQuickHelpClick={handleSendMessage}
-              />
-            </div>
-
-            {/* Input Container */}
-            <div className="border-border flex-shrink-0 border-t">
-              <ChatbotInput
-                onSendMessage={handleSendMessage}
-                disabled={isLoading || isRateLimited}
-                rateLimitStatus={rateLimitStatus}
-              />
-            </div>
-          </div>
-        );
-
-      case 'history':
-        return (
-          <ChatbotHistoryView
-            sessions={sessions}
-            isLoading={isLoading}
-            onSelectSession={handleSelectSession}
-            onBackToChat={handleBackToChat}
-            onDeleteSession={handleDeleteSession}
-          />
-        );
-
-      case 'guides':
-        return (
-          <ChatbotGuidesView
-            guides={availableGuides}
-            isLoading={isLoading}
-            onSelectGuide={handleSelectGuide}
-            onBackToChat={handleBackToChat}
-          />
-        );
-
-      case 'guide-detail':
-        return (
-          <ChatbotGuideDetail
-            guide={selectedGuide}
-            onBackToGuides={handleBackToGuides}
-            onBackToChat={handleBackToChat}
-          />
-        );
-
-      default:
-        return null;
-    }
-  };
-
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent
@@ -178,43 +31,13 @@ export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
 
         {/* Header */}
         <div className="flex-shrink-0">
-          <ChatbotHeader
-            userRole={userRole}
-            currentView={viewMode}
-            onNewChat={handleNewChat}
-            onViewHistory={handleViewHistory}
-            onViewGuides={handleViewGuides}
-            onClose={handleClose}
-            currentSessionId={currentSessionId}
-          />
+          <div>Aqui debe ir el header del chat</div>
         </div>
 
-        {/* Rate Limit Warning */}
-        {(shouldShowWarning || isRateLimited) && (
-          <div className="border-border flex-shrink-0 border-b px-6 py-3">
-            <RateLimitWarning rateLimitStatus={rateLimitStatus} message={getRateLimitMessage()} />
-          </div>
-        )}
-
         {/* Error Display */}
-        {error && (
-          <div className="border-border flex-shrink-0 border-b px-6 py-3">
-            <div className="border-destructive/20 bg-destructive/10 flex items-center justify-between rounded-lg border p-3">
-              <span className="text-destructive text-sm">{error}</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearError}
-                className="text-destructive hover:text-destructive h-auto p-1"
-              >
-                ×
-              </Button>
-            </div>
-          </div>
-        )}
 
         {/* Main Content */}
-        <div className="flex-1 overflow-hidden">{renderCurrentView()}</div>
+        <div className="flex-1 overflow-hidden">Aqu debe ir el contenido principal del chat</div>
       </SheetContent>
     </Sheet>
   );

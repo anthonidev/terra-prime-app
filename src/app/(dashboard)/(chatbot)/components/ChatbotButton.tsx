@@ -3,33 +3,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { RateLimitStatus } from '@/types/chat/chatbot.types';
-import { Bot, MessageCircle, Zap } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { getRateLimitStatus } from '../actions';
+import { Bot, MessageCircle } from 'lucide-react';
+import { useState } from 'react';
 import { ChatbotSheet } from './ChatbotSheet';
 
 const ChatbotButton = () => {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [rateLimitStatus, setRateLimitStatus] = useState<RateLimitStatus | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    checkRateLimitStatus();
-  }, []);
-
-  const checkRateLimitStatus = async () => {
-    try {
-      setIsLoading(true);
-      const response = await getRateLimitStatus();
-      if (response.success) {
-        setRateLimitStatus(response.rateLimitStatus);
-      }
-    } catch (error) {
-      console.error('Error checking rate limit:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleChatbotToggle = () => {
     setIsChatbotOpen(!isChatbotOpen);
@@ -38,8 +19,8 @@ const ChatbotButton = () => {
   const getButtonState = () => {
     if (isLoading) return 'loading';
     if (rateLimitStatus?.isBlocked) return 'blocked';
-    if (rateLimitStatus && rateLimitStatus.remaining < 5) return 'warning';
-    if (rateLimitStatus && rateLimitStatus.remaining < 15) return 'caution';
+    // agregar warning and caution states based on remaining messages
+
     return 'available';
   };
 
@@ -51,8 +32,8 @@ const ChatbotButton = () => {
         return <MessageCircle className="h-4 w-4" />;
       case 'blocked':
         return <Bot className="h-4 w-4 opacity-50" />;
-      case 'warning':
-        return <Zap className="h-4 w-4" />;
+      // case 'warning':
+      //   return <Zap className="h-4 w-4" />;
       default:
         return <Bot className="h-4 w-4" />;
     }
@@ -64,10 +45,10 @@ const ChatbotButton = () => {
     switch (state) {
       case 'blocked':
         return 'secondary';
-      case 'warning':
-        return 'destructive';
-      case 'caution':
-        return 'outline';
+      // case 'warning':
+      //   return 'destructive';
+      // case 'caution':
+      //   return 'outline';
       default:
         return 'default';
     }
@@ -81,10 +62,10 @@ const ChatbotButton = () => {
         return 'Verificando disponibilidad...';
       case 'blocked':
         return `Límite alcanzado. Disponible a las ${new Date(rateLimitStatus!.resetTime).toLocaleTimeString()}`;
-      case 'warning':
-        return `⚠️ Solo quedan ${rateLimitStatus!.remaining} mensajes`;
-      case 'caution':
-        return `${rateLimitStatus!.remaining} mensajes restantes`;
+      // case 'warning':
+      //   return `⚠️ Solo quedan ${rateLimitStatus!.remaining} mensajes`;
+      // case 'caution':
+      //   return `${rateLimitStatus!.remaining} mensajes restantes`;
       default:
         return 'Abrir asistente virtual';
     }

@@ -1,6 +1,9 @@
 export interface QuickHelpResponse {
   success: boolean;
-  help: string[];
+  help: {
+    id: string;
+    question: string;
+  }[];
   userRole: {
     code: string;
     name: string;
@@ -13,6 +16,8 @@ export interface RateLimitStatus {
   remaining: number;
   resetTime: string;
   isBlocked: boolean;
+  warningThreshold: number;
+  isNearLimit: boolean;
 }
 
 export interface RateLimitResponse {
@@ -29,7 +34,11 @@ export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
-  createdAt: string;
+  createdAt: string; // like 2025-07-06T03:06:44.464Z
+  metadata?: {
+    userId?: string;
+    queryType?: string; // e.g., 'database', 'system'
+  };
 }
 
 export interface MessageResponse {
@@ -38,11 +47,6 @@ export interface MessageResponse {
   sessionId: string;
   response: string;
   timestamp: string;
-  rateLimitInfo: {
-    remaining: number;
-    resetTime: string;
-    isWarning: boolean;
-  };
 }
 
 export interface SearchContextRequest {
@@ -67,7 +71,7 @@ export interface SearchContextResponse {
 }
 
 export interface Guide {
-  key: string;
+  guideKey: string;
   title: string;
   description: string;
 }
@@ -84,14 +88,16 @@ export interface AvailableGuidesResponse {
 export interface GuideDetailResponse {
   success: boolean;
   guide: {
+    guideKey: string;
     title: string;
     steps: string[];
+    description: string;
   };
 }
 
 export interface ChatSession {
   id: string;
-  isActive: boolean;
+  title: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -104,6 +110,7 @@ export interface SessionsResponse {
 export interface HistoryResponse {
   success: boolean;
   sessionId: string;
+  title: string;
   messages: ChatMessage[];
 }
 
