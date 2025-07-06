@@ -54,6 +54,9 @@ export default function Step1ProjectSelection({
   const form = useForm<Step1FormData>({
     resolver: zodResolver(step1Schema),
     defaultValues: {
+      isReservation: false,
+      reservationAmount: '',
+      maximumHoldPeriod: '',
       lotId: formData.lotId || '',
       saleType: formData.saleType || 'DIRECT_PAYMENT'
     }
@@ -65,15 +68,24 @@ export default function Step1ProjectSelection({
 
   useEffect(() => {
     const subscription = form.watch((value) => {
-      const isValid = value.lotId && value.saleType;
-      updateStepValidation('step1', !!isValid);
+      let isValid = !!(value.lotId && value.saleType);
 
-      if (isValid) {
+      if (value.isReservation) {
+        const reservationAmountValid = value.reservationAmount?.trim() !== '';
+        const maximumHoldPeriodValid = value.maximumHoldPeriod?.trim() !== '';
+        isValid = isValid && reservationAmountValid && maximumHoldPeriodValid;
+      }
+
+      updateStepValidation('step1', isValid);
+
+      if (isValid)
         updateFormData({
+          isReservation: value.isReservation,
+          reservationAmount: value.reservationAmount,
+          maximumHoldPeriod: value.maximumHoldPeriod,
           lotId: value.lotId,
           saleType: value.saleType as 'DIRECT_PAYMENT' | 'FINANCED'
         });
-      }
     });
 
     return () => subscription.unsubscribe();
@@ -142,6 +154,8 @@ export default function Step1ProjectSelection({
             onStageChange={handleStageChange}
             onBlockChange={handleBlockChange}
             onLotChange={handleLotChange}
+            isReservation={form.getValues('isReservation')}
+            maximumHoldPeriod={form.getValues('maximumHoldPeriod') ?? ''}
           />
           <SelectionSummary
             selectedProject={selected.project}

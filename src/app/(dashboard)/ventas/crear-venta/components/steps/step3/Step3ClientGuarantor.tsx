@@ -51,15 +51,12 @@ export default function Step3ClientGuarantor({
 
   const handleAddSecondaryClient = (data: SecondaryClientFormData) => {
     if (editingIndex !== null) {
-      // Editar cliente existente
       setSecondaryClientsFormData((prev) =>
         prev.map((client, index) => (index === editingIndex ? data : client))
       );
       setEditingIndex(null);
-    } else {
-      // Agregar nuevo cliente
-      setSecondaryClientsFormData((prev) => [...prev, data]);
-    }
+    } else setSecondaryClientsFormData((prev) => [...prev, data]);
+
     setModal({ ...modal, compradorModal: false });
   };
 
@@ -68,8 +65,16 @@ export default function Step3ClientGuarantor({
     setModal({ ...modal, compradorModal: true });
   };
 
+  const handleEditGuarantor = () => {
+    setModal({ ...modal, guarantorModal: true });
+  };
+
   const handleDeleteSecondaryClient = (index: number) => {
     setSecondaryClientsFormData((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleDeleteGuarantor = () => {
+    setGuarantorFormData(undefined);
   };
 
   const handleAddGuarantor = (data: GuarantorFormData) => {
@@ -165,12 +170,8 @@ export default function Step3ClientGuarantor({
   };
 
   const handleAction = async () => {
-    try {
-      await handleGuarantorClientSuccess(secondaryClientsFormData, guarantorFormData);
-      setModal({ compradorModal: false, guarantorModal: false });
-    } catch (error) {
-      console.error(error);
-    }
+    await handleGuarantorClientSuccess(secondaryClientsFormData, guarantorFormData);
+    setModal({ compradorModal: false, guarantorModal: false });
   };
 
   const handleCloseModal = () => {
@@ -284,9 +285,28 @@ export default function Step3ClientGuarantor({
                           {guarantorFormData.email}
                         </TableCell>
                         <TableCell>
-                          <Button onClick={() => {}} variant="default">
-                            Editar
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={handleEditGuarantor}
+                              variant="outline"
+                              size="sm"
+                              className="flex items-center gap-1"
+                              disabled={loading.creating}
+                            >
+                              <Edit className="h-3 w-3" />
+                              Editar
+                            </Button>
+                            <Button
+                              onClick={handleDeleteGuarantor}
+                              variant="outline"
+                              size="sm"
+                              className="flex items-center gap-1 text-red-600 hover:text-red-700"
+                              disabled={loading.creating}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                              Eliminar
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -328,6 +348,7 @@ export default function Step3ClientGuarantor({
                   disabled={!clientAddress}
                   isCreating={loading.creating}
                   onAddGuarantor={() => setModal({ ...modal, guarantorModal: true })}
+                  isEditing={!!guarantorFormData}
                 />
                 <div className="pt-4">
                   <Button
@@ -361,6 +382,8 @@ export default function Step3ClientGuarantor({
         onClose={() => setModal({ ...modal, guarantorModal: false })}
         onSuccess={handleAddGuarantor}
         isCreating={loading.creating}
+        editingData={guarantorFormData}
+        isEditing={!!guarantorFormData}
       />
     </div>
   );

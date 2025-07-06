@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { UserCheck, UserPlus, X } from 'lucide-react';
+import { UserCheck, UserPlus } from 'lucide-react';
 
 interface Props {
   secondaryClientsData: { id: number; name: string }[];
@@ -49,9 +49,6 @@ export default function SecondaryClientSection({
                     <p className="font-medium">{client.name}</p>
                   </div>
                 </div>
-                <Button type="button" variant="ghost" size="sm" disabled={isCreating}>
-                  <X className="h-4 w-4" />
-                </Button>
               </CardContent>
             </Card>
           ))}

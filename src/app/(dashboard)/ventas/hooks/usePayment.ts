@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import { PaymentImageModalType } from '../validations/suscription.zod';
 import { ProcessPaymentDto } from '@application/dtos/create-payment.dto';
 import { createPayment } from '@infrastructure/server-actions/sales.actions';
-import { SaleList } from '@domain/entities/sales/salevendor.entity';
+import { SaleList, StatusSale } from '@domain/entities/sales/salevendor.entity';
 import { toast } from 'sonner';
 
 export function usePayment(sale: SaleList) {
@@ -14,8 +14,11 @@ export function usePayment(sale: SaleList) {
     setPayments([]);
   }, []);
 
-  const requiredAmount =
-    sale.type === 'FINANCED' ? Number(sale.financing?.initialAmount) : Number(sale.totalAmount);
+  const requiredAmount = (() => {
+    if (sale.status == StatusSale.RESERVATION_PENDING) return Number(sale.reservationAmount);
+    else if (sale.type === 'FINANCED') return Number(sale.financing?.initialAmount);
+    else return Number(sale.totalAmount);
+  })();
 
   const totalPaid = payments.reduce((sum, payment) => sum + payment.amount, 0);
   const remainingAmount = Math.max(0, requiredAmount - totalPaid);
@@ -76,8 +79,6 @@ export function usePayment(sale: SaleList) {
       };
 
       await createPayment(sale.id, dto);
-
-      console.log(dto);
 
       toast.success('Pago enviado correctamente');
       return true;

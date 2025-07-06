@@ -46,7 +46,8 @@ export default function VentasActionsButton({ sale }: Props) {
             disabled={
               sale.status === StatusSale.IN_PAYMENT_PROCESS ||
               sale.status === StatusSale.PENDING_APPROVAL ||
-              sale.status === StatusSale.COMPLETED
+              sale.status === StatusSale.COMPLETED ||
+              sale.status === StatusSale.RESERVATION_PENDING_APPROVAL
             }
           >
             <Receipt className="mr-2 h-4 w-4" />

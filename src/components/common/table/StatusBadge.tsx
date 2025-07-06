@@ -22,6 +22,29 @@ export function StatusBadge({ status }: { status: string }) {
           <span>Proximo</span>
         </Badge>
       );
+    case 'RESERVATION_PENDING':
+      return (
+        <Badge
+          variant="outline"
+          className="flex items-center gap-1.5 border-amber-200 bg-amber-50 px-2 py-0.5 text-amber-700 dark:border-amber-800/40 dark:bg-amber-900/20 dark:text-amber-400"
+        >
+          <Clock className="h-3 w-3" />
+          <span>Separación Pendiente</span>
+        </Badge>
+      );
+    case 'RESERVATION_PENDING_APPROVAL':
+      return (
+        <Badge
+          variant="outline"
+          className="flex items-center gap-1.5 border-blue-200 bg-blue-50 px-2 py-0.5 text-blue-700 dark:border-blue-800/40 dark:bg-blue-900/20 dark:text-blue-400"
+        >
+          <Clock className="h-3 w-3" />
+          <div className="flex flex-col">
+            <span>Separación</span>
+            <span>Pendiente de aprobación</span>
+          </div>
+        </Badge>
+      );
     case 'pending':
     case 'PENDING':
       return (

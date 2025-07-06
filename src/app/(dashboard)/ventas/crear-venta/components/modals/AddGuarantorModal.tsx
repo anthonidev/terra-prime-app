@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -49,13 +49,17 @@ interface AddGuarantorModalProps {
   onClose: () => void;
   onSuccess: (data: GuarantorFormData) => void;
   isCreating: boolean;
+  editingData?: GuarantorFormData;
+  isEditing?: boolean;
 }
 
 export default function AddGuarantorModal({
   isOpen,
   onClose,
   onSuccess,
-  isCreating
+  isCreating,
+  editingData,
+  isEditing = false
 }: AddGuarantorModalProps) {
   const [error, setError] = useState<string | null>(null);
 
@@ -71,6 +75,22 @@ export default function AddGuarantorModal({
       address: ''
     }
   });
+
+  useEffect(() => {
+    if (editingData && isEditing) {
+      form.reset(editingData);
+    } else {
+      form.reset({
+        firstName: '',
+        lastName: '',
+        document: '',
+        documentType: 'DNI',
+        email: '',
+        phone: '',
+        address: ''
+      });
+    }
+  }, [editingData, isEditing, form]);
 
   const onSubmit = async (data: GuarantorFormData) => {
     setError(null);
@@ -167,7 +187,9 @@ export default function AddGuarantorModal({
               <UserCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <DialogTitle className="text-lg font-semibold">Agregar Garante</DialogTitle>
+              <DialogTitle className="text-lg font-semibold">
+                {isEditing ? 'Editar Garante' : 'Agregar Garante'}
+              </DialogTitle>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Registra la información del garante (aval) para la venta
               </p>
@@ -265,12 +287,12 @@ export default function AddGuarantorModal({
             {isCreating ? (
               <>
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                Guardando...
+                {isEditing ? 'Actualizando...' : 'Guardando...'}
               </>
             ) : (
               <>
                 <Save className="h-4 w-4" />
-                Guardar Garante
+                {isEditing ? 'Actualizar Garante' : 'Guardar Garante'}
               </>
             )}
           </Button>

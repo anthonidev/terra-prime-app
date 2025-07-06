@@ -142,6 +142,7 @@ export default function Step2FinancialConfig({
 
   const { amortizationTable, isCalculating, showAmortization, handleCalculateAmortization } =
     useFinancialConfig({
+      reservationAmount: Number(formData.reservationAmount),
       amortizationForm,
       onAmortizationCalculated: (installments: Amortization[]) => {
         form.setValue('financingInstallments', installments);

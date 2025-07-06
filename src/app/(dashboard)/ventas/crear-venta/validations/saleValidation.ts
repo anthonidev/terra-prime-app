@@ -8,6 +8,9 @@ const numberTransform = z.union([z.string(), z.number()]).transform((val) => {
 
 // Paso 1: Selección de proyecto y tipo de venta
 export const step1Schema = z.object({
+  isReservation: z.boolean().default(false),
+  reservationAmount: z.string().optional(),
+  maximumHoldPeriod: z.string().optional(),
   lotId: z.string().min(1, 'Debe seleccionar un lote'),
   saleType: z.enum(['DIRECT_PAYMENT', 'FINANCED'], {
     errorMap: () => ({ message: 'Debe seleccionar un tipo de venta' })
@@ -120,6 +123,9 @@ export const secondaryClientSchema = z.object({
 // Schema completo para la venta final
 export const createSaleSchema = z.object({
   // Paso 1
+  isReservation: z.boolean().optional(),
+  reservationAmount: z.string().optional(),
+  maximumHoldPeriod: z.string().optional(),
   lotId: z.string().min(1, 'Debe seleccionar un lote'),
   saleType: z.enum(['DIRECT_PAYMENT', 'FINANCED']),
 

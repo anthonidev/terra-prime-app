@@ -230,6 +230,8 @@ export async function createPayment(id: string, dto: ProcessPaymentDto): Promise
 
   const payment = await useCase.execute(id, dto);
 
+  revalidateTag('sales_vendor');
+
   return {
     id: payment.id,
     relatedEntityType: payment.relatedEntityType,

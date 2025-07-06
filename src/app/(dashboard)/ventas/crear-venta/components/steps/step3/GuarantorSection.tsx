@@ -9,13 +9,15 @@ interface Props {
   disabled: boolean;
   isCreating: boolean;
   onAddGuarantor: () => void;
+  isEditing: boolean;
 }
 
 export default function GuarantorSection({
   guarantorData,
   disabled,
   isCreating,
-  onAddGuarantor
+  onAddGuarantor,
+  isEditing = false
 }: Props) {
   if (disabled) return;
   return (
@@ -28,11 +30,11 @@ export default function GuarantorSection({
           type="button"
           onClick={onAddGuarantor}
           variant="secondary"
-          className="flex items-center gap-2"
+          className="lex disable:cursor-not-allowed items-center gap-2"
           disabled={isCreating}
         >
           <UserCheck className="h-4 w-4" />
-          {guarantorData ? 'Editar' : 'Agregar'}
+          {isEditing ? 'Editar' : 'Agregar'}
         </Button>
       </div>
 

@@ -1,12 +1,12 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@components/ui/badge';
 import { Project } from '@domain/entities/lotes/project.entity';
 import { Block } from '@domain/entities/lotes/block.entity';
 import { Stage } from '@domain/entities/lotes/stage.entity';
 import { Lot } from '@domain/entities/lotes/lot.entity';
-import { CurrencyType } from '@/lib/domain/entities/sales/payment.entity';
-import { cn } from '@/lib/utils';
+import { CurrencyType } from '@domain/entities/sales/payment.entity';
+import { cn } from '@lib/utils';
 
 interface SelectionSummaryProps {
   selectedProject: Project | null;
@@ -41,19 +41,19 @@ export default function SelectionSummary({
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
           <span className="text-gray-600 dark:text-gray-400">Proyecto:</span>
-          <span className="font-medium">{selectedProject?.name ?? 'no asignado'}</span>
+          <span className="font-medium">{selectedProject?.name ?? '--'}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-600 dark:text-gray-400">Etapa:</span>
-          <span className="font-medium">{selectedStage?.name ?? 'no asignado'}</span>
+          <span className="font-medium">{selectedStage?.name ?? '--'}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-600 dark:text-gray-400">Manzana:</span>
-          <span className="font-medium">{selectedBlock?.name ?? 'no asignado'}</span>
+          <span className="font-medium">{selectedBlock?.name ?? '--'}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-600 dark:text-gray-400">Lote:</span>
-          <span className="font-medium">{selectedLot?.name ?? 'no asignado'}</span>
+          <span className="font-medium">{selectedLot?.name ?? '--'}</span>
         </div>
         <div className="space-y-2 border-t border-gray-200 pt-2 dark:border-gray-600">
           <div className="flex justify-between text-sm">

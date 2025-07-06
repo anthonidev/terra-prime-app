@@ -8,7 +8,16 @@ import {
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table';
-import { CreditCard, File, DollarSign, FileText, SquareActivity, User } from 'lucide-react';
+import {
+  CreditCard,
+  File,
+  DollarSign,
+  FileText,
+  SquareActivity,
+  User,
+  Calendar,
+  DollarSignIcon
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 import VentasActionsButton from './VentasActionsButton';
 import { CurrencyType, SaleList, SaleType } from '@domain/entities/sales/salevendor.entity';
@@ -23,6 +32,22 @@ const VentasTable = ({ data }: Props) => {
     id: false,
     type: true
   });
+
+  const calculateDueDate = (maximumHoldPeriod: string | null | undefined) => {
+    if (!maximumHoldPeriod || isNaN(parseInt(maximumHoldPeriod))) {
+      return '--';
+    }
+
+    const currentDate = new Date();
+    const dueDate = new Date(currentDate);
+    dueDate.setDate(currentDate.getDate() + parseInt(maximumHoldPeriod));
+
+    return dueDate.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric'
+    });
+  };
 
   const formatCurrency = (amount: number, currency: CurrencyType = CurrencyType.PEN) => {
     return new Intl.NumberFormat('es-PE', {
@@ -79,6 +104,28 @@ const VentasTable = ({ data }: Props) => {
           );
         },
         enableHiding: false
+      },
+      {
+        accessorKey: 'reservation',
+        header: 'Separación',
+        cell: ({ row }) => {
+          const reserva = row.original;
+          return (
+            <div className="flex flex-col">
+              <div className="inline-flex gap-2 font-medium">
+                <DollarSignIcon className="h-4 w-4" />
+                {reserva.reservationAmount ?? '--'}
+              </div>
+              <p className="mt-1 inline-flex gap-2 text-sm">
+                <Calendar className="h-4 w-4" />
+                <span className="text-blue-600 dark:text-blue-400">
+                  {calculateDueDate(reserva.maximumHoldPeriod)}
+                </span>
+              </p>
+            </div>
+          );
+        },
+        enableHiding: true
       },
       {
         accessorKey: 'documents',
@@ -192,7 +239,6 @@ const VentasTable = ({ data }: Props) => {
               </div>
             );
           }
-
           return (
             <div className="flex items-center gap-2">
               <span className="text-xs text-gray-400">No definido</span>
@@ -216,7 +262,6 @@ const VentasTable = ({ data }: Props) => {
         },
         enableHiding: false
       },
-
       {
         accessorKey: 'status',
         header: 'Estado',

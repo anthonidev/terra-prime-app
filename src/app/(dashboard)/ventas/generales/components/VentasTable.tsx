@@ -8,7 +8,16 @@ import {
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table';
-import { CreditCard, DollarSign, FileText, File, SquareActivity, User } from 'lucide-react';
+import {
+  CreditCard,
+  DollarSign,
+  FileText,
+  File,
+  SquareActivity,
+  User,
+  DollarSignIcon,
+  Calendar
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { CurrencyType, SaleList, SaleType } from '@domain/entities/sales/salevendor.entity';
 import { StatusBadge } from '@components/common/table/StatusBadge';
@@ -29,6 +38,22 @@ const VentasTable = ({ data }: Props) => {
       style: 'currency',
       currency: currency
     }).format(amount);
+  };
+
+  const calculateDueDate = (maximumHoldPeriod: string | null | undefined) => {
+    if (!maximumHoldPeriod || isNaN(parseInt(maximumHoldPeriod))) {
+      return '--';
+    }
+
+    const currentDate = new Date();
+    const dueDate = new Date(currentDate);
+    dueDate.setDate(currentDate.getDate() + parseInt(maximumHoldPeriod));
+
+    return dueDate.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric'
+    });
   };
 
   const columns = useMemo<ColumnDef<SaleList>[]>(
@@ -81,6 +106,28 @@ const VentasTable = ({ data }: Props) => {
           );
         },
         enableHiding: false
+      },
+      {
+        accessorKey: 'reservation',
+        header: 'Separación',
+        cell: ({ row }) => {
+          const reserva = row.original;
+          return (
+            <div className="flex flex-col">
+              <div className="inline-flex gap-2 font-medium">
+                <DollarSignIcon className="h-4 w-4" />
+                {reserva.reservationAmount ?? '--'}
+              </div>
+              <p className="mt-1 inline-flex gap-2 text-sm">
+                <Calendar className="h-4 w-4" />
+                <span className="text-blue-600 dark:text-blue-400">
+                  {calculateDueDate(reserva.maximumHoldPeriod)}
+                </span>
+              </p>
+            </div>
+          );
+        },
+        enableHiding: true
       },
       {
         accessorKey: 'documents',
