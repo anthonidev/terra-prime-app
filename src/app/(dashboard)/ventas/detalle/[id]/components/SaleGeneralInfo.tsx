@@ -221,11 +221,11 @@ export default function SaleGeneralInfo({ sale }: { sale: SaleList }) {
                     {formatCurrency(Number(sale.lot.lotPrice), sale.currency)}
                   </span>
                 </div>
-                {sale.reservation && (
+                {sale.fromReservation && (
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-yellow-700 dark:text-yellow-300">Reserva:</span>
                     <span className="font-medium text-yellow-900 dark:text-yellow-100">
-                      {formatCurrency(Number(sale.reservation.amount), sale.currency)}
+                      {formatCurrency(Number(sale.reservationAmount), sale.currency)}
                     </span>
                   </div>
                 )}

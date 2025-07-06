@@ -124,7 +124,6 @@ export class HttpListByClientRepository implements ListByClientRepository {
         lot: item.lot,
         financing: item.financing,
         guarantor: item.guarantor,
-        reservation: item.reservation,
         vendor: item.vendor
       }));
     } catch (error) {
