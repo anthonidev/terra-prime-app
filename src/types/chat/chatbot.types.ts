@@ -47,6 +47,7 @@ export interface MessageResponse {
   sessionId: string;
   response: string;
   timestamp: string;
+  error?: string;
 }
 
 export interface SearchContextRequest {

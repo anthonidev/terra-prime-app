@@ -1,16 +1,36 @@
 'use client';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { RateLimitStatus } from '@/types/chat/chatbot.types';
 import { Bot, MessageCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChatbotSheet } from './ChatbotSheet';
+import { getRateLimitStatus } from '../actions/chatbotMessage';
 
 const ChatbotButton = () => {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [rateLimitStatus, setRateLimitStatus] = useState<RateLimitStatus | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    loadRateLimit();
+  }, []);
+
+  const loadRateLimit = async () => {
+    try {
+      setIsLoading(true);
+      const response = await getRateLimitStatus();
+      if (response.success) {
+        setRateLimitStatus(response.rateLimitStatus);
+      }
+    } catch (err) {
+      console.error('Error loading rate limit:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleChatbotToggle = () => {
     setIsChatbotOpen(!isChatbotOpen);
@@ -19,8 +39,8 @@ const ChatbotButton = () => {
   const getButtonState = () => {
     if (isLoading) return 'loading';
     if (rateLimitStatus?.isBlocked) return 'blocked';
-    // agregar warning and caution states based on remaining messages
-
+    if (rateLimitStatus && rateLimitStatus.remaining < 5) return 'warning';
+    if (rateLimitStatus && rateLimitStatus.remaining < 15) return 'caution';
     return 'available';
   };
 
@@ -29,11 +49,9 @@ const ChatbotButton = () => {
 
     switch (state) {
       case 'loading':
-        return <MessageCircle className="h-4 w-4" />;
+        return <MessageCircle className="h-4 w-4 animate-pulse" />;
       case 'blocked':
         return <Bot className="h-4 w-4 opacity-50" />;
-      // case 'warning':
-      //   return <Zap className="h-4 w-4" />;
       default:
         return <Bot className="h-4 w-4" />;
     }
@@ -44,13 +62,13 @@ const ChatbotButton = () => {
 
     switch (state) {
       case 'blocked':
-        return 'secondary';
-      // case 'warning':
-      //   return 'destructive';
-      // case 'caution':
-      //   return 'outline';
+        return 'secondary' as const;
+      case 'warning':
+        return 'destructive' as const;
+      case 'caution':
+        return 'outline' as const;
       default:
-        return 'default';
+        return 'default' as const;
     }
   };
 
@@ -61,18 +79,28 @@ const ChatbotButton = () => {
       case 'loading':
         return 'Verificando disponibilidad...';
       case 'blocked':
-        return `Límite alcanzado. Disponible a las ${new Date(rateLimitStatus!.resetTime).toLocaleTimeString()}`;
-      // case 'warning':
-      //   return `⚠️ Solo quedan ${rateLimitStatus!.remaining} mensajes`;
-      // case 'caution':
-      //   return `${rateLimitStatus!.remaining} mensajes restantes`;
+        return `Límite alcanzado. Se reinicia: ${new Date(rateLimitStatus!.resetTime).toLocaleTimeString()}`;
+      case 'warning':
+        return `Solo ${rateLimitStatus!.remaining} mensajes disponibles`;
+      case 'caution':
+        return `${rateLimitStatus!.remaining} mensajes restantes`;
       default:
-        return 'Abrir asistente virtual';
+        return 'Abrir Asistente Virtual';
     }
   };
 
   const showRemainingBadge = () => {
-    return rateLimitStatus && rateLimitStatus.remaining < 10 && !rateLimitStatus.isBlocked;
+    return (
+      rateLimitStatus && !isLoading && !rateLimitStatus.isBlocked && rateLimitStatus.remaining <= 15
+    );
+  };
+
+  const getStatusIndicatorColor = () => {
+    if (isLoading) return 'bg-gray-400';
+    if (rateLimitStatus?.isBlocked) return 'bg-gray-400';
+    if (rateLimitStatus && rateLimitStatus.remaining < 5) return 'bg-red-500';
+    if (rateLimitStatus && rateLimitStatus.remaining < 15) return 'bg-yellow-500';
+    return 'bg-green-500';
   };
 
   return (
@@ -83,26 +111,18 @@ const ChatbotButton = () => {
             <div className="relative">
               <Button
                 onClick={handleChatbotToggle}
-                disabled={rateLimitStatus?.isBlocked || isLoading}
                 variant={getButtonVariant()}
-                size="sm"
-                className="relative h-9 w-9 rounded-lg transition-colors duration-200"
+                size="lg"
+                className="h-12 w-12 rounded-full shadow-lg transition-all hover:shadow-xl"
+                disabled={isLoading}
               >
                 {getButtonIcon()}
               </Button>
 
-              {/* Status indicator dot */}
-              {!isLoading && (
+              {/* Status indicator */}
+              {rateLimitStatus && (
                 <div
-                  className={`absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ${
-                    rateLimitStatus?.isBlocked
-                      ? 'bg-gray-400'
-                      : rateLimitStatus && rateLimitStatus.remaining < 5
-                        ? 'bg-red-500'
-                        : rateLimitStatus && rateLimitStatus.remaining < 15
-                          ? 'bg-yellow-500'
-                          : 'bg-green-500'
-                  }`}
+                  className={`absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white ${getStatusIndicatorColor()}`}
                 />
               )}
 
