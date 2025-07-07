@@ -2,17 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import {
-  ChevronRight,
-  ExternalLink,
-  Folder,
-  FolderOpen,
-  Calendar,
-  BarChart3,
-  Settings,
-  LucideIcon
-} from 'lucide-react';
-import { useState } from 'react';
+import { ChevronRight, Folder, Settings } from 'lucide-react';
 import Image from 'next/image';
 
 interface View {
@@ -47,136 +37,67 @@ const DynamicIcon = ({
 
   if (iconName.length <= 4) {
     return (
-      <span className={`${className} flex items-center justify-center text-lg`}>{iconName}</span>
+      <span
+        className={`${className} flex items-center justify-center text-lg text-slate-600 dark:text-slate-400`}
+      >
+        {iconName}
+      </span>
     );
   }
 
   return (
     <div
-      className={`${className} flex items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-sm font-bold text-white`}
+      className={`${className} flex items-center justify-center rounded-md bg-slate-100 text-sm font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300`}
     >
       {iconName.charAt(0).toUpperCase()}
     </div>
   );
 };
 
-// Componente para una vista individual
-const ViewCard = ({ view, level = 0 }: { view: View; level?: number }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const hasChildren = view.children && view.children.length > 0;
+// Colores para diferenciar secciones
+const sectionColors = [
+  'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30',
+  'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/30',
+  'border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-950/30',
+  'border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950/30',
+  'border-pink-200 bg-pink-50 dark:border-pink-800 dark:bg-pink-950/30',
+  'border-indigo-200 bg-indigo-50 dark:border-indigo-800 dark:bg-indigo-950/30'
+];
+
+// Componente para submódulos con colores por sección
+const ChildViewCard = ({ view, colorClass }: { view: View; colorClass: string }) => {
   const hasUrl = view.url !== null;
 
   const cardContent = (
-    <>
-      <div className="flex items-center gap-4">
-        <div className="flex-shrink-0">
-          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 p-3 dark:from-blue-900/20 dark:to-indigo-900/20">
-            <DynamicIcon iconName={view.icon} className="h-8 w-8" />
-          </div>
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <h3 className="truncate text-lg font-semibold text-gray-900 dark:text-gray-100">
-            {view.name}
-          </h3>
-          <p className="truncate text-sm text-gray-500 dark:text-gray-400">{view.code}</p>
-          <div className="mt-2 flex items-center gap-2">
-            {hasChildren && (
-              <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
-                {view.children.length} submódulo{view.children.length !== 1 ? 's' : ''}
-              </span>
-            )}
-            {hasUrl && (
-              <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800 dark:bg-green-900/30 dark:text-green-300">
-                Acceso directo
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {hasChildren && (
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setIsExpanded(!isExpanded);
-              }}
-              className="rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              {isExpanded ? (
-                <FolderOpen className="h-5 w-5 text-gray-400" />
-              ) : (
-                <Folder className="h-5 w-5 text-gray-400" />
-              )}
-            </button>
-          )}
-          {hasUrl && (
-            <ChevronRight className="h-5 w-5 text-gray-400 transition-transform group-hover:translate-x-1" />
-          )}
+    <div className="flex flex-col items-center p-4 text-center">
+      <div className="mb-3">
+        <div className="rounded-lg bg-white p-2.5 shadow-sm dark:bg-slate-800">
+          <DynamicIcon iconName={view.icon} className="h-6 w-6" />
         </div>
       </div>
-    </>
-  );
 
-  return (
-    <div className={`${level > 0 ? 'ml-8' : ''}`}>
-      {hasUrl ? (
-        <Link href={view.url!} className="block">
-          <div className="group cursor-pointer rounded-2xl border border-gray-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:border-blue-300 hover:bg-white hover:shadow-xl hover:shadow-blue-500/10 dark:border-gray-700/60 dark:bg-gray-800/80 dark:hover:border-blue-600 dark:hover:bg-gray-800 dark:hover:shadow-blue-500/5">
-            {cardContent}
-          </div>
-        </Link>
-      ) : (
-        <div className="rounded-2xl border border-gray-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md dark:border-gray-700/60 dark:bg-gray-800/80">
-          {cardContent}
-        </div>
-      )}
+      <div className="flex-1">
+        <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100">{view.name}</h3>
+      </div>
 
-      {/* Renderizar hijos si están expandidos */}
-      {hasChildren && isExpanded && (
-        <div className="mt-4 space-y-3 rounded-xl bg-gray-50/50 p-4 dark:bg-gray-900/30">
-          {view.children
-            .sort((a, b) => a.order - b.order)
-            .map((child) => (
-              <ViewCard key={child.id} view={child} level={level + 1} />
-            ))}
+      {hasUrl && (
+        <div className="mt-2 opacity-0 transition-opacity group-hover:opacity-100">
+          <ChevronRight className="mx-auto h-3 w-3 text-slate-400" />
         </div>
       )}
     </div>
   );
-};
 
-// Componente para estadísticas rápidas
-const StatsCard = ({
-  icon: Icon,
-  label,
-  value,
-  color = 'blue'
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: string | number;
-  color?: 'blue' | 'green' | 'purple' | 'orange';
-}) => {
-  const colorClasses: Record<'blue' | 'green' | 'purple' | 'orange', string> = {
-    blue: 'from-blue-500 to-blue-600',
-    green: 'from-green-500 to-green-600',
-    purple: 'from-purple-500 to-purple-600',
-    orange: 'from-orange-500 to-orange-600'
-  };
-
-  return (
-    <div className="rounded-2xl border border-gray-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md dark:border-gray-700/60 dark:bg-gray-800/80">
-      <div className="flex items-center gap-4">
-        <div className={`rounded-xl bg-gradient-to-br ${colorClasses[color]} p-3 text-white`}>
-          <Icon className="h-6 w-6" />
-        </div>
-        <div>
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{value}</p>
-        </div>
+  return hasUrl ? (
+    <Link href={view.url!} className="block">
+      <div
+        className={`group cursor-pointer rounded-lg border ${colorClass} h-full transition-all hover:shadow-sm`}
+      >
+        {cardContent}
       </div>
-    </div>
+    </Link>
+  ) : (
+    <div className={`rounded-lg border ${colorClass} h-full`}>{cardContent}</div>
   );
 };
 
@@ -186,13 +107,15 @@ export default function Home() {
 
   if (!user) {
     return (
-      <div className="mx-auto flex h-full w-full max-w-7xl flex-col items-center justify-center p-6">
-        <div className="rounded-3xl border border-gray-200/60 bg-white/80 p-12 text-center shadow-xl backdrop-blur-sm dark:border-gray-700/60 dark:bg-gray-800/80">
-          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600">
-            <Settings className="h-10 w-10 text-white" />
+      <div className="flex h-full w-full items-center justify-center p-6">
+        <div className="max-w-md text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
+            <Settings className="h-6 w-6 text-slate-600 dark:text-slate-400" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Acceso requerido</h2>
-          <p className="mt-4 text-lg text-gray-500 dark:text-gray-400">
+          <h2 className="mb-2 text-xl font-semibold text-slate-900 dark:text-slate-100">
+            Acceso requerido
+          </h2>
+          <p className="text-slate-600 dark:text-slate-400">
             Debes iniciar sesión para ver tus vistas disponibles
           </p>
         </div>
@@ -204,102 +127,90 @@ export default function Home() {
     .filter((view: View) => view.url !== null || view.children.length > 0)
     .sort((a: View, b: View) => a.order - b.order);
 
-  const totalSubviews = mainViews.reduce((acc, view) => acc + view.children.length, 0);
-  const viewsWithUrl = mainViews.filter((view) => view.url !== null).length;
+  // Obtener TODAS las vistas navegables (principales sin hijos + todos los submódulos)
+  const allNavigableViews: Array<{ view: View; parentName?: string; colorIndex: number }> = [];
+
+  mainViews.forEach((parent, index) => {
+    // Si la vista padre tiene URL y NO tiene hijos, la incluimos
+    if (parent.url && (!parent.children || parent.children.length === 0)) {
+      allNavigableViews.push({
+        view: parent,
+        parentName: undefined, // No tiene padre
+        colorIndex: index % sectionColors.length
+      });
+    }
+
+    // Incluir todos los submódulos
+    if (parent.children && parent.children.length > 0) {
+      parent.children.forEach((child) => {
+        allNavigableViews.push({
+          view: child,
+          parentName: parent.name,
+          colorIndex: index % sectionColors.length
+        });
+      });
+    }
+  });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900/10">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 p-6">
-        {/* Header mejorado */}
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center gap-6">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg">
-              <span className="text-2xl font-bold">
-                {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
-              </span>
+    <div className="bg-slate-50 dark:bg-slate-950" style={{ minHeight: 'calc(100vh - 110px)' }}>
+      <div className="mx-auto max-w-6xl space-y-6 p-6">
+        {/* Header minimalista */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-900 font-semibold text-white dark:bg-slate-100 dark:text-slate-900">
+              {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
             </div>
             <div>
-              <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+              <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
                 Dashboard
               </h1>
-              <p className="mt-2 text-lg text-gray-500 dark:text-gray-400">
+              <p className="text-slate-600 dark:text-slate-400">
                 Bienvenido, {user.name || user.email}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Estadísticas rápidas */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatsCard
-            icon={BarChart3}
-            label="Vistas totales"
-            value={mainViews.length}
-            color="blue"
-          />
-          <StatsCard
-            icon={ExternalLink}
-            label="Accesos directos"
-            value={viewsWithUrl}
-            color="green"
-          />
-          <StatsCard icon={Folder} label="Submódulos" value={totalSubviews} color="purple" />
-          <StatsCard icon={Calendar} label="Última actualización" value="Hoy" color="orange" />
-        </div>
-
         {/* Sección principal */}
-        <div className="flex flex-col gap-6">
+        <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-              Tus vistas disponibles
+            <h2 className="text-lg font-medium text-slate-900 dark:text-slate-100">
+              Vistas disponibles
             </h2>
-            <div className="rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
-              {mainViews.length} vista{mainViews.length !== 1 ? 's' : ''}
-            </div>
+            <span className="text-sm text-slate-500 dark:text-slate-400">
+              {allNavigableViews.length} vista{allNavigableViews.length !== 1 ? 's' : ''}
+            </span>
           </div>
 
-          {mainViews.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {mainViews.map((view: View) => (
-                <ViewCard key={view.id} view={view} />
+          {allNavigableViews.length > 0 ? (
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
+              {allNavigableViews.map(({ view, parentName, colorIndex }) => (
+                <div key={view.id} className="relative">
+                  <div className="mb-1 truncate text-xs text-slate-500 dark:text-slate-400">
+                    {parentName ? parentName : 'Vista principal'}
+                  </div>
+
+                  <ChildViewCard view={view} colorClass={sectionColors[colorIndex]} />
+                </div>
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-20">
-              <div className="rounded-3xl border border-gray-200/60 bg-white/80 p-12 text-center shadow-xl backdrop-blur-sm dark:border-gray-700/60 dark:bg-gray-800/80">
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-gray-400 to-gray-500">
-                  <Folder className="h-10 w-10 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                  No hay vistas disponibles
-                </h3>
-                <p className="mt-4 text-lg text-gray-500 dark:text-gray-400">
-                  No tienes vistas asignadas en este momento.
-                </p>
-                <p className="mt-2 text-sm text-gray-400 dark:text-gray-500">
-                  Contacta con tu administrador para obtener acceso.
-                </p>
+            <div className="py-12 text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
+                <Folder className="h-6 w-6 text-slate-400" />
               </div>
+              <h3 className="mb-2 text-lg font-medium text-slate-900 dark:text-slate-100">
+                No hay vistas disponibles
+              </h3>
+              <p className="mb-1 text-slate-600 dark:text-slate-400">
+                No tienes vistas asignadas en este momento.
+              </p>
+              <p className="text-sm text-slate-500 dark:text-slate-500">
+                Contacta con tu administrador para obtener acceso.
+              </p>
             </div>
           )}
-        </div>
-
-        {/* Footer con información adicional */}
-        <div className="mt-8 rounded-2xl border border-gray-200/60 bg-white/50 p-6 backdrop-blur-sm dark:border-gray-700/60 dark:bg-gray-800/50">
-          <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Sistema de gestión de vistas
-              </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500">
-                Versión 2.0 - Actualizado recientemente
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-green-500"></div>
-              <span className="text-sm text-gray-500 dark:text-gray-400">Sistema operativo</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>
