@@ -62,7 +62,7 @@ const PagosCards = ({ data }: { data: PaymentListItem[] }) => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => router.push(`/ventas/pagos/detalle/${item.id}`)}
+                    onClick={() => router.push(`/ventas/facturacion/pagos/detalle/${item.id}`)}
                     className="hover:bg-primary/10 hover:text-primary"
                     title="Ver detalles"
                   >

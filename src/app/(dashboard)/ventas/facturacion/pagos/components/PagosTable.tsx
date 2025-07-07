@@ -169,7 +169,7 @@ const PagosTable = ({ data }: { data: PaymentListItem[] }) => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => router.push(`/ventas/pagos/detalle/${row.original.id}`)}
+              onClick={() => router.push(`/ventas/facturacion/pagos/detalle/${row.original.id}`)}
               className="hover:bg-primary/10 hover:text-primary"
               title="Ver detalles"
             >
