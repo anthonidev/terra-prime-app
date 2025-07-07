@@ -8,7 +8,16 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { Building, CreditCard, Layers, MapPin, Square } from 'lucide-react';
+import {
+  Building,
+  Calendar,
+  CreditCard,
+  DollarSign,
+  File,
+  Layers,
+  MapPin,
+  Square
+} from 'lucide-react';
 import { Control, FieldErrors } from 'react-hook-form';
 import { Project } from '@domain/entities/lotes/project.entity';
 import { Stage } from '@domain/entities/lotes/stage.entity';
@@ -17,6 +26,8 @@ import { Lot } from '@domain/entities/lotes/lot.entity';
 
 import { Step1FormData } from '@sales/crear-venta/validations/saleValidation';
 import { CurrencyType } from '@/lib/domain/entities/sales/payment.entity';
+import { Switch } from '@/components/ui/switch';
+import FormInputField from '@/components/common/form/FormInputField';
 
 interface Props {
   control: Control<Step1FormData>;
@@ -42,6 +53,9 @@ interface Props {
   onStageChange: (stageId: string) => void;
   onBlockChange: (blockId: string) => void;
   onLotChange: (lotId: string) => void;
+
+  isReservation: boolean;
+  maximumHoldPeriod: string;
 }
 
 export default function ProjectLocationSelector({
@@ -58,7 +72,9 @@ export default function ProjectLocationSelector({
   onProjectChange,
   onStageChange,
   onBlockChange,
-  onLotChange
+  onLotChange,
+  isReservation,
+  maximumHoldPeriod
 }: Props) {
   return (
     <div className="space-y-4">
@@ -93,6 +109,90 @@ export default function ProjectLocationSelector({
           </FormItem>
         )}
       />
+      <div className="space-y-2 rounded-md border p-4">
+        <FormField
+          control={control}
+          name="isReservation"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+              <div className="space-y-0.5">
+                <FormLabel className="flex items-center gap-2">
+                  <File className="h-4 w-4" />
+                  Reservación
+                </FormLabel>
+              </div>
+              <FormControl>
+                <Switch checked={field.value} onCheckedChange={field.onChange} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {isReservation && (
+          <>
+            <FormInputField<Step1FormData>
+              name="reservationAmount"
+              label="Monto de reserva"
+              placeholder="Ingrese el monto de reserva"
+              type="number"
+              icon={<DollarSign className="h-4 w-4" />}
+              control={control}
+              errors={errors}
+            />
+            <FormInputField<Step1FormData>
+              name="maximumHoldPeriod"
+              label="Período máximo de retención (días)"
+              placeholder="Ingrese los días"
+              type="number"
+              icon={<Calendar className="h-4 w-4" />}
+              control={control}
+              errors={errors}
+            />
+            {maximumHoldPeriod &&
+              !isNaN(parseInt(maximumHoldPeriod)) &&
+              parseInt(maximumHoldPeriod) > 0 && (
+                <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-900/20">
+                  <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+                    <Calendar className="h-4 w-4" />
+                    <span className="text-sm font-medium">Fecha límite de pago</span>
+                  </div>
+                  <p className="mt-1 text-sm text-blue-600 dark:text-blue-400">
+                    El cliente debe realizar el pago antes del:{' '}
+                    <span className="font-semibold">
+                      {(() => {
+                        const currentDate = new Date();
+                        const dueDate = new Date(currentDate);
+                        dueDate.setDate(currentDate.getDate() + parseInt(maximumHoldPeriod));
+
+                        const formatDate = (date: Date) => {
+                          const options: Intl.DateTimeFormatOptions = {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            weekday: 'long'
+                          };
+                          return date.toLocaleDateString('es-ES', options);
+                        };
+
+                        return formatDate(dueDate);
+                      })()}
+                    </span>
+                  </p>
+                  <p className="mt-1 text-xs text-blue-500 dark:text-blue-500">
+                    ({maximumHoldPeriod} días desde hoy:{' '}
+                    {new Date().toLocaleDateString('es-ES', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                    )
+                  </p>
+                </div>
+              )}
+          </>
+        )}
+      </div>
       <FormField
         control={control}
         name="lotId"

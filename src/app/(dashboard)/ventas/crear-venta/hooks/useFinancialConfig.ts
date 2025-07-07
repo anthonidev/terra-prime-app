@@ -7,6 +7,7 @@ import { calculateAmortization } from '@infrastructure/server-actions/sales.acti
 import { AmortizationCalculationData } from '../validations/saleValidation';
 
 interface UseFinancialConfigProps {
+  reservationAmount: number | undefined;
   amortizationForm: UseFormReturn<AmortizationCalculationData>;
   onAmortizationCalculated: (installments: Amortization[]) => void;
 }
@@ -19,6 +20,7 @@ interface UseFinancialConfigReturn {
 }
 
 export function useFinancialConfig({
+  reservationAmount,
   amortizationForm,
   onAmortizationCalculated
 }: UseFinancialConfigProps): UseFinancialConfigReturn {
@@ -40,7 +42,7 @@ export function useFinancialConfig({
       const result = await calculateAmortization({
         totalAmount: values.totalAmount,
         initialAmount: values.initialAmount,
-        reservationAmount: 0,
+        reservationAmount: reservationAmount ?? 0,
         interestRate: values.interestRate,
         numberOfPayments: values.quantitySaleCoutes,
         firstPaymentDate: values.firstPaymentDate,
@@ -60,7 +62,7 @@ export function useFinancialConfig({
     } finally {
       setIsCalculating(false);
     }
-  }, [amortizationForm, onAmortizationCalculated]);
+  }, [amortizationForm, onAmortizationCalculated, reservationAmount]);
 
   return {
     amortizationTable,

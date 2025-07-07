@@ -2,6 +2,9 @@ export interface CreateSalePayload {
   lotId: string;
   saleType: 'DIRECT_PAYMENT' | 'FINANCED';
   clientId: number;
+  isReservation?: boolean;
+  reservationAmount?: number;
+  maximumHoldPeriod?: number;
   secondaryClientsIds: number[];
   guarantorId: number;
   totalAmount: number;

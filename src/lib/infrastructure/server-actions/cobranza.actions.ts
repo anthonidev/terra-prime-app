@@ -119,7 +119,6 @@ export async function listByClient(id: number): Promise<ListByClient[]> {
     lot: item.lot,
     financing: item.financing,
     guarantor: item.guarantor,
-    reservation: item.reservation,
     vendor: item.vendor
   }));
 }

@@ -280,7 +280,7 @@ export default function SaleDetailModal({ isOpen, onClose, sale }: SaleDetailMod
           )}
 
           {/* Reserva */}
-          {sale.reservation && (
+          {sale.fromReservation && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
@@ -290,7 +290,7 @@ export default function SaleDetailModal({ isOpen, onClose, sale }: SaleDetailMod
               </CardHeader>
               <CardContent>
                 <p className="text-lg font-semibold text-green-600">
-                  {formatCurrency(sale.reservation.amount)}
+                  {formatCurrency(sale.reservationAmount)}
                 </p>
               </CardContent>
             </Card>

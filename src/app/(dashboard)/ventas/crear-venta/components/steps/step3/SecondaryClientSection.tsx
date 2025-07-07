@@ -1,21 +1,31 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { UserCheck, UserPlus, X } from 'lucide-react';
+import { UserCheck } from 'lucide-react';
+import { Switch } from '@components/ui/switch';
+import { Dispatch, SetStateAction } from 'react';
 
 interface Props {
   secondaryClientsData: { id: number; name: string }[];
   disabled: boolean;
   isCreating: boolean;
-  onAddSecondaryClient: () => void;
+  guarantorEnable: boolean;
+  compradorEnable: boolean;
+  compradorSwitch: Dispatch<
+    SetStateAction<{
+      guarantorEnable: boolean;
+      compradorEnable: boolean;
+    }>
+  >;
 }
 
 export default function SecondaryClientSection({
   secondaryClientsData,
   disabled,
   isCreating,
-  onAddSecondaryClient
+  guarantorEnable,
+  compradorEnable,
+  compradorSwitch
 }: Props) {
   if (disabled) return null;
   return (
@@ -23,16 +33,13 @@ export default function SecondaryClientSection({
       <div className="flex items-center justify-between">
         <h4 className="text-sm font-medium">Co-Compradores</h4>
         <div className="inline-flex items-center justify-center gap-4">
-          <Button
-            type="button"
-            onClick={onAddSecondaryClient}
-            disabled={isCreating}
-            variant="secondary"
-            className="flex items-center gap-2"
-          >
-            <UserPlus className="h-4 w-4" />
-            Agregar
-          </Button>
+          <Switch
+            checked={compradorEnable}
+            onCheckedChange={() => {
+              compradorSwitch({ guarantorEnable, compradorEnable: !compradorEnable });
+            }}
+            disabled={isCreating || secondaryClientsData.length > 0}
+          />
         </div>
       </div>
 
@@ -49,9 +56,6 @@ export default function SecondaryClientSection({
                     <p className="font-medium">{client.name}</p>
                   </div>
                 </div>
-                <Button type="button" variant="ghost" size="sm" disabled={isCreating}>
-                  <X className="h-4 w-4" />
-                </Button>
               </CardContent>
             </Card>
           ))}

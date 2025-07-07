@@ -41,7 +41,7 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
   const initialAmount = saleData.financing ? safeNumber(saleData.financing.initialAmount) : 0;
   const interestRate = saleData.financing ? safeNumber(saleData.financing.interestRate) : 0;
   const quantityCoutes = saleData.financing ? safeNumber(saleData.financing.quantityCoutes) : 0;
-  const reservationAmount = saleData.reservation ? safeNumber(saleData.reservation.amount) : 0;
+  const reservationAmount = saleData.fromReservation ? safeNumber(saleData.reservationAmount) : 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -205,7 +205,7 @@ export default function SaleSuccessModal({ isOpen, onClose, saleData }: SaleSucc
               </Card>
             )}
 
-            {saleData.reservation && (
+            {saleData.fromReservation && (
               <Card className="bg-white dark:bg-gray-900">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm">

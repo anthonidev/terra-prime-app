@@ -4,7 +4,6 @@ import {
   Financing,
   Guarantor,
   SecondaryClient,
-  Reservation,
   Vendor,
   CurrencyType
 } from '@domain/entities/sales/salevendor.entity';
@@ -107,7 +106,6 @@ export class ListByClient {
     public readonly lot: LotProyect,
     public readonly financing: Financing,
     public readonly guarantor: Guarantor,
-    public readonly reservation: Reservation,
     public readonly vendor: Vendor
   ) {}
 }
@@ -124,7 +122,6 @@ export class SalesCollector {
     public readonly lot: LotProyect,
     public readonly financing: FinancingCollector,
     public readonly guarantor: Guarantor,
-    public readonly reservation: Reservation,
     public readonly vendor: Vendor
   ) {}
 }

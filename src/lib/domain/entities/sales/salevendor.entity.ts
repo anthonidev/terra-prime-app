@@ -10,13 +10,19 @@ import {
 import { ReviewByBasic, StatusPayment } from './payment.entity';
 
 export enum StatusSale {
-  PENDING = 'PENDING',
-  PENDING_APPROVAL = 'PENDING_APPROVAL',
-  APPROVED = 'APPROVED',
-  IN_PAYMENT_PROCESS = 'IN_PAYMENT_PROCESS',
-  COMPLETED = 'COMPLETED',
-  REJECTED = 'REJECTED',
-  WITHDRAWN = 'WITHDRAWN'
+  // Estados de Reserva
+  RESERVATION_PENDING = 'RESERVATION_PENDING', // Reserva registrada, sin pago
+  RESERVATION_PENDING_APPROVAL = 'RESERVATION_PENDING_APPROVAL', // Pago de reserva pendiente de aprobación (reserva)
+  RESERVED = 'RESERVED', // Reserva completada y aprobada
+
+  // Estados de Venta
+  PENDING = 'PENDING', // Venta pendiente de procesamiento
+  PENDING_APPROVAL = 'PENDING_APPROVAL', // Venta pendiente de aprobación
+  APPROVED = 'APPROVED', // Venta aprobada
+  IN_PAYMENT_PROCESS = 'IN_PAYMENT_PROCESS', // En proceso de pago
+  COMPLETED = 'COMPLETED', // Venta completada
+  REJECTED = 'REJECTED', // Rechazada (incluye reservas rechazadas/expiradas)
+  WITHDRAWN = 'WITHDRAWN' // Retirada (incluye reservas anuladas)
 }
 
 export enum CurrencyType {
@@ -87,13 +93,6 @@ export class Guarantor {
   ) {}
 }
 
-export class Reservation {
-  constructor(
-    public readonly id: string,
-    public readonly amount: string
-  ) {}
-}
-
 export class Vendor {
   constructor(
     public readonly document: string,
@@ -125,6 +124,10 @@ export class SaleList {
     public readonly type: SaleType,
     public readonly totalAmount: string,
     public readonly status: StatusSale,
+    public readonly createdAt: string,
+    public readonly reservationAmount: string,
+    public readonly maximumHoldPeriod: string,
+    public readonly fromReservation: boolean,
     public readonly currency: CurrencyType,
     public readonly client: Client,
     public readonly secondaryClients: SecondaryClient[] | null,
@@ -140,7 +143,6 @@ export class SaleList {
     public readonly fieldSupervisor: FieldSupervisor | null,
     public readonly fieldSeller: FieldSeller | null,
     public readonly guarantor: Guarantor | null,
-    public readonly reservation: Reservation | null,
     public readonly vendor: Vendor,
     public readonly paymentsSummary: PaymentSummary[]
   ) {}

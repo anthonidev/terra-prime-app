@@ -3,7 +3,7 @@
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '@/components/ui/table';
+} from '@components/ui/table';
 import { Calculator } from 'lucide-react';
 
 import { Amortization } from '@domain/entities/sales/amortization.entity';

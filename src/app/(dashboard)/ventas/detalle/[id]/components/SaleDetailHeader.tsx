@@ -150,7 +150,7 @@ export default function SaleDetailHeader({ sale }: { sale: SaleList }) {
                 </div>
               </div>
 
-              {sale.reservation && (
+              {sale.fromReservation && (
                 <div className="rounded-lg bg-amber-50 p-3 dark:bg-amber-900/20">
                   <div className="flex items-center gap-2">
                     <CreditCard className="h-4 w-4 text-amber-600 dark:text-amber-400" />
@@ -159,7 +159,7 @@ export default function SaleDetailHeader({ sale }: { sale: SaleList }) {
                         Monto de reserva
                       </p>
                       <p className="text-base font-bold text-amber-900 dark:text-amber-200">
-                        {formatCurrency(sale.reservation.amount)}
+                        {formatCurrency(sale.reservationAmount)}
                       </p>
                     </div>
                   </div>
