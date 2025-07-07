@@ -1,19 +1,18 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { Textarea } from '@/components/ui/textarea';
 import { RateLimitStatus } from '@/types/chat/chatbot.types';
-import { Send, AlertTriangle, Loader2, Plus, HelpCircle, BookOpen } from 'lucide-react';
-import { useState, KeyboardEvent, useRef, useEffect } from 'react';
-import { Separator } from '@/components/ui/separator';
+import { AlertTriangle, BookOpen, HelpCircle, Loader2, Plus, Send } from 'lucide-react';
+import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 
 interface MessageInputProps {
   onSendMessage: (message: string) => void;

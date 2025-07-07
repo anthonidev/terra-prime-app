@@ -1,29 +1,29 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
 import {
-  ChatSession,
-  ChatMessage,
-  RateLimitStatus,
-  QuickHelpResponse,
   AvailableGuidesResponse,
-  GuideDetailResponse
+  ChatMessage,
+  ChatSession,
+  GuideDetailResponse,
+  QuickHelpResponse,
+  RateLimitStatus
 } from '@/types/chat/chatbot.types';
+import { useCallback, useRef, useState } from 'react';
+import { getAvailableGuides, getGuideDetail, getQuickHelp } from '../actions/chatbotHelp';
 import {
-  getChatSessions,
-  getSessionHistory,
-  sendMessage,
   deleteSession,
-  getRateLimitStatus
+  getChatSessions,
+  getRateLimitStatus,
+  getSessionHistory,
+  sendMessage
 } from '../actions/chatbotMessage';
-import { getQuickHelp, getAvailableGuides, getGuideDetail } from '../actions/chatbotHelp';
 
 export type ViewType = 'chat' | 'sessions' | 'guides' | 'guide-detail';
 export interface TemporalContent {
   id: string;
   type: 'quick-help-list' | 'guide-list' | 'guide-detail';
   title: string;
-  data: any; // QuickHelpResponse | AvailableGuidesResponse | GuideDetailResponse
+  data: QuickHelpResponse | AvailableGuidesResponse | GuideDetailResponse;
   timestamp: string;
 }
 
@@ -301,7 +301,7 @@ export const useChatbot = () => {
             content: response.response,
             createdAt: response.timestamp,
             // Usar metadatos del backend si están disponibles, sino usar 'system' como fallback
-            metadata: (response as any).metadata || {
+            metadata: response.metadata || {
               queryType: 'system'
             }
           };

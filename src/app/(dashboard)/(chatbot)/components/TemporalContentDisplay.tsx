@@ -1,25 +1,24 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { TemporalContent } from '../hooks/useChatbot';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  QuickHelpResponse,
   AvailableGuidesResponse,
-  GuideDetailResponse
+  GuideDetailResponse,
+  QuickHelpResponse
 } from '@/types/chat/chatbot.types';
 import {
-  HelpCircle,
+  ArrowRight,
   BookOpen,
-  X,
   CheckCircle,
   Clock,
+  FileText,
   MessageSquare,
-  ArrowRight,
-  Zap,
-  FileText
+  X,
+  Zap
 } from 'lucide-react';
+import { TemporalContent } from '../hooks/useChatbot';
 
 interface TemporalContentDisplayProps {
   content: TemporalContent;
@@ -254,11 +253,11 @@ export const TemporalContentDisplay = ({
 
   switch (content.type) {
     case 'quick-help-list':
-      return renderQuickHelpList(content.data);
+      return renderQuickHelpList(content.data as QuickHelpResponse);
     case 'guide-list':
-      return renderGuidesList(content.data);
+      return renderGuidesList(content.data as AvailableGuidesResponse);
     case 'guide-detail':
-      return renderGuideDetail(content.data);
+      return renderGuideDetail(content.data as GuideDetailResponse);
     default:
       return null;
   }

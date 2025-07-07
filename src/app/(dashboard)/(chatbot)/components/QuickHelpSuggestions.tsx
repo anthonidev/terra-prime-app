@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { QuickHelpResponse } from '@/types/chat/chatbot.types';
 import { MessageSquare, Sparkles } from 'lucide-react';
