@@ -55,7 +55,7 @@ interface Props {
   onLotChange: (lotId: string) => void;
 
   isReservation: boolean;
-  maximumHoldPeriod: string;
+  maximumHoldPeriod: number;
 }
 
 export default function ProjectLocationSelector({
@@ -149,47 +149,45 @@ export default function ProjectLocationSelector({
               control={control}
               errors={errors}
             />
-            {maximumHoldPeriod &&
-              !isNaN(parseInt(maximumHoldPeriod)) &&
-              parseInt(maximumHoldPeriod) > 0 && (
-                <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-900/20">
-                  <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
-                    <Calendar className="h-4 w-4" />
-                    <span className="text-sm font-medium">Fecha límite de pago</span>
-                  </div>
-                  <p className="mt-1 text-sm text-blue-600 dark:text-blue-400">
-                    El cliente debe realizar el pago antes del:{' '}
-                    <span className="font-semibold">
-                      {(() => {
-                        const currentDate = new Date();
-                        const dueDate = new Date(currentDate);
-                        dueDate.setDate(currentDate.getDate() + parseInt(maximumHoldPeriod));
-
-                        const formatDate = (date: Date) => {
-                          const options: Intl.DateTimeFormatOptions = {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            weekday: 'long'
-                          };
-                          return date.toLocaleDateString('es-ES', options);
-                        };
-
-                        return formatDate(dueDate);
-                      })()}
-                    </span>
-                  </p>
-                  <p className="mt-1 text-xs text-blue-500 dark:text-blue-500">
-                    ({maximumHoldPeriod} días desde hoy:{' '}
-                    {new Date().toLocaleDateString('es-ES', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                    )
-                  </p>
+            {maximumHoldPeriod && !maximumHoldPeriod && maximumHoldPeriod > 0 && (
+              <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-900/20">
+                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+                  <Calendar className="h-4 w-4" />
+                  <span className="text-sm font-medium">Fecha límite de pago</span>
                 </div>
-              )}
+                <p className="mt-1 text-sm text-blue-600 dark:text-blue-400">
+                  El cliente debe realizar el pago antes del:
+                  <span className="font-semibold">
+                    {(() => {
+                      const currentDate = new Date();
+                      const dueDate = new Date(currentDate);
+                      dueDate.setDate(currentDate.getDate() + maximumHoldPeriod);
+
+                      const formatDate = (date: Date) => {
+                        const options: Intl.DateTimeFormatOptions = {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          weekday: 'long'
+                        };
+                        return date.toLocaleDateString('es-ES', options);
+                      };
+
+                      return formatDate(dueDate);
+                    })()}
+                  </span>
+                </p>
+                <p className="mt-1 text-xs text-blue-500 dark:text-blue-500">
+                  ({maximumHoldPeriod} días desde hoy:{' '}
+                  {new Date().toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                  )
+                </p>
+              </div>
+            )}
           </>
         )}
       </div>

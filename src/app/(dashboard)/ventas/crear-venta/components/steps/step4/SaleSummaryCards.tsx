@@ -45,61 +45,63 @@ export default function SaleSummaryCards({
         </CardContent>
       </Card>
 
-      <Card className="dark:bg-gray-900">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-sm">
-            <Building className="h-4 w-4" />
-            Información de reservación
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600 dark:text-gray-400">Monto:</span>
-            <span className="font-medium">{formData.reservationAmount}</span>
-          </div>
-          {formData.maximumHoldPeriod &&
-            !isNaN(parseInt(formData.maximumHoldPeriod)) &&
-            parseInt(formData.maximumHoldPeriod) > 0 && (
-              <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-900/20">
-                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
-                  <Calendar className="h-4 w-4" />
-                  <span className="text-sm font-medium">Fecha límite de pago</span>
-                </div>
-                <p className="mt-1 text-sm text-blue-600 dark:text-blue-400">
-                  El cliente debe realizar el pago antes del:{' '}
-                  <span className="font-semibold">
-                    {(() => {
-                      const currentDate = new Date();
-                      const dueDate = new Date(currentDate);
-                      dueDate.setDate(currentDate.getDate() + parseInt(formData.maximumHoldPeriod));
+      {formData.isReservation && (
+        <Card className="dark:bg-gray-900">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-sm">
+              <Building className="h-4 w-4" />
+              Información de reservación
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600 dark:text-gray-400">Monto:</span>
+              <span className="font-medium">{formData.reservationAmount}</span>
+            </div>
+            {formData.maximumHoldPeriod &&
+              !formData.maximumHoldPeriod &&
+              formData.maximumHoldPeriod > 0 && (
+                <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-900/20">
+                  <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+                    <Calendar className="h-4 w-4" />
+                    <span className="text-sm font-medium">Fecha límite de pago</span>
+                  </div>
+                  <p className="mt-1 text-sm text-blue-600 dark:text-blue-400">
+                    El cliente debe realizar el pago antes del:&nbsp;
+                    <span className="font-semibold">
+                      {(() => {
+                        const currentDate = new Date();
+                        const dueDate = new Date(currentDate);
+                        dueDate.setDate(currentDate.getDate() + formData.maximumHoldPeriod);
 
-                      const formatDate = (date: Date) => {
-                        const options: Intl.DateTimeFormatOptions = {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          weekday: 'long'
+                        const formatDate = (date: Date) => {
+                          const options: Intl.DateTimeFormatOptions = {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            weekday: 'long'
+                          };
+                          return date.toLocaleDateString('es-ES', options);
                         };
-                        return date.toLocaleDateString('es-ES', options);
-                      };
 
-                      return formatDate(dueDate);
-                    })()}
-                  </span>
-                </p>
-                <p className="mt-1 text-xs text-blue-500 dark:text-blue-500">
-                  ({formData.maximumHoldPeriod} días desde hoy:{' '}
-                  {new Date().toLocaleDateString('es-ES', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                  )
-                </p>
-              </div>
-            )}
-        </CardContent>
-      </Card>
+                        return formatDate(dueDate);
+                      })()}
+                    </span>
+                  </p>
+                  <p className="mt-1 text-xs text-blue-500 dark:text-blue-500">
+                    ({formData.maximumHoldPeriod} días desde hoy:&nbsp;
+                    {new Date().toLocaleDateString('es-ES', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                    )
+                  </p>
+                </div>
+              )}
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="dark:bg-gray-900">
         <CardHeader>

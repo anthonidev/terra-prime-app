@@ -55,8 +55,8 @@ export default function Step1ProjectSelection({
     resolver: zodResolver(step1Schema),
     defaultValues: {
       isReservation: false,
-      reservationAmount: '',
-      maximumHoldPeriod: '',
+      reservationAmount: undefined,
+      maximumHoldPeriod: undefined,
       lotId: formData.lotId || '',
       saleType: formData.saleType || 'DIRECT_PAYMENT'
     }
@@ -71,8 +71,8 @@ export default function Step1ProjectSelection({
       let isValid = !!(value.lotId && value.saleType);
 
       if (value.isReservation) {
-        const reservationAmountValid = value.reservationAmount?.trim() !== '';
-        const maximumHoldPeriodValid = value.maximumHoldPeriod?.trim() !== '';
+        const reservationAmountValid = value.reservationAmount !== 0;
+        const maximumHoldPeriodValid = value.maximumHoldPeriod !== 0;
         isValid = isValid && reservationAmountValid && maximumHoldPeriodValid;
       }
 
@@ -155,7 +155,7 @@ export default function Step1ProjectSelection({
             onBlockChange={handleBlockChange}
             onLotChange={handleLotChange}
             isReservation={form.getValues('isReservation')}
-            maximumHoldPeriod={form.getValues('maximumHoldPeriod') ?? ''}
+            maximumHoldPeriod={form.getValues('maximumHoldPeriod') ?? 0}
           />
           <SelectionSummary
             selectedProject={selected.project}
