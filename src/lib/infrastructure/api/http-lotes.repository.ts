@@ -1,6 +1,7 @@
 import {
   BlockRepository,
   LotRepository,
+  LotsProjectRepository,
   ProjectRepository,
   StageRepository
 } from '@domain/repositories/lotes.repository';
@@ -9,7 +10,8 @@ import {
   ProjectsResponse,
   ProjectBlocksResponse,
   ProjectStagesResponse,
-  ProjectLotsResponse
+  ProjectLotsResponse,
+  LotProjectResponse
 } from '@infrastructure/types/lotes/api-response.types';
 
 import { Block } from '@domain/entities/lotes/block.entity';
@@ -89,6 +91,24 @@ export class HttpLotRepository implements LotRepository {
             item.createdAt
           )
       );
+    } catch (error) {
+      if (error instanceof Error) throw new Error(error.message);
+      throw error;
+    }
+  }
+}
+
+export class HttpLotProjectRepository implements LotsProjectRepository {
+  async findById(id: string): Promise<LotProjectResponse> {
+    try {
+      const response = await httpClient<LotProjectResponse>(
+        `/api/sales/projects/lots/${id}?status=Activo`
+      );
+
+      return {
+        items: response.items,
+        meta: response.meta
+      };
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
       throw error;

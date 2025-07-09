@@ -9,3 +9,7 @@ export interface GetStagesDTO {
 export interface GetLotsDTO {
   id: string;
 }
+
+export interface GetLotsByProjectDto {
+  id: string;
+}

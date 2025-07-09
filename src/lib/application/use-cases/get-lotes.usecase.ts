@@ -2,7 +2,8 @@ import {
   BlockRepository,
   ProjectRepository,
   StageRepository,
-  LotRepository
+  LotRepository,
+  LotsProjectRepository
 } from '@lib/domain/repositories/lotes.repository';
 
 import { Project } from '@lib/domain/entities/lotes/project.entity';
@@ -11,6 +12,7 @@ import { Block } from '@lib/domain/entities/lotes/block.entity';
 import { Lot } from '@/lib/domain/entities/lotes/lot.entity';
 
 import { GetBlocksDTO, GetLotsDTO, GetStagesDTO } from '@lib/application/dtos/get-lotes.dto';
+import { LotProjectResponse } from '@/lib/infrastructure/types/lotes/api-response.types';
 
 export class GetProjectsUseCase {
   constructor(private readonly projectRepository: ProjectRepository) {}
@@ -41,5 +43,13 @@ export class GetLotsUseCase {
 
   async execute(dto: GetLotsDTO): Promise<Lot[]> {
     return this.lotsRepository.findById(dto.id);
+  }
+}
+
+export class GetLotsByProject {
+  constructor(private readonly repository: LotsProjectRepository) {}
+
+  async execute(id: string): Promise<LotProjectResponse> {
+    return this.repository.findById(id);
   }
 }

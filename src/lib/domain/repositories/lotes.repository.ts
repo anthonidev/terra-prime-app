@@ -1,7 +1,8 @@
-import { Project } from '@lib/domain/entities/lotes/project.entity';
-import { Block } from '@lib/domain/entities/lotes/block.entity';
-import { Stage } from '@lib/domain/entities/lotes/stage.entity';
-import { Lot } from '@lib/domain/entities/lotes/lot.entity';
+import { Project } from '@domain/entities/lotes/project.entity';
+import { Block } from '@domain/entities/lotes/block.entity';
+import { Stage } from '@domain/entities/lotes/stage.entity';
+import { Lot } from '@domain/entities/lotes/lot.entity';
+import { LotProjectResponse } from '@infrastructure/types/lotes/api-response.types';
 
 export interface ProjectRepository {
   getProjects(): Promise<Project[]>;
@@ -17,4 +18,8 @@ export interface BlockRepository {
 
 export interface LotRepository {
   findById(id: string): Promise<Lot[]>;
+}
+
+export interface LotsProjectRepository {
+  findById(id: string): Promise<LotProjectResponse>;
 }
