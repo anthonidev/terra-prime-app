@@ -1,3 +1,6 @@
+import { LotProject } from '@/lib/domain/entities/lotes/lot.entity';
+import { Meta } from '../pagination.types';
+
 export interface ProjectsResponse {
   id: string;
   name: string;
@@ -29,4 +32,9 @@ export interface ProjectLotsResponse {
   totalPrice: number;
   status: string;
   createdAt: string;
+}
+
+export interface LotProjectResponse {
+  items: LotProject[];
+  meta: Meta;
 }

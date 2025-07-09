@@ -2,6 +2,7 @@
 
 import {
   GetBlocksUseCase,
+  GetLotsByProject,
   GetLotsUseCase,
   GetProjectsUseCase,
   GetStagesUseCase
@@ -11,14 +12,16 @@ import {
   HttpProjectRepository,
   HttpBlockRepository,
   HttpStageRepository,
-  HttpLotRepository
+  HttpLotRepository,
+  HttpLotProjectRepository
 } from '@infrastructure/api/http-lotes.repository';
 
 import {
   ProjectsResponse,
   ProjectBlocksResponse,
   ProjectStagesResponse,
-  ProjectLotsResponse
+  ProjectLotsResponse,
+  LotProjectResponse
 } from '@infrastructure/types/lotes/api-response.types';
 
 import { GetBlocksDTO, GetLotsDTO, GetStagesDTO } from '@application/dtos/get-lotes.dto';
@@ -102,4 +105,16 @@ export const getProyectLots = async (data: GetLotsDTO): Promise<ProjectLotsRespo
     status: lot.status,
     createdAt: lot.createdAt
   }));
+};
+
+export const getLotsProject = async (id: string): Promise<LotProjectResponse> => {
+  const repository = new HttpLotProjectRepository();
+  const useCase = new GetLotsByProject(repository);
+
+  const lots = await useCase.execute(id);
+
+  return {
+    items: lots.items,
+    meta: lots.meta
+  };
 };

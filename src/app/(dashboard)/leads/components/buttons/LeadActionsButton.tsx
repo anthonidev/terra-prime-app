@@ -110,12 +110,12 @@ export default function LeadActionsButton({ lead }: LeadActionsButtonProps) {
         {!lead.reportPdfUrl ? (
           <DropdownMenuItem onClick={handleGenerateReport} disabled={isPdfLoading}>
             <FileArchive className="mr-2 h-4 w-4" />
-            {isPdfLoading ? 'Generando...' : 'Generar reporte'}
+            {isPdfLoading ? 'Generando...' : 'Generar bienvenido'}
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem onClick={handleRegenerateReport} disabled={isPdfLoading}>
             <RefreshCw className="mr-2 h-4 w-4" />
-            {isPdfLoading ? 'Regenerando...' : 'Regenerar reporte'}
+            {isPdfLoading ? 'Regenerando...' : 'Regenerar bienvenido'}
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>
