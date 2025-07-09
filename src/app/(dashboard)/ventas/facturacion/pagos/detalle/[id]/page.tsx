@@ -68,7 +68,7 @@ export default function PagoDetailPage() {
         subtitle="Información detallada del pago administrativo"
         variant="gradient"
         icon={FileText}
-        backUrl="/ventas/pagos"
+        backUrl="/ventas/facturacion/pagos"
         actions={
           <>
             <StatusBadge status={payment.status} />
