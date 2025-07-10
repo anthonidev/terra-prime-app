@@ -3,9 +3,9 @@
 import { Project } from '@domain/entities/lotes/project.entity';
 import { Calendar, MapPin, DollarSign, Building2, AlertCircle } from 'lucide-react';
 import * as React from 'react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@components/ui/card';
+import { Badge } from '@components/ui/badge';
+import { Alert, AlertDescription } from '@components/ui/alert';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -15,14 +15,6 @@ interface Props {
 
 export default function ProjectContainer({ data }: Props) {
   const router = useRouter();
-
-  const handleProjectClick = (projectId: string) => {
-    try {
-      router.push(`/ventas/lotes/detalle/${projectId}`);
-    } catch (error) {
-      console.error('Error navigating to project:', error);
-    }
-  };
 
   if (!data || data.length === 0) {
     return (
@@ -42,7 +34,7 @@ export default function ProjectContainer({ data }: Props) {
       {data.map((project) => (
         <Card
           key={project.id}
-          onClick={() => handleProjectClick(project.id)}
+          onClick={() => router.push(`/ventas/lotes/detalle/${project.name}/${project.id}`)}
           className="group relative cursor-pointer overflow-hidden border-0 bg-white py-0 shadow-lg transition-all duration-300 hover:shadow-2xl dark:bg-gray-900"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-[#025864]/5 via-transparent to-[#00CA7C]/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />

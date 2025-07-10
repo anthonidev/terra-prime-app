@@ -1,13 +1,7 @@
 'use client';
 
 import { Button } from '@components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@components/ui/select';
 import { Badge } from '@components/ui/badge';
 import { SortAsc, SortDesc, X, Building2, Layers, Search } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -17,7 +11,7 @@ import {
   ProjectStagesResponse
 } from '@infrastructure/types/lotes/api-response.types';
 import { getProyectBlocks, getProyectStages } from '@infrastructure/server-actions/lotes.actions';
-import { Input } from '@/components/ui/input';
+import { Input } from '@components/ui/input';
 
 interface TableFiltersProps {
   projectId: string;
@@ -52,6 +46,7 @@ export default function TableFilter({
   const [loadingStages, setLoadingStages] = useState(false);
   const [loadingBlocks, setLoadingBlocks] = useState(false);
 
+  // Cargar etapas
   useEffect(() => {
     const loadStages = async () => {
       if (projectId) {
@@ -72,6 +67,7 @@ export default function TableFilter({
     loadStages();
   }, [projectId]);
 
+  // Cargar manzanas cuando cambia la etapa
   useEffect(() => {
     const loadBlocks = async () => {
       if (stageFilter && stageFilter !== 'all') {
@@ -91,6 +87,18 @@ export default function TableFilter({
     };
     loadBlocks();
   }, [stageFilter]);
+
+  // NUEVO: useEffect para manejar la búsqueda con debounce
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (search !== (searchParams.get('term') || '')) {
+        router.push(`${pathname}?${createQueryString({ term: search })}`);
+      }
+    }, 500); // Delay de 500ms
+
+    return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, pathname, router, searchParams]);
 
   const createQueryString = useCallback(
     (updates: { [key: string]: string }) => {
@@ -130,9 +138,10 @@ export default function TableFilter({
     router.push(`${pathname}?${createQueryString({ blockId: value })}`);
   };
 
+  // MODIFICADO: Solo actualizar el estado local, no la URL directamente
   const handleSearchChange = (value: string) => {
     setSearch(value);
-    router.push(`${pathname}?${createQueryString({ term: value })}`);
+    // La URL se actualiza automáticamente con el useEffect de arriba
   };
 
   const clearAllFilters = () => {
@@ -145,6 +154,7 @@ export default function TableFilter({
 
   const hasActiveFilters =
     orderValue !== 'DESC' || stageFilter !== 'all' || blockFilter !== 'all' || search !== '';
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -170,9 +180,11 @@ export default function TableFilter({
           </Select>
 
           <Select value={stageFilter} onValueChange={handleStageChange} disabled={loadingStages}>
-            <SelectTrigger className="w-auto min-w-[140px] gap-2 bg-white dark:bg-gray-900">
+            <SelectTrigger className="w-auto gap-2 bg-white dark:bg-gray-900">
               <Building2 className="h-4 w-4 text-gray-400" />
-              <SelectValue placeholder="Etapa" />
+              <span className="hidden sm:inline">
+                {stageFilter === 'all' ? 'Todas las etapas' : 'Etapa'}
+              </span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas las etapas</SelectItem>
@@ -189,9 +201,11 @@ export default function TableFilter({
             onValueChange={handleBlockChange}
             disabled={loadingBlocks || stageFilter === 'all'}
           >
-            <SelectTrigger className="w-auto min-w-[140px] gap-2 bg-white dark:bg-gray-900">
+            <SelectTrigger className="w-auto gap-2 bg-white dark:bg-gray-900">
               <Layers className="h-4 w-4 text-gray-400" />
-              <SelectValue placeholder="Manzana" />
+              <span className="hidden sm:inline">
+                {blockFilter === 'all' ? 'Todas las manzanas' : 'Manzana'}
+              </span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas las manzanas</SelectItem>

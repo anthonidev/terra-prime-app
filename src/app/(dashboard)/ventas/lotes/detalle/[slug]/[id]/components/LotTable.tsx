@@ -8,13 +8,12 @@ import {
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table';
-import { Calendar, Square } from 'lucide-react';
+import { Calendar, Ruler, Square } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { CurrencyType } from '@domain/entities/sales/salevendor.entity';
 import { LotProject } from '@domain/entities/lotes/lot.entity';
-import { Badge } from '@components/ui/badge';
 
 type Props = {
   data: LotProject[];
@@ -23,7 +22,7 @@ type Props = {
 const VentasTable = ({ data }: Props) => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     id: false,
-    type: true
+    createdAt: false
   });
 
   const formatCurrency = (amount: number, currency: CurrencyType = CurrencyType.PEN) => {
@@ -71,15 +70,21 @@ const VentasTable = ({ data }: Props) => {
               </div>
               <div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">
-                  Lote:&nbsp;
+                  Etapa:&nbsp;
                   <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
-                    {lote.name}
+                    {lote.stageName}
                   </span>
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">
-                  m²:&nbsp;
+                  Manzana:&nbsp;
                   <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
-                    {lote.area}
+                    {lote.blockName}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  Lote:&nbsp;
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
+                    {lote.name}
                   </span>
                 </div>
               </div>
@@ -89,34 +94,12 @@ const VentasTable = ({ data }: Props) => {
         enableHiding: false
       },
       {
-        accessorKey: 'projectName',
-        header: () => <span>Proyecto</span>,
+        accessorKey: 'area',
+        header: () => <span>Area</span>,
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <Square className="h-4 w-4" />
-            {row.getValue('projectName')}
-          </div>
-        ),
-        enableHiding: true
-      },
-      {
-        accessorKey: 'stageName',
-        header: () => <span>Etapa</span>,
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <Square className="h-4 w-4" />
-            {row.getValue('stageName')}
-          </div>
-        ),
-        enableHiding: true
-      },
-      {
-        accessorKey: 'blockName',
-        header: () => <span>Manzana</span>,
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <Square className="h-4 w-4" />
-            {row.getValue('blockName')}
+            <Ruler className="h-4 w-4" />
+            {row.getValue('area')} m²
           </div>
         ),
         enableHiding: true
@@ -125,11 +108,8 @@ const VentasTable = ({ data }: Props) => {
         accessorKey: 'lotPrice',
         header: () => <span>Precio Lote</span>,
         cell: ({ row }) => (
-          <div className="text-right">
-            <div className="text-sm font-bold text-green-600 dark:text-green-400">
-              {formatCurrency(row.getValue('lotPrice'), row.original.projectCurrency)}
-            </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">Precio base</div>
+          <div className="text-sm font-bold text-green-600 dark:text-green-400">
+            {formatCurrency(row.getValue('lotPrice'), row.original.projectCurrency)}
           </div>
         ),
         enableHiding: true
@@ -138,23 +118,8 @@ const VentasTable = ({ data }: Props) => {
         accessorKey: 'urbanizationPrice',
         header: () => <span>Precio HU</span>,
         cell: ({ row }) => (
-          <div className="text-right">
-            <div className="text-sm font-bold text-orange-600 dark:text-orange-400">
-              {formatCurrency(row.getValue('urbanizationPrice'), row.original.projectCurrency)}
-            </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">Habilitación urbana</div>
-          </div>
-        ),
-        enableHiding: true
-      },
-      {
-        accessorKey: 'status',
-        header: () => <span>Estado</span>,
-        cell: ({ row }) => (
-          <div className="flex justify-center">
-            <Badge variant="outline" className="px-3 py-1 text-xs font-medium text-green-500">
-              {row.getValue('status') == 'Activo' ? 'Libre' : 'Activo'}
-            </Badge>
+          <div className="text-sm font-bold text-orange-600 dark:text-orange-400">
+            {formatCurrency(row.getValue('urbanizationPrice'), row.original.projectCurrency)}
           </div>
         ),
         enableHiding: true

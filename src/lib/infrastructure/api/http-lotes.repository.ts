@@ -111,7 +111,6 @@ export class HttpLotProjectRepository implements LotsProjectRepository {
     }
   ): Promise<LotProjectResponse> {
     try {
-      console.log(params);
       const response = await httpClient<LotProjectResponse>(`/api/sales/projects/lots/${id}`, {
         params,
         next: {
