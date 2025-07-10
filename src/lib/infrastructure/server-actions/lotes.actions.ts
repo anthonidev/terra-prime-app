@@ -119,6 +119,7 @@ export const getLotsProject = async (
   }
 ): Promise<LotProjectResponse> => {
   const repository = new HttpLotProjectRepository();
+
   const useCase = new GetLotsByProject(repository);
 
   const lots = await useCase.execute(id, params);
