@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState, useCallback, useRef } from 'react';
 
 interface UseScrollToBottomOptions {
@@ -34,6 +35,7 @@ export const useScrollToBottom = ({
   }, [threshold]);
 
   // Función para hacer scroll al bottom
+  // eslint-disable-next-line unused-imports/no-unused-vars
   const scrollToBottom = useCallback(() => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({

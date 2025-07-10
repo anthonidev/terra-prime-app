@@ -52,6 +52,7 @@ export const ChatContent = ({ chatbot, isSheetOpen = false, onViewChange }: Chat
     if (chatbot.registerScrollFunction) {
       chatbot.registerScrollFunction(scrollToBottom);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollToBottom, chatbot.registerScrollFunction]);
 
   // Hacer scroll automático cuando se abre el sheet y hay mensajes

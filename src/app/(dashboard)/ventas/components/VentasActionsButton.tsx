@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { PaymentSummary } from './PaymentSummary';
 import { SaleList, StatusSale } from '@domain/entities/sales/salevendor.entity';
+import { ExtendSeparation } from './ExtendSeparation';
 
 interface Props {
   sale: SaleList;
@@ -20,11 +21,21 @@ interface Props {
 
 export default function VentasActionsButton({ sale }: Props) {
   const router = useRouter();
-  const [isOpen, setOpen] = useState<boolean>(false);
+  const [state, setState] = useState<{
+    pagoModal: boolean;
+    extendModal: boolean;
+  }>({
+    pagoModal: false,
+    extendModal: false
+  });
 
-  const handleVerDetalle = async () => {
-    router.push(`/ventas/detalle/${sale.id}`);
-  };
+  const handlePagoModal = () => setState({ ...state, pagoModal: true });
+  const handleExtendModal = () => setState({ ...state, extendModal: true });
+
+  const handleClosePagoModal = () => setState({ ...state, pagoModal: false });
+  const handleCloseExtendModal = () => setState({ ...state, extendModal: false });
+
+  const handleVerDetalle = async () => router.push(`/ventas/detalle/${sale.id}`);
 
   return (
     <>
@@ -42,7 +53,7 @@ export default function VentasActionsButton({ sale }: Props) {
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            onClick={() => setOpen(true)}
+            onClick={handlePagoModal}
             disabled={
               sale.status === StatusSale.IN_PAYMENT_PROCESS ||
               sale.status === StatusSale.PENDING_APPROVAL ||
@@ -53,9 +64,20 @@ export default function VentasActionsButton({ sale }: Props) {
             <Receipt className="mr-2 h-4 w-4" />
             Registrar pago
           </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={handleExtendModal}
+            disabled={
+              sale.status !== StatusSale.RESERVATION_PENDING || sale.reservationAmount === '0'
+            }
+          >
+            <Receipt className="mr-2 h-4 w-4" />
+            Extender separación
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <PaymentSummary isOpen={isOpen} onClose={() => setOpen(false)} sale={sale} />
+      <PaymentSummary isOpen={state.pagoModal} onClose={handleClosePagoModal} sale={sale} />
+      <ExtendSeparation isOpen={state.extendModal} onClose={handleCloseExtendModal} sale={sale} />
     </>
   );
 }

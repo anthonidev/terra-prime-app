@@ -18,6 +18,7 @@ export const ChatHeader = ({
   onViewChange,
   onNewChat,
   onCloseChat,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
   sessionCount
 }: ChatHeaderProps) => {
   const getTitle = () => {
@@ -47,6 +48,7 @@ export const ChatHeader = ({
   };
 
   const showBackButton = currentView !== 'chat';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
   const isMainView = currentView === 'chat';
 
   return (

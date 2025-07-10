@@ -5,21 +5,23 @@ import LotData from './components/LotData';
 import TableSkeleton from './components/TableSkeleton';
 
 interface Props {
-  id: string;
+  params: Promise<{ id: string }>;
 }
 
-export default async function LotPage({ id }: Props) {
+export default async function LotPage({ params }: Props) {
+  const { id } = await params;
+
   return (
     <div className="container py-8">
       <PageHeader
         title="Lotes"
-        subtitle="Lotes por proyecto"
+        subtitle="Lista de lotes asociados a un proyecto"
         className="mb-6"
         variant="gradient"
         actions={
           <Link
-            className="rounded-md bg-green-500 p-2 text-sm font-medium text-white hover:bg-green-400"
-            href="/ventas/lots"
+            className="rounded-md bg-green-500 p-2 text-sm font-medium text-white transition-colors hover:bg-green-400"
+            href="/ventas/lotes"
           >
             Regresar
           </Link>

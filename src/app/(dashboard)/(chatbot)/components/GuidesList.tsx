@@ -29,7 +29,7 @@ export const GuidesList = ({ guides, onSelectGuide, isLoading }: GuidesListProps
   return (
     <div className="h-full overflow-y-auto">
       <div className="space-y-1.5 px-4 pb-4">
-        {guides.guides.map((guide, index) => (
+        {guides.guides.map((guide) => (
           <Card
             key={guide.guideKey}
             className="group border-border/50 hover:border-border cursor-pointer py-0 transition-all duration-200 hover:shadow-sm"

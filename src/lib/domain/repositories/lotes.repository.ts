@@ -21,5 +21,13 @@ export interface LotRepository {
 }
 
 export interface LotsProjectRepository {
-  findById(id: string): Promise<LotProjectResponse>;
+  findById(
+    id: string,
+    params?: {
+      order?: string;
+      page?: number;
+      limit?: number;
+      status?: string;
+    }
+  ): Promise<LotProjectResponse>;
 }

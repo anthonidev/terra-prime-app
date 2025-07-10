@@ -99,11 +99,19 @@ export class HttpLotRepository implements LotRepository {
 }
 
 export class HttpLotProjectRepository implements LotsProjectRepository {
-  async findById(id: string): Promise<LotProjectResponse> {
+  async findById(
+    id: string,
+    params?: {
+      order?: string;
+      page?: number;
+      limit?: number;
+      status?: string;
+    }
+  ): Promise<LotProjectResponse> {
     try {
-      const response = await httpClient<LotProjectResponse>(
-        `/api/sales/projects/lots/${id}?status=Activo`
-      );
+      const response = await httpClient<LotProjectResponse>(`/api/sales/projects/lots/${id}`, {
+        params
+      });
 
       return {
         items: response.items,
