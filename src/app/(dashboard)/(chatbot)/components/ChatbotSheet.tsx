@@ -27,6 +27,7 @@ export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
     if (isOpen && !chatbot.sessions.length && !chatbot.isLoading) {
       chatbot.initializeChatbot();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
       }, 5000);
       return () => clearTimeout(timer);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatbot.error]);
 
   // Limpiar contenido temporal cuando cambia la vista
@@ -43,6 +45,7 @@ export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
     if (chatbot.currentView !== 'chat') {
       chatbot.clearTemporalContent();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatbot.currentView]);
 
   // Detectar cuando se abre el sheet y hay mensajes existentes
@@ -58,6 +61,7 @@ export const ChatbotSheet = ({ isOpen, onOpenChange }: ChatbotSheetProps) => {
     }
 
     previousIsOpenRef.current = isOpen;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, chatbot.messages.length, chatbot.currentView, chatbot.triggerScrollToBottom]);
 
   const handleCloseChat = () => {

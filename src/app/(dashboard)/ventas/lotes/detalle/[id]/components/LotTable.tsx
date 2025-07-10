@@ -8,7 +8,7 @@ import {
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table';
-import { DollarSign, Calendar, Square, Ruler, MapPin, Eye } from 'lucide-react';
+import { Calendar, Square } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -55,54 +55,75 @@ const VentasTable = ({ data }: Props) => {
         )
       },
       {
-        accessorKey: 'name',
+        id: 'lote',
         header: () => (
           <div className="flex items-center gap-2 font-semibold">
-            <Square className="h-4 w-4 text-purple-600" />
+            <Square className="h-4 w-4" />
             <span>Lote</span>
           </div>
         ),
-        cell: ({ row }) => (
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-500">
-              <Square className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <div className="font-semibold text-gray-900 dark:text-gray-100">
-                {row.getValue('name')}
+        cell: ({ row }) => {
+          const lote = row.original;
+          return (
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
+                <Square className="h-5 w-5" />
               </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">Lote residencial</div>
+              <div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  Lote:&nbsp;
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
+                    {lote.name}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  m²:&nbsp;
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
+                    {lote.area}
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
-        ),
+          );
+        },
         enableHiding: false
       },
       {
-        accessorKey: 'area',
-        header: () => (
-          <div className="flex items-center gap-2 font-semibold">
-            <Ruler className="h-4 w-4 text-blue-600" />
-            <span>Área m²</span>
+        accessorKey: 'projectName',
+        header: () => <span>Proyecto</span>,
+        cell: ({ row }) => (
+          <div className="flex items-center gap-2">
+            <Square className="h-4 w-4" />
+            {row.getValue('projectName')}
           </div>
         ),
+        enableHiding: true
+      },
+      {
+        accessorKey: 'stageName',
+        header: () => <span>Etapa</span>,
         cell: ({ row }) => (
-          <div className="text-center">
-            <div className="text-sm font-bold text-blue-700 dark:text-blue-400">
-              {row.getValue('area')}
-            </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">metros cuadrados</div>
+          <div className="flex items-center gap-2">
+            <Square className="h-4 w-4" />
+            {row.getValue('stageName')}
+          </div>
+        ),
+        enableHiding: true
+      },
+      {
+        accessorKey: 'blockName',
+        header: () => <span>Manzana</span>,
+        cell: ({ row }) => (
+          <div className="flex items-center gap-2">
+            <Square className="h-4 w-4" />
+            {row.getValue('blockName')}
           </div>
         ),
         enableHiding: true
       },
       {
         accessorKey: 'lotPrice',
-        header: () => (
-          <div className="flex items-center justify-end gap-2 font-semibold">
-            <DollarSign className="h-4 w-4 text-green-600" />
-            <span>Precio Lote</span>
-          </div>
-        ),
+        header: () => <span>Precio Lote</span>,
         cell: ({ row }) => (
           <div className="text-right">
             <div className="text-sm font-bold text-green-600 dark:text-green-400">
@@ -115,12 +136,7 @@ const VentasTable = ({ data }: Props) => {
       },
       {
         accessorKey: 'urbanizationPrice',
-        header: () => (
-          <div className="flex items-center justify-end gap-2 font-semibold">
-            <MapPin className="h-4 w-4 text-orange-600" />
-            <span>Precio HU</span>
-          </div>
-        ),
+        header: () => <span>Precio HU</span>,
         cell: ({ row }) => (
           <div className="text-right">
             <div className="text-sm font-bold text-orange-600 dark:text-orange-400">
@@ -133,16 +149,11 @@ const VentasTable = ({ data }: Props) => {
       },
       {
         accessorKey: 'status',
-        header: () => (
-          <div className="flex items-center justify-center gap-2 font-semibold">
-            <Eye className="h-4 w-4 text-gray-600" />
-            <span>Estado</span>
-          </div>
-        ),
+        header: () => <span>Estado</span>,
         cell: ({ row }) => (
           <div className="flex justify-center">
-            <Badge variant="destructive" className="px-3 py-1 text-xs font-medium">
-              {row.getValue('status')}
+            <Badge variant="outline" className="px-3 py-1 text-xs font-medium text-green-500">
+              {row.getValue('status') == 'Activo' ? 'Libre' : 'Activo'}
             </Badge>
           </div>
         ),
@@ -152,7 +163,7 @@ const VentasTable = ({ data }: Props) => {
         accessorKey: 'createdAt',
         header: () => (
           <div className="flex items-center gap-2 font-semibold">
-            <Calendar className="h-4 w-4 text-gray-600" />
+            <Calendar className="h-4 w-4" />
             <span>Fecha de creación</span>
           </div>
         ),

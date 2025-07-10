@@ -107,11 +107,19 @@ export const getProyectLots = async (data: GetLotsDTO): Promise<ProjectLotsRespo
   }));
 };
 
-export const getLotsProject = async (id: string): Promise<LotProjectResponse> => {
+export const getLotsProject = async (
+  id: string,
+  params?: {
+    order?: string;
+    page?: number;
+    limit?: number;
+    status?: string;
+  }
+): Promise<LotProjectResponse> => {
   const repository = new HttpLotProjectRepository();
   const useCase = new GetLotsByProject(repository);
 
-  const lots = await useCase.execute(id);
+  const lots = await useCase.execute(id, params);
 
   return {
     items: lots.items,

@@ -49,7 +49,15 @@ export class GetLotsUseCase {
 export class GetLotsByProject {
   constructor(private readonly repository: LotsProjectRepository) {}
 
-  async execute(id: string): Promise<LotProjectResponse> {
-    return this.repository.findById(id);
+  async execute(
+    id: string,
+    params?: {
+      order?: string;
+      page?: number;
+      limit?: number;
+      status?: string;
+    }
+  ): Promise<LotProjectResponse> {
+    return this.repository.findById(id, params);
   }
 }

@@ -1,10 +1,11 @@
 'use client';
 
 import { Project } from '@domain/entities/lotes/project.entity';
-import { Calendar, MapPin, DollarSign, Building2 } from 'lucide-react';
+import { Calendar, MapPin, DollarSign, Building2, AlertCircle } from 'lucide-react';
 import * as React from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -15,12 +16,33 @@ interface Props {
 export default function ProjectContainer({ data }: Props) {
   const router = useRouter();
 
+  const handleProjectClick = (projectId: string) => {
+    try {
+      router.push(`/ventas/lotes/detalle/${projectId}`);
+    } catch (error) {
+      console.error('Error navigating to project:', error);
+    }
+  };
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Alert className="max-w-md">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            No se encontraron proyectos activos. Contacta al administrador si esto es inesperado.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-      {data.map((project, index) => (
+      {data.map((project) => (
         <Card
-          key={index}
-          onClick={() => router.push(`/ventas/lotes/detalle/${project.id}`)}
+          key={project.id}
+          onClick={() => handleProjectClick(project.id)}
           className="group relative cursor-pointer overflow-hidden border-0 bg-white py-0 shadow-lg transition-all duration-300 hover:shadow-2xl dark:bg-gray-900"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-[#025864]/5 via-transparent to-[#00CA7C]/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -106,7 +128,6 @@ export default function ProjectContainer({ data }: Props) {
             </div>
           </CardFooter>
 
-          {/* Borde animado en hover */}
           <div className="pointer-events-none absolute inset-0 rounded-lg border-2 border-transparent transition-colors duration-300 group-hover:border-[#00CA7C]/30" />
         </Card>
       ))}
