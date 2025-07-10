@@ -12,7 +12,9 @@ interface Props {
     order?: string;
     page?: string;
     limit?: string;
-    status?: 'Activo' | 'Vendido' | 'Inactivo';
+    stageId?: string;
+    blockId?: string;
+    term?: string;
   };
 }
 
@@ -20,18 +22,17 @@ export default async function LotData({ id, searchParams }: Props) {
   const order = (searchParams?.order === 'ASC' ? 'ASC' : 'DESC') as 'ASC' | 'DESC';
   const page = searchParams?.page ? parseInt(searchParams.page) : 1;
   const limit = searchParams?.limit ? parseInt(searchParams.limit) : 10;
-
-  const validStatuses = ['Activo', 'Vendido', 'Inactivo'];
-  const status =
-    searchParams?.status && validStatuses.includes(searchParams.status)
-      ? (searchParams.status as 'Activo' | 'Vendido' | 'Inactivo')
-      : 'Activo';
+  const stageId = searchParams?.stageId;
+  const blockId = searchParams?.blockId;
+  const term = searchParams?.term;
 
   const { items, meta } = await getLotsProject(id, {
     order,
     page,
     limit,
-    status
+    stageId,
+    blockId,
+    term
   });
 
   return (
@@ -40,7 +41,13 @@ export default async function LotData({ id, searchParams }: Props) {
         <CardContent className="p-6">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div className="flex-1">
-              <TableFilter order={order} status={status} />
+              <TableFilter
+                projectId={id}
+                order={order}
+                initialStageId={stageId}
+                initialBlockId={blockId}
+                term={term}
+              />
             </div>
           </div>
         </CardContent>

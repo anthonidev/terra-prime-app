@@ -27,7 +27,9 @@ export interface LotsProjectRepository {
       order?: string;
       page?: number;
       limit?: number;
-      status?: string;
+      stageId?: string;
+      blockId?: string;
+      term?: string;
     }
   ): Promise<LotProjectResponse>;
 }

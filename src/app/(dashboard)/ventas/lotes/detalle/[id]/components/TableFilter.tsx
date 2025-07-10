@@ -9,30 +9,88 @@ import {
   SelectValue
 } from '@components/ui/select';
 import { Badge } from '@components/ui/badge';
-import { SortAsc, SortDesc, X, Square } from 'lucide-react';
+import { SortAsc, SortDesc, X, Building2, Layers, Search } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
+import {
+  ProjectBlocksResponse,
+  ProjectStagesResponse
+} from '@infrastructure/types/lotes/api-response.types';
+import { getProyectBlocks, getProyectStages } from '@infrastructure/server-actions/lotes.actions';
+import { Input } from '@/components/ui/input';
 
 interface TableFiltersProps {
+  projectId: string;
   order: 'ASC' | 'DESC';
-  status: 'Activo' | 'Vendido' | 'Inactivo';
+  initialStageId?: string;
+  initialBlockId?: string;
+  term?: string;
 }
 
 export default function TableFilter({
+  projectId,
   order: initialOrder,
-  status: initialStatus
+  initialStageId,
+  initialBlockId,
+  term
 }: TableFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const [orderValue, setOrderValue] = useState<'ASC' | 'DESC'>(initialOrder);
-  const [statusFilter, setStatusFilter] = useState<'Activo' | 'Vendido' | 'Inactivo' | 'all'>(
-    initialStatus === 'Activo' || initialStatus === 'Vendido' || initialStatus === 'Inactivo'
-      ? initialStatus
-      : 'all'
+  const [stageFilter, setStageFilter] = useState<string>(
+    initialStageId || searchParams.get('stageId') || 'all'
   );
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [blockFilter, setBlockFilter] = useState<string>(
+    initialBlockId || searchParams.get('blockId') || 'all'
+  );
+  const [search, setSearch] = useState<string>(term || searchParams.get('term') || '');
+
+  const [stages, setStages] = useState<ProjectStagesResponse[]>([]);
+  const [blocks, setBlocks] = useState<ProjectBlocksResponse[]>([]);
+  const [loadingStages, setLoadingStages] = useState(false);
+  const [loadingBlocks, setLoadingBlocks] = useState(false);
+
+  useEffect(() => {
+    const loadStages = async () => {
+      if (projectId) {
+        setLoadingStages(true);
+        try {
+          const stagesData = await getProyectStages({ id: projectId });
+          setStages(stagesData);
+        } catch (error) {
+          console.error('Error loading stages:', error);
+          setStages([]);
+        } finally {
+          setLoadingStages(false);
+        }
+      } else {
+        setStages([]);
+      }
+    };
+    loadStages();
+  }, [projectId]);
+
+  useEffect(() => {
+    const loadBlocks = async () => {
+      if (stageFilter && stageFilter !== 'all') {
+        setLoadingBlocks(true);
+        try {
+          const blocksData = await getProyectBlocks({ id: stageFilter });
+          setBlocks(blocksData);
+        } catch (error) {
+          console.error('Error loading blocks:', error);
+          setBlocks([]);
+        } finally {
+          setLoadingBlocks(false);
+        }
+      } else {
+        setBlocks([]);
+      }
+    };
+    loadBlocks();
+  }, [stageFilter]);
 
   const createQueryString = useCallback(
     (updates: { [key: string]: string }) => {
@@ -57,38 +115,40 @@ export default function TableFilter({
     router.push(`${pathname}?${createQueryString({ order: value })}`);
   };
 
-  const handleStatusChange = (value: string) => {
-    const newStatus = value as 'Activo' | 'Vendido' | 'Inactivo' | 'all';
-    setStatusFilter(newStatus);
-    router.push(`${pathname}?${createQueryString({ status: value })}`);
+  const handleStageChange = (value: string) => {
+    setStageFilter(value);
+    if (value === 'all') {
+      setBlockFilter('all');
+      router.push(`${pathname}?${createQueryString({ stageId: value, blockId: 'all' })}`);
+    } else {
+      router.push(`${pathname}?${createQueryString({ stageId: value })}`);
+    }
+  };
+
+  const handleBlockChange = (value: string) => {
+    setBlockFilter(value);
+    router.push(`${pathname}?${createQueryString({ blockId: value })}`);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    router.push(`${pathname}?${createQueryString({ term: value })}`);
   };
 
   const clearAllFilters = () => {
     setOrderValue('DESC');
-    setStatusFilter('all');
-    setShowAdvancedFilters(false);
+    setStageFilter('all');
+    setBlockFilter('all');
+    setSearch('');
     router.push(pathname);
   };
 
-  const hasActiveFilters = orderValue !== 'DESC' || statusFilter !== 'all';
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'Activo':
-        return 'Activo';
-      case 'Inactivo':
-        return 'Inactivo';
-      case 'Vendido':
-        return 'Vendido';
-      default:
-        return 'Todos los estados';
-    }
-  };
-
+  const hasActiveFilters =
+    orderValue !== 'DESC' || stageFilter !== 'all' || blockFilter !== 'all' || search !== '';
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Select
             value={orderValue}
             onValueChange={(value: 'ASC' | 'DESC') => handleOrderChange(value)}
@@ -109,34 +169,49 @@ export default function TableFilter({
             </SelectContent>
           </Select>
 
-          <Select value={statusFilter} onValueChange={handleStatusChange}>
+          <Select value={stageFilter} onValueChange={handleStageChange} disabled={loadingStages}>
             <SelectTrigger className="w-auto min-w-[140px] gap-2 bg-white dark:bg-gray-900">
-              <Square className="h-4 w-4 text-gray-400" />
-              <SelectValue placeholder="Estado" />
+              <Building2 className="h-4 w-4 text-gray-400" />
+              <SelectValue placeholder="Etapa" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos los estados</SelectItem>
-              <SelectItem value="Activo">
-                <div className="flex items-center gap-2">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  Activo
-                </div>
-              </SelectItem>
-              <SelectItem value="Vendido">
-                <div className="flex items-center gap-2">
-                  <div className="h-2 w-2 rounded-full bg-purple-500"></div>
-                  Vendido
-                </div>
-              </SelectItem>
-              <SelectItem value="Inactivo">
-                <div className="flex items-center gap-2">
-                  <div className="h-2 w-2 rounded-full bg-gray-400"></div>
-                  Inactivo
-                </div>
-              </SelectItem>
+              <SelectItem value="all">Todas las etapas</SelectItem>
+              {stages.map((stage) => (
+                <SelectItem key={stage.id} value={stage.id}>
+                  {stage.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
+          <Select
+            value={blockFilter}
+            onValueChange={handleBlockChange}
+            disabled={loadingBlocks || stageFilter === 'all'}
+          >
+            <SelectTrigger className="w-auto min-w-[140px] gap-2 bg-white dark:bg-gray-900">
+              <Layers className="h-4 w-4 text-gray-400" />
+              <SelectValue placeholder="Manzana" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas las manzanas</SelectItem>
+              {blocks.map((block) => (
+                <SelectItem key={block.id} value={block.id}>
+                  {block.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <div className="relative">
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Input
+              placeholder="Buscar lotes..."
+              value={search}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="w-auto min-w-[200px] bg-white pl-10 dark:bg-gray-900"
+            />
+          </div>
           {hasActiveFilters && (
             <Button
               variant="ghost"
@@ -151,52 +226,38 @@ export default function TableFilter({
         </div>
       </div>
 
-      {showAdvancedFilters && (
-        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
-          <div className="flex flex-wrap gap-3">
-            <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Estado:
-              </label>
-              <Select value={statusFilter} onValueChange={handleStatusChange}>
-                <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder="Seleccionar estado" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos los estados</SelectItem>
-                  <SelectItem value="Activo">
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                      Activo
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="Vendido">
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-purple-500"></div>
-                      Vendido
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="Inactivo">
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-gray-400"></div>
-                      Inactivo
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      )}
-
       {hasActiveFilters && (
         <div className="flex flex-wrap gap-2">
-          {statusFilter !== 'all' && (
+          {search !== '' && (
             <Badge variant="secondary" className="gap-1">
-              <Square className="h-3 w-3" />
-              Estado: {getStatusLabel(statusFilter)}
+              <Search className="h-3 w-3" />
+              Búsqueda: {search}
               <button
-                onClick={() => handleStatusChange('all')}
+                onClick={() => handleSearchChange('')}
+                className="ml-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          )}
+          {stageFilter !== 'all' && (
+            <Badge variant="secondary" className="gap-1">
+              <Building2 className="h-3 w-3" />
+              Etapa: {stages.find((s) => s.id === stageFilter)?.name}
+              <button
+                onClick={() => handleStageChange('all')}
+                className="ml-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          )}
+          {blockFilter !== 'all' && (
+            <Badge variant="secondary" className="gap-1">
+              <Layers className="h-3 w-3" />
+              Manzana: {blocks.find((b) => b.id === blockFilter)?.name}
+              <button
+                onClick={() => handleBlockChange('all')}
                 className="ml-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600"
               >
                 <X className="h-3 w-3" />
