@@ -17,6 +17,7 @@ import {
   HttpRegenerateAcordPayment,
   HttpRegenerateRadicationPayment,
   HttpRejectPaymentRepository,
+  HttpReservationPeriod,
   HttpSaleDetailRepository,
   HttpSaleListRepository,
   HttpSaleVendorRepository,
@@ -33,6 +34,7 @@ import {
   PaymentCompletedResponse,
   PaymentListResponse,
   PaymentResponse,
+  ReservationResponse,
   SaleReportResponse,
   SalesListResponse,
   SalesListVendorResponse,
@@ -69,6 +71,7 @@ import {
 import {
   SaleDetailUseCase,
   SaleListUseCase,
+  SaleReservationPeriodUseCase,
   SaleVendorUseCase
 } from '@application/use-cases/list-salevendor.usecase';
 import { PaymentDetailItem } from '@domain/entities/sales/payment.entity';
@@ -483,4 +486,18 @@ export async function completePaymentDetail(
     status: response.status,
     createdAt: response.createdAt
   };
+}
+
+export async function extendReservationPeriod(
+  id: string,
+  days: number
+): Promise<ReservationResponse> {
+  const repository = new HttpReservationPeriod();
+  const useCase = new SaleReservationPeriodUseCase(repository);
+
+  const response = await useCase.execute(id, days);
+
+  revalidateTag('sales_vendor');
+
+  return response;
 }

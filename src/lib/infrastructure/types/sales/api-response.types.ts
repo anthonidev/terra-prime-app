@@ -116,3 +116,11 @@ export interface SaleReportResponse {
     isNewDocument: boolean;
   };
 }
+
+export interface ReservationResponse {
+  saleId: string;
+  previousPeriod: number;
+  newPeriod: number;
+  newExpirationDate: string;
+  message: string;
+}

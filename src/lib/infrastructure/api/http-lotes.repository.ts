@@ -105,12 +105,19 @@ export class HttpLotProjectRepository implements LotsProjectRepository {
       order?: string;
       page?: number;
       limit?: number;
-      status?: string;
+      stageId?: string;
+      blockId?: string;
+      term?: string;
     }
   ): Promise<LotProjectResponse> {
     try {
+      console.log(params);
       const response = await httpClient<LotProjectResponse>(`/api/sales/projects/lots/${id}`, {
-        params
+        params,
+        next: {
+          tags: ['lots-project', `lots-project-${id}`],
+          revalidate: 300
+        }
       });
 
       return {

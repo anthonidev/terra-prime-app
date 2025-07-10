@@ -29,7 +29,8 @@ import {
   PaymentApproveRejectResponse,
   PaymentCompletedResponse,
   SalesListResponse,
-  SaleReportResponse
+  SaleReportResponse,
+  ReservationResponse
 } from '@infrastructure/types/sales/api-response.types';
 
 import {
@@ -54,6 +55,7 @@ import { ProcessPaymentDto } from '@application/dtos/create-payment.dto';
 import {
   SaleDetailRepository,
   SaleListRepository,
+  SaleReservationPeriodRepository,
   SaleVendorRepository
 } from '@domain/repositories/salevendor.repository';
 import { SaleList } from '@domain/entities/sales/salevendor.entity';
@@ -619,6 +621,25 @@ export class HttpRegenerateRadicationPayment implements RegenerateRadicationPaym
         `/api/radication/regenerate/${saleId}`,
         {
           method: 'POST'
+        }
+      );
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error) throw new Error(error.message);
+      throw error;
+    }
+  }
+}
+
+export class HttpReservationPeriod implements SaleReservationPeriodRepository {
+  async additionalDays(id: string, days: number): Promise<ReservationResponse> {
+    try {
+      const response = await httpClient<ReservationResponse>(
+        `/api/sales/${id}/reservation-period`,
+        {
+          body: { additionalDays: days },
+          method: 'PATCH'
         }
       );
 

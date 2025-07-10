@@ -18,6 +18,7 @@ import { SaleList } from '@domain/entities/sales/salevendor.entity';
 import { useExtendSeparation } from '../hooks/useExtendSeparation';
 import { useState } from 'react';
 import ValidatePinModal from '../crear-venta/components/modals/ValidatePinModal';
+import { toast } from 'sonner';
 
 interface Props {
   sale: SaleList;
@@ -40,10 +41,11 @@ export function ExtendSeparation({ sale, isOpen, onClose }: Props) {
   };
 
   const handleExtendSeparation = async () => {
-    const success = await handleAction(Number(extensionDays));
-    if (success) {
+    const response = await handleAction(Number(extensionDays));
+    if (response?.saleId) {
       onClose();
       setIsPinValid(false);
+      toast.success(response.message);
     }
   };
 

@@ -1,10 +1,12 @@
 import {
   SaleDetailRepository,
   SaleListRepository,
+  SaleReservationPeriodRepository,
   SaleVendorRepository
 } from '@domain/repositories/salevendor.repository';
 import { SaleList } from '@domain/entities/sales/salevendor.entity';
 import { Meta } from '@infrastructure/types/pagination.types';
+import { ReservationResponse } from '@infrastructure/types/sales/api-response.types';
 
 export class SaleVendorUseCase {
   constructor(private readonly repository: SaleVendorRepository) {}
@@ -43,5 +45,13 @@ export class SaleDetailUseCase {
 
   async execute(id: string): Promise<SaleList> {
     return this.repository.getData(id);
+  }
+}
+
+export class SaleReservationPeriodUseCase {
+  constructor(private readonly repository: SaleReservationPeriodRepository) {}
+
+  async execute(id: string, days: number): Promise<ReservationResponse> {
+    return this.repository.additionalDays(id, days);
   }
 }
