@@ -1,10 +1,9 @@
 import { PageHeader } from '@/components/common/PageHeader';
-import { FileText } from 'lucide-react';
-import { notFound } from 'next/navigation';
 import { getPaymentByCollector } from '@infrastructure/server-actions/cobranza.actions';
-import PaymentInfoSection from './components/PaymentInfoSection';
+import { notFound } from 'next/navigation';
 import PaymentDetailSection from './components/PaymentDetailSection';
 import PaymentImagesSection from './components/PaymentImagesSection';
+import PaymentInfoSection from './components/PaymentInfoSection';
 
 interface PaymentDetailPageProps {
   params: Promise<{ id: string }>;
@@ -26,7 +25,7 @@ export default async function PaymentDetailPage({ params }: PaymentDetailPagePro
         title={`Detalle de Pago #${payment.id}`}
         subtitle="Información detallada del pago administrativo"
         variant="gradient"
-        icon={FileText}
+        // icon={FileText}
         backUrl="/cobranza/pagos"
       />
 
