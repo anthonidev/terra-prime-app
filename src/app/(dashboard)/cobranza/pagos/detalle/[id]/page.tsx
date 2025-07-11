@@ -25,7 +25,6 @@ export default async function PaymentDetailPage({ params }: PaymentDetailPagePro
         title={`Detalle de Pago #${payment.id}`}
         subtitle="Información detallada del pago administrativo"
         variant="gradient"
-        // icon={FileText}
         backUrl="/cobranza/pagos"
       />
 

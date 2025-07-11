@@ -19,29 +19,11 @@ export function usePaidCollection(
     setPayments([]);
   }, []);
 
-  const requiredAmount = isUrban
-    ? Number(urbanFinancing?.financing.initialAmount) || 0
-    : Number(sale.financing.initialAmount) || 0;
-
   const totalPaid = payments.reduce((sum, payment) => sum + payment.amount, 0);
-  const remainingAmount = Math.max(0, requiredAmount - totalPaid);
-  const isAmountReached = totalPaid >= requiredAmount;
-  const isPaymentComplete = payments.length > 0 && totalPaid <= requiredAmount;
+  const isPaymentComplete = payments.length > 0;
 
   const addPayment = useCallback(
     (payment: Omit<PaymentImageModalType, 'fileIndex'>) => {
-      const newTotal = totalPaid + payment.amount;
-
-      if (newTotal > requiredAmount) {
-        toast.warning(
-          `El monto ingresado excede el límite. Máximo permitido: ${new Intl.NumberFormat('es-PE', {
-            style: 'currency',
-            currency: sale.currency
-          }).format(remainingAmount)}`
-        );
-        return false;
-      }
-
       const updatedPayments: PaymentImageModalType[] = [
         ...payments,
         {
@@ -53,7 +35,7 @@ export function usePaidCollection(
       setPayments(updatedPayments);
       return true;
     },
-    [payments, requiredAmount, totalPaid, remainingAmount, sale.currency]
+    [payments]
   );
 
   const deletePayment = useCallback(
@@ -71,23 +53,6 @@ export function usePaidCollection(
 
   const editPayment = useCallback(
     (index: number, updatedPayment: Omit<PaymentImageModalType, 'fileIndex'>) => {
-      const totalWithoutEditedPayment = payments
-        .filter((_, i) => i !== index)
-        .reduce((sum, payment) => sum + payment.amount, 0);
-
-      const newTotal = totalWithoutEditedPayment + updatedPayment.amount;
-
-      if (newTotal > requiredAmount) {
-        const maxAllowed = requiredAmount - totalWithoutEditedPayment;
-        toast.warning(
-          `El monto ingresado excede el límite. Máximo permitido: ${new Intl.NumberFormat('es-PE', {
-            style: 'currency',
-            currency: sale.currency
-          }).format(maxAllowed)}`
-        );
-        return false;
-      }
-
       const updatedPayments: PaymentImageModalType[] = [...payments];
       updatedPayments[index] = {
         ...updatedPayment,
@@ -97,7 +62,7 @@ export function usePaidCollection(
       setPayments(updatedPayments);
       return true;
     },
-    [payments, requiredAmount, sale.currency]
+    [payments]
   );
 
   const handleAction = useCallback(async () => {
@@ -137,15 +102,7 @@ export function usePaidCollection(
 
       await paidInstallments(paymentId, dto);
 
-      const isFullPayment = totalPaid === requiredAmount;
-      toast.success(
-        isFullPayment
-          ? 'Pago completo registrado correctamente'
-          : `Pago parcial registrado correctamente. Restante: ${new Intl.NumberFormat('es-PE', {
-              style: 'currency',
-              currency: sale.currency
-            }).format(remainingAmount)}`
-      );
+      toast.success('Pago registrado correctamente');
       return true;
     } catch (error) {
       if (error instanceof Error) toast.error(error.message);
@@ -153,15 +110,11 @@ export function usePaidCollection(
     } finally {
       setIsSubmitting(false);
     }
-  }, [payments, sale, urbanFinancing, requiredAmount, totalPaid, isUrban, remainingAmount]);
+  }, [payments, sale, urbanFinancing, totalPaid, isUrban]);
 
   return {
-    requiredAmount,
-    totalPaid,
-    isAmountReached,
     isSubmitting,
     payments,
-    remainingAmount,
     isPaymentComplete,
     resetPayments,
     addPayment,
