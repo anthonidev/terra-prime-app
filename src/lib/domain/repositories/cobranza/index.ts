@@ -8,6 +8,7 @@ import {
 import { ClientByUser, CollectionsClient, ListByClient } from '@domain/entities/cobranza';
 import { AssignClientsCollectorDTO, PaidInstallmentsDTO } from '@application/dtos/cobranza';
 import { PaymentDetailItem } from '@domain/entities/sales/payment.entity';
+import { PaymentWithCollectorResponse } from '@infrastructure/types/sales/api-response.types';
 
 export interface CollectorsListRepository {
   getData(params?: {
@@ -55,4 +56,15 @@ export interface PaymentsByCollectorRepository {
 
 export interface PaymentByCollectorRepository {
   getData(id: number): Promise<PaymentDetailItem>;
+}
+
+export interface PaymentsWithSupervisorRepository {
+  getData(params?: {
+    order?: string;
+    page?: number;
+    limit?: number;
+    startDate?: string;
+    endDate?: string;
+    collectorId?: string;
+  }): Promise<PaymentWithCollectorResponse>;
 }

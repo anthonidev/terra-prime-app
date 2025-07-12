@@ -7,6 +7,7 @@ import {
   PaidInstallmentsRepository,
   PaymentByCollectorRepository,
   PaymentsByCollectorRepository,
+  PaymentsWithSupervisorRepository,
   SaleCollectorRepository
 } from '@domain/repositories/cobranza';
 import {
@@ -20,6 +21,7 @@ import { httpClient } from '@/lib/api/http-client';
 import { AssignClientsCollectorDTO, PaidInstallmentsDTO } from '@/lib/application/dtos/cobranza';
 import { ClientByUser, CollectionsClient, ListByClient } from '@domain/entities/cobranza';
 import { PaymentDetailItem } from '@/lib/domain/entities/sales/payment.entity';
+import { PaymentWithCollectorResponse } from '../types/sales/api-response.types';
 
 export class HttpCollectorsListRepository implements CollectorsListRepository {
   async getData(params?: { page?: number; limit?: number }): Promise<CollectorsListResponse> {
@@ -229,6 +231,34 @@ export class HttpPaymentByCollectorRepository implements PaymentByCollectorRepos
       );
 
       return response;
+    } catch (error) {
+      if (error instanceof Error) throw new Error(error.message);
+      throw error;
+    }
+  }
+}
+
+export class HttpPaymentsWithSupervisorRepository implements PaymentsWithSupervisorRepository {
+  async getData(params?: {
+    order?: string;
+    page?: number;
+    limit?: number;
+    startDate?: string;
+    endDate?: string;
+    collectorId?: string;
+  }): Promise<PaymentWithCollectorResponse> {
+    try {
+      const response = await httpClient<PaymentWithCollectorResponse>(
+        '/api/collections/list/all/payments',
+        {
+          params
+        }
+      );
+
+      return {
+        items: response.items,
+        meta: response.meta
+      };
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
       throw error;

@@ -5,8 +5,10 @@ import {
   Guarantor,
   SecondaryClient,
   Vendor,
-  CurrencyType
+  CurrencyType,
+  PaymentSummary
 } from '@domain/entities/sales/salevendor.entity';
+import { PaymentUser, ReviewByBasic, StatusPayment } from '../sales/payment.entity';
 
 class Lead {
   constructor(
@@ -80,6 +82,8 @@ export class FinancingInstallmentCollector {
     public readonly coutePending: string,
     public readonly coutePaid: string,
     public readonly expectedPaymentDate: string,
+    public readonly lateFeeAmountPending: string,
+    public readonly lateFeeAmountPaid: string,
     public readonly status: StatusFinancingInstallments
   ) {}
 }
@@ -128,4 +132,38 @@ export class SalesCollector {
 
 export class UrbanFinancing {
   constructor(public readonly financing: FinancingCollector) {}
+}
+
+export class PaymentWithCollector implements PaymentSummary {
+  constructor(
+    public readonly id: number,
+    public readonly amount: number,
+    public readonly status: StatusPayment,
+    public readonly createdAt: string,
+    public readonly reviewedAt: string,
+    public readonly reviewBy: ReviewByBasic,
+    public readonly codeOperation: string,
+    public readonly banckName: string,
+    public readonly dateOperation: string,
+    public readonly numberTicket: string,
+    public readonly paymentConfig: string,
+    public readonly reason: string,
+    public readonly user: PaymentUser,
+    public readonly currency: CurrencyType,
+    public readonly client: {
+      address: string;
+      lead: {
+        firstName: string;
+        lastName: string;
+        document: string;
+      };
+    },
+    public readonly lot: {
+      name: number;
+      lotPrice: string;
+      block: string;
+      stage: string;
+      project: string;
+    }
+  ) {}
 }

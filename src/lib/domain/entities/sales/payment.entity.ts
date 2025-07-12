@@ -71,7 +71,7 @@ export class Payment {
   ) {}
 }
 
-class PaymentUser {
+export class PaymentUser {
   constructor(
     public readonly id: string,
     public readonly email: string,
