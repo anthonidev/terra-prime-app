@@ -91,6 +91,48 @@ export default function HuTable({ currency, data }: Props) {
         }
       },
       {
+        id: 'lateFeeAmountPending',
+        header: 'Mora Pendiente',
+        cell: ({ row }) => {
+          return (
+            <div className="flex items-center gap-2">
+              <Wallet className="h-4 w-4 text-gray-400" />
+              <div className="flex flex-col">
+                <span
+                  className={cn(
+                    'text-sm font-medium',
+                    Number(row.original.lateFeeAmountPending) > 0 ? 'text-red-500' : ''
+                  )}
+                >
+                  {formatCurrency(Number(row.original.lateFeeAmountPending), currency)}
+                </span>
+              </div>
+            </div>
+          );
+        }
+      },
+      {
+        id: 'lateFeeAmountPaid',
+        header: 'Mora pagada',
+        cell: ({ row }) => {
+          return (
+            <div className="flex items-center gap-2">
+              <Wallet className="h-4 w-4 text-gray-400" />
+              <div className="flex flex-col">
+                <span
+                  className={cn(
+                    'text-sm font-medium',
+                    Number(row.original.lateFeeAmountPending) > 0 ? 'text-green-500' : ''
+                  )}
+                >
+                  {formatCurrency(Number(row.original.lateFeeAmountPaid), currency)}
+                </span>
+              </div>
+            </div>
+          );
+        }
+      },
+      {
         accessorKey: 'status',
         header: 'Estado',
         cell: ({ row }) => <StatusBadge status={row.getValue('status')} />

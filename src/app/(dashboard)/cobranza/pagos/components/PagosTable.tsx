@@ -1,7 +1,7 @@
 'use client';
 
-import TableTemplate from '@/components/common/table/TableTemplate';
-import { Button } from '@/components/ui/button';
+import TableTemplate from '@components/common/table/TableTemplate';
+import { Button } from '@components/ui/button';
 import {
   ColumnDef,
   getCoreRowModel,
@@ -15,7 +15,7 @@ import { Calendar, Eye, SquareActivity, User } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CurrencyType, PaymentListItem } from '@domain/entities/sales/payment.entity';
-import { StatusBadge } from '@/components/common/table/StatusBadge';
+import { StatusBadge } from '@components/common/table/StatusBadge';
 
 export default function PagosTable({ data }: { data: PaymentListItem[] }) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -63,24 +63,6 @@ export default function PagosTable({ data }: { data: PaymentListItem[] }) {
         accessorKey: 'status',
         header: 'Estado',
         cell: ({ row }) => <StatusBadge status={row.getValue('status')} />
-      },
-      {
-        accessorKey: 'user',
-        header: 'Vendedor',
-        cell: ({ row }) => {
-          const user = row.original.user;
-          return (
-            <div className="flex items-center gap-2">
-              <User className="h-4 w-4 text-gray-400" />
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">{user.firstName + '' + user.lastName}</span>
-                <span className="text-muted-foreground max-w-32 truncate text-xs">
-                  {user.email}
-                </span>
-              </div>
-            </div>
-          );
-        }
       },
       {
         id: 'client',

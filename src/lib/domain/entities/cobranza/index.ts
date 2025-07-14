@@ -5,8 +5,20 @@ import {
   Guarantor,
   SecondaryClient,
   Vendor,
-  CurrencyType
+  CurrencyType,
+  PaymentSummary,
+  StatusSale
 } from '@domain/entities/sales/salevendor.entity';
+import { PaymentUser, ReviewByBasic, StatusPayment } from '../sales/payment.entity';
+import {
+  FieldManager,
+  FieldSeller,
+  FieldSupervisor,
+  Liner,
+  Telemarketer,
+  TelemarketingConfirmer,
+  TelemarketingSupervisor
+} from '../sales/participant.entity';
 
 class Lead {
   constructor(
@@ -80,7 +92,21 @@ export class FinancingInstallmentCollector {
     public readonly coutePending: string,
     public readonly coutePaid: string,
     public readonly expectedPaymentDate: string,
-    public readonly status: StatusFinancingInstallments
+    public readonly lateFeeAmountPending: string,
+    public readonly lateFeeAmountPaid: string,
+    public readonly status: StatusFinancingInstallments,
+    public readonly payments?: {
+      paymentId: number;
+      amountApplied: number;
+      amountAppliedToLateFee: number;
+      amountAppliedToPrincipal: number;
+      paymentDate: string;
+      paymentStatus: StatusPayment;
+      codeOperation: string;
+      banckName: string;
+      dateOperation: string;
+      numberTicket: string;
+    }
   ) {}
 }
 
@@ -115,12 +141,25 @@ export class SalesCollector {
     public readonly id: string,
     public readonly type: string,
     public readonly totalAmount: string,
-    public readonly status: string,
+    public readonly status: StatusSale,
+    public readonly createdAt: string,
+    public readonly reservationAmount: number,
+    public readonly maximumHoldPeriod: number,
+    public readonly fromReservation: boolean,
     public readonly currency: CurrencyType,
     public readonly client: Client,
     public readonly secondaryClients: SecondaryClient[],
     public readonly lot: LotProyect,
+    public readonly radicationPdfUrl: string,
+    public readonly paymentAcordPdfUrl: string,
     public readonly financing: FinancingCollector,
+    public readonly liner: Liner,
+    public readonly telemarketingSupervisor: TelemarketingSupervisor,
+    public readonly telemarketingConfirmer: TelemarketingConfirmer,
+    public readonly telemarketer: Telemarketer,
+    public readonly fieldManager: FieldManager,
+    public readonly fieldSupervisor: FieldSupervisor,
+    public readonly fieldSeller: FieldSeller,
     public readonly guarantor: Guarantor,
     public readonly vendor: Vendor
   ) {}
@@ -128,4 +167,38 @@ export class SalesCollector {
 
 export class UrbanFinancing {
   constructor(public readonly financing: FinancingCollector) {}
+}
+
+export class PaymentWithCollector implements PaymentSummary {
+  constructor(
+    public readonly id: number,
+    public readonly amount: number,
+    public readonly status: StatusPayment,
+    public readonly createdAt: string,
+    public readonly reviewedAt: string,
+    public readonly reviewBy: ReviewByBasic,
+    public readonly codeOperation: string,
+    public readonly banckName: string,
+    public readonly dateOperation: string,
+    public readonly numberTicket: string,
+    public readonly paymentConfig: string,
+    public readonly reason: string,
+    public readonly user: PaymentUser,
+    public readonly currency: CurrencyType,
+    public readonly client: {
+      address: string;
+      lead: {
+        firstName: string;
+        lastName: string;
+        document: string;
+      };
+    },
+    public readonly lot: {
+      name: number;
+      lotPrice: string;
+      block: string;
+      stage: string;
+      project: string;
+    }
+  ) {}
 }

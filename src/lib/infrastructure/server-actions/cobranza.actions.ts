@@ -9,6 +9,7 @@ import {
   PaidInstallmentsUseCase,
   PaymentByCollectorUseCase,
   PaymentsByCollectorUseCase,
+  PaymentWithSupervisorUseCase,
   SaleCollectorUseCase
 } from '@application/use-cases/cobranza';
 import {
@@ -20,6 +21,7 @@ import {
   HttpPaidInstallmentsRepository,
   HttpPaymentByCollectorRepository,
   HttpPaymentsByColletorRepository,
+  HttpPaymentsWithSupervisorRepository,
   HttpSaleCollectorRepository
 } from '@infrastructure/api/http-cobranza.repository';
 
@@ -33,6 +35,7 @@ import {
 import { AssignClientsCollectorDTO, PaidInstallmentsDTO } from '@application/dtos/cobranza';
 import { ClientByUser, CollectionsClient, ListByClient } from '@domain/entities/cobranza';
 import { PaymentDetailItem } from '@/lib/domain/entities/sales/payment.entity';
+import { PaymentWithCollectorResponse } from '../types/sales/api-response.types';
 
 export async function getCollectors(params?: {
   order?: string;
@@ -172,30 +175,34 @@ export async function getPaymentsByCollector(params?: {
   limit?: number;
   search?: string;
 }): Promise<PaymentsByCollectorResponse> {
-  try {
-    const repository = new HttpPaymentsByColletorRepository();
-    const useCase = new PaymentsByCollectorUseCase(repository);
+  const repository = new HttpPaymentsByColletorRepository();
+  const useCase = new PaymentsByCollectorUseCase(repository);
 
-    const response = await useCase.execute(params);
+  const response = await useCase.execute(params);
 
-    return {
-      items: response.items,
-      meta: response.meta
-    };
-  } catch (error) {
-    console.error('Error fetching payments by collector:', error);
-    throw new Error('Failed to fetch payments');
-  }
+  return {
+    items: response.items,
+    meta: response.meta
+  };
 }
 
 export async function getPaymentByCollector(id: number): Promise<PaymentDetailItem> {
-  try {
-    const repository = new HttpPaymentByCollectorRepository();
-    const useCase = new PaymentByCollectorUseCase(repository);
+  const repository = new HttpPaymentByCollectorRepository();
+  const useCase = new PaymentByCollectorUseCase(repository);
 
-    return await useCase.execute(id);
-  } catch (error) {
-    console.error('Error fetching payment detail:', error);
-    throw new Error('Failed to fetch payment detail');
-  }
+  return await useCase.execute(id);
+}
+
+export async function getPaymentsWithSupervisor(params?: {
+  order?: string;
+  page?: number;
+  limit?: number;
+  startDate?: string;
+  endDate?: string;
+  collectorId?: string;
+}): Promise<PaymentWithCollectorResponse> {
+  const repository = new HttpPaymentsWithSupervisorRepository();
+  const useCase = new PaymentWithSupervisorUseCase(repository);
+
+  return await useCase.execute(params);
 }

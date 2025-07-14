@@ -188,14 +188,6 @@ export default function PaymentDetailSection({ payment }: { payment: PaymentDeta
           </Card>
         )}
       </div>
-
-      <div className="mt-6 rounded-lg bg-gray-50 p-4 dark:bg-gray-800/50">
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          💡 <strong>Nota:</strong> Toda la información mostrada corresponde a los datos registrados
-          al momento de procesar el pago. Los cambios posteriores en los perfiles no se reflejan
-          aquí.
-        </p>
-      </div>
     </div>
   );
 }

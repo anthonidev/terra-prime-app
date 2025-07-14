@@ -3,6 +3,7 @@ import { Amortization } from '@domain/entities/sales/amortization.entity';
 import { Meta } from '@infrastructure/types/pagination.types';
 import { PaymentListItem, Voucher, StatusPayment } from '@domain/entities/sales/payment.entity';
 import { SaleList, StatusSale } from '@domain/entities/sales/salevendor.entity';
+import { PaymentWithCollector } from '@domain/entities/cobranza';
 
 export interface AmortizationResponse {
   installments: Amortization[];
@@ -123,4 +124,9 @@ export interface ReservationResponse {
   newPeriod: number;
   newExpirationDate: string;
   message: string;
+}
+
+export interface PaymentWithCollectorResponse {
+  items: PaymentWithCollector[];
+  meta: Meta;
 }

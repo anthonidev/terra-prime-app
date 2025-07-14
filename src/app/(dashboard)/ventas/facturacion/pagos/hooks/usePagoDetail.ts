@@ -138,7 +138,7 @@ export function usePagoDetail(paymentId: number) {
   );
 
   const navigateToPaymentsList = useCallback(() => {
-    router.push('/ventas/pagos');
+    router.push('/ventas/facturacion/pagos');
   }, [router]);
 
   const closeResponseModal = useCallback(() => {

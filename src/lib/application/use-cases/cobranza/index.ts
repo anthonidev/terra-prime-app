@@ -7,6 +7,7 @@ import {
   PaidInstallmentsRepository,
   PaymentByCollectorRepository,
   PaymentsByCollectorRepository,
+  PaymentsWithSupervisorRepository,
   SaleCollectorRepository
 } from '@domain/repositories/cobranza';
 import {
@@ -19,6 +20,7 @@ import {
 import { AssignClientsCollectorDTO, PaidInstallmentsDTO } from '@application/dtos/cobranza';
 import { ClientByUser, CollectionsClient, ListByClient } from '@domain/entities/cobranza';
 import { PaymentDetailItem } from '@domain/entities/sales/payment.entity';
+import { PaymentWithCollectorResponse } from '@/lib/infrastructure/types/sales/api-response.types';
 
 export class CollectorsListUseCase {
   constructor(private readonly repository: CollectorsListRepository) {}
@@ -101,5 +103,20 @@ export class PaymentByCollectorUseCase {
 
   async execute(id: number): Promise<PaymentDetailItem> {
     return this.repository.getData(id);
+  }
+}
+
+export class PaymentWithSupervisorUseCase {
+  constructor(private readonly repository: PaymentsWithSupervisorRepository) {}
+
+  async execute(params?: {
+    order?: string;
+    page?: number;
+    limit?: number;
+    startDate?: string;
+    endDate?: string;
+    collectorId?: string;
+  }): Promise<PaymentWithCollectorResponse> {
+    return this.repository.getData(params);
   }
 }
