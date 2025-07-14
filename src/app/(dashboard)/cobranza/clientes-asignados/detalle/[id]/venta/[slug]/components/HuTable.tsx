@@ -15,6 +15,7 @@ import { Wallet } from 'lucide-react';
 import { FinancingInstallmentCollector } from '@/lib/domain/entities/cobranza';
 import { StatusBadge } from '@components/common/table/StatusBadge';
 import { cn } from '@/lib/utils';
+import PaymentsButton from './PaymentsButton';
 
 interface Props {
   currency: CurrencyType;
@@ -91,42 +92,32 @@ export default function HuTable({ currency, data }: Props) {
         }
       },
       {
-        id: 'lateFeeAmountPending',
-        header: 'Mora Pendiente',
+        id: 'mora',
+        header: 'Mora',
         cell: ({ row }) => {
+          const moraPaid = Number(row.original.lateFeeAmountPaid) || 0;
+          const moraPending = Number(row.original.lateFeeAmountPending) || 0;
           return (
             <div className="flex items-center gap-2">
               <Wallet className="h-4 w-4 text-gray-400" />
               <div className="flex flex-col">
-                <span
-                  className={cn(
-                    'text-sm font-medium',
-                    Number(row.original.lateFeeAmountPending) > 0 ? 'text-red-500' : ''
-                  )}
-                >
-                  {formatCurrency(Number(row.original.lateFeeAmountPending), currency)}
-                </span>
-              </div>
-            </div>
-          );
-        }
-      },
-      {
-        id: 'lateFeeAmountPaid',
-        header: 'Mora pagada',
-        cell: ({ row }) => {
-          return (
-            <div className="flex items-center gap-2">
-              <Wallet className="h-4 w-4 text-gray-400" />
-              <div className="flex flex-col">
-                <span
-                  className={cn(
-                    'text-sm font-medium',
-                    Number(row.original.lateFeeAmountPending) > 0 ? 'text-green-500' : ''
-                  )}
-                >
-                  {formatCurrency(Number(row.original.lateFeeAmountPaid), currency)}
-                </span>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs text-gray-500">Pagado:</span>
+                  <span className="text-sm font-medium text-green-600">
+                    {formatCurrency(moraPaid, currency)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs text-gray-500">Pendiente:</span>
+                  <span
+                    className={cn(
+                      'text-sm font-medium',
+                      moraPending > 0 ? 'text-red-500' : 'text-gray-400'
+                    )}
+                  >
+                    {formatCurrency(moraPending, currency)}
+                  </span>
+                </div>
               </div>
             </div>
           );
@@ -151,6 +142,13 @@ export default function HuTable({ currency, data }: Props) {
               </div>
             </div>
           );
+        }
+      },
+      {
+        id: 'actions',
+        header: 'Acciones',
+        cell: ({ row }) => {
+          return <PaymentsButton currency={currency} data={row.original} />;
         }
       }
     ],

@@ -85,6 +85,21 @@ export enum StatusFinancingInstallments {
   PAID = 'PAID'
 }
 
+export class FinancinPayments {
+  constructor(
+    public readonly paymentId: number,
+    public readonly amountApplied: number,
+    public readonly amountAppliedToLateFee: number,
+    public readonly amountAppliedToPrincipal: number,
+    public readonly paymentDate: string,
+    public readonly paymentStatus: StatusPayment,
+    public readonly codeOperation: string,
+    public readonly banckName: string,
+    public readonly dateOperation: string,
+    public readonly numberTicket: string
+  ) {}
+}
+
 export class FinancingInstallmentCollector {
   constructor(
     public readonly id: string,
@@ -95,18 +110,7 @@ export class FinancingInstallmentCollector {
     public readonly lateFeeAmountPending: string,
     public readonly lateFeeAmountPaid: string,
     public readonly status: StatusFinancingInstallments,
-    public readonly payments?: {
-      paymentId: number;
-      amountApplied: number;
-      amountAppliedToLateFee: number;
-      amountAppliedToPrincipal: number;
-      paymentDate: string;
-      paymentStatus: StatusPayment;
-      codeOperation: string;
-      banckName: string;
-      dateOperation: string;
-      numberTicket: string;
-    }
+    public readonly payments: FinancinPayments[]
   ) {}
 }
 
