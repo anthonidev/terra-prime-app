@@ -6,9 +6,19 @@ import {
   SecondaryClient,
   Vendor,
   CurrencyType,
-  PaymentSummary
+  PaymentSummary,
+  StatusSale
 } from '@domain/entities/sales/salevendor.entity';
 import { PaymentUser, ReviewByBasic, StatusPayment } from '../sales/payment.entity';
+import {
+  FieldManager,
+  FieldSeller,
+  FieldSupervisor,
+  Liner,
+  Telemarketer,
+  TelemarketingConfirmer,
+  TelemarketingSupervisor
+} from '../sales/participant.entity';
 
 class Lead {
   constructor(
@@ -84,7 +94,19 @@ export class FinancingInstallmentCollector {
     public readonly expectedPaymentDate: string,
     public readonly lateFeeAmountPending: string,
     public readonly lateFeeAmountPaid: string,
-    public readonly status: StatusFinancingInstallments
+    public readonly status: StatusFinancingInstallments,
+    public readonly payments?: {
+      paymentId: number;
+      amountApplied: number;
+      amountAppliedToLateFee: number;
+      amountAppliedToPrincipal: number;
+      paymentDate: string;
+      paymentStatus: StatusPayment;
+      codeOperation: string;
+      banckName: string;
+      dateOperation: string;
+      numberTicket: string;
+    }
   ) {}
 }
 
@@ -119,12 +141,25 @@ export class SalesCollector {
     public readonly id: string,
     public readonly type: string,
     public readonly totalAmount: string,
-    public readonly status: string,
+    public readonly status: StatusSale,
+    public readonly createdAt: string,
+    public readonly reservationAmount: number,
+    public readonly maximumHoldPeriod: number,
+    public readonly fromReservation: boolean,
     public readonly currency: CurrencyType,
     public readonly client: Client,
     public readonly secondaryClients: SecondaryClient[],
     public readonly lot: LotProyect,
+    public readonly radicationPdfUrl: string,
+    public readonly paymentAcordPdfUrl: string,
     public readonly financing: FinancingCollector,
+    public readonly liner: Liner,
+    public readonly telemarketingSupervisor: TelemarketingSupervisor,
+    public readonly telemarketingConfirmer: TelemarketingConfirmer,
+    public readonly telemarketer: Telemarketer,
+    public readonly fieldManager: FieldManager,
+    public readonly fieldSupervisor: FieldSupervisor,
+    public readonly fieldSeller: FieldSeller,
     public readonly guarantor: Guarantor,
     public readonly vendor: Vendor
   ) {}

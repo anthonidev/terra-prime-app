@@ -30,9 +30,8 @@ export default function VentaTable({ currency, data }: Props) {
     }).format(numericAmount);
   };
 
-  const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'dd/MM/yyyy', { locale: es });
-  };
+  const formatDate = (dateString: string) =>
+    format(new Date(dateString), 'dd/MM/yyyy', { locale: es });
 
   const columns = useMemo<ColumnDef<FinancingInstallmentCollector>[]>(
     () => [

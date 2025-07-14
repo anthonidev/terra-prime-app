@@ -8,11 +8,11 @@ import { useState } from 'react';
 import { UrbanFinancing, SalesCollector } from '@domain/entities/cobranza';
 import { CurrencyType } from '@domain/entities/sales/salevendor.entity';
 import VentaTable from './VentaTable';
-import { StatusBadge } from '@/components/common/table/StatusBadge';
+import { StatusBadge } from '@components/common/table/StatusBadge';
 import HuTable from './HuTable';
-import { Button } from '@/components/ui/button';
+import { Button } from '@components/ui/button';
 import { PaymentSummary } from './PaymentSummary';
-import { cn } from '@/lib/utils';
+import { cn } from '@lib/utils';
 import VentaCard from './VentaCard';
 import HuCard from './HuCard';
 
@@ -21,30 +21,12 @@ interface Props {
   urbanDevelopment: UrbanFinancing;
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.1
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-};
-
 export default function DataForm({ sale, urbanDevelopment }: Props) {
   const [isOpen, setOpen] = useState<boolean>(false);
   const [isUrban, setIsUrban] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>('venta');
 
-  const handleTabChange = (value: string) => {
-    setActiveTab(value);
-  };
+  const handleTabChange = (value: string) => setActiveTab(value);
 
   const formatCurrency = (amount: number, currency: CurrencyType = CurrencyType.PEN) => {
     return new Intl.NumberFormat('es-PE', {
@@ -64,9 +46,23 @@ export default function DataForm({ sale, urbanDevelopment }: Props) {
         className="space-y-8"
         initial="hidden"
         animate="visible"
-        variants={containerVariants}
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1,
+              delayChildren: 0.1
+            }
+          }
+        }}
       >
-        <motion.div variants={itemVariants}>
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0 }
+          }}
+        >
           <Card className="border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -108,7 +104,12 @@ export default function DataForm({ sale, urbanDevelopment }: Props) {
           </Card>
         </motion.div>
 
-        <motion.div variants={itemVariants}>
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0 }
+          }}
+        >
           <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
             <div className="flex items-center justify-center">
               <TabsList className="grid w-full max-w-md grid-cols-2 bg-gray-100 p-1 dark:bg-gray-800">
