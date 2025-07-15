@@ -16,7 +16,7 @@ export default async function LotPage({ params, searchParams }: Props) {
   return (
     <div className="container py-8">
       <PageHeader
-        title={`Lotes - ${slug}`}
+        title={`Lotes - ${slug.replace('%20', ' ')}`}
         subtitle="Lista de lotes asociados a un proyecto"
         className="mb-6"
         variant="gradient"
