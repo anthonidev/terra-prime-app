@@ -21,7 +21,7 @@ export const leadFormSchema = z.object({
     .min(1, 'El documento es requerido')
     .max(20, 'El documento no puede tener más de 20 caracteres'),
   documentType: z.nativeEnum(DocumentType, {
-    invalid_type_error: 'El tipo de documento es requerido'
+    required_error: 'El tipo de documento es requerido'
   }),
   email: z.string().email('El email debe tener un formato válido').optional().or(z.literal('')),
   phone: z
