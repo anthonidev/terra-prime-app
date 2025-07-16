@@ -43,7 +43,7 @@ const blockSchema = z.object({
     }),
   isActive: z.boolean().default(true),
   stageId: z.string({
-    invalid_type_error: 'Debe seleccionar una etapa'
+    required_error: 'Debe seleccionar una etapa'
   })
 });
 

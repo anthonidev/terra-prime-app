@@ -66,11 +66,11 @@ const lotSchema = z.object({
     .default(0),
   status: z
     .enum(['Activo', 'Inactivo', 'Vendido', 'Separado'], {
-      invalid_type_error: 'El estado debe ser válido'
+      required_error: 'El estado debe ser válido'
     })
     .default('Activo'),
   blockId: z.string({
-    invalid_type_error: 'Debe seleccionar una manzana'
+    required_error: 'Debe seleccionar una manzana'
   })
 });
 
