@@ -24,7 +24,7 @@ export const createUserSchema = z.object({
     .min(2, 'El apellido debe tener al menos 2 caracteres')
     .max(50, 'El apellido no puede tener más de 50 caracteres')
     .regex(/^[a-zA-ZÀ-ÿ\s]{2,}$/, 'El apellido solo debe contener letras y espacios'),
-  roleId: z.string({ required_error: 'El rol es requerido' }).transform((val) => Number(val)),
+  roleId: z.string({ invalid_type_error: 'El rol es requerido' }).transform((val) => Number(val)),
   isActive: z.string().default('true')
 });
 

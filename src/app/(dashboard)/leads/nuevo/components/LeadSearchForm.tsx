@@ -27,7 +27,7 @@ import { AlertCircle, CreditCard, FileText, Search } from 'lucide-react';
 
 const searchSchema = z.object({
   documentType: z.nativeEnum(DocumentType, {
-    required_error: 'El tipo de documento es requerido'
+    invalid_type_error: 'El tipo de documento es requerido'
   }),
   document: z
     .string()
