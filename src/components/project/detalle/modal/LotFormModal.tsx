@@ -43,12 +43,12 @@ import {
   Activity,
   SquareFunctionIcon
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@components/ui/badge';
 import {
   LotResponseDto,
   LotStatus,
   StageDetailDto
-} from '@/lib/infrastructure/types/projects/project.types';
+} from '@infrastructure/types/projects/project.types';
 
 const lotSchema = z.object({
   name: z
@@ -70,7 +70,7 @@ const lotSchema = z.object({
     })
     .default('Activo'),
   blockId: z.string({
-    required_error: 'Debe seleccionar una manzana'
+    invalid_type_error: 'Debe seleccionar una manzana'
   })
 });
 
