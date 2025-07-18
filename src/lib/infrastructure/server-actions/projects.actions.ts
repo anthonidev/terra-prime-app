@@ -1,4 +1,3 @@
-// src/lib/infrastructure/server-actions/projects.actions.ts
 'use server';
 
 import { Meta } from '@infrastructure/types/pagination.types';
