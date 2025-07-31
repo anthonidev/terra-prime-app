@@ -31,7 +31,7 @@ export class HttpParticipantRepository implements ParticipantRepository {
       }));
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
-      throw error;
+      throw new Error('No se pudieron cargar los participantes. Intente nuevamente.');
     }
   }
 
@@ -54,7 +54,7 @@ export class HttpParticipantRepository implements ParticipantRepository {
       };
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
-      throw error;
+      throw new Error('No se pudo cargar el participante. Verifique que existe.');
     }
   }
 
@@ -80,7 +80,7 @@ export class HttpParticipantRepository implements ParticipantRepository {
       };
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
-      throw error;
+      throw new Error('No se pudo crear el participante. Verifique los datos e intente nuevamente.');
     }
   }
 
@@ -106,7 +106,7 @@ export class HttpParticipantRepository implements ParticipantRepository {
       );
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
-      throw error;
+      throw new Error('No se pudo actualizar el participante. Intente nuevamente.');
     }
   }
 
@@ -117,7 +117,7 @@ export class HttpParticipantRepository implements ParticipantRepository {
       });
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
-      throw error;
+      throw new Error('No se pudo eliminar el participante. Intente nuevamente.');
     }
   }
 
@@ -143,7 +143,7 @@ export class HttpParticipantRepository implements ParticipantRepository {
       }));
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
-      throw error;
+      throw new Error('No se pudieron cargar los participantes activos.');
     }
   }
 
@@ -175,7 +175,7 @@ export class HttpParticipantRepository implements ParticipantRepository {
       };
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
-      throw error;
+      throw new Error('No se pudo asignar el participante a la venta.');
     }
   }
 }
