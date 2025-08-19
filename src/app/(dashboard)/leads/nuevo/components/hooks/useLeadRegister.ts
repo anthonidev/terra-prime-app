@@ -1,6 +1,7 @@
 import {
   CreateUpdateLeadDto,
   DocumentType,
+  EstadoCivil,
   FindLeadByDocumentDto,
   Lead,
   LeadSource,
@@ -10,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { leadFormSchema, LeadFormValues } from '../schema/leadform';
+import { getProjectActives } from '@infrastructure/server-actions/lotes.actions';
 
 interface Props {
   lead: Lead | null;
@@ -19,6 +21,16 @@ interface Props {
   getDistricts: (provinceId: number) => Ubigeo[];
   leadSources: LeadSource[];
   saveLead: (data: CreateUpdateLeadDto) => Promise<boolean>;
+}
+
+interface Project {
+  id: string;
+  name: string;
+  currency: string;
+  logo: string;
+  logoPublicId: string;
+  projectCode: string;
+  createdAt: string;
 }
 
 export function useLeadRegister({
@@ -33,6 +45,7 @@ export function useLeadRegister({
   const [departments, setDepartments] = useState<Ubigeo[]>([]);
   const [provinces, setProvinces] = useState<Ubigeo[]>([]);
   const [districts, setDistricts] = useState<Ubigeo[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
 
   const form = useForm<LeadFormValues>({
@@ -50,12 +63,35 @@ export function useLeadRegister({
       departmentId: lead?.departmentId ? String(lead.departmentId) : '',
       provinceId: lead?.provinceId ? String(lead.provinceId) : '',
       ubigeoId: lead?.ubigeo?.id ?? undefined,
-      observations: ''
+      observations: '',
+      // Nuevos campos
+      companionFullName: '',
+      companionDni: '',
+      companionRelationship: '',
+      interestProjects: [],
+      estadoCivil: undefined,
+      tieneTarjetasCredito: false,
+      cantidadTarjetasCredito: 0,
+      tieneTarjetasDebito: false,
+      cantidadTarjetasDebito: 0,
+      cantidadHijos: 0
     }
   });
 
   useEffect(() => {
     setDepartments(getDepartments());
+    
+    // Fetch active projects
+    const fetchProjects = async () => {
+      try {
+        const activeProjects = await getProjectActives();
+        setProjects(activeProjects);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
+    };
+    
+    fetchProjects();
   }, [getDepartments]);
 
   useEffect(() => {
@@ -75,7 +111,18 @@ export function useLeadRegister({
         departmentId: lead.departmentId ? String(lead.departmentId) : '',
         provinceId: lead.provinceId ? String(lead.provinceId) : '',
         ubigeoId: lead.ubigeo?.id ?? undefined,
-        observations: ''
+        observations: '',
+        // Nuevos campos - values por defecto for existing leads
+        companionFullName: '',
+        companionDni: '',
+        companionRelationship: '',
+        interestProjects: [],
+        estadoCivil: undefined,
+        tieneTarjetasCredito: false,
+        cantidadTarjetasCredito: 0,
+        tieneTarjetasDebito: false,
+        cantidadTarjetasDebito: 0,
+        cantidadHijos: 0
       };
 
       form.reset(formValues);
@@ -156,7 +203,21 @@ export function useLeadRegister({
           : data.ubigeoId
         : undefined,
       observations: data.observations || undefined,
-      isNewLead: !lead
+      isNewLead: !lead,
+      // Nuevos campos
+      interestProjects: data.interestProjects?.length ? data.interestProjects : undefined,
+      companionFullName: data.companionFullName || undefined,
+      companionDni: data.companionDni || undefined,
+      companionRelationship: data.companionRelationship || undefined,
+      // Metadata
+      metadata: data.estadoCivil ? {
+        estadoCivil: data.estadoCivil,
+        tieneTarjetasCredito: data.tieneTarjetasCredito || false,
+        cantidadTarjetasCredito: typeof data.cantidadTarjetasCredito === 'string' ? Number(data.cantidadTarjetasCredito) : data.cantidadTarjetasCredito || 0,
+        tieneTarjetasDebito: data.tieneTarjetasDebito || false,
+        cantidadTarjetasDebito: typeof data.cantidadTarjetasDebito === 'string' ? Number(data.cantidadTarjetasDebito) : data.cantidadTarjetasDebito || 0,
+        cantidadHijos: typeof data.cantidadHijos === 'string' ? Number(data.cantidadHijos) : data.cantidadHijos || 0
+      } : undefined
     };
 
     console.log('Transformed lead data for submission:', leadData);
@@ -188,6 +249,20 @@ export function useLeadRegister({
     value: String(dist.id),
     label: dist.name
   }));
+
+  const projectOptions = projects.map((project) => ({
+    value: project.name,
+    label: project.name
+  }));
+
+  const estadoCivilOptions = [
+    { value: EstadoCivil.Soltero, label: 'Soltero' },
+    { value: EstadoCivil.Casado, label: 'Casado' },
+    { value: EstadoCivil.Divorciado, label: 'Divorciado' },
+    { value: EstadoCivil.Conviviente, label: 'Conviviente' },
+    { value: EstadoCivil.Viudo, label: 'Viudo' }
+  ];
+
   return {
     form,
     handleSubmit,
@@ -197,6 +272,8 @@ export function useLeadRegister({
     provinceOptions,
     departmentId,
     provinceId,
-    districtOptions
+    districtOptions,
+    projectOptions,
+    estadoCivilOptions
   };
 }

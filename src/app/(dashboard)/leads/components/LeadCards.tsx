@@ -14,7 +14,6 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {
   Building2,
-  Calendar,
   Clock,
   CreditCard,
   Eye,
@@ -38,9 +37,9 @@ const LeadCards = ({ data }: Props) => {
   const router = useRouter();
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
 
-  const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'dd/MM/yyyy', { locale: es });
-  };
+  // const formatDate = (dateString: string) => {
+  //   return format(new Date(dateString), 'dd/MM/yyyy', { locale: es });
+  // };
 
   const formatTime = (dateString: string) => {
     return format(new Date(dateString), 'HH:mm', { locale: es });
@@ -215,10 +214,10 @@ const LeadCards = ({ data }: Props) => {
                   </div>
                 )}
 
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                {/* <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                   <Calendar className="h-3.5 w-3.5" />
                   <span>Registrado: {formatDate(lead.createdAt)}</span>
-                </div>
+                </div> */}
 
                 {lead.isInOffice && latestVisit && (
                   <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">

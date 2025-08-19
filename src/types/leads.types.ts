@@ -159,6 +159,24 @@ export interface FindLeadByDocumentDto {
   documentType: DocumentType;
   document: string;
 }
+
+export enum EstadoCivil {
+  Soltero = "Soltero",
+  Casado = "Casado", 
+  Divorciado = "Divorciado",
+  Conviviente = "Conviviente",
+  Viudo = "Viudo"
+}
+
+export interface LeadMetadata {
+  estadoCivil: EstadoCivil;
+  tieneTarjetasCredito: boolean;
+  cantidadTarjetasCredito: number;
+  tieneTarjetasDebito: boolean;
+  cantidadTarjetasDebito: number;
+  cantidadHijos: number;
+}
+
 export interface CreateUpdateLeadDto {
   firstName: string;
   lastName: string;
@@ -172,6 +190,11 @@ export interface CreateUpdateLeadDto {
   ubigeoId?: number;
   observations?: string;
   isNewLead?: boolean;
+  interestProjects?: string[];
+  companionFullName?: string;
+  companionDni?: string;
+  companionRelationship?: string;
+  metadata?: LeadMetadata;
 }
 export interface FindLeadResponse {
   success: boolean;

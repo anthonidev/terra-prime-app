@@ -1,4 +1,4 @@
-import { DocumentType } from '@/types/leads.types';
+import { DocumentType, EstadoCivil } from '@/types/leads.types';
 import { z } from 'zod';
 
 export const leadFormSchema = z.object({
@@ -66,6 +66,64 @@ export const leadFormSchema = z.object({
     .string()
     .max(500, 'Las observaciones no pueden tener más de 500 caracteres')
     .optional()
-    .or(z.literal(''))
+    .or(z.literal('')),
+  // Nuevos campos de acompañante
+  companionFullName: z
+    .string()
+    .max(200, 'El nombre del acompañante no puede tener más de 200 caracteres')
+    .optional()
+    .or(z.literal('')),
+  companionDni: z
+    .string()
+    .max(20, 'El DNI del acompañante no puede tener más de 20 caracteres')
+    .optional()
+    .or(z.literal('')),
+  companionRelationship: z
+    .string()
+    .max(100, 'La relación no puede tener más de 100 caracteres')
+    .optional()
+    .or(z.literal('')),
+  // Proyectos de interés
+  interestProjects: z
+    .array(z.string())
+    .optional()
+    .default([]),
+  // Campos de metadata
+  estadoCivil: z.nativeEnum(EstadoCivil).optional(),
+  tieneTarjetasCredito: z.boolean().optional().default(false),
+  cantidadTarjetasCredito: z
+    .union([z.string(), z.number()])
+    .optional()
+    .transform((val) => {
+      if (val === undefined || val === null || val === '') return 0;
+      const numVal = typeof val === 'string' ? Number(val) : val;
+      return isNaN(numVal) ? 0 : numVal;
+    })
+    .refine((val) => val >= 0 && val <= 50, {
+      message: 'La cantidad debe estar entre 0 y 50'
+    }),
+  tieneTarjetasDebito: z.boolean().optional().default(false),
+  cantidadTarjetasDebito: z
+    .union([z.string(), z.number()])
+    .optional()
+    .transform((val) => {
+      if (val === undefined || val === null || val === '') return 0;
+      const numVal = typeof val === 'string' ? Number(val) : val;
+      return isNaN(numVal) ? 0 : numVal;
+    })
+    .refine((val) => val >= 0 && val <= 50, {
+      message: 'La cantidad debe estar entre 0 y 50'
+    }),
+  cantidadHijos: z
+    .union([z.string(), z.number()])
+    .optional()
+    .transform((val) => {
+      if (val === undefined || val === null || val === '') return 0;
+      const numVal = typeof val === 'string' ? Number(val) : val;
+      return isNaN(numVal) ? 0 : numVal;
+    })
+    .refine((val) => val >= 0 && val <= 20, {
+      message: 'La cantidad de hijos debe estar entre 0 y 20'
+    })
 });
 export type LeadFormValues = z.infer<typeof leadFormSchema>;

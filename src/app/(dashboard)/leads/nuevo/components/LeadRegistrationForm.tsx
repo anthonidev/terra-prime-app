@@ -2,6 +2,7 @@
 
 import FormInputField from '@/components/common/form/FormInputField';
 import FormSelectField from '@/components/common/form/FormSelectField';
+import FormMultiSelectField from '@/components/common/form/FormMultiSelectField';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { CardContent, CardFooter } from '@/components/ui/card';
@@ -15,6 +16,7 @@ import {
 } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import {
   CreateUpdateLeadDto,
   FindLeadByDocumentDto,
@@ -30,12 +32,15 @@ import {
   Calendar,
   CreditCard,
   FileText,
+  Heart,
+  Home,
   Mail,
   MapPin,
   Phone,
   Save,
   User,
-  UserCheck
+  UserCheck,
+  Users
 } from 'lucide-react';
 import { useLeadRegister } from './hooks/useLeadRegister';
 import { LeadFormValues } from './schema/leadform';
@@ -86,7 +91,9 @@ export default function LeadRegistrationForm({
     provinceOptions,
     departmentId,
     provinceId,
-    districtOptions
+    districtOptions,
+    projectOptions,
+    estadoCivilOptions
   } = useLeadRegister({
     lead,
     searchedDocument,
@@ -332,13 +339,227 @@ export default function LeadRegistrationForm({
               </div>
             </motion.div>
 
-            {/* Observations Section */}
+            {/* Companion Information Section */}
             <motion.div
               className="space-y-6"
               variants={sectionVariants}
               initial="hidden"
               animate="visible"
               transition={{ delay: 0.3 }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900/50 dark:to-pink-800/50">
+                  <Users className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    Información del Acompañante
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Datos de la persona que acompaña al lead (opcional)
+                  </p>
+                </div>
+              </div>
+
+              <Separator className="bg-gray-200 dark:bg-gray-700" />
+
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <FormInputField<LeadFormValues>
+                  name="companionFullName"
+                  label="Nombre Completo del Acompañante"
+                  placeholder="Nombre y apellido del acompañante"
+                  icon={<User className="h-4 w-4" />}
+                  control={form.control}
+                  errors={form.formState.errors}
+                  disabled={isReadOnly}
+                />
+
+                <FormInputField<LeadFormValues>
+                  name="companionDni"
+                  label="DNI del Acompañante"
+                  placeholder="Número de DNI"
+                  icon={<CreditCard className="h-4 w-4" />}
+                  control={form.control}
+                  errors={form.formState.errors}
+                  disabled={isReadOnly}
+                />
+
+                <FormInputField<LeadFormValues>
+                  name="companionRelationship"
+                  label="Relación con el Lead"
+                  placeholder="Ej: Esposa, Hermano, Amigo"
+                  icon={<Heart className="h-4 w-4" />}
+                  control={form.control}
+                  errors={form.formState.errors}
+                  disabled={isReadOnly}
+                />
+              </div>
+            </motion.div>
+
+            {/* Interest Projects Section */}
+            <motion.div
+              className="space-y-6"
+              variants={sectionVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: 0.4 }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/50 dark:to-blue-800/50">
+                  <Home className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    Proyectos de Interés
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Selecciona los proyectos que le interesan al lead
+                  </p>
+                </div>
+              </div>
+
+              <Separator className="bg-gray-200 dark:bg-gray-700" />
+
+              <FormMultiSelectField<LeadFormValues>
+                name="interestProjects"
+                label="Proyectos de Interés"
+                placeholder="Seleccionar proyectos"
+                icon={<Home className="h-4 w-4" />}
+                options={projectOptions}
+                control={form.control}
+                errors={form.formState.errors}
+                disabled={isReadOnly}
+              />
+            </motion.div>
+
+            {/* Financial Information Section */}
+            <motion.div
+              className="space-y-6"
+              variants={sectionVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: 0.5 }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/50 dark:to-green-800/50">
+                  <CreditCard className="h-5 w-5 text-green-600 dark:text-green-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    Información Financiera
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Detalles sobre tarjetas y estado civil
+                  </p>
+                </div>
+              </div>
+
+              <Separator className="bg-gray-200 dark:bg-gray-700" />
+
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <FormSelectField<LeadFormValues>
+                  name="estadoCivil"
+                  label="Estado Civil"
+                  placeholder="Seleccionar estado civil"
+                  options={estadoCivilOptions}
+                  icon={<Heart className="h-4 w-4" />}
+                  control={form.control}
+                  errors={form.formState.errors}
+                  disabled={isReadOnly}
+                />
+
+                <FormInputField<LeadFormValues>
+                  name="cantidadHijos"
+                  label="Cantidad de Hijos"
+                  placeholder="0"
+                  type="number"
+                  icon={<Users className="h-4 w-4" />}
+                  control={form.control}
+                  errors={form.formState.errors}
+                  disabled={isReadOnly}
+                />
+
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="tieneTarjetasCredito"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">
+                            ¿Tiene tarjetas de crédito?
+                          </FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            disabled={isReadOnly}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  {form.watch('tieneTarjetasCredito') && (
+                    <FormInputField<LeadFormValues>
+                      name="cantidadTarjetasCredito"
+                      label="Cantidad de Tarjetas de Crédito"
+                      placeholder="0"
+                      type="number"
+                      icon={<CreditCard className="h-4 w-4" />}
+                      control={form.control}
+                      errors={form.formState.errors}
+                      disabled={isReadOnly}
+                    />
+                  )}
+                </div>
+
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="tieneTarjetasDebito"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">
+                            ¿Tiene tarjetas de débito?
+                          </FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            disabled={isReadOnly}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  {form.watch('tieneTarjetasDebito') && (
+                    <FormInputField<LeadFormValues>
+                      name="cantidadTarjetasDebito"
+                      label="Cantidad de Tarjetas de Débito"
+                      placeholder="0"
+                      type="number"
+                      icon={<CreditCard className="h-4 w-4" />}
+                      control={form.control}
+                      errors={form.formState.errors}
+                      disabled={isReadOnly}
+                    />
+                  )}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Observations Section */}
+            <motion.div
+              className="space-y-6"
+              variants={sectionVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: 0.6 }}
             >
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/50 dark:to-orange-800/50">
