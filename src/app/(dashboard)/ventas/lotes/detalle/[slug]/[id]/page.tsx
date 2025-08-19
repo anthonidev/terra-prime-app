@@ -13,10 +13,12 @@ export default async function LotPage({ params, searchParams }: Props) {
   const { id, slug } = await params;
   const filters = await searchParams;
 
+  const decodedSlug = decodeURIComponent(slug);
+
   return (
     <div className="container py-8">
       <PageHeader
-        title={`Lotes - ${slug.replace('%20', ' ')}`}
+        title={`Lotes - ${decodedSlug}`}
         subtitle="Lista de lotes asociados a un proyecto"
         className="mb-6"
         variant="gradient"
