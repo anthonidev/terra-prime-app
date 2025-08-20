@@ -18,6 +18,9 @@ import { Building2, Calendar, CreditCard, Phone, User, UserPlus } from 'lucide-r
 import { useMemo, useState } from 'react';
 import AssignVendorButton from './AssignVendorButton';
 import AssignVendorModal from './AssignVendorModal';
+import AssignLeadParticipantButton from './AssignLeadParticipantButton';
+import LeadDetailButton from './LeadDetailButton';
+import LeadActionsButton from './LeadActionsButton';
 
 type Props = {
   data: LeadsOfDay[];
@@ -176,6 +179,19 @@ export default function BienvenidosTable({ data }: Props) {
         enableHiding: false
       },
       {
+        id: 'participants',
+        header: 'Participantes',
+        cell: ({ row }) => {
+          const lead = row.original;
+          return (
+            <div className="flex items-center">
+              <AssignLeadParticipantButton lead={lead} />
+            </div>
+          );
+        },
+        enableHiding: false
+      },
+      {
         accessorKey: 'createdAt',
         header: 'Fecha de Registro',
         cell: ({ row }) => (
@@ -207,7 +223,11 @@ export default function BienvenidosTable({ data }: Props) {
                   Asignado
                 </Badge>
               )}
-              <AssignVendorButton leadId={lead.id} hasVendor={hasVendor} />
+              <div className="flex gap-1">
+                <LeadDetailButton lead={lead} />
+                <AssignVendorButton leadId={lead.id} hasVendor={hasVendor} />
+                <LeadActionsButton lead={lead} />
+              </div>
             </div>
           );
         },

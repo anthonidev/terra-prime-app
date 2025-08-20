@@ -19,6 +19,7 @@ import {
 import {
   AmortizationResponse,
   LeadsOfDayResponse,
+  LeadsOfDayItem,
   LeadsVendorResponse,
   VendorsActivesResponse,
   ClientResponse,
@@ -166,36 +167,37 @@ export class HttpLeadsOfDayRepository implements LeadsOfDayRepository {
         params: params
       });
 
-      const items = response.items.map((item) => ({
-        id: item.id,
-        firstName: item.firstName,
-        lastName: item.lastName,
-        document: item.document,
-        documentType: item.documentType,
-        phone: item.phone,
-        phone2: item.phone2,
-        age: item.age,
-        createdAt: item.createdAt,
-        source: {
-          id: item.source.id,
-          name: item.source.name
-        },
-        ubigeo: {
-          id: item.ubigeo.id,
-          name: item.ubigeo.name,
-          code: item.ubigeo.code,
-          parentId: item.ubigeo.parentId
-        },
-        vendor: item.vendor
-          ? {
-              id: item.vendor.id,
-              firstName: item.vendor.firstName,
-              lastName: item.vendor.lastName,
-              email: item.vendor.email,
-              document: item.vendor.document
-            }
-          : null
-      }));
+      const items = response.items.map((item) => new LeadsOfDay(
+        item.id,
+        item.firstName,
+        item.lastName,
+        item.email,
+        item.document,
+        item.documentType,
+        item.phone,
+        item.phone2,
+        item.age,
+        item.isActive,
+        item.createdAt,
+        item.isInOffice,
+        item.interestProjects || [],
+        item.companionFullName,
+        item.companionDni,
+        item.companionRelationship,
+        item.metadata,
+        item.reportPdfUrl,
+        item.visits || [],
+        item.source,
+        item.ubigeo,
+        item.vendor,
+        item.liner,
+        item.telemarketingSupervisor,
+        item.telemarketingConfirmer,
+        item.telemarketer,
+        item.fieldManager,
+        item.fieldSupervisor,
+        item.fieldSeller
+      ));
 
       return {
         items: items,
@@ -211,25 +213,42 @@ export class HttpLeadsOfDayRepository implements LeadsOfDayRepository {
 export class HttpAssignLeadsToVendorRepository implements AssignLeadsVendorRepository {
   async onAssign(dto: AssignLeadsToVendorDTO): Promise<LeadsOfDay[]> {
     try {
-      const response = await httpClient<LeadsOfDay[]>('/api/sales/leads/assign/vendor', {
+      const response = await httpClient<LeadsOfDayItem[]>('/api/sales/leads/assign/vendor', {
         method: 'POST',
         body: dto
       });
 
-      return response.map((item) => ({
-        id: item.id,
-        firstName: item.firstName,
-        lastName: item.lastName,
-        document: item.document,
-        documentType: item.documentType,
-        phone: item.phone,
-        phone2: item.phone2,
-        age: item.age,
-        createdAt: item.createdAt,
-        source: item.source,
-        ubigeo: item.ubigeo,
-        vendor: item.vendor
-      }));
+      return response.map((item) => new LeadsOfDay(
+        item.id,
+        item.firstName,
+        item.lastName,
+        item.email,
+        item.document,
+        item.documentType,
+        item.phone,
+        item.phone2,
+        item.age,
+        item.isActive,
+        item.createdAt,
+        item.isInOffice,
+        item.interestProjects || [],
+        item.companionFullName,
+        item.companionDni,
+        item.companionRelationship,
+        item.metadata,
+        item.reportPdfUrl,
+        item.visits || [],
+        item.source,
+        item.ubigeo,
+        item.vendor,
+        item.liner,
+        item.telemarketingSupervisor,
+        item.telemarketingConfirmer,
+        item.telemarketer,
+        item.fieldManager,
+        item.fieldSupervisor,
+        item.fieldSeller
+      ));
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message);
       throw error;

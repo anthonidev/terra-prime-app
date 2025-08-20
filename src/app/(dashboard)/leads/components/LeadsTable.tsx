@@ -24,6 +24,8 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import LeadActionsButton from './buttons/LeadActionsButton';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 type Props = {
   data: Lead[];
@@ -40,13 +42,13 @@ const LeadsTable = ({ data }: Props) => {
     source: false
   });
 
-  // const formatDate = (dateString: string) => {
-  //   return format(new Date(dateString), 'dd/MM/yyyy', { locale: es });
-  // };
+  const formatDate = (dateString: string) => {
+    return format(new Date(dateString), 'dd/MM/yyyy', { locale: es });
+  };
 
-  // const formatTime = (dateString: string) => {
-  //   return format(new Date(dateString), 'HH:mm', { locale: es });
-  // };
+  const formatTime = (dateString: string) => {
+    return format(new Date(dateString), 'HH:mm', { locale: es });
+  };
 
   const hasContactInfo = (lead: Lead) => {
     return lead.email || lead.phone || lead.phone2;
@@ -217,7 +219,7 @@ const LeadsTable = ({ data }: Props) => {
         header: 'Estado de Visita',
         cell: ({ row }) => {
           const lead = row.original;
-          // const latestVisit = getLatestVisit(lead);
+          const latestVisit = getLatestVisit(lead);
 
           return (
             <div className="space-y-1">
@@ -235,12 +237,12 @@ const LeadsTable = ({ data }: Props) => {
                   No en oficina
                 </Badge>
               )}
-              {/* {lead.isInOffice && latestVisit && (
+              {lead.isInOffice && latestVisit && (
                 <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
                   <Clock className="h-3 w-3" />
                   <span>Desde: {formatTime(latestVisit.arrivalTime)}</span>
                 </div>
-              )} */}
+              )}
             </div>
           );
         },
@@ -291,13 +293,13 @@ const LeadsTable = ({ data }: Props) => {
       {
         accessorKey: 'createdAt',
         header: 'Fecha de Registro',
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4 text-gray-400" />
             <div className="flex flex-col">
-              {/* <span className="text-sm font-medium">{formatDate(row.getValue('createdAt'))}</span> */}
+              <span className="text-sm font-medium">{formatDate(row.getValue('createdAt'))}</span>
               <span className="text-xs text-gray-500 dark:text-gray-400">
-                {/* {formatTime(row.getValue('createdAt'))} */}fecha
+                {formatTime(row.getValue('createdAt'))}
               </span>
             </div>
           </div>

@@ -19,7 +19,10 @@ import {
   Mail,
   MapPin,
   Phone,
-  User
+  User,
+  Users,
+  Heart,
+  Tag
 } from 'lucide-react';
 
 interface LeadDetailHeaderProps {
@@ -159,7 +162,7 @@ export default function LeadDetailHeader({
         <Separator className="mb-6" />
 
         {/* Detailed Information Grid */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Contact Information */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -256,7 +259,119 @@ export default function LeadDetailHeader({
               </div>
             </div>
           </div>
+
+          {/* Projects of Interest */}
+          {lead.interestProjects && lead.interestProjects.length > 0 && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Tag className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  Proyectos de interés
+                </h3>
+              </div>
+              <div className="space-y-3 rounded-lg bg-gray-50 p-4 dark:bg-gray-800/50">
+                <div className="flex flex-wrap gap-2">
+                  {lead.interestProjects.map((project, index) => (
+                    <Badge
+                      key={index}
+                      variant="outline"
+                      className="border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-800 dark:bg-purple-900/20 dark:text-purple-300"
+                    >
+                      {project}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* Additional Information Sections */}
+        {(lead.companionFullName || lead.companionDni || lead.companionRelationship || lead.metadata) && (
+          <>
+            <Separator className="my-6" />
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              {/* Companion Information */}
+              {(lead.companionFullName || lead.companionDni || lead.companionRelationship) && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      Información del acompañante
+                    </h3>
+                  </div>
+                  <div className="space-y-3 rounded-lg bg-gray-50 p-4 dark:bg-gray-800/50">
+                    {lead.companionFullName && (
+                      <div className="flex items-center gap-3">
+                        <User className="h-4 w-4 text-gray-400" />
+                        <div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Nombre completo</p>
+                          <p className="font-medium text-gray-900 dark:text-gray-100">
+                            {lead.companionFullName}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    {lead.companionDni && (
+                      <div className="flex items-center gap-3">
+                        <CreditCard className="h-4 w-4 text-gray-400" />
+                        <div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">DNI</p>
+                          <p className="font-medium text-gray-900 dark:text-gray-100">
+                            {lead.companionDni}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    {lead.companionRelationship && (
+                      <div className="flex items-center gap-3">
+                        <Heart className="h-4 w-4 text-gray-400" />
+                        <div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Relación</p>
+                          <p className="font-medium text-gray-900 dark:text-gray-100">
+                            {lead.companionRelationship}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Metadata Information */}
+              {lead.metadata && Object.keys(lead.metadata).length > 0 && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      Información adicional
+                    </h3>
+                  </div>
+                  <div className="space-y-3 rounded-lg bg-gray-50 p-4 dark:bg-gray-800/50">
+                    {Object.entries(lead.metadata).map(([key, value]) => (
+                      <div key={key} className="flex items-center gap-3">
+                        <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
+                        <div className="flex-1">
+                          <div className="flex justify-between">
+                            <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">
+                              {key.replace(/([A-Z])/g, ' $1').toLowerCase()}
+                            </p>
+                            <p className="font-medium text-gray-900 dark:text-gray-100">
+                              {typeof value === 'boolean' 
+                                ? (value ? 'Sí' : 'No')
+                                : value?.toString() || 'No especificado'
+                              }
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );

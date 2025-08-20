@@ -83,6 +83,7 @@ import { AssignLeadsVendorUseCase } from '@application/use-cases/assign-salevend
 import { LeadsOfDay } from '@domain/entities/sales/leadsvendors.entity';
 import { SaleList } from '@domain/entities/sales/salevendor.entity';
 import { revalidateTag } from 'next/cache';
+import { httpClient } from '@/lib/api/http-client';
 
 /**
  * Calcula el cronograma de pagos
@@ -164,15 +165,32 @@ export async function getLeadsOfDay(params?: {
       id: item.id,
       firstName: item.firstName,
       lastName: item.lastName,
+      email: item.email,
       document: item.document,
       documentType: item.documentType,
       phone: item.phone,
       phone2: item.phone2,
       age: item.age,
+      isActive: item.isActive,
       createdAt: item.createdAt,
+      isInOffice: item.isInOffice,
+      interestProjects: item.interestProjects,
+      companionFullName: item.companionFullName,
+      companionDni: item.companionDni,
+      companionRelationship: item.companionRelationship,
+      metadata: item.metadata,
+      reportPdfUrl: item.reportPdfUrl,
+      visits: item.visits,
       source: item.source,
       ubigeo: item.ubigeo,
-      vendor: item.vendor
+      vendor: item.vendor,
+      liner: item.liner,
+      telemarketingSupervisor: item.telemarketingSupervisor,
+      telemarketingConfirmer: item.telemarketingConfirmer,
+      telemarketer: item.telemarketer,
+      fieldManager: item.fieldManager,
+      fieldSupervisor: item.fieldSupervisor,
+      fieldSeller: item.fieldSeller
     })),
     meta: leadsOfDay.meta
   };
@@ -182,22 +200,7 @@ export async function assignLeadsToVendor(dto: AssignLeadsToVendorDTO): Promise<
   const repository = new HttpAssignLeadsToVendorRepository();
   const useCase = new AssignLeadsVendorUseCase(repository);
 
-  const leadsToVendor = await useCase.execute(dto);
-
-  return leadsToVendor.map((item) => ({
-    id: item.id,
-    firstName: item.firstName,
-    lastName: item.lastName,
-    document: item.document,
-    documentType: item.documentType,
-    phone: item.phone,
-    phone2: item.phone2,
-    age: item.age,
-    createdAt: item.createdAt,
-    source: item.source,
-    ubigeo: item.ubigeo,
-    vendor: item.vendor
-  }));
+  return await useCase.execute(dto);
 }
 
 export async function getClientsByDocument(document: number): Promise<ClientResponse> {
@@ -500,4 +503,74 @@ export async function extendReservationPeriod(
   revalidateTag('sales_vendor');
 
   return response;
+}
+
+export async function generateLeadReport(leadId: string) {
+  try {
+    const result = await httpClient<{
+      success: string;
+      message: string;
+      data: {
+        leadId: string;
+        documentUrl: string;
+        generatedAt: string;
+        clientName: string;
+        documentNumber: string;
+        leadInfo: {
+          documentType: string;
+          phone: string;
+          source: string;
+        };
+        isNewDocument: boolean;
+      };
+    }>(`/api/reports-leads/generate/${leadId}`, {
+      method: 'POST',
+      cache: 'no-store'
+    });
+
+    revalidateTag('leads-of-day');
+
+    return result;
+  } catch (error) {
+    console.error('Error generating lead report:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Error al generar el reporte'
+    };
+  }
+}
+
+export async function regenerateLeadReport(leadId: string) {
+  try {
+    const result = await httpClient<{
+      success: string;
+      message: string;
+      data: {
+        leadId: string;
+        documentUrl: string;
+        generatedAt: string;
+        clientName: string;
+        documentNumber: string;
+        leadInfo: {
+          documentType: string;
+          phone: string;
+          source: string;
+        };
+        isNewDocument: boolean;
+      };
+    }>(`/api/reports-leads/regenerate/${leadId}`, {
+      method: 'POST',
+      cache: 'no-store'
+    });
+
+    revalidateTag('leads-of-day');
+
+    return result;
+  } catch (error) {
+    console.error('Error regenerating lead report:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Error al regenerar el reporte'
+    };
+  }
 }

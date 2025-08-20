@@ -131,6 +131,11 @@ export interface Lead {
   updatedAt: string;
   isInOffice: boolean;
   fullName: string;
+  interestProjects?: string[];
+  companionFullName?: string | null;
+  companionDni?: string | null;
+  companionRelationship?: string | null;
+  metadata?: Record<string, string> | null;
 }
 export interface LeadSource {
   id: number;
@@ -161,11 +166,11 @@ export interface FindLeadByDocumentDto {
 }
 
 export enum EstadoCivil {
-  Soltero = "Soltero",
-  Casado = "Casado", 
-  Divorciado = "Divorciado",
-  Conviviente = "Conviviente",
-  Viudo = "Viudo"
+  Soltero = 'Soltero',
+  Casado = 'Casado',
+  Divorciado = 'Divorciado',
+  Conviviente = 'Conviviente',
+  Viudo = 'Viudo'
 }
 
 export interface LeadMetadata {

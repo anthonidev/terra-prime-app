@@ -1,4 +1,10 @@
-import { LeadsOfDay, Source, Ubigeo } from '@domain/entities/sales/leadsvendors.entity';
+import {
+  Source,
+  Ubigeo,
+  BasicVendor,
+  LeadMetadata,
+  LeadVisit
+} from '@domain/entities/sales/leadsvendors.entity';
 import { Amortization } from '@domain/entities/sales/amortization.entity';
 import { Meta } from '@infrastructure/types/pagination.types';
 import { PaymentListItem, Voucher, StatusPayment } from '@domain/entities/sales/payment.entity';
@@ -33,8 +39,40 @@ export interface VendorsActivesResponse {
   createdAt: string;
 }
 
+export interface LeadsOfDayItem {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  document: string;
+  documentType: string;
+  phone: string;
+  phone2: string | undefined;
+  age: number;
+  isActive: boolean;
+  createdAt: string;
+  isInOffice: boolean;
+  interestProjects: string[];
+  companionFullName: string | null;
+  companionDni: string | null;
+  companionRelationship: string | null;
+  metadata: LeadMetadata | null;
+  reportPdfUrl: string | null;
+  visits: LeadVisit[];
+  source: Source;
+  ubigeo: Ubigeo;
+  vendor: BasicVendor | null;
+  liner: BasicVendor | null;
+  telemarketingSupervisor: BasicVendor | null;
+  telemarketingConfirmer: BasicVendor | null;
+  telemarketer: BasicVendor | null;
+  fieldManager: BasicVendor | null;
+  fieldSupervisor: BasicVendor | null;
+  fieldSeller: BasicVendor | null;
+}
+
 export interface LeadsOfDayResponse {
-  items: LeadsOfDay[];
+  items: LeadsOfDayItem[];
   meta: Meta;
 }
 

@@ -21,4 +21,6 @@ export interface CreateSalePayload {
     couteAmount: number;
     expectedPaymentDate: string;
   }>;
+  
+  notes?: string;
 }

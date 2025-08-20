@@ -155,7 +155,10 @@ export const createSaleSchema = z.object({
   // Paso 3
   clientId: z.number().min(1, 'Debe seleccionar o crear un cliente'),
   guarantorId: z.number().min(0, 'Debe agregar un garante').optional(),
-  secondaryClientIds: z.array(z.number()).min(1, 'Debe tener al menos un co-comprador')
+  secondaryClientIds: z.array(z.number()).min(1, 'Debe tener al menos un co-comprador'),
+
+  // Paso 4 - Notas adicionales (opcional)
+  notes: z.string().optional()
 });
 
 export type Step1FormData = z.infer<typeof step1Schema>;

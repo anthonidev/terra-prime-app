@@ -113,7 +113,8 @@ export default function CreateSaleWizard() {
           interestRate: formData.interestRate!,
           quantitySaleCoutes: formData.quantitySaleCoutes!,
           financingInstallments: formData.financingInstallments!
-        })
+        }),
+        ...(formData.notes && { notes: formData.notes })
       };
 
       const result = await createSale(salePayload);
