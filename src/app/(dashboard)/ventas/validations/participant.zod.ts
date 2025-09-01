@@ -18,7 +18,11 @@ export const ParticipantSchema = z.object({
       'TELEMARKETER',
       'FIELD_MANAGER',
       'FIELD_SUPERVISOR',
-      'FIELD_SELLER'
+      'FIELD_SELLER',
+      'SALES_MANAGER',
+      'SALES_GENERAL_MANAGER',
+      'POST_SALE',
+      'CLOSER'
     ],
     {
       errorMap: () => ({ message: 'Tipo de participante inválido' })

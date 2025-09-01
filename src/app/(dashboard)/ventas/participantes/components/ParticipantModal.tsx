@@ -49,7 +49,11 @@ const PARTICIPANT_TYPES = [
   { value: 'TELEMARKETER', label: 'Telemarketer' },
   { value: 'FIELD_MANAGER', label: 'Jefe de Campo' },
   { value: 'FIELD_SUPERVISOR', label: 'Supervisor de Campo' },
-  { value: 'FIELD_SELLER', label: 'Vendedor de Campo' }
+  { value: 'FIELD_SELLER', label: 'Vendedor de Campo' },
+  { value: 'SALES_MANAGER', label: 'Gerente de Ventas' },
+  { value: 'SALES_GENERAL_MANAGER', label: 'Gerente General de Ventas' },
+  { value: 'POST_SALE', label: 'Post Venta' },
+  { value: 'CLOSER', label: 'Closer' }
 ];
 
 export default function ParticipantModal({ isOpen, onClose, participant }: ParticipantModalProps) {
