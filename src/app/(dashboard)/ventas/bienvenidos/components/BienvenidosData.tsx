@@ -23,7 +23,6 @@ export default async function BienvenidosData({
     page,
     limit
   });
-
   return (
     <div className="space-y-6">
       <Card>
