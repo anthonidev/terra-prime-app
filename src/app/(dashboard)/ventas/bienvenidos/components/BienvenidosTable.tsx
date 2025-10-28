@@ -150,8 +150,10 @@ export default function BienvenidosTable({ data }: Props) {
         id: 'vendor',
         header: 'Vendedor',
         cell: ({ row }) => {
+          console.log(row.original);
           const lead = row.original;
-          const hasVendor = !!lead.vendor?.id;
+
+          const hasVendor = !!lead.vendor;
 
           if (!hasVendor) {
             return (
