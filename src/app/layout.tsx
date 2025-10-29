@@ -1,59 +1,46 @@
-import { AuthProvider } from '@/providers/AuthProvider';
-import { ThemeProvider } from '@/providers/ThemeProvider';
-import type { Metadata } from 'next';
-import { Toaster } from '@/components/ui/sonner';
-import { Figtree } from 'next/font/google';
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
+import { QueryProvider } from "@/shared/providers/query-provider";
+import "../styles/globals.css";
+import { ThemeProvider } from "@/shared/providers/ThemeProvider";
 
-import '@styles/globals.css';
-import { SidebarProvider } from '@/context/SidebarContext';
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
-const figtree = Figtree({
-  subsets: ['latin'],
-  variable: '--font-figtree',
-  weight: ['400', '500', '600', '700', '800', '900']
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: 'SMART - Huertas Inmobiliaria',
-  description: 'Sistema de gestión de Huertas Inmobiliaria',
-  icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
-    shortcut: '/favicon-32x32.png'
-  }
+  title: "Terra Prime App",
+  description: "Sistema de gestión inmobiliaria",
 };
+
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </head>
-      <body className={figtree.variable}>
-        <AuthProvider>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <QueryProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
-            <SidebarProvider>
-              {children}
-              <Toaster
-                richColors
-                position="top-right"
-                closeButton
-                containerAriaLabel="notification-toast"
-                className="cursor-grab select-none"
-                duration={8000}
-                expand
-              />
-            </SidebarProvider>
+            {children}
+            <Toaster />
           </ThemeProvider>
-        </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

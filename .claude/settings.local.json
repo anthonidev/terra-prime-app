@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(bun dev)",
+      "Bash(taskkill //F //PID 4412)",
+      "WebSearch",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(bun run build:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

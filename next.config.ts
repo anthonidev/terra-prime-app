@@ -1,31 +1,19 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  images: {
-    remotePatterns: [
+  async rewrites() {
+    return [
       {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-        pathname: '**'
+        source: "/api/:path*",
+        destination: `${process.env.API_BACKENDL_URL || "http://localhost:5000"}/api/:path*`,
       },
-      //amazon s3
-      {
-        protocol: 'https',
-        hostname: 'inmobiliariahuertas-files-2025-dev.s3.us-east-2.amazonaws.com',
-        pathname: '**'
-      },
-      {
-        protocol: 'https',
-        hostname: 'inmobiliariahuertas-files-2025.s3.us-east-2.amazonaws.com',
-        pathname: '**'
-      }
-    ],
-    localPatterns: [
-      {
-        pathname: '/imgs/**'
-      }
-    ]
-  }
+    ];
+  },
+
+  // Configure dev indicators position
+  devIndicators: {
+    position: 'bottom-right',
+  },
 };
 
 export default nextConfig;

@@ -1,7 +1,11 @@
-import ThemeSwitch from '@/components/common/ThemeSwich';
-import React from 'react';
+import ThemeSwitch from "@/components/ui/ThemeSwich";
+import React from "react";
 
-export default function LayoutAuth({ children }: { children: React.ReactNode }) {
+export default function LayoutAuth({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <main className="animate-fade flex min-h-screen flex-col">
       <div className="bg-alternative flex flex-1 flex-col">
