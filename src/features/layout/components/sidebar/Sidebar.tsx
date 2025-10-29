@@ -6,9 +6,9 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { AnimatePresence } from "framer-motion";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { SidebarContent } from "./SidebarContent";
-import { useMenuStore } from "../../stores/menu-store";
+import { useMenu } from "../../hooks/use-menu";
 
 export interface SidebarRef {
   toggleMobile: () => void;
@@ -18,17 +18,12 @@ const Sidebar = forwardRef<SidebarRef>((props, ref) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  const { menuItems, isLoading, error, fetchMenuItems } = useMenuStore();
+  const { data, isLoading, isError } = useMenu();
 
   useImperativeHandle(ref, () => ({
     toggleMobile: () => setIsMobileOpen(!isMobileOpen),
   }));
 
-  useEffect(() => {
-    fetchMenuItems();
-  }, [fetchMenuItems]);
-
-  // Mostrar loading solo en la primera carga (sin datos en caché)
   if (isLoading) {
     return (
       <div className="hidden lg:block w-64 h-dvh bg-gray-900 border-r border-gray-800">
@@ -46,6 +41,18 @@ const Sidebar = forwardRef<SidebarRef>((props, ref) => {
     );
   }
 
+  if (isError) {
+    return (
+      <div className="hidden lg:block w-64 h-dvh bg-gray-900 border-r border-gray-800">
+        <div className="p-4 text-red-500">
+          Error al cargar el menú
+        </div>
+      </div>
+    );
+  }
+
+  const menuItems = data?.views || [];
+
   return (
     <>
       <AnimatePresence>
@@ -56,7 +63,7 @@ const Sidebar = forwardRef<SidebarRef>((props, ref) => {
             </SheetHeader>
             <SidebarContent
               isCollapsed={false}
-              setIsCollapsed={() => {}}
+              setIsCollapsed={() => { }}
               isMobile={true}
               menuItems={menuItems}
             />

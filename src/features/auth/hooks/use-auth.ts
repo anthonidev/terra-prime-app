@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import type { User } from '../types';
+import { useEffect, useState } from "react";
+import type { User } from "../types";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -9,15 +9,15 @@ export function useAuth() {
 
   useEffect(() => {
     // Check if user is authenticated on mount
-    const storedUser = localStorage.getItem('user');
-    const accessToken = localStorage.getItem('accessToken');
+    const storedUser = localStorage.getItem("user");
+    const accessToken = localStorage.getItem("accessToken");
 
     if (storedUser && accessToken) {
       try {
         setUser(JSON.parse(storedUser));
       } catch (error) {
-        console.error('Error parsing user data:', error);
-        localStorage.removeItem('user');
+        console.error("Error parsing user data:", error);
+        localStorage.removeItem("user");
       }
     }
 
@@ -25,11 +25,11 @@ export function useAuth() {
   }, []);
 
   const logout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
     setUser(null);
-    window.location.href = '/auth/login';
+    window.location.href = "/auth/login";
   };
 
   return {

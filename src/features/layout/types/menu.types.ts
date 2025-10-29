@@ -1,11 +1,11 @@
 export interface MenuItem {
-  id: string;
+  id: number;
   code: string;
   name: string;
   icon: string;
   url: string | null;
   order: number;
-  metadata: Record<string, any>;
+  metadata: Record<string, any> | null;
   children: MenuItem[];
 }
 
