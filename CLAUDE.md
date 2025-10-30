@@ -399,6 +399,178 @@ export function UserTable({ users }: Props) {
 }
 ```
 
+### Loading States with loading.tsx
+
+Next.js 16 provides `loading.tsx` as a special file that automatically wraps your page in a Suspense boundary, showing a loading UI during navigation and initial data fetching.
+
+#### Pattern for Features with Skeleton Components
+
+**ALWAYS create a `loading.tsx` file alongside your `page.tsx`** to provide instant loading feedback during navigation.
+
+```typescript
+// app/(dashboard)/users/loading.tsx
+import { UsersSkeleton } from '@/features/users/components/users-skeleton';
+
+export default function Loading() {
+  return <UsersSkeleton />;
+}
+```
+
+**Create skeleton components in your feature folder:**
+
+```typescript
+// features/users/components/users-skeleton.tsx
+import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+
+export function UsersSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div>
+        <Skeleton className="h-9 w-64" /> {/* Title */}
+        <Skeleton className="h-5 w-96 mt-2" /> {/* Description */}
+      </div>
+
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-6 w-32" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-12 w-full" />
+          ))}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+```
+
+#### When to Use loading.tsx
+
+✅ **ALWAYS use loading.tsx for:**
+- Any page that fetches data (Server or Client Components)
+- Provides instant feedback during navigation
+- Better UX than blank screen while loading
+- Works with both Server Components and Client Components with React Query
+
+#### Loading States Flow
+
+**For Client Components with React Query:**
+
+```typescript
+// app/(dashboard)/profile/loading.tsx
+import { ProfileSkeleton } from '@/features/profile/components/profile-skeleton';
+
+export default function Loading() {
+  return <ProfileSkeleton />;
+}
+
+// app/(dashboard)/profile/page.tsx
+import { ProfileContainer } from '@/features/profile/components/profile-container';
+
+export default function ProfilePage() {
+  return <ProfileContainer />;
+}
+
+// features/profile/components/profile-container.tsx
+'use client';
+
+import { useProfile } from '../hooks/use-profile';
+import { ProfileSkeleton } from './profile-skeleton';
+
+export function ProfileContainer() {
+  const { data, isLoading, isError } = useProfile();
+
+  // Show skeleton during client-side fetch
+  if (isLoading) {
+    return <ProfileSkeleton />;
+  }
+
+  if (isError || !data?.data) {
+    return <ErrorState />;
+  }
+
+  return <ProfileDisplay data={data.data} />;
+}
+```
+
+**Flow:**
+1. User navigates → `loading.tsx` shows `ProfileSkeleton` (instant)
+2. Page component mounts → `ProfileContainer` starts fetching
+3. While fetching → Shows `ProfileSkeleton` again (same component)
+4. Data arrives → Renders actual content
+
+**Benefits:**
+- ✅ Instant feedback during navigation
+- ✅ Consistent skeleton during fetch
+- ✅ Works with mutations and refetch (via `invalidateQueries`)
+- ✅ No flash of blank content
+
+### Authentication & Server Components Limitation
+
+⚠️ **IMPORTANT: Server Components cannot access localStorage**
+
+Our current `apiClient` uses `localStorage` for JWT tokens, which means **authenticated requests cannot be made from Server Components**.
+
+```typescript
+// shared/lib/api-client.ts
+// ❌ This won't work in Server Components
+const token = typeof window !== 'undefined'
+  ? localStorage.getItem('accessToken')
+  : null;
+```
+
+**Current Solution: Use Client Components with React Query**
+
+For authenticated routes (dashboard, profile, etc.), use Client Components with React Query:
+
+```typescript
+// ✅ CORRECT - Client Component with React Query
+// app/(dashboard)/profile/page.tsx
+import { ProfileContainer } from '@/features/profile/components/profile-container';
+
+export default function ProfilePage() {
+  return <ProfileContainer />; // Client Component handles auth
+}
+
+// ❌ WRONG - Server Component cannot access token
+export default async function ProfilePage() {
+  const data = await getProfile(); // This will fail - no token in server
+  return <ProfileDisplay data={data} />;
+}
+```
+
+**Future Improvements (if needed):**
+
+To enable Server Components for authenticated requests:
+
+1. **Use cookies instead of localStorage**
+   ```typescript
+   // middleware.ts
+   import { cookies } from 'next/headers';
+
+   const token = cookies().get('accessToken')?.value;
+   ```
+
+2. **Server Actions with cookies**
+   ```typescript
+   'use server';
+
+   import { cookies } from 'next/headers';
+
+   export async function getProfile() {
+     const token = cookies().get('accessToken')?.value;
+     // Make authenticated request
+   }
+   ```
+
+3. **Middleware-based auth**
+   - Handle token refresh in middleware
+   - Pass user data via headers/context
+
+**For now, stick with Client Components + React Query for all authenticated data fetching.**
+
 ## State Management with TanStack Query
 
 ### Setup Query Client
@@ -842,6 +1014,8 @@ export function useDebounce<T>(value: T, delay: number = 500): T {
 - [ ] No console.logs left behind?
 - [ ] Do React Query queries have unique keys?
 - [ ] Do forms use react-hook-form with zodResolver?
+- [ ] Does every page with data fetching have a `loading.tsx` file?
+- [ ] Does every feature have a skeleton component?
 
 ### Before Creating a PR
 - [ ] Is the code formatted?
@@ -868,6 +1042,9 @@ export function useDebounce<T>(value: T, delay: number = 500): T {
 14. ✅ **date-fns** for date handling
 15. ✅ **framer-motion** for animations (with dynamic import if heavy)
 16. ✅ **recharts** for charts (always with dynamic import)
+17. ✅ **ALWAYS create `loading.tsx`** alongside `page.tsx` for pages with data fetching
+18. ✅ **Every feature needs a skeleton component** in `components/[feature-name]-skeleton.tsx`
+19. ⚠️ **Authenticated requests MUST use Client Components** - Server Components cannot access localStorage tokens
 
 ## Project Context (Historical)
 
