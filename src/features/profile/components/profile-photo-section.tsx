@@ -34,7 +34,7 @@ export function ProfilePhotoSection({ user }: ProfilePhotoSectionProps) {
     // Validar archivo
     const validation = photoFileSchema.safeParse({ file });
     if (!validation.success) {
-      const errorMessage = validation.error.errors[0]?.message;
+      const errorMessage = validation.error.issues[0]?.message;
       alert(errorMessage || 'Archivo inválido');
       return;
     }

@@ -8,7 +8,8 @@
       "WebSearch",
       "Bash(findstr:*)",
       "Bash(taskkill:*)",
-      "Bash(bun run build:*)"
+      "Bash(bun run build:*)",
+      "Bash(bun x shadcn@latest add:*)"
     ],
     "deny": [],
     "ask": []

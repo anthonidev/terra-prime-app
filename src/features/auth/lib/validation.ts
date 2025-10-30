@@ -31,7 +31,7 @@ export const resetPasswordSchema = z
         message:
           'La contraseña debe contener al menos una mayúscula, una minúscula y un número',
       }),
-    passwordConfirm: z.string(),
+    passwordConfirm: z.string().min(1, 'Confirma tu contraseña'),
   })
   .refine((data) => data.password === data.passwordConfirm, {
     message: 'Las contraseñas no coinciden',

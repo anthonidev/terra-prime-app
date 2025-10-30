@@ -33,7 +33,7 @@ interface ProfileFormProps {
 export function ProfileForm({ user }: ProfileFormProps) {
   const { mutate, isPending } = useUpdateProfile();
 
-  const form = useForm<UpdateProfileInput>({
+  const form = useForm<{ email: string; firstName: string; lastName: string }>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
       email: user.email,
@@ -42,7 +42,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
     },
   });
 
-  const onSubmit = (values: UpdateProfileInput) => {
+  const onSubmit = (values: { email: string; firstName: string; lastName: string }) => {
     mutate(values, {
       onSuccess: () => {
         form.reset(values);

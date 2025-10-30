@@ -44,7 +44,7 @@ export function ResetPasswordForm({
 
   const { mutate, isPending } = useResetPassword(token);
 
-  const form = useForm<ResetPasswordInput>({
+  const form = useForm<{ password: string; passwordConfirm: string }>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       password: '',
@@ -52,7 +52,7 @@ export function ResetPasswordForm({
     },
   });
 
-  const onSubmit = (values: ResetPasswordInput) => {
+  const onSubmit = (values: { password: string; passwordConfirm: string }) => {
     mutate(
       { password: values.password },
       {
