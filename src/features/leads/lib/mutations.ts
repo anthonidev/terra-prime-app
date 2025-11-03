@@ -8,6 +8,12 @@ import type {
   FindLeadByDocumentResponse,
   CreateUpdateLeadInput,
   RegisterLeadResponse,
+  UpdateLeadInput,
+  UpdateLeadResponse,
+  RegisterDepartureResponse,
+  GenerateReportResponse,
+  AssignParticipantsInput,
+  AssignParticipantsResponse,
 } from '../types';
 
 export async function createLeadSource(
@@ -46,6 +52,68 @@ export async function registerLead(
 ): Promise<RegisterLeadResponse> {
   const response = await apiClient.post<RegisterLeadResponse>(
     '/api/leads/register',
+    data
+  );
+  return response.data;
+}
+
+export async function updateLead(
+  id: string,
+  data: UpdateLeadInput
+): Promise<UpdateLeadResponse> {
+  const response = await apiClient.patch<UpdateLeadResponse>(
+    `/api/leads/update/${id}`,
+    data
+  );
+  return response.data;
+}
+
+export async function registerDeparture(
+  id: string
+): Promise<RegisterDepartureResponse> {
+  console.log('Registering departure for lead ID:', id);
+  const response = await apiClient.post<RegisterDepartureResponse>(
+    `/api/leads/register-departure/${id}`
+  );
+  return response.data;
+}
+
+export async function generateReport(
+  visitId: string
+): Promise<GenerateReportResponse> {
+  const response = await apiClient.post<GenerateReportResponse>(
+    `/api/reports-leads/generate/${visitId}`
+  );
+  return response.data;
+}
+
+export async function regenerateReport(
+  visitId: string
+): Promise<GenerateReportResponse> {
+  const response = await apiClient.post<GenerateReportResponse>(
+    `/api/reports-leads/regenerate/${visitId}`
+  );
+  return response.data;
+}
+
+export async function assignParticipants(
+  visitId: string,
+  data: AssignParticipantsInput
+): Promise<AssignParticipantsResponse> {
+  console.log('Assigning participants for lead ID:', visitId);
+  const response = await apiClient.post<AssignParticipantsResponse>(
+    `/api/leads/assign/participants/${visitId}`,
+    data
+  );
+  return response.data;
+}
+
+export async function assignLeadsToVendor(data: {
+  leadsId: string[];
+  vendorId: string;
+}): Promise<{ success: boolean; message: string }> {
+  const response = await apiClient.post<{ success: boolean; message: string }>(
+    '/api/sales/leads/assign/vendor',
     data
   );
   return response.data;

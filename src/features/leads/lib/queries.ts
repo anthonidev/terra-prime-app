@@ -1,6 +1,14 @@
 import { apiClient } from '@/shared/lib/api-client';
 import type { PaginatedResponse } from '@/shared/types/pagination';
-import type { LeadSource, LeadSourcesQueryParams, Lead, LeadsQueryParams, UbigeoItem } from '../types';
+import type {
+  LeadSource,
+  LeadSourcesQueryParams,
+  Lead,
+  LeadsQueryParams,
+  UbigeoItem,
+  LeadDetailResponse,
+  ParticipantResponseActive,
+} from '../types';
 
 export async function getLeadSources(
   params: LeadSourcesQueryParams = {}
@@ -55,4 +63,39 @@ export async function getUbigeos(): Promise<UbigeoItem[]> {
     data: UbigeoItem[];
   }>('/api/ubigeos');
   return response.data.data;
+}
+
+export async function getLeadDetail(id: string): Promise<Lead> {
+  const response = await apiClient.get<LeadDetailResponse>(`/api/leads/${id}`);
+  return response.data.data;
+}
+
+export async function getParticipants(): Promise<ParticipantResponseActive[]> {
+  const response = await apiClient.get<ParticipantResponseActive[]>('/api/participants/all/actives');
+  return response.data;
+}
+
+export async function getDayLeads(params: {
+  page?: number;
+  limit?: number;
+}): Promise<PaginatedResponse<Lead>> {
+  const response = await apiClient.get<{
+    items: Lead[];
+    meta: {
+      totalItems: number;
+      itemsPerPage: number;
+      totalPages: number;
+      currentPage: number;
+    };
+  }>('/api/sales/leads/day', { params });
+
+  return {
+    items: response.data.items,
+    meta: response.data.meta,
+  };
+}
+
+export async function getVendorLeads(): Promise<import('../types').VendorLead[]> {
+  const response = await apiClient.get<import('../types').VendorLead[]>('/api/sales/leads/vendor');
+  return response.data;
 }

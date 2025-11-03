@@ -42,14 +42,60 @@ export interface UbigeoItem {
   children?: UbigeoItem[];
 }
 
+export enum ParticipantType {
+  LINER = 'LINER',
+  TELEMARKETING_SUPERVISOR = 'TELEMARKETING_SUPERVISOR',
+  TELEMARKETING_CONFIRMER = 'TELEMARKETING_CONFIRMER',
+  TELEMARKETER = 'TELEMARKETER',
+  FIELD_MANAGER = 'FIELD_MANAGER',
+  FIELD_SUPERVISOR = 'FIELD_SUPERVISOR',
+  FIELD_SELLER = 'FIELD_SELLER',
+  SALES_MANAGER = 'SALES_MANAGER',
+  SALES_GENERAL_MANAGER = 'SALES_GENERAL_MANAGER',
+  POST_SALE = 'POST_SALE',
+  CLOSER = 'CLOSER',
+}
+
+export interface Participant {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string | null;
+  document: string;
+  documentType: DocumentType;
+  phone: string;
+  address: string;
+  participantType: ParticipantType;
+}
+
+export interface ParticipantResponseActive {
+  id: string;
+  firstName: string;
+  lastName: string;
+  document: string;
+  documentType: DocumentType;
+  phone: string;
+  participantType: ParticipantType;
+}
+
 export interface LeadVisit {
   id: string;
   arrivalTime: string;
-  departureTime?: string;
-  liner?: any;
+  departureTime: string | null;
+  observations: string | null;
   createdAt: string;
-  updatedAt: string;
   reportPdfUrl: string | null;
+  linerParticipant: Participant | null;
+  telemarketingSupervisor: Participant | null;
+  telemarketingConfirmer: Participant | null;
+  telemarketer: Participant | null;
+  fieldManager: Participant | null;
+  fieldSupervisor: Participant | null;
+  fieldSeller: Participant | null;
+  salesManager: Participant | null;
+  salesGeneralManager: Participant | null;
+  postSale: Participant | null;
+  closer: Participant | null;
 }
 
 export interface LeadMetadata {
@@ -60,6 +106,13 @@ export interface LeadMetadata {
   cantidadTarjetasDebito?: number;
   cantidadHijos?: number;
   ocupacion?: string;
+}
+
+export interface LeadVendor {
+  document: string;
+  firstName: string;
+  lastName: string;
+  createdAt: string;
 }
 
 export interface Lead {
@@ -88,6 +141,7 @@ export interface Lead {
   companionDni?: string | null;
   companionRelationship?: string | null;
   metadata?: LeadMetadata | null;
+  vendor?: LeadVendor | null;
 }
 
 export interface LeadsQueryParams {
@@ -136,4 +190,121 @@ export interface RegisterLeadResponse {
   success: boolean;
   message: string;
   data?: Lead | null;
+}
+
+// Lead Detail
+export interface LeadDetailResponse {
+  success: boolean;
+  data: Lead;
+}
+
+export interface UpdateLeadInput {
+  firstName?: string;
+  lastName?: string;
+  document?: string;
+  documentType?: DocumentType;
+  email?: string;
+  phone?: string;
+  phone2?: string;
+  age?: number;
+  observations?: string;
+}
+
+export interface UpdateLeadResponse {
+  success: boolean;
+  message: string;
+  data: Lead | null;
+}
+
+export interface RegisterDepartureResponse {
+  success: boolean;
+  message: string;
+  data: Lead | null;
+}
+
+// Reports
+export interface GenerateReportResponse {
+  success: boolean;
+  message: string;
+  data: {
+    leadId: string;
+    documentUrl: string;
+    generatedAt: string;
+    clientName?: string;
+    documentNumber: string;
+    leadInfo: {
+      documentType: DocumentType;
+      phone: string;
+      source: string;
+    };
+    isNewDocument: boolean;
+  };
+}
+
+// Participants
+export interface AssignParticipantsInput {
+  linerParticipantId?: string;
+  telemarketingSupervisorId?: string;
+  telemarketingConfirmerId?: string;
+  telemarketerId?: string;
+  fieldManagerId?: string;
+  fieldSupervisorId?: string;
+  fieldSellerId?: string;
+  salesManagerId?: string;
+  salesGeneralManagerId?: string;
+  postSaleId?: string;
+  closerId?: string;
+}
+
+export interface AssignParticipantsResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface ParticipantsResponse {
+  success: boolean;
+  data: Participant[];
+}
+
+export interface ParticipantsActiveResponse {
+  success: boolean;
+  data: ParticipantResponseActive[];
+}
+
+// Lead Assignment
+export interface LeadsPaginatedResponse {
+  items: Lead[];
+  meta: {
+    totalItems: number;
+    itemsPerPage: number;
+    totalPages: number;
+    currentPage: number;
+  };
+}
+
+export interface AssignLeadsToVendorInput {
+  leadsId: string[];
+  vendorId: string;
+}
+
+export interface AssignLeadsToVendorResponse {
+  success: boolean;
+  message: string;
+}
+
+// Vendor Leads
+export interface VendorLead {
+  id: string;
+  firstName: string;
+  lastName: string;
+  document: string;
+  documentType: string;
+  phone: string;
+  phone2?: string;
+  age: number;
+  createdAt: string;
+  source: {
+    id: number;
+    name: string;
+  };
 }

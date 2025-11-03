@@ -9,7 +9,10 @@
       "Bash(findstr:*)",
       "Bash(taskkill:*)",
       "Bash(bun run build:*)",
-      "Bash(bun x shadcn@latest add:*)"
+      "Bash(bun x shadcn@latest add:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []
