@@ -1,19 +1,11 @@
 'use client';
 
-import { MoreHorizontal, Pencil, Mail, Calendar } from 'lucide-react';
+import { Pencil, Mail, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -33,7 +25,7 @@ export function UserCard({ user, onEdit }: UserCardProps) {
         <div className="flex items-start justify-between gap-4">
           {/* Avatar y Info Principal */}
           <div className="flex gap-3 flex-1 min-w-0">
-            <Avatar className="h-12 w-12 flex-shrink-0">
+            <Avatar className="h-12 w-12 shrink-0">
               <AvatarImage src={user.photo || undefined} alt={user.firstName} />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
@@ -45,7 +37,7 @@ export function UserCard({ user, onEdit }: UserCardProps) {
                   {user.firstName} {user.lastName}
                 </h3>
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <Mail className="h-3 w-3 flex-shrink-0" />
+                  <Mail className="h-3 w-3 shrink-0" />
                   <span className="truncate">{user.email}</span>
                 </div>
               </div>
@@ -78,23 +70,16 @@ export function UserCard({ user, onEdit }: UserCardProps) {
             </div>
           </div>
 
-          {/* Menú de Acciones */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="flex-shrink-0">
-                <span className="sr-only">Abrir menú</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => onEdit(user)}>
-                <Pencil className="mr-2 h-4 w-4" />
-                Editar usuario
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Acción directa: Editar */}
+          <Button
+            variant="outline"
+            size="sm"
+            className="shrink-0"
+            onClick={() => onEdit(user)}
+          >
+            <Pencil className="mr-2 h-4 w-4" />
+            Editar
+          </Button>
         </div>
       </CardContent>
     </Card>

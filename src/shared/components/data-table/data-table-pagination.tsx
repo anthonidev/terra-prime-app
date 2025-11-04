@@ -1,13 +1,14 @@
 'use client';
 
 import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import type { PaginationMeta } from '@/shared/types/pagination';
 
 interface DataTablePaginationProps {
@@ -21,63 +22,126 @@ export function DataTablePagination({
 }: DataTablePaginationProps) {
   const { currentPage, totalPages, totalItems, itemsPerPage } = meta;
 
-  const canGoPrevious = currentPage > 1;
-  const canGoNext = currentPage < totalPages;
-
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
+  // Si solo hay 1 página o menos, mostrar mensaje simple
+  if (totalPages <= 1) {
+    return (
+      <div className="flex w-full items-center justify-center border-t bg-card px-4 py-4">
+        <p className="text-sm text-muted-foreground whitespace-nowrap">
+          Mostrando {totalItems} registro{totalItems !== 1 ? 's' : ''}
+        </p>
+      </div>
+    );
+  }
+
+  // Generar números de página a mostrar
+  const getPageNumbers = () => {
+    const delta = 2; // Páginas a mostrar antes y después de la actual
+    const range: (number | string)[] = [];
+    const rangeWithDots: (number | string)[] = [];
+
+    // Siempre mostrar primera página
+    range.push(1);
+
+    // Páginas alrededor de la actual
+    for (let i = currentPage - delta; i <= currentPage + delta; i++) {
+      if (i > 1 && i < totalPages) {
+        range.push(i);
+      }
+    }
+
+    // Siempre mostrar última página
+    if (totalPages > 1) {
+      range.push(totalPages);
+    }
+
+    // Agregar ellipsis donde sea necesario
+    let prev = 0;
+    for (const page of range) {
+      if (typeof page === 'number') {
+        if (page - prev > 1) {
+          rangeWithDots.push('ellipsis');
+        }
+        rangeWithDots.push(page);
+        prev = page;
+      }
+    }
+
+    return rangeWithDots;
+  };
+
+  const pageNumbers = getPageNumbers();
+
   return (
     <div className="flex flex-col gap-4 border-t bg-card px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="text-sm text-muted-foreground">
-        Mostrando <span className="font-medium text-foreground">{startItem} - {endItem}</span> de{' '}
-        <span className="font-medium text-foreground">{totalItems}</span> resultados
+      {/* Información de registros */}
+      <div className="text-sm text-muted-foreground text-center sm:text-left">
+        Mostrando{' '}
+        <span className="font-medium text-foreground">
+          {startItem} - {endItem}
+        </span>{' '}
+        de <span className="font-medium text-foreground">{totalItems}</span>{' '}
+        resultados
       </div>
-      <div className="flex flex-col items-center gap-4 sm:flex-row sm:space-x-6 lg:space-x-8">
-        <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">
-            Página {currentPage} de {totalPages}
-          </p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            className="hidden h-8 w-8 p-0 lg:flex"
-            onClick={() => onPageChange(1)}
-            disabled={!canGoPrevious}
-          >
-            <span className="sr-only">Ir a la primera página</span>
-            <ChevronsLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            className="h-8 w-8 p-0"
-            onClick={() => onPageChange(currentPage - 1)}
-            disabled={!canGoPrevious}
-          >
-            <span className="sr-only">Ir a la página anterior</span>
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            className="h-8 w-8 p-0"
-            onClick={() => onPageChange(currentPage + 1)}
-            disabled={!canGoNext}
-          >
-            <span className="sr-only">Ir a la página siguiente</span>
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            className="hidden h-8 w-8 p-0 lg:flex"
-            onClick={() => onPageChange(totalPages)}
-            disabled={!canGoNext}
-          >
-            <span className="sr-only">Ir a la última página</span>
-            <ChevronsRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
+
+      {/* Paginación */}
+      <Pagination className="mx-0 w-auto">
+        <PaginationContent>
+          {/* Botón Anterior */}
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={(e) => {
+                e.preventDefault();
+                if (currentPage > 1) onPageChange(currentPage - 1);
+              }}
+              className={
+                currentPage <= 1
+                  ? 'pointer-events-none opacity-50'
+                  : 'cursor-pointer'
+              }
+            />
+          </PaginationItem>
+
+          {/* Números de página */}
+          {pageNumbers.map((page, index) =>
+            page === 'ellipsis' ? (
+              <PaginationItem key={`ellipsis-${index}`}>
+                <PaginationEllipsis />
+              </PaginationItem>
+            ) : (
+              <PaginationItem key={page}>
+                <PaginationLink
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onPageChange(page as number);
+                  }}
+                  isActive={page === currentPage}
+                  className="cursor-pointer"
+                >
+                  {page}
+                </PaginationLink>
+              </PaginationItem>
+            )
+          )}
+
+          {/* Botón Siguiente */}
+          <PaginationItem>
+            <PaginationNext
+              onClick={(e) => {
+                e.preventDefault();
+                if (currentPage < totalPages) onPageChange(currentPage + 1);
+              }}
+              className={
+                currentPage >= totalPages
+                  ? 'pointer-events-none opacity-50'
+                  : 'cursor-pointer'
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }

@@ -1,10 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Search, Filter } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -24,10 +23,17 @@ interface UsersFiltersProps {
 export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
   const [searchInput, setSearchInput] = useState(filters.search || '');
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onFiltersChange({ ...filters, search: searchInput, page: 1 });
-  };
+  // Debounced search to avoid firing on every keystroke when typing fast
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if ((filters.search || '') !== searchInput) {
+        onFiltersChange({ ...filters, search: searchInput, page: 1 });
+      }
+    }, 500);
+
+    return () => clearTimeout(handler);
+    // Include filters to keep other filter changes in sync; guard prevents redundant calls
+  }, [searchInput, filters, onFiltersChange]);
 
   const handleStatusChange = (value: string) => {
     onFiltersChange({
@@ -50,7 +56,7 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
       <CardContent className="pt-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-end">
           {/* Búsqueda */}
-          <form onSubmit={handleSearchSubmit} className="flex-1">
+          <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -58,10 +64,20 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
                 placeholder="Buscar por nombre, email o documento..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    // Immediate search on Enter, bypassing debounce
+                    e.preventDefault();
+                    if ((filters.search || '') !== searchInput) {
+                      onFiltersChange({ ...filters, search: searchInput, page: 1 });
+                    }
+                  }
+                }}
                 className="pl-9"
+                aria-label="Buscar usuarios"
               />
             </div>
-          </form>
+          </div>
 
           {/* Filtro por estado */}
           <Select
@@ -99,11 +115,7 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
             </SelectContent>
           </Select>
 
-          {/* Botón de buscar */}
-          <Button type="submit" onClick={handleSearchSubmit}>
-            <Search className="mr-2 h-4 w-4" />
-            Buscar
-          </Button>
+          {/* Botón eliminado: búsqueda automática al escribir */}
         </div>
       </CardContent>
     </Card>

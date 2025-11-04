@@ -1,19 +1,11 @@
 'use client';
 
 import { type ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal, Pencil } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -58,25 +50,32 @@ export function UsersTable({
       cell: ({ row }) => {
         const user = row.original;
         return (
-          <div>
-            <div className="font-medium">
+          <div >
+            <div className="font-medium leading-tight truncate">
               {user.firstName} {user.lastName}
             </div>
-            <div className="text-sm text-muted-foreground">{user.email}</div>
+            <div className="text-xs text-muted-foreground ">
+              <span className="block truncate" title={user.email}>
+                {user.email}
+              </span>
+            </div>
+            <div>
+              <span className="text-xs text-muted-foreground">
+                {user.document}
+              </span>
+            </div>
           </div>
         );
       },
     },
-    {
-      accessorKey: 'document',
-      header: 'Documento',
-    },
+   
     {
       accessorKey: 'role',
       header: 'Rol',
       cell: ({ row }) => {
         return (
-          <Badge variant="secondary">{row.original.role.name}</Badge>
+          <Badge variant="outline">{row.original.role.code}</Badge>
+          // <Badge variant="secondary">{row.original.role.name}</Badge>
         );
       },
     },
@@ -106,22 +105,14 @@ export function UsersTable({
         const user = row.original;
 
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Abrir menú</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => onEditUser(user)}>
-                <Pencil className="mr-2 h-4 w-4" />
-                Editar usuario
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onEditUser(user)}
+          >
+            <Pencil className="mr-2 h-4 w-4" />
+            Editar
+          </Button>
         );
       },
     },
@@ -146,9 +137,11 @@ export function UsersTable({
           </div>
         )}
       </div>
+     
 
       {/* Paginación (ambos) */}
       <DataTablePagination meta={meta} onPageChange={onPageChange} />
+      
     </div>
   );
 }

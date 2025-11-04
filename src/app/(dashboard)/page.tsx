@@ -1,5 +1,11 @@
-import { HomeContent } from "../_components/home-content";
+import { WelcomeSection } from "@/features/dashboard/components/welcome-section";
+import { ModulesGrid } from "@/features/dashboard/components/modules-grid";
 
 export default function Home() {
-  return <HomeContent />;
+  return (
+    <>
+      <WelcomeSection />
+      <ModulesGrid />
+    </>
+  );
 }
