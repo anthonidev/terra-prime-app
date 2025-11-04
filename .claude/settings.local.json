@@ -12,7 +12,8 @@
       "Bash(bun x shadcn@latest add:*)",
       "Bash(ls:*)",
       "Bash(mkdir:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(nul)"
     ],
     "deny": [],
     "ask": []
