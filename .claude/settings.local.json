@@ -13,7 +13,10 @@
       "Bash(ls:*)",
       "Bash(mkdir:*)",
       "Bash(dir:*)",
-      "Bash(nul)"
+      "Bash(nul)",
+      "Bash(for dir in agents auth dashboard layout leads participants pin profile sales user users vendors)",
+      "Bash(do echo \"=== Feature: $dir ===\")",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []

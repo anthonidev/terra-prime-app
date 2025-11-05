@@ -1,5 +1,5 @@
 import { PageHeader } from '@/shared/components/common/page-header';
-import { LeadsAssignmentContainer } from '@/features/leads/components/leads-assignment-container';
+import { LeadsAssignmentContainer } from '@/features/leads/components/containers/leads-assignment-container';
 
 export default function LeadsAssignmentPage() {
   return (

@@ -1,4 +1,4 @@
-import { LeadDetailSkeleton } from '@/features/leads/components/lead-detail-skeleton';
+import { LeadDetailSkeleton } from '@/features/leads/components/skeletons/lead-detail-skeleton';
 
 export default function Loading() {
   return <LeadDetailSkeleton />;

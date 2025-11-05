@@ -1,4 +1,4 @@
-import { RequestResetContainer } from '@/features/auth/components/request-reset-container';
+import { RequestResetContainer } from '@/features/auth/components/containers/request-reset-container';
 
 export default function ResetPasswordPage() {
   return (

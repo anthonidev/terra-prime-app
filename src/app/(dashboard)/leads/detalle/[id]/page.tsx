@@ -1,4 +1,4 @@
-import { LeadDetailContainer } from '@/features/leads/components/lead-detail-container';
+import { LeadDetailContainer } from '@/features/leads/components/containers/lead-detail-container';
 
 interface LeadDetailPageProps {
   params: Promise<{

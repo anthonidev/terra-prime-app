@@ -1,4 +1,4 @@
-import { ProjectDetailContainer } from '@/features/projects/components/project-detail-container';
+import { ProjectDetailContainer } from '@/features/projects/components/containers/project-detail-container';
 
 interface ProjectDetailPageProps {
   params: Promise<{ id: string }>;

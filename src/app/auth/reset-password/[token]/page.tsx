@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 
-import { ResetPasswordContainer } from '@/features/auth/components/reset-password-container';
+import { ResetPasswordContainer } from '@/features/auth/components/containers/reset-password-container';
 
 export default function ResetPasswordTokenPage() {
   const params = useParams();

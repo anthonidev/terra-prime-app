@@ -2,7 +2,7 @@
 
 import { Separator } from "@/components/ui/separator";
 import ThemeSwitch from "@/components/ui/ThemeSwich";
-import { UserMenu } from "@/features/user/components/UserMenu";
+import { UserMenu } from "@/features/users/components/menus/user-menu";
 import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 

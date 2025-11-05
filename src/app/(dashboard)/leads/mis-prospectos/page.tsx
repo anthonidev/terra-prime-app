@@ -1,5 +1,5 @@
 import { PageHeader } from '@/shared/components/common/page-header';
-import { VendorLeadsContainer } from '@/features/leads/components/vendor-leads-container';
+import { VendorLeadsContainer } from '@/features/leads/components/containers/vendor-leads-container';
 
 export default function MisProspectosPage() {
   return (
