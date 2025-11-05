@@ -31,38 +31,25 @@ export function ParticipantsTable({
   const columns: ColumnDef<Participant>[] = [
     {
       accessorKey: 'firstName',
-      header: 'Nombre',
+      header: 'Participante',
       cell: ({ row }) => {
         const participant = row.original;
         return (
           <div>
-            <div className="font-medium leading-tight truncate">
+            <div className="text-xs font-bold">
               {participant.firstName} {participant.lastName}
             </div>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <Badge variant="outline" className="text-xs font-mono">
+                {DOCUMENT_TYPE_LABELS[participant.documentType]}
+              </Badge>
+              <span className="text-xs text-muted-foreground">{participant.document}</span>
+            </div>
             {participant.email && (
-              <div className="text-xs text-muted-foreground">
-                <span className="block truncate" title={participant.email}>
-                  {participant.email}
-                </span>
+              <div className="text-xs text-muted-foreground mt-0.5 truncate">
+                {participant.email}
               </div>
             )}
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: 'document',
-      header: 'Documento',
-      cell: ({ row }) => {
-        const participant = row.original;
-        return (
-          <div>
-            <div className="text-sm">
-              {DOCUMENT_TYPE_LABELS[participant.documentType]}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {participant.document}
-            </div>
           </div>
         );
       },
@@ -71,43 +58,30 @@ export function ParticipantsTable({
       accessorKey: 'phone',
       header: 'Teléfono',
       cell: ({ row }) => (
-        <div className="text-sm">{row.getValue('phone')}</div>
+        <div className="text-xs">{row.getValue('phone')}</div>
       ),
     },
     {
       accessorKey: 'participantType',
-      header: 'Tipo',
+      header: 'Tipo / Estado',
       cell: ({ row }) => {
+        const participant = row.original;
         const type = row.getValue('participantType') as Participant['participantType'];
         return (
-          <Badge variant="outline" className="text-xs">
-            {PARTICIPANT_TYPE_LABELS[type]}
-          </Badge>
+          <div className="flex flex-col gap-1">
+            <Badge variant="outline" className="text-xs w-fit">
+              {PARTICIPANT_TYPE_LABELS[type]}
+            </Badge>
+            <Badge variant={participant.isActive ? 'default' : 'destructive'} className="text-xs w-fit">
+              {participant.isActive ? 'Activo' : 'Inactivo'}
+            </Badge>
+          </div>
         );
-      },
-    },
-    {
-      accessorKey: 'isActive',
-      header: 'Estado',
-      cell: ({ row }) => {
-        const isActive = row.getValue('isActive') as boolean;
-        return (
-          <Badge variant={isActive ? 'default' : 'destructive'}>
-            {isActive ? 'Activo' : 'Inactivo'}
-          </Badge>
-        );
-      },
-    },
-    {
-      accessorKey: 'createdAt',
-      header: 'Fecha de creación',
-      cell: ({ row }) => {
-        const date = new Date(row.getValue('createdAt'));
-        return format(date, 'dd MMM yyyy', { locale: es });
       },
     },
     {
       id: 'actions',
+      header: 'Acciones',
       cell: ({ row }) => {
         const participant = row.original;
 
@@ -116,9 +90,10 @@ export function ParticipantsTable({
             variant="outline"
             size="sm"
             onClick={() => onEditParticipant(participant)}
+            className="h-8 w-8 p-0"
+            title="Editar participante"
           >
-            <Pencil className="mr-2 h-4 w-4" />
-            Editar
+            <Pencil className="h-3.5 w-3.5" />
           </Button>
         );
       },

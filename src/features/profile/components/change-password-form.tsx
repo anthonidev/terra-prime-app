@@ -3,16 +3,10 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Eye, EyeOff, Loader2, LockKeyhole } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Shield } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -65,141 +59,148 @@ export function ChangePasswordForm() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Cambiar Contraseña</CardTitle>
-        <CardDescription>
-          Actualiza tu contraseña para mantener tu cuenta segura
-        </CardDescription>
+      <CardHeader className="pb-3">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded bg-destructive/20 flex items-center justify-center">
+            <Shield className="h-4 w-4 text-destructive" />
+          </div>
+          <CardTitle className="text-base">Cambiar Contraseña</CardTitle>
+        </div>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+            {/* Current Password */}
             <FormField
               control={form.control}
               name="currentPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Contraseña Actual</FormLabel>
-                  <div className="relative">
-                    <LockKeyhole className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          type={showCurrentPassword ? 'text' : 'password'}
-                          className="pr-10 pl-10"
-                          {...field}
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="absolute top-0 right-0 h-full px-3"
-                          onClick={() =>
-                            setShowCurrentPassword(!showCurrentPassword)
-                          }
-                        >
-                          {showCurrentPassword ? (
-                            <EyeOff className="text-muted-foreground h-4 w-4" />
-                          ) : (
-                            <Eye className="text-muted-foreground h-4 w-4" />
-                          )}
-                        </Button>
-                      </div>
-                    </FormControl>
-                  </div>
-                  <FormMessage />
+                  <FormLabel className="text-xs font-medium">Contraseña Actual</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        type={showCurrentPassword ? 'text' : 'password'}
+                        className="pr-10 h-9 text-sm"
+                        placeholder="••••••••"
+                        {...field}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-0 right-0 h-9 w-9"
+                        onClick={() =>
+                          setShowCurrentPassword(!showCurrentPassword)
+                        }
+                      >
+                        {showCurrentPassword ? (
+                          <EyeOff className="text-muted-foreground h-3.5 w-3.5" />
+                        ) : (
+                          <Eye className="text-muted-foreground h-3.5 w-3.5" />
+                        )}
+                      </Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage className="text-xs" />
                 </FormItem>
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="newPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nueva Contraseña</FormLabel>
-                  <div className="relative">
-                    <LockKeyhole className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+            {/* Grid for New Password and Confirm */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-medium">Nueva Contraseña</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
                           type={showNewPassword ? 'text' : 'password'}
-                          className="pr-10 pl-10"
+                          className="pr-10 h-9 text-sm"
+                          placeholder="••••••••"
                           {...field}
                         />
                         <Button
                           type="button"
                           variant="ghost"
                           size="icon"
-                          className="absolute top-0 right-0 h-full px-3"
+                          className="absolute top-0 right-0 h-9 w-9"
                           onClick={() => setShowNewPassword(!showNewPassword)}
                         >
                           {showNewPassword ? (
-                            <EyeOff className="text-muted-foreground h-4 w-4" />
+                            <EyeOff className="text-muted-foreground h-3.5 w-3.5" />
                           ) : (
-                            <Eye className="text-muted-foreground h-4 w-4" />
+                            <Eye className="text-muted-foreground h-3.5 w-3.5" />
                           )}
                         </Button>
                       </div>
                     </FormControl>
-                  </div>
-                  <FormDescription className="text-xs">
-                    Debe contener al menos 6 caracteres, una mayúscula, una
-                    minúscula y un número
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirmar Nueva Contraseña</FormLabel>
-                  <div className="relative">
-                    <LockKeyhole className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-medium">Confirmar Contraseña</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
                           type={showConfirmPassword ? 'text' : 'password'}
-                          className="pr-10 pl-10"
+                          className="pr-10 h-9 text-sm"
+                          placeholder="••••••••"
                           {...field}
                         />
                         <Button
                           type="button"
                           variant="ghost"
                           size="icon"
-                          className="absolute top-0 right-0 h-full px-3"
+                          className="absolute top-0 right-0 h-9 w-9"
                           onClick={() =>
                             setShowConfirmPassword(!showConfirmPassword)
                           }
                         >
                           {showConfirmPassword ? (
-                            <EyeOff className="text-muted-foreground h-4 w-4" />
+                            <EyeOff className="text-muted-foreground h-3.5 w-3.5" />
                           ) : (
-                            <Eye className="text-muted-foreground h-4 w-4" />
+                            <Eye className="text-muted-foreground h-3.5 w-3.5" />
                           )}
                         </Button>
                       </div>
                     </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-            <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Actualizando...
-                </>
-              ) : (
-                'Actualizar Contraseña'
-              )}
-            </Button>
+            {/* Helper Text */}
+            <FormDescription className="text-xs bg-muted/50 p-2 rounded-md">
+              La contraseña debe contener al menos 6 caracteres, una mayúscula, una minúscula y un número
+            </FormDescription>
+
+            {/* Submit Button */}
+            <div className="pt-2">
+              <Button type="submit" size="sm" className="w-full" disabled={isPending}>
+                {isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                    Actualizando...
+                  </>
+                ) : (
+                  <>
+                    <Shield className="mr-2 h-3.5 w-3.5" />
+                    Actualizar contraseña
+                  </>
+                )}
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>

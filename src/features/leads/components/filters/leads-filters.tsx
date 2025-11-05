@@ -1,9 +1,10 @@
 'use client';
 
-import { Search } from 'lucide-react';
+import { ArrowDownUp, Building2, Calendar, Home, Search } from 'lucide-react';
 
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -40,7 +41,7 @@ export function LeadsFilters({
   onSearchSubmit,
 }: LeadsFiltersProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Search */}
       <form
         onSubmit={(e) => {
@@ -50,64 +51,100 @@ export function LeadsFilters({
         className="flex gap-2"
       >
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Buscar lead por nombre, email o documento..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-9"
+            className="pl-9 h-9 text-sm"
           />
         </div>
-        <Button type="submit">Buscar</Button>
+        <Button type="submit" size="sm">
+          <Search className="mr-2 h-3.5 w-3.5" />
+          Buscar
+        </Button>
       </form>
 
       {/* Filters Row */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {/* Start Date */}
-        <div>
-          <label className="text-sm font-medium mb-1.5 block">Fecha inicio</label>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium flex items-center gap-1.5">
+            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+            Fecha inicio
+          </Label>
           <Input
             type="date"
             value={startDate}
             onChange={(e) => onStartDateChange(e.target.value)}
+            className="h-9 text-sm"
           />
         </div>
 
         {/* End Date */}
-        <div>
-          <label className="text-sm font-medium mb-1.5 block">Fecha fin</label>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium flex items-center gap-1.5">
+            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+            Fecha fin
+          </Label>
           <Input
             type="date"
             value={endDate}
             onChange={(e) => onEndDateChange(e.target.value)}
+            className="h-9 text-sm"
           />
         </div>
 
         {/* Is In Office Filter */}
-        <div>
-          <label className="text-sm font-medium mb-1.5 block">Ubicación</label>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium text-muted-foreground">Ubicación</Label>
           <Select value={isInOffice} onValueChange={onIsInOfficeChange}>
-            <SelectTrigger>
+            <SelectTrigger className="h-9 text-sm">
               <SelectValue placeholder="Todas las ubicaciones" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todas las ubicaciones</SelectItem>
-              <SelectItem value="true">En oficina</SelectItem>
-              <SelectItem value="false">Fuera de oficina</SelectItem>
+              <SelectItem value="all">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-muted-foreground" />
+                  <span>Todas</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="true">
+                <div className="flex items-center gap-2">
+                  <Building2 className="h-3.5 w-3.5 text-primary" />
+                  <span>En oficina</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="false">
+                <div className="flex items-center gap-2">
+                  <Home className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>Fuera de oficina</span>
+                </div>
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Order */}
-        <div>
-          <label className="text-sm font-medium mb-1.5 block">Orden</label>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-medium text-muted-foreground">Ordenar por</Label>
           <Select value={order} onValueChange={(value) => onOrderChange(value as 'ASC' | 'DESC')}>
-            <SelectTrigger>
+            <SelectTrigger className="h-9 text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="ASC">Más antiguos</SelectItem>
-              <SelectItem value="DESC">Más recientes</SelectItem>
+              <SelectItem value="ASC">
+                <div className="flex items-center gap-2">
+                  <ArrowDownUp className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>Más antiguos primero</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="DESC">
+                <div className="flex items-center gap-2">
+                  <ArrowDownUp className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>Más recientes primero</span>
+                </div>
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>

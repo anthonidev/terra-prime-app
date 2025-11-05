@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
-import { UserPlus, Eye } from 'lucide-react';
+import { Building2, UserPlus, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DataTableWithSelection } from '@/shared/components/data-table/data-table-with-selection';
+import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { AssignVendorModal } from '../dialogs/assign-vendor-modal';
+import { LeadAssignmentCard } from '../cards/lead-assignment-card';
 import type { Lead } from '../../types';
 
 interface LeadsAssignmentTableProps {
@@ -15,6 +17,7 @@ interface LeadsAssignmentTableProps {
 }
 
 export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
   const [selectedLeadNames, setSelectedLeadNames] = useState<string[]>([]);
@@ -35,64 +38,63 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
     setIsModalOpen(true);
   };
 
+  const handleMobileSelect = (leadId: string, isSelected: boolean) => {
+    setSelectedLeadIds((prev) =>
+      isSelected ? [...prev, leadId] : prev.filter((id) => id !== leadId)
+    );
+  };
+
+  const handleMobileAssignSelected = () => {
+    const selectedLeads = leads.filter((lead) => selectedLeadIds.includes(lead.id));
+    if (selectedLeads.length > 0) {
+      handleAssignMultiple(selectedLeads);
+    }
+  };
+
   const columns: ColumnDef<Lead>[] = [
     {
       accessorKey: 'firstName',
-      header: 'Nombre',
+      header: 'Lead',
       cell: ({ row }) => {
         const lead = row.original;
         return (
           <div>
-            <div className="font-medium">
+            <div className="text-xs font-bold">
               {lead.firstName} {lead.lastName}
             </div>
-            <div className="text-sm text-muted-foreground">{lead.document}</div>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <Badge variant="outline" className="text-xs font-mono">
+                {lead.documentType}
+              </Badge>
+              <span className="text-xs text-muted-foreground">{lead.document}</span>
+            </div>
+            {lead.email && (
+              <div className="text-xs text-muted-foreground mt-0.5 truncate">
+                {lead.email}
+              </div>
+            )}
+            {lead.phone && (
+              <div className="text-xs text-muted-foreground mt-0.5">{lead.phone}</div>
+            )}
           </div>
         );
-      },
-    },
-    {
-      accessorKey: 'email',
-      header: 'Email',
-      cell: ({ row }) => {
-        const email = row.original.email;
-        return email || <span className="text-muted-foreground">-</span>;
-      },
-    },
-    {
-      accessorKey: 'phone',
-      header: 'Teléfono',
-      cell: ({ row }) => {
-        const phone = row.original.phone;
-        return phone || <span className="text-muted-foreground">-</span>;
-      },
-    },
-    {
-      accessorKey: 'age',
-      header: 'Edad',
-      cell: ({ row }) => {
-        const age = row.original.age;
-        return age ? `${age} años` : <span className="text-muted-foreground">-</span>;
       },
     },
     {
       accessorKey: 'isInOffice',
       header: 'Estado',
       cell: ({ row }) => {
-        const isInOffice = row.original.isInOffice;
+        const lead = row.original;
         return (
-          <Badge variant={isInOffice ? 'default' : 'secondary'}>
-            {isInOffice ? 'En oficina' : 'Fuera'}
-          </Badge>
+          <div className="space-y-1">
+            {lead.isInOffice && (
+              <Badge className="text-xs bg-success text-success-foreground">
+                <Building2 className="mr-1 h-3 w-3" />
+                En Oficina
+              </Badge>
+            )}
+          </div>
         );
-      },
-    },
-    {
-      accessorKey: 'source',
-      header: 'Fuente',
-      cell: ({ row }) => {
-        const source = row.original.source;
-        return source?.name || <span className="text-muted-foreground">-</span>;
       },
     },
     {
@@ -101,7 +103,7 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
       cell: ({ row }) => {
         const projects = row.original.interestProjects;
         if (!projects || projects.length === 0) {
-          return <span className="text-muted-foreground">-</span>;
+          return <span className="text-xs text-muted-foreground">-</span>;
         }
         return (
           <div className="flex flex-wrap gap-1">
@@ -121,7 +123,7 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
     },
     {
       accessorKey: 'vendor',
-      header: 'Vendedor Asignado',
+      header: 'Vendedor',
       cell: ({ row }) => {
         const vendor = row.original.vendor;
         if (!vendor) {
@@ -133,7 +135,7 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
         }
         return (
           <div>
-            <div className="font-medium text-sm">
+            <div className="text-xs font-medium">
               {vendor.firstName} {vendor.lastName}
             </div>
             <div className="text-xs text-muted-foreground">{vendor.document}</div>
@@ -148,18 +150,19 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
         const lead = row.original;
         const hasVendor = !!lead.vendor;
         return (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Button
               variant="outline"
               size="sm"
               onClick={() => handleAssignSingle(lead)}
+              className="h-8"
             >
-              <UserPlus className="h-4 w-4 mr-1" />
+              <UserPlus className="h-3.5 w-3.5 mr-1.5" />
               {hasVendor ? 'Reasignar' : 'Asignar'}
             </Button>
-            <Button variant="ghost" size="sm" asChild>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" asChild>
               <Link href={`/leads/detalle/${lead.id}`}>
-                <Eye className="h-4 w-4" />
+                <Eye className="h-3.5 w-3.5" />
               </Link>
             </Button>
           </div>
@@ -167,6 +170,46 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
       },
     },
   ];
+
+  if (isMobile) {
+    return (
+      <>
+        {/* Botón para asignar seleccionados en mobile */}
+        {selectedLeadIds.length > 0 && (
+          <div className="mb-4">
+            <Button
+              onClick={handleMobileAssignSelected}
+              className="w-full"
+              size="sm"
+            >
+              <UserPlus className="mr-2 h-3.5 w-3.5" />
+              Asignar seleccionados ({selectedLeadIds.length})
+            </Button>
+          </div>
+        )}
+
+        {/* Cards Mobile */}
+        <div className="space-y-3">
+          {leads.map((lead) => (
+            <LeadAssignmentCard
+              key={lead.id}
+              lead={lead}
+              onAssign={handleAssignSingle}
+              isSelected={selectedLeadIds.includes(lead.id)}
+              onSelect={handleMobileSelect}
+            />
+          ))}
+        </div>
+
+        <AssignVendorModal
+          open={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          leadIds={selectedLeadIds}
+          leadNames={selectedLeadNames}
+        />
+      </>
+    );
+  }
 
   return (
     <>

@@ -1,5 +1,11 @@
 import type { DocumentType } from '../types';
-
+export enum EstadoCivil {
+  Soltero = 'Soltero',
+  Casado = 'Casado',
+  Divorciado = 'Divorciado',
+  Conviviente = 'Conviviente',
+  Viudo = 'Viudo'
+}
 export const DOCUMENT_TYPES: Array<{ value: DocumentType; label: string }> = [
   { value: 'DNI', label: 'DNI' },
   { value: 'CE', label: 'Carné de Extranjería' },
@@ -7,9 +13,9 @@ export const DOCUMENT_TYPES: Array<{ value: DocumentType; label: string }> = [
 ];
 
 export const MARITAL_STATUS_OPTIONS = [
-  { value: 'Soltero', label: 'Soltero/a' },
-  { value: 'Casado', label: 'Casado/a' },
-  { value: 'Divorciado', label: 'Divorciado/a' },
-  { value: 'Viudo', label: 'Viudo/a' },
-  { value: 'Conviviente', label: 'Conviviente' },
+    { value: EstadoCivil.Soltero, label: 'Soltero' },
+    { value: EstadoCivil.Casado, label: 'Casado' },
+    { value: EstadoCivil.Divorciado, label: 'Divorciado' },
+    { value: EstadoCivil.Conviviente, label: 'Conviviente' },
+    { value: EstadoCivil.Viudo, label: 'Viudo' }
 ];

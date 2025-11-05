@@ -48,11 +48,11 @@ export function ParticipantsFilters({ filters, onFiltersChange }: ParticipantsFi
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end">
+        <div className="flex flex-col gap-3 md:flex-row">
           {/* Búsqueda */}
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="Buscar por nombre, documento o teléfono..."
@@ -67,30 +67,32 @@ export function ParticipantsFilters({ filters, onFiltersChange }: ParticipantsFi
                     }
                   }
                 }}
-                className="pl-9"
+                className="pl-9 h-9 text-sm"
                 aria-label="Buscar participantes"
               />
             </div>
           </div>
 
           {/* Filtro por tipo */}
-          <Select
-            value={filters.type || 'all'}
-            onValueChange={handleTypeChange}
-          >
-            <SelectTrigger className="w-full md:w-[250px]">
-              <Filter className="mr-2 h-4 w-4" />
-              <SelectValue placeholder="Tipo" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos los tipos</SelectItem>
-              {Object.entries(PARTICIPANT_TYPE_LABELS).map(([key, label]) => (
-                <SelectItem key={key} value={key}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="w-full md:w-[200px]">
+            <Select
+              value={filters.type || 'all'}
+              onValueChange={handleTypeChange}
+            >
+              <SelectTrigger className="h-9 text-sm">
+                <Filter className="mr-2 h-3.5 w-3.5" />
+                <SelectValue placeholder="Tipo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos</SelectItem>
+                {Object.entries(PARTICIPANT_TYPE_LABELS).map(([key, label]) => (
+                  <SelectItem key={key} value={key}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </CardContent>
     </Card>

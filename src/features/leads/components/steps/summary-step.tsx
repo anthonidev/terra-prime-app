@@ -1,12 +1,24 @@
 'use client';
 
+import {
+  ArrowLeft,
+  CheckCircle,
+  FileText,
+  Info,
+  Loader2,
+  Target,
+  User,
+  Users,
+} from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
+
 import { DOCUMENT_TYPES, MARITAL_STATUS_OPTIONS } from '../../constants';
-import type { DocumentType, LeadSource, UbigeoItem } from '../../types';
-import type { Project } from '@/features/sales/types';
+import type { DocumentType, LeadSource } from '../../types';
 
 interface SummaryStepProps {
   // Form data
@@ -24,7 +36,6 @@ interface SummaryStepProps {
   provinceName: string;
   districtName: string;
   interestProjects: string[];
-  projects: Project[] | undefined;
   hasCompanion: boolean;
   companionFullName: string;
   companionDni: string;
@@ -58,7 +69,6 @@ export function SummaryStep({
   provinceName,
   districtName,
   interestProjects,
-  projects,
   hasCompanion,
   companionFullName,
   companionDni,
@@ -82,69 +92,93 @@ export function SummaryStep({
   const maritalStatusLabel =
     MARITAL_STATUS_OPTIONS.find((ms) => ms.value === estadoCivil)?.label || estadoCivil;
 
-  const selectedProjects =
-    projects?.filter((p) => interestProjects.includes(p.id)).map((p) => p.name) || [];
+  const selectedProjects = interestProjects;
 
   return (
-    <div className="rounded-lg border bg-card shadow-sm p-6">
-      <h2 className="text-lg font-semibold mb-4">Resumen</h2>
-      <div className="space-y-6">
-        {/* Personal Info */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-muted-foreground">Datos Personales</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+    <div className="space-y-3">
+      {/* Personal Info */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded bg-accent/20 flex items-center justify-center">
+              <User className="h-4 w-4 text-accent" />
+            </div>
+            <CardTitle className="text-base">Datos Personales</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
             <div>
-              <span className="font-medium">Documento:</span>{' '}
+              <span className="font-medium text-muted-foreground">Documento:</span>{' '}
               <span>
                 {documentTypeLabel} - {document}
               </span>
             </div>
             <div>
-              <span className="font-medium">Nombres:</span> <span>{firstName}</span>
+              <span className="font-medium text-muted-foreground">Nombres:</span>{' '}
+              <span>{firstName}</span>
             </div>
             <div>
-              <span className="font-medium">Apellidos:</span> <span>{lastName}</span>
+              <span className="font-medium text-muted-foreground">Apellidos:</span>{' '}
+              <span>{lastName}</span>
             </div>
             {email && (
               <div>
-                <span className="font-medium">Email:</span> <span>{email}</span>
+                <span className="font-medium text-muted-foreground">Email:</span> <span>{email}</span>
               </div>
             )}
             <div>
-              <span className="font-medium">Teléfono:</span> <span>{phone}</span>
+              <span className="font-medium text-muted-foreground">Teléfono:</span>{' '}
+              <span>{phone}</span>
             </div>
             {phone2 && (
               <div>
-                <span className="font-medium">Teléfono 2:</span> <span>{phone2}</span>
+                <span className="font-medium text-muted-foreground">Teléfono 2:</span>{' '}
+                <span>{phone2}</span>
               </div>
             )}
             {age && (
               <div>
-                <span className="font-medium">Edad:</span> <span>{age} años</span>
+                <span className="font-medium text-muted-foreground">Edad:</span>{' '}
+                <span>{age} años</span>
               </div>
             )}
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        {/* Additional Info */}
-        <div className="space-y-3 border-t pt-4">
-          <h3 className="text-sm font-semibold text-muted-foreground">Información Adicional</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            <div>
-              <span className="font-medium">Fuente:</span> <span>{sourceName}</span>
+      {/* Additional Info */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded bg-info/20 flex items-center justify-center">
+              <Target className="h-4 w-4 text-info" />
             </div>
-            <div>
-              <span className="font-medium">Ubicación:</span>{' '}
-              <span>
-                {districtName}, {provinceName}, {departmentName}
-              </span>
+            <CardTitle className="text-base">Información Adicional</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+              <div>
+                <span className="font-medium text-muted-foreground">Fuente:</span>{' '}
+                <span>{sourceName}</span>
+              </div>
+              <div>
+                <span className="font-medium text-muted-foreground">Ubicación:</span>{' '}
+                <span>
+                  {districtName}, {provinceName}, {departmentName}
+                </span>
+              </div>
             </div>
             {selectedProjects.length > 0 && (
-              <div className="md:col-span-2">
-                <span className="font-medium">Proyectos de Interés:</span>
-                <div className="flex flex-wrap gap-2 mt-1">
+              <div>
+                <span className="text-xs font-medium text-muted-foreground">
+                  Proyectos de Interés:
+                </span>
+                <div className="flex flex-wrap gap-1.5 mt-1.5">
                   {selectedProjects.map((projectName, index) => (
-                    <Badge key={index} variant="secondary">
+                    <Badge key={index} variant="secondary" className="text-xs">
                       {projectName}
                     </Badge>
                   ))}
@@ -152,80 +186,133 @@ export function SummaryStep({
               </div>
             )}
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        {/* Companion */}
-        {hasCompanion && (
-          <div className="space-y-3 border-t pt-4">
-            <h3 className="text-sm font-semibold text-muted-foreground">Acompañante</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+      {/* Companion */}
+      {hasCompanion && (
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded bg-accent/20 flex items-center justify-center">
+                <Users className="h-4 w-4 text-accent" />
+              </div>
+              <CardTitle className="text-base">Acompañante</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
               <div>
-                <span className="font-medium">Nombre:</span> <span>{companionFullName}</span>
+                <span className="font-medium text-muted-foreground">Nombre:</span>{' '}
+                <span>{companionFullName}</span>
               </div>
               <div>
-                <span className="font-medium">DNI:</span> <span>{companionDni}</span>
+                <span className="font-medium text-muted-foreground">DNI:</span>{' '}
+                <span>{companionDni}</span>
               </div>
               <div>
-                <span className="font-medium">Parentesco:</span> <span>{companionRelationship}</span>
+                <span className="font-medium text-muted-foreground">Parentesco:</span>{' '}
+                <span>{companionRelationship}</span>
               </div>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Metadata */}
+      {(estadoCivil || ocupacion || cantidadHijos || tieneTarjetasCredito || tieneTarjetasDebito) && (
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded bg-info/20 flex items-center justify-center">
+                <Info className="h-4 w-4 text-info" />
+              </div>
+              <CardTitle className="text-base">Información Complementaria</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+              {estadoCivil && (
+                <div>
+                  <span className="font-medium text-muted-foreground">Estado Civil:</span>{' '}
+                  <span>{maritalStatusLabel}</span>
+                </div>
+              )}
+              {ocupacion && (
+                <div>
+                  <span className="font-medium text-muted-foreground">Ocupación:</span>{' '}
+                  <span>{ocupacion}</span>
+                </div>
+              )}
+              {cantidadHijos && (
+                <div>
+                  <span className="font-medium text-muted-foreground">Hijos:</span>{' '}
+                  <span>{cantidadHijos}</span>
+                </div>
+              )}
+              {tieneTarjetasCredito && (
+                <div>
+                  <span className="font-medium text-muted-foreground">Tarjetas de Crédito:</span>{' '}
+                  <span>{cantidadTarjetasCredito || 'Sí'}</span>
+                </div>
+              )}
+              {tieneTarjetasDebito && (
+                <div>
+                  <span className="font-medium text-muted-foreground">Tarjetas de Débito:</span>{' '}
+                  <span>{cantidadTarjetasDebito || 'Sí'}</span>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Observations */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center">
+              <FileText className="h-4 w-4 text-primary" />
+            </div>
+            <CardTitle className="text-base">Observaciones</CardTitle>
           </div>
-        )}
-
-        {/* Metadata */}
-        <div className="space-y-3 border-t pt-4">
-          <h3 className="text-sm font-semibold text-muted-foreground">Información Complementaria</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            {estadoCivil && (
-              <div>
-                <span className="font-medium">Estado Civil:</span> <span>{maritalStatusLabel}</span>
-              </div>
-            )}
-            {ocupacion && (
-              <div>
-                <span className="font-medium">Ocupación:</span> <span>{ocupacion}</span>
-              </div>
-            )}
-            {cantidadHijos && (
-              <div>
-                <span className="font-medium">Hijos:</span> <span>{cantidadHijos}</span>
-              </div>
-            )}
-            {tieneTarjetasCredito && (
-              <div>
-                <span className="font-medium">Tarjetas de Crédito:</span>{' '}
-                <span>{cantidadTarjetasCredito || 'Sí'}</span>
-              </div>
-            )}
-            {tieneTarjetasDebito && (
-              <div>
-                <span className="font-medium">Tarjetas de Débito:</span>{' '}
-                <span>{cantidadTarjetasDebito || 'Sí'}</span>
-              </div>
-            )}
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-1.5">
+            <Label htmlFor="observations" className="text-xs font-medium">
+              Observaciones adicionales (opcional)
+            </Label>
+            <Textarea
+              id="observations"
+              value={observations}
+              onChange={(e) => onObservationsChange(e.target.value)}
+              placeholder="Ingrese observaciones adicionales..."
+              rows={4}
+              className="text-sm resize-none"
+            />
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        {/* Observations */}
-        <div className="space-y-2 border-t pt-4">
-          <Label htmlFor="observations">Observaciones</Label>
-          <Textarea
-            id="observations"
-            value={observations}
-            onChange={(e) => onObservationsChange(e.target.value)}
-            placeholder="Ingrese observaciones adicionales (opcional)"
-            rows={4}
-          />
-        </div>
-
-        <div className="flex justify-between pt-4">
-          <Button type="button" variant="outline" onClick={onBack}>
-            Atrás
-          </Button>
-          <Button onClick={onSubmit} disabled={isSubmitting}>
-            {isSubmitting ? 'Registrando...' : 'Registrar Lead'}
-          </Button>
-        </div>
+      {/* Navigation Buttons */}
+      <div className="flex justify-between">
+        <Button type="button" variant="outline" size="sm" onClick={onBack}>
+          <ArrowLeft className="mr-2 h-3.5 w-3.5" />
+          Atrás
+        </Button>
+        <Button size="sm" onClick={onSubmit} disabled={isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+              Registrando...
+            </>
+          ) : (
+            <>
+              <CheckCircle className="mr-2 h-3.5 w-3.5" />
+              Registrar Lead
+            </>
+          )}
+        </Button>
       </div>
     </div>
   );

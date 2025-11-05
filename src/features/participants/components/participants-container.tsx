@@ -1,8 +1,7 @@
 'use client';
 
-import { Plus } from 'lucide-react';
+import { Plus, Users } from 'lucide-react';
 
-import { PageHeader } from '@/shared/components/common/page-header';
 import { Button } from '@/components/ui/button';
 
 import { useParticipantsContainer } from '../hooks/use-participants-container';
@@ -43,22 +42,26 @@ export function ParticipantsContainer() {
     );
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <PageHeader
-        title="Gestión de participantes"
-        description="Administra los participantes involucrados en el proceso de ventas"
-      />
+  const totalParticipants = data.meta.totalItems;
 
-      {/* Actions */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">
-          Total de participantes: {data.meta.totalItems}
-        </p>
-        <Button onClick={handleCreateParticipant}>
-          <Plus className="mr-2 h-4 w-4" />
-          Crear participante
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Users className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Participantes</h1>
+            <p className="text-sm text-muted-foreground">
+              {totalParticipants} {totalParticipants === 1 ? 'participante registrado' : 'participantes registrados'}
+            </p>
+          </div>
+        </div>
+        <Button onClick={handleCreateParticipant} size="sm">
+          <Plus className="mr-2 h-3.5 w-3.5" />
+          Crear
         </Button>
       </div>
 

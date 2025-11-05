@@ -1,20 +1,22 @@
 'use client';
 
-import { useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useActiveLeadSources, useUbigeos, useActiveProjectsForLead } from '../../hooks/use-lead-form-data';
-import { useRegisterLead } from '../../hooks/use-register-lead';
+import { useEffect, useMemo } from 'react';
+import { UserPlus } from 'lucide-react';
+
+import { useActiveLeadSources, useActiveProjectsForLead, useUbigeos } from '../../hooks/use-lead-form-data';
 import { useLeadFormState } from '../../hooks/use-lead-form-state';
 import { useLeadSearch } from '../../hooks/use-lead-search';
+import { useRegisterLead } from '../../hooks/use-register-lead';
 import { useUbigeoHierarchy } from '../../hooks/use-ubigeo-hierarchy';
-import { LeadFormStepper } from '../steps/lead-form-stepper';
-import { DocumentVerificationStep } from '../steps/document-verification-step';
-import { PersonalInfoStep } from '../steps/personal-info-step';
-import { AdditionalInfoStep } from '../steps/additional-info-step';
-import { SummaryStep } from '../steps/summary-step';
-import { LeadInOfficeDialog } from '../dialogs/lead-in-office-dialog';
-import { ExistingLeadDialog } from '../dialogs/existing-lead-dialog';
 import type { Lead } from '../../types';
+import { ExistingLeadDialog } from '../dialogs/existing-lead-dialog';
+import { LeadInOfficeDialog } from '../dialogs/lead-in-office-dialog';
+import { AdditionalInfoStep } from '../steps/additional-info-step';
+import { DocumentVerificationStep } from '../steps/document-verification-step';
+import { LeadFormStepper } from '../steps/lead-form-stepper';
+import { PersonalInfoStep } from '../steps/personal-info-step';
+import { SummaryStep } from '../steps/summary-step';
 
 export function NewLeadContainer() {
   const router = useRouter();
@@ -53,7 +55,7 @@ export function NewLeadContainer() {
     },
   });
 
-  const { departments, getProvinces, getDistricts, findHierarchyFromDistrict } =
+  const { departments, getProvinces, getDistricts, } =
     useUbigeoHierarchy(ubigeos);
 
   // Ubigeo computed values
@@ -72,12 +74,14 @@ export function NewLeadContainer() {
     if (formData.departmentId) {
       updateFormData({ provinceId: '', districtId: '' });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.departmentId]);
 
   useEffect(() => {
     if (formData.provinceId) {
       updateFormData({ districtId: '' });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.provinceId]);
 
   // Get names for summary
@@ -91,11 +95,11 @@ export function NewLeadContainer() {
     searchLead(formData.documentType, formData.document);
   };
 
-  const handleProjectToggle = (projectId: string) => {
+  const handleProjectToggle = (projectName: string) => {
     const current = formData.interestProjects;
-    const updated = current.includes(projectId)
-      ? current.filter((id) => id !== projectId)
-      : [...current, projectId];
+    const updated = current.includes(projectName)
+      ? current.filter((name) => name !== projectName)
+      : [...current, projectName];
     updateFormData({ interestProjects: updated });
   };
 
@@ -134,12 +138,18 @@ export function NewLeadContainer() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Registrar Nuevo Lead</h1>
-        <p className="text-muted-foreground mt-2">
-          Complete el formulario para registrar un nuevo lead en el sistema.
-        </p>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+          <UserPlus className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Registrar Nuevo Lead</h1>
+          <p className="text-sm text-muted-foreground">
+            Complete el formulario para registrar un nuevo lead en el sistema
+          </p>
+        </div>
       </div>
 
       <LeadFormStepper currentStep={currentStep} />
@@ -220,7 +230,6 @@ export function NewLeadContainer() {
           provinceName={provinceName}
           districtName={districtName}
           interestProjects={formData.interestProjects}
-          projects={projects}
           hasCompanion={formData.hasCompanion}
           companionFullName={formData.companionFullName}
           companionDni={formData.companionDni}

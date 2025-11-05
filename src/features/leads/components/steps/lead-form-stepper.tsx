@@ -21,30 +21,30 @@ interface LeadFormStepperProps {
 
 export function LeadFormStepper({ currentStep }: LeadFormStepperProps) {
   return (
-    <div className="mb-8">
+    <div className="mb-6">
       <div className="flex items-center justify-between">
         {steps.map((step, index) => (
           <div key={step.number} className="flex items-center flex-1">
             <div className="flex flex-col items-center">
               <div
                 className={cn(
-                  'flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all',
+                  'flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all',
                   currentStep > step.number
                     ? 'bg-primary border-primary text-primary-foreground'
                     : currentStep === step.number
-                      ? 'border-primary text-primary'
+                      ? 'border-primary text-primary bg-primary/5'
                       : 'border-muted-foreground/30 text-muted-foreground'
                 )}
               >
                 {currentStep > step.number ? (
-                  <Check className="h-5 w-5" />
+                  <Check className="h-4 w-4" />
                 ) : (
-                  <span className="text-sm font-semibold">{step.number}</span>
+                  <span className="text-xs font-semibold">{step.number}</span>
                 )}
               </div>
               <span
                 className={cn(
-                  'mt-2 text-sm font-medium transition-colors',
+                  'mt-1.5 text-xs font-medium transition-colors',
                   currentStep >= step.number ? 'text-foreground' : 'text-muted-foreground'
                 )}
               >
@@ -55,7 +55,7 @@ export function LeadFormStepper({ currentStep }: LeadFormStepperProps) {
               <div
                 className={cn(
                   'h-0.5 flex-1 mx-2 transition-colors',
-                  currentStep > step.number ? 'bg-primary' : 'bg-muted-foreground/30'
+                  currentStep > step.number ? 'bg-primary' : 'bg-muted-foreground/20'
                 )}
               />
             )}

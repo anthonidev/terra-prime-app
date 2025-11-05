@@ -2,16 +2,10 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, Mail, User } from 'lucide-react';
+import { Loader2, Mail, Save, UserRound } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -24,7 +18,7 @@ import { Input } from '@/components/ui/input';
 
 import { updateProfileSchema } from '../lib/validation';
 import { useUpdateProfile } from '../hooks/use-update-profile';
-import type { ProfileUser, UpdateProfileInput } from '../types';
+import type { ProfileUser } from '../types';
 
 interface ProfileFormProps {
   user: ProfileUser;
@@ -53,93 +47,100 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const isDirty = form.formState.isDirty;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Información Personal</CardTitle>
-        <CardDescription>
-          Actualiza tu información personal y de contacto
-        </CardDescription>
+    <Card className="h-full">
+      <CardHeader className="pb-3">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded bg-accent/20 flex items-center justify-center">
+            <UserRound className="h-4 w-4 text-accent" />
+          </div>
+          <CardTitle className="text-base">Información Personal</CardTitle>
+        </div>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+            {/* Email */}
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Correo Electrónico</FormLabel>
+                  <FormLabel className="text-xs font-medium">Correo Electrónico</FormLabel>
                   <div className="relative">
-                    <Mail className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                    <Mail className="text-muted-foreground absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
                     <FormControl>
                       <Input
                         placeholder="correo@ejemplo.com"
-                        className="pl-10"
+                        className="pl-9 h-9 text-sm"
                         {...field}
                       />
                     </FormControl>
                   </div>
-                  <FormMessage />
+                  <FormMessage className="text-xs" />
                 </FormItem>
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nombre</FormLabel>
-                  <div className="relative">
-                    <User className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+            {/* Grid for First and Last Name */}
+            <div className="grid grid-cols-2 gap-3">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-medium">Nombre</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Tu nombre"
-                        className="pl-10"
+                        className="h-9 text-sm"
                         {...field}
                       />
                     </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Apellido</FormLabel>
-                  <div className="relative">
-                    <User className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-medium">Apellido</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Tu apellido"
-                        className="pl-10"
+                        className="h-9 text-sm"
                         {...field}
                       />
                     </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isPending || !isDirty}
-            >
-              {isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Guardando...
-                </>
-              ) : (
-                'Guardar Cambios'
-              )}
-            </Button>
+            {/* Submit Button */}
+            <div className="pt-2">
+              <Button
+                type="submit"
+                size="sm"
+                className="w-full"
+                disabled={isPending || !isDirty}
+              >
+                {isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                    Guardando...
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-3.5 w-3.5" />
+                    Guardar cambios
+                  </>
+                )}
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>

@@ -4,14 +4,17 @@ import Link from 'next/link';
 import { type ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Eye, Download, Building2, Home } from 'lucide-react';
+import { Building2, Download, Eye, Home, Users } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { DataTable } from '@/shared/components/data-table/data-table';
 import { DataTablePagination } from '@/shared/components/data-table/data-table-pagination';
+import { useMediaQuery } from '@/shared/hooks/use-media-query';
 
-import type { Lead, DocumentType } from '../../types';
+import { LeadCard } from '../cards/lead-card';
+import type { DocumentType, Lead } from '../../types';
 import type { PaginationMeta } from '@/shared/types/pagination';
 
 interface LeadsTableProps {
@@ -28,6 +31,8 @@ const documentTypeLabels: Record<DocumentType, string> = {
 };
 
 export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   const handleDownloadReport = (url: string, leadName: string) => {
     const link = document.createElement('a');
     link.href = url;
@@ -41,59 +46,62 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
   const columns: ColumnDef<Lead>[] = [
     {
       accessorKey: 'firstName',
-      header: 'Nombre completo',
+      header: 'Lead',
       cell: ({ row }) => (
-        <div className="font-medium">
-          {row.original.firstName} {row.original.lastName}
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'document',
-      header: 'Documento',
-      cell: ({ row }) => (
-        <div className="text-sm">
-          <Badge variant="outline" className="font-mono text-xs">
-            {documentTypeLabels[row.original.documentType]}
-          </Badge>
-          <p className="mt-1">{row.original.document}</p>
+        <div>
+          <div className="text-sm font-medium">
+            {row.original.firstName} {row.original.lastName}
+          </div>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <Badge variant="outline" className="text-xs font-mono">
+              {documentTypeLabels[row.original.documentType]}
+            </Badge>
+            <span className="text-xs text-muted-foreground">{row.original.document}</span>
+          </div>
         </div>
       ),
     },
     {
       accessorKey: 'email',
-      header: 'Email',
+      header: 'Contacto',
       cell: ({ row }) => (
-        <span className="text-sm text-muted-foreground">
-          {row.original.email || '-'}
-        </span>
+        <div className="text-xs">
+          {row.original.email && (
+            <div className="text-muted-foreground truncate max-w-[200px]">
+              {row.original.email}
+            </div>
+          )}
+          {row.original.phone && (
+            <div className="text-muted-foreground mt-0.5">{row.original.phone}</div>
+          )}
+        </div>
       ),
     },
     {
       accessorKey: 'isInOffice',
       header: 'Ubicación',
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
+        <div>
           {row.original.isInOffice ? (
-            <>
-              <Building2 className="h-4 w-4 text-primary" />
-              <span className="text-sm">En oficina</span>
-            </>
+            <Badge className="text-xs bg-success text-success-foreground">
+              <Building2 className="mr-1 h-3 w-3" />
+              En Oficina
+            </Badge>
           ) : (
-            <>
-              <Home className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Fuera de oficina</span>
-            </>
+            <Badge variant="outline" className="text-xs text-muted-foreground">
+              <Home className="mr-1 h-3 w-3" />
+              Fuera
+            </Badge>
           )}
         </div>
       ),
     },
     {
       accessorKey: 'createdAt',
-      header: 'Fecha de registro',
+      header: 'Registro',
       cell: ({ row }) => (
-        <span className="text-sm text-muted-foreground">
-          {format(new Date(row.original.createdAt), 'PPP', { locale: es })}
+        <span className="text-xs text-muted-foreground">
+          {format(new Date(row.original.createdAt), 'dd/MM/yyyy', { locale: es })}
         </span>
       ),
     },
@@ -101,8 +109,7 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
       id: 'actions',
       header: 'Acciones',
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          {/* Download Report Button */}
+        <div className="flex items-center gap-1">
           {row.original.reportPdfUrl ? (
             <Button
               size="sm"
@@ -113,20 +120,26 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
                   `${row.original.firstName}-${row.original.lastName}`
                 )
               }
+              className="h-8 w-8 p-0"
               title="Descargar reporte PDF"
             >
-              <Download className="h-4 w-4" />
+              <Download className="h-3.5 w-3.5" />
             </Button>
           ) : (
-            <Button size="sm" variant="outline" disabled title="Sin reporte disponible">
-              <Download className="h-4 w-4 opacity-50" />
+            <Button
+              size="sm"
+              variant="outline"
+              disabled
+              className="h-8 w-8 p-0"
+              title="Sin reporte disponible"
+            >
+              <Download className="h-3.5 w-3.5 opacity-50" />
             </Button>
           )}
 
-          {/* View Details Button */}
           <Link href={`/leads/detalle/${row.original.id}`}>
-            <Button size="sm" variant="ghost" title="Ver detalle">
-              <Eye className="h-4 w-4" />
+            <Button size="sm" variant="ghost" className="h-8 w-8 p-0" title="Ver detalle">
+              <Eye className="h-3.5 w-3.5" />
             </Button>
           </Link>
         </div>
@@ -136,17 +149,37 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
 
   if (leads.length === 0) {
     return (
-      <div className="rounded-lg border bg-card shadow-sm p-8">
-        <p className="text-center text-muted-foreground">No se encontraron leads</p>
-      </div>
+      <Card>
+        <CardContent className="p-8">
+          <div className="flex flex-col items-center justify-center gap-3 text-center">
+            <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
+              <Users className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-medium">No se encontraron leads</p>
+              <p className="text-xs text-muted-foreground">
+                No hay leads que coincidan con los filtros aplicados
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border bg-card shadow-sm">
-        <DataTable columns={columns} data={leads} />
-      </div>
+      {isMobile ? (
+        <div className="space-y-3">
+          {leads.map((lead) => (
+            <LeadCard key={lead.id} lead={lead} onDownloadReport={handleDownloadReport} />
+          ))}
+        </div>
+      ) : (
+        <Card>
+          <DataTable columns={columns} data={leads} />
+        </Card>
+      )}
 
       <DataTablePagination meta={meta} onPageChange={onPageChange} />
     </div>

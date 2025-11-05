@@ -23,43 +23,43 @@ export function AvailableProjectCard({ project }: AvailableProjectCardProps) {
     .slice(0, 2);
 
   return (
-    <Card className="group h-full transition-all hover:shadow-lg hover:scale-[1.02]">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-3">
-          {/* Logo/Avatar */}
-          <Avatar className="h-16 w-16 rounded-lg">
-            <AvatarImage src={project.logo || undefined} alt={project.name} />
-            <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-lg font-semibold">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
+    <Link href={`/proyectos/lotes-disponibles/${project.id}`} className="block h-full">
+      <Card className="group h-full transition-all hover:shadow-lg hover:scale-[1.01] cursor-pointer">
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between gap-3">
+            {/* Logo/Avatar */}
+            <Avatar className="h-12 w-12 rounded-lg">
+              <AvatarImage src={project.logo || undefined} alt={project.name} />
+              <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-sm font-semibold">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
 
-          {/* Moneda */}
-          <Badge variant="outline" className="font-mono">
-            {project.currency}
-          </Badge>
-        </div>
+            {/* Moneda */}
+            <Badge variant="outline" className="font-mono text-xs">
+              {project.currency}
+            </Badge>
+          </div>
 
-        {/* Nombre del proyecto */}
-        <div className="pt-3">
-          <h3 className="text-xl font-bold group-hover:text-primary transition-colors">
-            {project.name}
-          </h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            Código: {project.projectCode}
-          </p>
-        </div>
-      </CardHeader>
+          {/* Nombre del proyecto */}
+          <div className="pt-2">
+            <h3 className="text-base font-bold group-hover:text-primary transition-colors line-clamp-1">
+              {project.name}
+            </h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Código: {project.projectCode}
+            </p>
+          </div>
+        </CardHeader>
 
-      <CardContent>
-        <Link href={`/proyectos/lotes-disponibles/${project.id}`}>
-          <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-            <Building2 className="mr-2 h-4 w-4" />
-            Ver lotes disponibles
-            <ChevronRight className="ml-auto h-4 w-4" />
-          </Button>
-        </Link>
-      </CardContent>
-    </Card>
+        <CardContent className="pt-0">
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground group-hover:text-primary transition-colors">
+            <Building2 className="h-3.5 w-3.5" />
+            <span>Ver lotes disponibles</span>
+            <ChevronRight className="h-3.5 w-3.5 ml-auto" />
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

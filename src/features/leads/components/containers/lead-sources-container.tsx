@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Filter, Loader2, Plus, Target } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { PageHeader } from '@/shared/components/common/page-header';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import { useLeadSources } from '../../hooks/use-lead-sources';
 import { LeadSourcesFilters } from '../filters/lead-sources-filters';
@@ -44,40 +45,67 @@ export function LeadSourcesContainer() {
     setSelectedLeadSource(null);
   };
 
+  const totalSources = data?.meta.totalItems || 0;
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <PageHeader
-        title="Gestión de fuentes de leads"
-        description="Administra las fuentes de generación de leads"
-      />
-
-      {/* Filters Section */}
-      <div className="rounded-lg border bg-card shadow-sm p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">Filtros</h2>
-          <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" />
-            Crear fuente
-          </Button>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Target className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Fuentes de Leads</h1>
+            <p className="text-sm text-muted-foreground">
+              {totalSources} {totalSources === 1 ? 'fuente registrada' : 'fuentes registradas'}
+            </p>
+          </div>
         </div>
-
-        <LeadSourcesFilters
-          search={search}
-          isActive={isActive}
-          order={order}
-          onSearchChange={setSearch}
-          onIsActiveChange={setIsActive}
-          onOrderChange={setOrder}
-          onSearchSubmit={() => setPage(1)}
-        />
+        <Button size="sm" onClick={handleCreate}>
+          <Plus className="mr-2 h-4 w-4" />
+          Nueva fuente
+        </Button>
       </div>
 
-      {/* Table */}
+      {/* Filters Card */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded bg-accent/20 flex items-center justify-center">
+              <Filter className="h-4 w-4 text-accent" />
+            </div>
+            <CardTitle className="text-base">Filtros de Búsqueda</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <LeadSourcesFilters
+            search={search}
+            isActive={isActive}
+            order={order}
+            onSearchChange={setSearch}
+            onIsActiveChange={setIsActive}
+            onOrderChange={setOrder}
+            onSearchSubmit={() => setPage(1)}
+          />
+        </CardContent>
+      </Card>
+
+      {/* Table or Loading */}
       {isLoading ? (
-        <div className="rounded-lg border bg-card shadow-sm p-8">
-          <p className="text-center text-muted-foreground">Cargando...</p>
-        </div>
+        <Card>
+          <CardContent className="p-6">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                <span className="text-sm text-muted-foreground">Cargando fuentes de leads...</span>
+              </div>
+              {Array.from({ length: 5 }).map((_, index) => (
+                <Skeleton key={index} className="h-12 w-full" />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       ) : data ? (
         <LeadSourcesTable
           leadSources={data.items}

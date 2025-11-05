@@ -108,7 +108,7 @@ export function DataTablePagination({
           {pageNumbers.map((page, index) =>
             page === 'ellipsis' ? (
               <PaginationItem key={`ellipsis-${index}`}>
-                <PaginationEllipsis />
+                <PaginationEllipsis className=' ' />
               </PaginationItem>
             ) : (
               <PaginationItem key={page}>

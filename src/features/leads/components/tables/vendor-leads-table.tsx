@@ -2,13 +2,17 @@
 
 import { useState, useMemo } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
-import { Search } from 'lucide-react';
+import { Search, User } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { DataTable } from '@/shared/components/data-table/data-table';
+import { useMediaQuery } from '@/shared/hooks/use-media-query';
+
+import { VendorLeadCard } from '../cards/vendor-lead-card';
 import type { VendorLead } from '../../types';
 
 interface VendorLeadsTableProps {
@@ -18,16 +22,23 @@ interface VendorLeadsTableProps {
 const columns: ColumnDef<VendorLead>[] = [
   {
     accessorKey: 'firstName',
-    header: 'Nombre Completo',
+    header: 'Prospecto',
     cell: ({ row }) => {
       const lead = row.original;
       return (
         <div>
-          <div className="font-medium">
+          <div className="text-xs font-bold">
             {lead.firstName} {lead.lastName}
           </div>
-          <div className="text-sm text-muted-foreground">
-            {lead.documentType}: {lead.document}
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <Badge variant="outline" className="text-xs font-mono">
+              {lead.documentType}
+            </Badge>
+            <span className="text-xs text-muted-foreground">{lead.document}</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
+            <User className="h-3 w-3" />
+            <span>{lead.age} años</span>
           </div>
         </div>
       );
@@ -35,48 +46,32 @@ const columns: ColumnDef<VendorLead>[] = [
   },
   {
     accessorKey: 'phone',
-    header: 'Teléfonos',
+    header: 'Contacto',
     cell: ({ row }) => {
       const lead = row.original;
       return (
-        <div className="space-y-1">
-          <div className="text-sm">{lead.phone}</div>
+        <div className="space-y-0.5">
+          <div className="text-xs">{lead.phone}</div>
           {lead.phone2 && (
-            <div className="text-sm text-muted-foreground">{lead.phone2}</div>
+            <div className="text-xs text-muted-foreground">{lead.phone2}</div>
           )}
         </div>
       );
     },
   },
   {
-    accessorKey: 'age',
-    header: 'Edad',
-    cell: ({ row }) => {
-      return `${row.original.age} años`;
-    },
-  },
-  {
     accessorKey: 'source',
-    header: 'Fuente',
+    header: 'Fuente/Registro',
     cell: ({ row }) => {
-      const source = row.original.source;
-      return (
-        <Badge variant="outline" className="text-xs">
-          {source.name}
-        </Badge>
-      );
-    },
-  },
-  {
-    accessorKey: 'createdAt',
-    header: 'Fecha de Registro',
-    cell: ({ row }) => {
-      const date = new Date(row.original.createdAt);
+      const lead = row.original;
+      const date = new Date(lead.createdAt);
       return (
         <div className="space-y-1">
-          <div className="text-sm">{format(date, 'PP', { locale: es })}</div>
+          <Badge variant="outline" className="text-xs">
+            {lead.source.name}
+          </Badge>
           <div className="text-xs text-muted-foreground">
-            {format(date, 'p', { locale: es })}
+            {format(date, 'dd MMM yyyy', { locale: es })}
           </div>
         </div>
       );
@@ -85,6 +80,7 @@ const columns: ColumnDef<VendorLead>[] = [
 ];
 
 export function VendorLeadsTable({ leads }: VendorLeadsTableProps) {
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredLeads = useMemo(() => {
@@ -101,25 +97,33 @@ export function VendorLeadsTable({ leads }: VendorLeadsTableProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Buscar por nombre o documento..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-          />
-        </div>
-        <div className="text-sm text-muted-foreground">
-          {filteredLeads.length} {filteredLeads.length === 1 ? 'prospecto' : 'prospectos'}
-        </div>
+      {/* Búsqueda */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          placeholder="Buscar por nombre o documento..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-9 h-9 text-sm"
+        />
       </div>
 
-      <DataTable columns={columns} data={filteredLeads} />
+      {/* Tabla o Cards */}
+      {isMobile ? (
+        <div className="space-y-3">
+          {filteredLeads.map((lead) => (
+            <VendorLeadCard key={lead.id} lead={lead} />
+          ))}
+        </div>
+      ) : (
+        <Card>
+          <DataTable columns={columns} data={filteredLeads} />
+        </Card>
+      )}
 
-      {searchQuery && filteredLeads.length > 0 && (
-        <div className="text-sm text-muted-foreground">
+      {/* Contador */}
+      {filteredLeads.length > 0 && (
+        <div className="text-xs text-muted-foreground">
           Mostrando {filteredLeads.length} de {leads.length} prospectos
         </div>
       )}

@@ -7,8 +7,13 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { DataTable } from '@/shared/components/data-table/data-table';
+import { useMediaQuery } from '@/shared/hooks/use-media-query';
+
+import { VendorCard } from './vendor-card';
 import type { Vendor } from '../types';
 
 interface VendorsTableProps {
@@ -17,47 +22,53 @@ interface VendorsTableProps {
 
 const columns: ColumnDef<Vendor>[] = [
   {
-    accessorKey: 'photo',
-    header: 'Foto',
+    accessorKey: 'firstName',
+    header: 'Vendedor',
     cell: ({ row }) => {
       const vendor = row.original;
       const initials = `${vendor.firstName[0]}${vendor.lastName[0]}`.toUpperCase();
 
       return (
-        <Avatar className="h-10 w-10">
-          <AvatarImage src={vendor.photo} alt={`${vendor.firstName} ${vendor.lastName}`} />
-          <AvatarFallback>{initials}</AvatarFallback>
-        </Avatar>
+        <div className="flex items-center gap-3">
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={vendor.photo} alt={`${vendor.firstName} ${vendor.lastName}`} />
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
+          <div>
+            <div className="text-xs font-bold">
+              {vendor.firstName} {vendor.lastName}
+            </div>
+            <div className="text-xs text-muted-foreground truncate">{vendor.email}</div>
+          </div>
+        </div>
       );
     },
   },
   {
-    accessorKey: 'firstName',
-    header: 'Nombre',
-    cell: ({ row }) => {
-      const vendor = row.original;
-      return `${vendor.firstName} ${vendor.lastName}`;
-    },
-  },
-  {
-    accessorKey: 'email',
-    header: 'Email',
-  },
-  {
     accessorKey: 'document',
     header: 'Documento',
+    cell: ({ row }) => (
+      <Badge variant="outline" className="text-xs font-mono">
+        {row.original.document}
+      </Badge>
+    ),
   },
   {
     accessorKey: 'createdAt',
-    header: 'Fecha de Registro',
+    header: 'Registro',
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt);
-      return format(date, "dd 'de' MMMM, yyyy", { locale: es });
+      return (
+        <span className="text-xs text-muted-foreground">
+          {format(date, 'dd MMM yyyy', { locale: es })}
+        </span>
+      );
     },
   },
 ];
 
 export function VendorsTable({ vendors }: VendorsTableProps) {
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredVendors = useMemo(() => {
@@ -79,20 +90,33 @@ export function VendorsTable({ vendors }: VendorsTableProps) {
 
   return (
     <div className="space-y-4">
+      {/* Búsqueda */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Buscar por nombre, email o documento..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9"
+          className="pl-9 h-9 text-sm"
         />
       </div>
 
-      <DataTable columns={columns} data={filteredVendors} />
+      {/* Tabla o Cards */}
+      {isMobile ? (
+        <div className="space-y-3">
+          {filteredVendors.map((vendor) => (
+            <VendorCard key={vendor.id} vendor={vendor} />
+          ))}
+        </div>
+      ) : (
+        <Card>
+          <DataTable columns={columns} data={filteredVendors} />
+        </Card>
+      )}
 
+      {/* Contador */}
       {filteredVendors.length > 0 && (
-        <div className="text-sm text-muted-foreground">
+        <div className="text-xs text-muted-foreground">
           Mostrando {filteredVendors.length} de {vendors.length} vendedores
         </div>
       )}
