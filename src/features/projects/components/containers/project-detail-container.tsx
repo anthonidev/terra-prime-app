@@ -1,20 +1,18 @@
 'use client';
 
-import Link from 'next/link';
-import { ArrowLeft, Edit } from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
+import { ArrowLeft, Edit } from 'lucide-react';
+import Link from 'next/link';
 import { useProjectDetailContainer } from '../../hooks/use-project-detail-container';
 import { EditProjectDialog } from '../dialogs/edit-project-dialog';
-import { StageFormDialog, BlockFormDialog } from '../dialogs/stage-block-dialogs';
 import { LotFormDialog } from '../dialogs/lot-form-dialog';
-import { ProjectStagesTab } from '../tabs/project-stages-tab';
+import { BlockFormDialog, StageFormDialog } from '../dialogs/stage-block-dialogs';
 import { ProjectLotsTab } from '../tabs/project-lots-tab';
+import { ProjectStagesTab } from '../tabs/project-stages-tab';
 
 interface ProjectDetailContainerProps {
   projectId: string;

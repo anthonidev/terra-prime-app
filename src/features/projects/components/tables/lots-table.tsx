@@ -11,6 +11,7 @@ import { DataTablePagination } from '@/shared/components/data-table/data-table-p
 import type { Lot, LotStatus } from '../../types';
 import type { PaginationMeta } from '@/shared/types/pagination';
 import { LotCard } from '../cards/lot-card';
+import { formatCurrency } from '@/shared/utils/currency-formatter';
 
 interface LotsTableProps {
   lots: Lot[];
@@ -62,13 +63,10 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
       header: 'Precio Lote',
       cell: ({ row }) => {
         const lotPrice = parseFloat(row.original.lotPrice);
+        const currency = row.original.currency === 'USD' ? 'USD' : 'PEN';
         return (
-          <span className="font-mono">
-            {row.original.currency}{' '}
-            {lotPrice.toLocaleString('es-ES', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+          <span className="font-mono text-sm">
+            {formatCurrency(lotPrice, currency)}
           </span>
         );
       },
@@ -78,13 +76,10 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
       header: 'Urbanización',
       cell: ({ row }) => {
         const urbanizationPrice = parseFloat(row.original.urbanizationPrice);
+        const currency = row.original.currency === 'USD' ? 'USD' : 'PEN';
         return (
-          <span className="font-mono">
-            {row.original.currency}{' '}
-            {urbanizationPrice.toLocaleString('es-ES', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+          <span className="font-mono text-sm">
+            {formatCurrency(urbanizationPrice, currency)}
           </span>
         );
       },
@@ -96,13 +91,10 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
         const lotPrice = parseFloat(row.original.lotPrice);
         const urbanizationPrice = parseFloat(row.original.urbanizationPrice);
         const total = lotPrice + urbanizationPrice;
+        const currency = row.original.currency === 'USD' ? 'USD' : 'PEN';
         return (
-          <span className="font-mono font-semibold text-primary">
-            {row.original.currency}{' '}
-            {total.toLocaleString('es-ES', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+          <span className="font-mono font-semibold text-primary text-sm">
+            {formatCurrency(total, currency)}
           </span>
         );
       },

@@ -1,12 +1,15 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
+import { EmptyContainer } from '@/shared/components/common/empty-container';
 import { PageHeader } from '@/shared/components/common/page-header';
-
 import { useProjects } from '../../hooks/use-projects';
 import { ProjectCard } from '../cards/project-card';
 import { ProjectsSkeleton } from '../skeletons/projects-skeleton';
+import { useRouter } from 'next/navigation';
 
 export function ProjectsContainer() {
+  const { push } = useRouter();
   const { data, isLoading, isError } = useProjects();
 
   if (isLoading) {
@@ -51,14 +54,14 @@ export function ProjectsContainer() {
           ))}
         </div>
       ) : (
-        <div className="flex items-center justify-center min-h-[400px] rounded-lg border border-dashed">
-          <div className="text-center">
-            <p className="text-muted-foreground">No hay proyectos disponibles</p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Los proyectos aparecerán aquí cuando sean creados
-            </p>
-          </div>
-        </div>
+        <EmptyContainer
+          title="No hay proyectos aún"
+          description="Crea tu primer proyecto para comenzar."
+        >
+          <Button
+            onClick={() => push('/proyectos/nuevo')}
+          >Crear Proyecto</Button>
+        </EmptyContainer>
       )}
     </div>
   );
