@@ -8,9 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
-import { useProjectLots } from '../hooks/use-project-lots';
-import { AvailableLotsFilters } from './available-lots-filters';
-import { AvailableLotsTable } from './available-lots-table';
+import { useProjectLots } from '../../hooks/use-project-lots';
+import { AvailableLotsFilters } from '../filters/available-lots-filters';
+import { AvailableLotsTable } from '../tables/available-lots-table';
 
 interface AvailableLotsContainerProps {
   projectId: string;

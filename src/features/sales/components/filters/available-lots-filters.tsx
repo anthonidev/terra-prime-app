@@ -13,8 +13,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { useProjectStages } from '../hooks/use-project-stages';
-import { useStageBlocks } from '../hooks/use-stage-blocks';
+import { useProjectStages } from '../../hooks/use-project-stages';
+import { useStageBlocks } from '../../hooks/use-stage-blocks';
 
 interface AvailableLotsFiltersProps {
   projectId: string;

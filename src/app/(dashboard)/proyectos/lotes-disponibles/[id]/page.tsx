@@ -1,4 +1,4 @@
-import { AvailableLotsContainer } from '@/features/sales/components/available-lots-container';
+import { AvailableLotsContainer } from '@/features/sales/components/containers/available-lots-container';
 
 interface PageProps {
   params: Promise<{ id: string }>;

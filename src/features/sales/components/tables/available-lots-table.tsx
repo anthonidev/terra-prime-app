@@ -9,8 +9,8 @@ import { DataTable } from '@/shared/components/data-table/data-table';
 import { DataTablePagination } from '@/shared/components/data-table/data-table-pagination';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 
-import { LotCard } from './lot-card';
-import type { Lot } from '../types';
+import { LotCard } from '../cards/lot-card';
+import type { Lot } from '../../types';
 import type { PaginationMeta } from '@/shared/types/pagination';
 
 interface AvailableLotsTableProps {

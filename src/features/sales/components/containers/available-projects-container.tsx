@@ -5,8 +5,8 @@ import { Building2, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
-import { useActiveProjects } from '../hooks/use-active-projects';
-import { AvailableProjectCard } from './available-project-card';
+import { useActiveProjects } from '../../hooks/use-active-projects';
+import { AvailableProjectCard } from '../cards/available-project-card';
 
 export function AvailableProjectsContainer() {
   const { data: projects, isLoading } = useActiveProjects();

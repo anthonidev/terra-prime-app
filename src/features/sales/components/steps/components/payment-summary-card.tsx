@@ -1,0 +1,163 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { Calculator, TrendingUp } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatCurrency } from '@/shared/utils/currency-formatter';
+import type { Step3Data } from '../../../types';
+
+interface PaymentSummaryCardProps {
+  step3: Step3Data;
+  isFinanced: boolean;
+  hasUrbanization: boolean;
+  currencyType: 'USD' | 'PEN';
+}
+
+export function PaymentSummaryCard({
+  step3,
+  isFinanced,
+  hasUrbanization,
+  currencyType,
+}: PaymentSummaryCardProps) {
+  const paymentDetails = [
+    {
+      label: 'Monto Total Lote',
+      value: formatCurrency(step3.totalAmount, currencyType),
+      show: true,
+    },
+    {
+      label: 'Cuota Inicial',
+      value: formatCurrency(step3.initialAmount || 0, currencyType),
+      show: isFinanced,
+    },
+    {
+      label: 'Tasa de Interés',
+      value: `${step3.interestRate}% anual`,
+      show: isFinanced,
+    },
+    {
+      label: 'Cantidad de Cuotas',
+      value: `${step3.quantitySaleCoutes} cuotas`,
+      show: isFinanced,
+    },
+    {
+      label: 'Primera Cuota',
+      value: step3.firstPaymentDate
+        ? format(new Date(step3.firstPaymentDate), 'dd/MM/yyyy', { locale: es })
+        : 'N/A',
+      show: isFinanced,
+    },
+    {
+      label: 'Cuotas HU',
+      value: `${step3.quantityHuCuotes} cuotas`,
+      show: hasUrbanization,
+    },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.2 }}
+    >
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+              <Calculator className="h-5 w-5 text-primary" />
+            </div>
+            Detalles de Pago
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Payment Details Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {paymentDetails
+                .filter((detail) => detail.show)
+                .map((detail, index) => (
+                  <motion.div
+                    key={detail.label}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.25 + index * 0.05 }}
+                  >
+                    <p className="text-sm text-muted-foreground">{detail.label}</p>
+                    <p className="font-semibold">{detail.value}</p>
+                  </motion.div>
+                ))}
+            </div>
+
+            {/* Amortization Summary */}
+            {isFinanced && step3.amortizationMeta && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="p-4 bg-gradient-to-br from-primary/5 to-transparent rounded-lg border border-primary/20"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  <h4 className="font-semibold">Resumen de Amortización</h4>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {/* Lot Total */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.45 }}
+                    className="p-3 rounded-lg bg-background/50"
+                  >
+                    <p className="text-xs text-muted-foreground mb-1">Total Lote</p>
+                    <p className="font-semibold">
+                      {formatCurrency(step3.amortizationMeta.lotTotalAmount, currencyType)}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {step3.amortizationMeta.lotInstallmentsCount} cuotas
+                    </p>
+                  </motion.div>
+
+                  {/* HU Total */}
+                  {hasUrbanization && step3.amortizationMeta.huInstallmentsCount > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5 }}
+                      className="p-3 rounded-lg bg-background/50"
+                    >
+                      <p className="text-xs text-muted-foreground mb-1">Total HU</p>
+                      <p className="font-semibold text-accent">
+                        {formatCurrency(step3.amortizationMeta.huTotalAmount, currencyType)}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {step3.amortizationMeta.huInstallmentsCount} cuotas
+                      </p>
+                    </motion.div>
+                  )}
+
+                  {/* General Total */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.55 }}
+                    className="p-3 rounded-lg bg-primary/10 border border-primary/20"
+                  >
+                    <p className="text-xs text-muted-foreground mb-1">Total General</p>
+                    <p className="font-semibold text-base text-primary">
+                      {formatCurrency(step3.amortizationMeta.totalAmount, currencyType)}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {step3.amortizationMeta.totalInstallmentsCount} cuotas totales
+                    </p>
+                  </motion.div>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}

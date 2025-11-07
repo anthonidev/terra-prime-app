@@ -16,7 +16,12 @@
       "Bash(nul)",
       "Bash(for dir in agents auth dashboard layout leads participants pin profile sales user users vendors)",
       "Bash(do echo \"=== Feature: $dir ===\")",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(npx tsc:*)",
+      "Bash(bun run tsc:*)",
+      "Bash(bun run lint)",
+      "Bash(tasklist:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []

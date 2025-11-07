@@ -5,7 +5,7 @@ import { Grid3x3, Layers, MapPin, Ruler } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 
-import type { Lot } from '../types';
+import type { Lot } from '../../types';
 
 interface LotCardProps {
   lot: Lot;
