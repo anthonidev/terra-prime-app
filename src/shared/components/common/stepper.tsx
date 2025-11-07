@@ -71,11 +71,11 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
                     className={cn(
                       'relative flex h-7 w-7 items-center justify-center rounded-full border-2 transition-all duration-300',
                       isCompleted &&
-                        'border-primary bg-primary text-primary-foreground shadow-sm',
+                      'border-primary bg-primary text-primary-foreground shadow-sm',
                       isCurrent &&
-                        'border-primary bg-background text-primary ring-2 ring-primary/30 shadow-md',
+                      'border-primary bg-background text-primary ring-2 ring-primary/30 shadow-md',
                       isPending &&
-                        'border-border bg-muted/20 text-muted-foreground'
+                      'border-border bg-muted/20 text-muted-foreground'
                     )}
                   >
                     {isCompleted ? (
@@ -138,11 +138,11 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
                         className={cn(
                           'relative flex h-11 w-11 lg:h-12 lg:w-12 items-center justify-center rounded-full border-2 transition-all duration-300',
                           isCompleted &&
-                            'border-primary bg-primary text-primary-foreground shadow-md',
+                          'border-primary bg-primary text-primary-foreground shadow-md',
                           isCurrent &&
-                            'border-primary bg-background text-primary ring-4 ring-primary/20 shadow-lg',
+                          'border-primary bg-background text-primary ring-4 ring-primary/20 shadow-lg',
                           isPending &&
-                            'border-border bg-muted/30 text-muted-foreground'
+                          'border-border bg-muted/30 text-muted-foreground'
                         )}
                       >
                         {isCompleted ? (
