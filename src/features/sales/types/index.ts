@@ -412,3 +412,72 @@ export interface SaleDetail {
   vendor: VendorInfo;
   paymentsSummary: PaymentSummary[];
 }
+
+// Register Payment Types
+export interface VoucherInput {
+  bankName?: string;
+  transactionReference: string;
+  transactionDate: string;
+  amount: number;
+  fileIndex: number;
+}
+
+export interface RegisterPaymentInput {
+  payments: VoucherInput[];
+  files: File[];
+}
+
+export interface VoucherResponse {
+  id: number;
+  url: string;
+  amount: number;
+  bankName: string | null;
+  transactionReference: string;
+  transactionDate: string;
+}
+
+export interface PaymentResponse {
+  id: number;
+  relatedEntityType: string;
+  relatedEntityId: string;
+  amount: number;
+  methodPayment: string;
+  status: string;
+  createdAt: string;
+  vouchers: VoucherResponse[];
+}
+
+// Admin Sales Types
+export interface AdminSalesQueryParams {
+  page?: number;
+  limit?: number;
+  order?: 'ASC' | 'DESC';
+}
+
+// Assign Participants Input
+export interface AssignSaleParticipantsInput {
+  linerId?: string;
+  telemarketingSupervisorId?: string;
+  telemarketingConfirmerId?: string;
+  telemarketerId?: string;
+  fieldManagerId?: string;
+  fieldSupervisorId?: string;
+  fieldSellerId?: string;
+  salesManagerId?: string;
+  salesGeneralManagerId?: string;
+  postSaleId?: string;
+  closerId?: string;
+}
+
+// Assign Participants Response
+export interface AssignParticipantsResponse {
+  success: boolean;
+  message: string;
+}
+
+// Generate PDF Response
+export interface GeneratePdfResponse {
+  success: boolean;
+  message: string;
+  data: any;
+}

@@ -86,6 +86,30 @@ export const step4Schema = z.object({
   secondaryClients: z.array(secondaryClientSchema).optional(),
 });
 
+// Voucher validation for register payment
+export const voucherSchema = z.object({
+  bankName: z.string().optional(),
+  transactionReference: z.string().min(1, 'La referencia de transacción es requerida'),
+  transactionDate: z.string().min(1, 'La fecha de transacción es requerida'),
+  amount: z.number().min(0.01, 'El monto debe ser mayor a 0'),
+  file: z.instanceof(File, { message: 'El comprobante es requerido' }),
+});
+
+// Assign participants validation
+export const assignParticipantsSchema = z.object({
+  linerId: z.string().optional(),
+  telemarketingSupervisorId: z.string().optional(),
+  telemarketingConfirmerId: z.string().optional(),
+  telemarketerId: z.string().optional(),
+  fieldManagerId: z.string().optional(),
+  fieldSupervisorId: z.string().optional(),
+  fieldSellerId: z.string().optional(),
+  salesManagerId: z.string().optional(),
+  salesGeneralManagerId: z.string().optional(),
+  postSaleId: z.string().optional(),
+  closerId: z.string().optional(),
+});
+
 // Type inference
 export type Step2FormData = z.infer<typeof step2Schema>;
 export type Step3DirectPaymentFormData = z.infer<typeof step3DirectPaymentSchema>;
@@ -93,3 +117,5 @@ export type Step3FinancedFormData = z.infer<typeof step3FinancedSchema>;
 export type Step4FormData = z.infer<typeof step4Schema>;
 export type GuarantorFormData = z.infer<typeof guarantorSchema>;
 export type SecondaryClientFormData = z.infer<typeof secondaryClientSchema>;
+export type VoucherFormData = z.infer<typeof voucherSchema>;
+export type AssignParticipantsFormData = z.infer<typeof assignParticipantsSchema>;

@@ -1,19 +1,16 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Plus } from 'lucide-react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/shared/components/common/page-header';
-import { useMySalesContainer } from '../../hooks/use-my-sales-container';
+import { useAdminSalesContainer } from '../../hooks/use-admin-sales-container';
 import { MySalesSkeleton } from '../skeletons/my-sales-skeleton';
-import { MySalesTable } from '../tables/my-sales-table';
-import { SalesCardView } from './components/sales-card-view';
+import { AdminSalesTable } from '../tables/admin-sales-table';
+import { AdminSalesCardView } from './admin-sales-card-view';
 import { SalesFilters } from './components/sales-filters';
 import { SalesErrorState } from './components/sales-error-state';
 import { SalesEmptyState } from './components/sales-empty-state';
 
-export function MySalesContainer() {
+export function AdminSalesContainer() {
   const {
     sales,
     totalItems,
@@ -22,7 +19,7 @@ export function MySalesContainer() {
     isError,
     isEmpty,
     toggleOrder,
-  } = useMySalesContainer();
+  } = useAdminSalesContainer();
 
   // Loading state
   if (isLoading) {
@@ -38,18 +35,8 @@ export function MySalesContainer() {
         transition={{ duration: 0.3 }}
       >
         <PageHeader
-          title="Mis ventas"
-          description="Lista de ventas realizadas por ti"
-          action={
-            !isEmpty && !isError ? (
-              <Button asChild>
-                <Link href="/ventas/crear-venta">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Nueva Venta
-                </Link>
-              </Button>
-            ) : undefined
-          }
+          title="Administrar Ventas"
+          description="Gestiona todas las ventas del sistema"
         />
       </motion.div>
 
@@ -76,7 +63,7 @@ export function MySalesContainer() {
             transition={{ duration: 0.3, delay: 0.1 }}
             className="hidden md:block"
           >
-            <MySalesTable data={sales} />
+            <AdminSalesTable data={sales} />
           </motion.div>
 
           {/* Mobile Card View */}
@@ -86,7 +73,7 @@ export function MySalesContainer() {
             transition={{ duration: 0.3, delay: 0.1 }}
             className="md:hidden"
           >
-            <SalesCardView sales={sales} />
+            <AdminSalesCardView sales={sales} />
           </motion.div>
         </>
       )}

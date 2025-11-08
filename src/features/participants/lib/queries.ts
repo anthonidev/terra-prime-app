@@ -18,3 +18,8 @@ export async function getParticipants(
   });
   return response.data;
 }
+
+export async function getActiveParticipants(): Promise<Participant[]> {
+  const response = await apiClient.get<Participant[]>('/api/participants/all/actives');
+  return response.data;
+}

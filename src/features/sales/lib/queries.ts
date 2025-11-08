@@ -11,6 +11,7 @@ import type {
   MySale,
   MySalesQueryParams,
   SaleDetail,
+  AdminSalesQueryParams,
 } from '../types';
 
 // Get active projects
@@ -98,4 +99,24 @@ export async function getMySales(
 export async function getSaleDetail(id: string): Promise<SaleDetail> {
   const response = await apiClient.get<SaleDetail>(`/api/sales/${id}`);
   return response.data;
+}
+
+// Get all sales (admin)
+export async function getAllSales(
+  params: AdminSalesQueryParams = {}
+): Promise<PaginatedResponse<MySale>> {
+  const response = await apiClient.get<{
+    items: MySale[];
+    meta: {
+      totalItems: number;
+      itemsPerPage: number;
+      totalPages: number;
+      currentPage: number;
+    };
+  }>('/api/sales/all/list', { params });
+
+  return {
+    items: response.data.items,
+    meta: response.data.meta,
+  };
 }
