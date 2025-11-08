@@ -16,6 +16,7 @@ import {
   FileText,
   FilePlus,
   MoreVertical,
+  Download,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -171,6 +172,52 @@ function SaleCard({ sale, index }: { sale: MySale; index: number }) {
                 {format(new Date(sale.createdAt), "dd 'de' MMMM, yyyy", { locale: es })}
               </p>
             </div>
+
+            {/* Reports Section */}
+            {(sale.radicationPdfUrl || sale.paymentAcordPdfUrl) && (
+              <>
+                <Separator />
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground">Reportes</p>
+                  <div className="flex flex-col gap-1.5">
+                    {sale.radicationPdfUrl && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 justify-start"
+                        asChild
+                      >
+                        <a
+                          href={sale.radicationPdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Download className="h-3.5 w-3.5 mr-2" />
+                          <span className="text-xs">PDF Radicación</span>
+                        </a>
+                      </Button>
+                    )}
+                    {sale.paymentAcordPdfUrl && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 justify-start"
+                        asChild
+                      >
+                        <a
+                          href={sale.paymentAcordPdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Download className="h-3.5 w-3.5 mr-2" />
+                          <span className="text-xs">PDF Acuerdo de Pagos</span>
+                        </a>
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
           </CardContent>
 
           <CardFooter className="pt-3 flex gap-2">

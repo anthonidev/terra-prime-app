@@ -21,7 +21,10 @@
       "Bash(bun run tsc:*)",
       "Bash(bun run lint)",
       "Bash(tasklist:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(bun run dev)",
+      "Bash(cp:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []

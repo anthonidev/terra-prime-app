@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Eye, Users, FileText, FilePlus, MoreVertical } from 'lucide-react';
+import { Eye, Users, FileText, FilePlus, MoreVertical, Download } from 'lucide-react';
 import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
@@ -211,6 +211,60 @@ const columns: ColumnDef<MySale>[] = [
       const status = row.getValue('status') as StatusSale;
       const config = statusConfig[status];
       return <Badge variant={config.variant}>{config.label}</Badge>;
+    },
+  },
+  {
+    id: 'reports',
+    header: 'Reportes',
+    cell: ({ row }) => {
+      const sale = row.original;
+      const hasRadication = !!sale.radicationPdfUrl;
+      const hasPaymentAccord = !!sale.paymentAcordPdfUrl;
+
+      if (!hasRadication && !hasPaymentAccord) {
+        return (
+          <span className="text-xs text-muted-foreground">Sin reportes</span>
+        );
+      }
+
+      return (
+        <div className="flex flex-col gap-1">
+          {hasRadication && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 justify-start"
+              asChild
+            >
+              <a
+                href={sale.radicationPdfUrl!}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Download className="h-3 w-3 mr-1" />
+                <span className="text-xs">Radicación</span>
+              </a>
+            </Button>
+          )}
+          {hasPaymentAccord && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 justify-start"
+              asChild
+            >
+              <a
+                href={sale.paymentAcordPdfUrl!}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Download className="h-3 w-3 mr-1" />
+                <span className="text-xs">Acuerdo de Pagos</span>
+              </a>
+            </Button>
+          )}
+        </div>
+      );
     },
   },
   {
