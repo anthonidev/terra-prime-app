@@ -90,6 +90,7 @@ export enum StatusSale {
 export enum StatusPayment {
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',
+  COMPLETED = 'COMPLETED',
   REJECTED = 'REJECTED',
 }
 
@@ -504,4 +505,26 @@ export interface GeneratePdfResponse {
 }
 
 // Admin Token Validation
+export interface AdminTokenValidationResponse {
+  valid: boolean;
+}
 
+// Extend Reservation
+export interface ExtendReservationInput {
+  additionalDays: number;
+}
+
+export interface ExtendReservationResponse {
+  success: boolean;
+  message: string;
+}
+
+// Delete Sale
+export interface DeleteSaleInput {
+  token: string;
+}
+
+export interface DeleteSaleResponse {
+  success: boolean;
+  message: string;
+}

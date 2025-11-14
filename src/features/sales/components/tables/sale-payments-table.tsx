@@ -16,6 +16,7 @@ const paymentStatusConfig: Record<
 > = {
   PENDING: { label: 'Pendiente', variant: 'outline' },
   APPROVED: { label: 'Aprobado', variant: 'default' },
+  COMPLETED: { label: 'Completado', variant: 'secondary' },
   REJECTED: { label: 'Rechazado', variant: 'destructive' },
 };
 

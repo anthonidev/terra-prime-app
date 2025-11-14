@@ -11,6 +11,10 @@ import type {
   AssignSaleParticipantsInput,
   AssignParticipantsResponse,
   GeneratePdfResponse,
+  ExtendReservationInput,
+  ExtendReservationResponse,
+  DeleteSaleInput,
+  DeleteSaleResponse,
 } from '../types';
 
 // Calculate amortization schedule
@@ -113,6 +117,30 @@ export async function regeneratePaymentAccordPdf(saleId: string): Promise<Genera
 export async function validateAdminToken(token: string): Promise<boolean> {
   const response = await apiClient.get<boolean>(
     `/api/lots/admin-token/validate/${token}`
+  );
+  return response.data;
+}
+
+// Extend reservation period
+export async function extendReservation(
+  saleId: string,
+  data: ExtendReservationInput
+): Promise<ExtendReservationResponse> {
+  const response = await apiClient.patch<ExtendReservationResponse>(
+    `/api/sales/${saleId}/reservation-period`,
+    data
+  );
+  return response.data;
+}
+
+// Delete sale
+export async function deleteSale(
+  saleId: string,
+  data: DeleteSaleInput
+): Promise<DeleteSaleResponse> {
+  const response = await apiClient.delete<DeleteSaleResponse>(
+    `/api/sales/${saleId}`,
+    { data }
   );
   return response.data;
 }
