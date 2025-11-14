@@ -1,11 +1,10 @@
 import { PaymentDetailContainer } from '@/features/payments/components/containers/payment-detail-container';
 
 interface PaymentDetailPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
-export default function PaymentDetailPage({ params }: PaymentDetailPageProps) {
-  return <PaymentDetailContainer paymentId={params.id} />;
+export default async function PaymentDetailPage({ params }: PaymentDetailPageProps) {
+  const { id } = await params;
+  return <PaymentDetailContainer paymentId={id} />;
 }

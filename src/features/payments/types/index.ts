@@ -121,6 +121,23 @@ export interface PaymentDetail {
   vouchers?: PaymentVoucher[];
 }
 
+// Mutation Inputs
+export interface ApprovePaymentInput {
+  codeOperation?: string;
+  banckName: string;
+  dateOperation: string;
+  numberTicket?: string;
+}
+
+export interface RejectPaymentInput {
+  rejectionReason: string;
+}
+
+export interface CompletePaymentInput {
+  codeOperation?: string;
+  numberTicket?: string;
+}
+
 // Mutation Responses
 export interface ApprovePaymentResponse {
   success: boolean;
@@ -128,6 +145,11 @@ export interface ApprovePaymentResponse {
 }
 
 export interface RejectPaymentResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface CompletePaymentResponse {
   success: boolean;
   message: string;
 }

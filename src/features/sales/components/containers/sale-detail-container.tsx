@@ -28,6 +28,7 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
     clientName,
     totalPaid,
     pendingAmount,
+    maxPayableAmount,
     hasPayments,
     status,
     isLoading,
@@ -61,8 +62,8 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
     }
   })();
 
-  // Show register payment button only if user is VEN, status allows it, and there's pending amount
-  const showRegisterPayment = canRegisterPayment && canPayByStatus && pendingAmount > 0;
+  // Show register payment button only if user is VEN, status allows it, and there's a payable amount
+  const showRegisterPayment = canRegisterPayment && canPayByStatus && maxPayableAmount > 0;
 
   return (
     <div className="space-y-6">
@@ -150,7 +151,7 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
           open={isPaymentModalOpen}
           onOpenChange={setIsPaymentModalOpen}
           saleId={id}
-          pendingAmount={pendingAmount}
+          pendingAmount={maxPayableAmount}
           currency={sale.currency}
         />
       )}

@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Filter, Loader2, Users } from 'lucide-react';
+import { Filter, Loader2, Plus, Users } from 'lucide-react';
+import Link from 'next/link';
 
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -33,16 +35,24 @@ export function LeadsContainer() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <Users className="h-5 w-5 text-primary" />
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Users className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Gestión de Leads</h1>
+            <p className="text-sm text-muted-foreground">
+              {totalLeads} {totalLeads === 1 ? 'lead registrado' : 'leads registrados'}
+            </p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Gestión de Leads</h1>
-          <p className="text-sm text-muted-foreground">
-            {totalLeads} {totalLeads === 1 ? 'lead registrado' : 'leads registrados'}
-          </p>
-        </div>
+        <Link href="/leads/nuevo">
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Nuevo Lead
+          </Button>
+        </Link>
       </div>
 
       {/* Filters Section */}

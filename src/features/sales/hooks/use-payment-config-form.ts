@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format, addMonths } from 'date-fns';
@@ -38,12 +38,19 @@ export function usePaymentConfigForm({
   const [isLocked, setIsLocked] = useState<boolean>(
     initialData?.combinedInstallments ? true : false
   );
+  const [isEditEnabled, setIsEditEnabled] = useState<boolean>(false);
+  const [editableLotPrice, setEditableLotPrice] = useState<number>(
+    initialData?.totalAmount || parseFloat(selectedLot.lotPrice)
+  );
+  const [editableUrbanizationPrice, setEditableUrbanizationPrice] = useState<number>(
+    initialData?.totalAmountUrbanDevelopment || parseFloat(selectedLot.urbanizationPrice)
+  );
 
   const { mutate: calculateAmortization, isPending: isCalculating } = useCalculateAmortization();
 
-  const lotPrice = parseFloat(selectedLot.lotPrice);
-  const urbanizationPrice = parseFloat(selectedLot.urbanizationPrice);
-  const hasUrbanization = urbanizationPrice > 0;
+  const lotPrice = editableLotPrice;
+  const urbanizationPrice = editableUrbanizationPrice;
+  const hasUrbanization = parseFloat(selectedLot.urbanizationPrice) > 0;
   const isDirectPayment = saleType === SaleType.DIRECT_PAYMENT;
 
   // Direct payment form
@@ -75,6 +82,17 @@ export function usePaymentConfigForm({
   });
 
   const form = isDirectPayment ? directForm : financedForm;
+
+  // Update form values when editable prices change
+  useEffect(() => {
+    if (isDirectPayment) {
+      directForm.setValue('totalAmount', lotPrice);
+      directForm.setValue('totalAmountUrbanDevelopment', urbanizationPrice);
+    } else {
+      financedForm.setValue('totalAmount', lotPrice);
+      financedForm.setValue('totalAmountUrbanDevelopment', urbanizationPrice);
+    }
+  }, [lotPrice, urbanizationPrice, isDirectPayment, directForm, financedForm]);
 
   // Watch form values
   const totalAmount = isDirectPayment ? directForm.watch('totalAmount') : financedForm.watch('totalAmount');
@@ -164,6 +182,7 @@ export function usePaymentConfigForm({
     lotPrice,
     urbanizationPrice,
     isLocked,
+    isEditEnabled,
 
     // Watched values
     totalAmount,
@@ -180,6 +199,9 @@ export function usePaymentConfigForm({
     handleGenerateAmortization,
     handleClearAmortization,
     handleSubmit: form.handleSubmit(handleSubmit),
+    setIsEditEnabled,
+    setEditableLotPrice,
+    setEditableUrbanizationPrice,
 
     // Form state
     errors: form.formState.errors,

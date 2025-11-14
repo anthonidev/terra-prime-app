@@ -71,8 +71,8 @@ export async function assignParticipantsToSale(
   data: AssignSaleParticipantsInput
 ): Promise<AssignParticipantsResponse> {
   const response = await apiClient.post<AssignParticipantsResponse>(
-    `/api/assign/participants/${saleId}`,
-    { saleId, assignParticipantsDto: data }
+    `/api/sales/assign/participants/${saleId}`,
+    { ...data }
   );
   return response.data;
 }
@@ -105,6 +105,14 @@ export async function generatePaymentAccordPdf(saleId: string): Promise<Generate
 export async function regeneratePaymentAccordPdf(saleId: string): Promise<GeneratePdfResponse> {
   const response = await apiClient.post<GeneratePdfResponse>(
     `/api/reports-payment-acord/regenerate/${saleId}`
+  );
+  return response.data;
+}
+
+// Validate admin token
+export async function validateAdminToken(token: string): Promise<boolean> {
+  const response = await apiClient.get<boolean>(
+    `/api/lots/admin-token/validate/${token}`
   );
   return response.data;
 }

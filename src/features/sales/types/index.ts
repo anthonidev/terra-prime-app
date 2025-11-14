@@ -411,6 +411,27 @@ export interface SaleDetail {
   fieldSeller: PersonInfo;
   vendor: VendorInfo;
   paymentsSummary: PaymentSummary[];
+
+  financing?:{
+    lot:{
+      id: string;
+      initialAmount: number;
+      interestRate: number;
+      quantityCoutes: number;
+    };
+     urbanDevelopment?: {
+      id: number;
+      amount: number;
+      initialAmount: number;
+      status: string;
+      financing?: {
+        id: string;
+        initialAmount: number;
+        interestRate: number;
+        quantityCoutes: number;
+      };
+    };
+  }
 }
 
 // Register Payment Types
@@ -481,3 +502,6 @@ export interface GeneratePdfResponse {
   message: string;
   data: any;
 }
+
+// Admin Token Validation
+

@@ -3,14 +3,20 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { rejectPayment } from '../lib/mutations';
 import { toast } from 'sonner';
+import type { RejectPaymentInput } from '../types';
+
+interface RejectPaymentParams {
+  id: string;
+  data: RejectPaymentInput;
+}
 
 export function useRejectPayment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: rejectPayment,
-    onSuccess: (data, paymentId) => {
-      queryClient.invalidateQueries({ queryKey: ['payment', paymentId] });
+    mutationFn: ({ id, data }: RejectPaymentParams) => rejectPayment(id, data),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['payment', variables.id] });
       queryClient.invalidateQueries({ queryKey: ['payments'] });
       toast.success(data.message || 'Pago rechazado exitosamente');
     },

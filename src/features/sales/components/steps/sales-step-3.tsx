@@ -30,9 +30,13 @@ export function SalesStep3({ data, saleType, selectedLot, reservationAmount, onN
     lotPrice,
     urbanizationPrice,
     isLocked,
+    isEditEnabled,
     handleGenerateAmortization,
     handleClearAmortization,
     handleSubmit,
+    setIsEditEnabled,
+    setEditableLotPrice,
+    setEditableUrbanizationPrice,
   } = usePaymentConfigForm({
     initialData: data,
     saleType,
@@ -49,6 +53,10 @@ export function SalesStep3({ data, saleType, selectedLot, reservationAmount, onN
         lotPrice={lotPrice}
         urbanizationPrice={urbanizationPrice}
         hasUrbanization={hasUrbanization}
+        isEditEnabled={isEditEnabled}
+        onEditEnabledChange={setIsEditEnabled}
+        onLotPriceChange={setEditableLotPrice}
+        onUrbanizationPriceChange={setEditableUrbanizationPrice}
       />
 
       {/* Financed Payment Fields */}
