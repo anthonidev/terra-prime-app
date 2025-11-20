@@ -18,18 +18,16 @@ export function ProfileContainer() {
 
   if (isError || !data?.data) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Card className="max-w-md border-destructive/50">
+      <div className="flex min-h-[400px] items-center justify-center">
+        <Card className="border-destructive/50 max-w-md">
           <CardContent className="p-6">
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-destructive/20 flex items-center justify-center">
-                <AlertCircle className="h-6 w-6 text-destructive" />
+            <div className="flex flex-col items-center gap-3 text-center">
+              <div className="bg-destructive/20 flex h-12 w-12 items-center justify-center rounded-full">
+                <AlertCircle className="text-destructive h-6 w-6" />
               </div>
               <div>
-                <p className="font-semibold text-destructive mb-1">
-                  Error al cargar el perfil
-                </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-destructive mb-1 font-semibold">Error al cargar el perfil</p>
+                <p className="text-muted-foreground text-sm">
                   Intenta recargar la página o contacta con soporte
                 </p>
               </div>
@@ -46,12 +44,12 @@ export function ProfileContainer() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <UserCircle className="h-5 w-5 text-primary" />
+        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+          <UserCircle className="text-primary h-5 w-5" />
         </div>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Mi Perfil</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Gestiona tu información personal y configuración de cuenta
           </p>
         </div>

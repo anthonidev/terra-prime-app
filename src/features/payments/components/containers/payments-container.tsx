@@ -104,11 +104,7 @@ export function PaymentsContainer() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.3 }}
             >
-              <PaymentsPagination
-                meta={meta}
-                page={page}
-                onPageChange={setPage}
-              />
+              <PaymentsPagination meta={meta} page={page} onPageChange={setPage} />
             </motion.div>
           )}
         </>

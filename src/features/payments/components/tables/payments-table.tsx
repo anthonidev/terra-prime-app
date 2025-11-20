@@ -44,7 +44,7 @@ const columns: ColumnDef<Payment>[] = [
       const lead = client?.lead;
 
       if (!lead?.firstName && !lead?.lastName) {
-        return <span className="text-sm text-muted-foreground">Sin información</span>;
+        return <span className="text-muted-foreground text-sm">Sin información</span>;
       }
 
       return (
@@ -52,9 +52,7 @@ const columns: ColumnDef<Payment>[] = [
           <span className="font-medium">
             {lead.firstName} {lead.lastName}
           </span>
-          {lead.document && (
-            <span className="text-sm text-muted-foreground">{lead.document}</span>
-          )}
+          {lead.document && <span className="text-muted-foreground text-sm">{lead.document}</span>}
         </div>
       );
     },
@@ -66,15 +64,13 @@ const columns: ColumnDef<Payment>[] = [
       const lot = row.original.lot;
 
       if (!lot?.name) {
-        return <span className="text-sm text-muted-foreground">Sin información</span>;
+        return <span className="text-muted-foreground text-sm">Sin información</span>;
       }
 
       return (
         <div className="flex flex-col">
           <span className="font-medium">{lot.name}</span>
-          {lot.project && (
-            <span className="text-sm text-muted-foreground">{lot.project}</span>
-          )}
+          {lot.project && <span className="text-muted-foreground text-sm">{lot.project}</span>}
         </div>
       );
     },
@@ -99,9 +95,9 @@ const columns: ColumnDef<Payment>[] = [
     cell: ({ row }) => {
       const code = row.getValue('codeOperation') as string | undefined;
       return code ? (
-        <span className="text-sm font-mono">{code}</span>
+        <span className="font-mono text-sm">{code}</span>
       ) : (
-        <span className="text-sm text-muted-foreground">-</span>
+        <span className="text-muted-foreground text-sm">-</span>
       );
     },
   },
@@ -113,7 +109,7 @@ const columns: ColumnDef<Payment>[] = [
       return bank ? (
         <span className="text-sm">{bank}</span>
       ) : (
-        <span className="text-sm text-muted-foreground">-</span>
+        <span className="text-muted-foreground text-sm">-</span>
       );
     },
   },
@@ -136,7 +132,7 @@ const columns: ColumnDef<Payment>[] = [
           <span className="text-sm font-medium">
             {user.firstName} {user.lastName}
           </span>
-          <span className="text-xs text-muted-foreground">{user.email}</span>
+          <span className="text-muted-foreground text-xs">{user.email}</span>
         </div>
       );
     },
@@ -149,7 +145,7 @@ const columns: ColumnDef<Payment>[] = [
       return (
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/pagos/detalle/${payment.id}`}>
-            <Eye className="h-4 w-4 mr-2" />
+            <Eye className="mr-2 h-4 w-4" />
             Ver
           </Link>
         </Button>

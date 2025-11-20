@@ -22,11 +22,7 @@ interface ApprovePaymentModalProps {
   paymentId: string;
 }
 
-export function ApprovePaymentModal({
-  open,
-  onOpenChange,
-  paymentId,
-}: ApprovePaymentModalProps) {
+export function ApprovePaymentModal({ open, onOpenChange, paymentId }: ApprovePaymentModalProps) {
   const [formData, setFormData] = useState<ApprovePaymentInput>({
     codeOperation: '',
     banckName: '',
@@ -115,7 +111,7 @@ export function ApprovePaymentModal({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <CheckCircle className="h-5 w-5 text-primary" />
+            <CheckCircle className="text-primary h-5 w-5" />
             Aprobar Pago
           </DialogTitle>
           <DialogDescription>
@@ -127,7 +123,7 @@ export function ApprovePaymentModal({
           {/* Código de Operación (Opcional) */}
           <div className="space-y-2">
             <Label htmlFor="codeOperation">
-              Código de Operación <span className="text-xs text-muted-foreground">(Opcional)</span>
+              Código de Operación <span className="text-muted-foreground text-xs">(Opcional)</span>
             </Label>
             <Input
               id="codeOperation"
@@ -151,9 +147,7 @@ export function ApprovePaymentModal({
               disabled={isPending}
               className={errors.banckName ? 'border-destructive' : ''}
             />
-            {errors.banckName && (
-              <p className="text-xs text-destructive">{errors.banckName}</p>
-            )}
+            {errors.banckName && <p className="text-destructive text-xs">{errors.banckName}</p>}
           </div>
 
           {/* Fecha de Operación (Requerido) */}
@@ -170,14 +164,14 @@ export function ApprovePaymentModal({
               className={errors.dateOperation ? 'border-destructive' : ''}
             />
             {errors.dateOperation && (
-              <p className="text-xs text-destructive">{errors.dateOperation}</p>
+              <p className="text-destructive text-xs">{errors.dateOperation}</p>
             )}
           </div>
 
           {/* Número de Ticket (Opcional) */}
           <div className="space-y-2">
             <Label htmlFor="numberTicket">
-              Número de Ticket <span className="text-xs text-muted-foreground">(Opcional)</span>
+              Número de Ticket <span className="text-muted-foreground text-xs">(Opcional)</span>
             </Label>
             <Input
               id="numberTicket"
@@ -189,7 +183,7 @@ export function ApprovePaymentModal({
           </div>
         </div>
 
-        <DialogFooter className="flex-col sm:flex-row gap-2">
+        <DialogFooter className="flex-col gap-2 sm:flex-row">
           <Button
             type="button"
             variant="ghost"
@@ -207,12 +201,12 @@ export function ApprovePaymentModal({
           >
             {isPending ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Aprobando...
               </>
             ) : (
               <>
-                <CheckCircle className="h-4 w-4 mr-2" />
+                <CheckCircle className="mr-2 h-4 w-4" />
                 Aprobar Pago
               </>
             )}

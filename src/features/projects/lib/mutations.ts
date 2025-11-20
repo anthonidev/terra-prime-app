@@ -16,15 +16,11 @@ import type {
 } from '../types';
 
 // Project mutations
-export async function updateProject(
-  id: string,
-  data: UpdateProjectInput
-): Promise<ProjectDetail> {
+export async function updateProject(id: string, data: UpdateProjectInput): Promise<ProjectDetail> {
   const formData = new FormData();
 
   if (data.name) formData.append('name', data.name);
-  if (data.isActive !== undefined)
-    formData.append('isActive', String(data.isActive));
+  if (data.isActive !== undefined) formData.append('isActive', String(data.isActive));
   if (data.logo) formData.append('logo', data.logo);
 
   const response = await apiClient.patch<ProjectDetail>(
@@ -45,10 +41,7 @@ export async function createStage(data: CreateStageInput): Promise<Stage> {
   return response.data;
 }
 
-export async function updateStage(
-  id: string,
-  data: UpdateStageInput
-): Promise<Stage> {
+export async function updateStage(id: string, data: UpdateStageInput): Promise<Stage> {
   const response = await apiClient.patch<Stage>(`/api/stages/${id}`, data);
   return response.data;
 }
@@ -59,10 +52,7 @@ export async function createBlock(data: CreateBlockInput): Promise<Block> {
   return response.data;
 }
 
-export async function updateBlock(
-  id: string,
-  data: UpdateBlockInput
-): Promise<Block> {
+export async function updateBlock(id: string, data: UpdateBlockInput): Promise<Block> {
   const response = await apiClient.patch<Block>(`/api/blocks/${id}`, data);
   return response.data;
 }
@@ -73,10 +63,7 @@ export async function createLot(data: CreateLotInput): Promise<Lot> {
   return response.data;
 }
 
-export async function updateLot(
-  id: string,
-  data: UpdateLotInput
-): Promise<Lot> {
+export async function updateLot(id: string, data: UpdateLotInput): Promise<Lot> {
   const response = await apiClient.patch<Lot>(`/api/lots/${id}`, data);
   return response.data;
 }
@@ -102,14 +89,10 @@ export async function bulkCreateProject(file: File): Promise<BulkCreateResponse>
   const formData = new FormData();
   formData.append('file', file);
 
-  const response = await apiClient.post<BulkCreateResponse>(
-    '/api/projects/bulk-create',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
-  );
+  const response = await apiClient.post<BulkCreateResponse>('/api/projects/bulk-create', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return response.data;
 }

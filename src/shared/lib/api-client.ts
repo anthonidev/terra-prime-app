@@ -2,9 +2,10 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 // Use empty baseURL in browser to use Next.js proxy (avoids CORS)
 // Use full backend URL on server-side
-const baseURL = typeof window !== 'undefined'
-  ? '' // Empty string makes axios use relative URLs through Next.js proxy
-  : process.env.API_BACKENDL_URL || 'http://localhost:5000';
+const baseURL =
+  typeof window !== 'undefined'
+    ? '' // Empty string makes axios use relative URLs through Next.js proxy
+    : process.env.API_BACKENDL_URL || 'http://localhost:5000';
 
 // Log the base URL for debugging
 if (typeof window !== 'undefined') {
@@ -96,7 +97,8 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
       isRefreshing = true;
 
-      const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : null;
+      const refreshToken =
+        typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : null;
 
       if (!refreshToken) {
         // No refresh token, redirect to login
@@ -112,9 +114,10 @@ apiClient.interceptors.response.use(
       try {
         // Call refresh endpoint
         // Use the same baseURL strategy: relative URL in browser, full URL on server
-        const refreshURL = typeof window !== 'undefined'
-          ? '/api/auth/refresh'
-          : `${process.env.API_BACKENDL_URL || 'http://localhost:5000'}/api/auth/refresh`;
+        const refreshURL =
+          typeof window !== 'undefined'
+            ? '/api/auth/refresh'
+            : `${process.env.API_BACKENDL_URL || 'http://localhost:5000'}/api/auth/refresh`;
 
         const response = await axios.post(refreshURL, { refreshToken });
 

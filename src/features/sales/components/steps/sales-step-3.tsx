@@ -19,7 +19,14 @@ interface SalesStep3Props {
   onBack: () => void;
 }
 
-export function SalesStep3({ data, saleType, selectedLot, reservationAmount, onNext, onBack }: SalesStep3Props) {
+export function SalesStep3({
+  data,
+  saleType,
+  selectedLot,
+  reservationAmount,
+  onNext,
+  onBack,
+}: SalesStep3Props) {
   const {
     directForm,
     financedForm,
@@ -95,7 +102,7 @@ export function SalesStep3({ data, saleType, selectedLot, reservationAmount, onN
                 onClick={handleGenerateAmortization}
                 disabled={isCalculating}
                 size="lg"
-                className="w-full md:w-auto min-w-64"
+                className="w-full min-w-64 md:w-auto"
               >
                 <Calculator className="mr-2 h-4 w-4" />
                 {isCalculating ? 'Generando...' : 'Generar Tabla de Amortización'}
@@ -115,7 +122,7 @@ export function SalesStep3({ data, saleType, selectedLot, reservationAmount, onN
                 onClick={handleClearAmortization}
                 variant="outline"
                 size="lg"
-                className="w-full md:w-auto min-w-64 border-2 border-primary/50 hover:bg-primary/10"
+                className="border-primary/50 hover:bg-primary/10 w-full min-w-64 border-2 md:w-auto"
               >
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Editar Configuración
@@ -142,13 +149,7 @@ export function SalesStep3({ data, saleType, selectedLot, reservationAmount, onN
         transition={{ delay: 0.4 }}
         className="flex justify-between pt-2"
       >
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onBack}
-          size="lg"
-          className="min-w-32"
-        >
+        <Button type="button" variant="outline" onClick={onBack} size="lg" className="min-w-32">
           <ChevronLeft className="mr-2 h-4 w-4" />
           Anterior
         </Button>

@@ -20,24 +20,24 @@ export function VendorsContainer() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Briefcase className="h-5 w-5 text-primary" />
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+            <Briefcase className="text-primary h-5 w-5" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Vendedores</h1>
-            <p className="text-sm text-muted-foreground">Gestiona el equipo de ventas</p>
+            <p className="text-muted-foreground text-sm">Gestiona el equipo de ventas</p>
           </div>
         </div>
 
         <Card>
           <CardContent className="p-8">
             <div className="flex flex-col items-center justify-center gap-3 text-center">
-              <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
-                <Users className="h-6 w-6 text-destructive" />
+              <div className="bg-destructive/10 flex h-12 w-12 items-center justify-center rounded-full">
+                <Users className="text-destructive h-6 w-6" />
               </div>
               <div className="space-y-1">
-                <p className="text-sm font-medium text-destructive">Error al cargar vendedores</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-destructive text-sm font-medium">Error al cargar vendedores</p>
+                <p className="text-muted-foreground text-xs">
                   {error instanceof Error ? error.message : 'Ha ocurrido un error inesperado'}
                 </p>
               </div>
@@ -53,24 +53,24 @@ export function VendorsContainer() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Briefcase className="h-5 w-5 text-primary" />
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+            <Briefcase className="text-primary h-5 w-5" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Vendedores</h1>
-            <p className="text-sm text-muted-foreground">Gestiona el equipo de ventas</p>
+            <p className="text-muted-foreground text-sm">Gestiona el equipo de ventas</p>
           </div>
         </div>
 
         <Card>
           <CardContent className="p-8">
             <div className="flex flex-col items-center justify-center gap-3 text-center">
-              <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
-                <Users className="h-6 w-6 text-muted-foreground" />
+              <div className="bg-muted/50 flex h-12 w-12 items-center justify-center rounded-full">
+                <Users className="text-muted-foreground h-6 w-6" />
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium">No hay vendedores registrados</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   Aún no se han registrado vendedores en el sistema
                 </p>
               </div>
@@ -87,12 +87,12 @@ export function VendorsContainer() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <Briefcase className="h-5 w-5 text-primary" />
+        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+          <Briefcase className="text-primary h-5 w-5" />
         </div>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Vendedores</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             {totalVendors} {totalVendors === 1 ? 'vendedor registrado' : 'vendedores registrados'}
           </p>
         </div>

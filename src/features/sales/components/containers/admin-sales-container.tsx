@@ -11,15 +11,8 @@ import { SalesErrorState } from './components/sales-error-state';
 import { SalesEmptyState } from './components/sales-empty-state';
 
 export function AdminSalesContainer() {
-  const {
-    sales,
-    totalItems,
-    order,
-    isLoading,
-    isError,
-    isEmpty,
-    toggleOrder,
-  } = useAdminSalesContainer();
+  const { sales, totalItems, order, isLoading, isError, isEmpty, toggleOrder } =
+    useAdminSalesContainer();
 
   // Loading state
   if (isLoading) {
@@ -50,11 +43,7 @@ export function AdminSalesContainer() {
       {!isError && !isEmpty && (
         <>
           {/* Filters */}
-          <SalesFilters
-            order={order}
-            totalItems={totalItems}
-            onToggleOrder={toggleOrder}
-          />
+          <SalesFilters order={order} totalItems={totalItems} onToggleOrder={toggleOrder} />
 
           {/* Desktop Table View */}
           <motion.div

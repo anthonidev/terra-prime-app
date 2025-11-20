@@ -30,9 +30,7 @@ export function ResetPasswordSuccess() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4 py-4 text-center">
-        <p className="text-muted-foreground">
-          Ahora puedes iniciar sesión con tu nueva contraseña
-        </p>
+        <p className="text-muted-foreground">Ahora puedes iniciar sesión con tu nueva contraseña</p>
       </CardContent>
       <CardFooter className="flex justify-center">
         <Link href="/auth/login">

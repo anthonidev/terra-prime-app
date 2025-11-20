@@ -57,7 +57,7 @@ export function useSaleDetailContainer(id: string) {
 
     // For all other statuses, no payment allowed (return 0)
     return 0;
-  }, [data, totalPaid, pendingAmount ]);
+  }, [data, totalPaid]);
 
   const hasPayments = data?.paymentsSummary && data.paymentsSummary.length > 0;
 

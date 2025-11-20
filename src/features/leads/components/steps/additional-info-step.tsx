@@ -113,8 +113,8 @@ export function AdditionalInfoStep({
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-info/20 flex items-center justify-center">
-              <Target className="h-4 w-4 text-info" />
+            <div className="bg-info/20 flex h-8 w-8 items-center justify-center rounded">
+              <Target className="text-info h-4 w-4" />
             </div>
             <CardTitle className="text-base">Fuente del Lead</CardTitle>
           </div>
@@ -144,8 +144,8 @@ export function AdditionalInfoStep({
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center">
-              <MapPin className="h-4 w-4 text-primary" />
+            <div className="bg-primary/20 flex h-8 w-8 items-center justify-center rounded">
+              <MapPin className="text-primary h-4 w-4" />
             </div>
             <div>
               <CardTitle className="text-base">
@@ -155,7 +155,7 @@ export function AdditionalInfoStep({
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <div className="space-y-1.5">
               <Label htmlFor="department" className="text-xs font-medium">
                 Departamento
@@ -178,11 +178,7 @@ export function AdditionalInfoStep({
               <Label htmlFor="province" className="text-xs font-medium">
                 Provincia
               </Label>
-              <Select
-                value={provinceId}
-                onValueChange={onProvinceChange}
-                disabled={!departmentId}
-              >
+              <Select value={provinceId} onValueChange={onProvinceChange} disabled={!departmentId}>
                 <SelectTrigger id="province" className="h-9 text-sm">
                   <SelectValue placeholder="Seleccione" />
                 </SelectTrigger>
@@ -222,8 +218,8 @@ export function AdditionalInfoStep({
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded bg-success/20 flex items-center justify-center">
-                <Briefcase className="h-4 w-4 text-success" />
+              <div className="bg-success/20 flex h-8 w-8 items-center justify-center rounded">
+                <Briefcase className="text-success h-4 w-4" />
               </div>
               <CardTitle className="text-base">Proyectos de Interés</CardTitle>
             </div>
@@ -239,7 +235,7 @@ export function AdditionalInfoStep({
                   />
                   <label
                     htmlFor={`project-${project.id}`}
-                    className="text-xs font-medium leading-none cursor-pointer"
+                    className="cursor-pointer text-xs leading-none font-medium"
                   >
                     {project.name}
                   </label>
@@ -254,8 +250,8 @@ export function AdditionalInfoStep({
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-accent/20 flex items-center justify-center">
-              <Users className="h-4 w-4 text-accent" />
+            <div className="bg-accent/20 flex h-8 w-8 items-center justify-center rounded">
+              <Users className="text-accent h-4 w-4" />
             </div>
             <CardTitle className="text-base">Acompañante</CardTitle>
           </div>
@@ -268,13 +264,13 @@ export function AdditionalInfoStep({
                 checked={hasCompanion}
                 onCheckedChange={onCompanionToggle}
               />
-              <label htmlFor="hasCompanion" className="text-xs font-medium cursor-pointer">
+              <label htmlFor="hasCompanion" className="cursor-pointer text-xs font-medium">
                 ¿Viene acompañado?
               </label>
             </div>
 
             {hasCompanion && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+              <div className="grid grid-cols-1 gap-3 pt-2 md:grid-cols-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="companionFullName" className="text-xs font-medium">
                     Nombre Completo
@@ -323,18 +319,21 @@ export function AdditionalInfoStep({
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-info/20 flex items-center justify-center">
-              <Info className="h-4 w-4 text-info" />
+            <div className="bg-info/20 flex h-8 w-8 items-center justify-center rounded">
+              <Info className="text-info h-4 w-4" />
             </div>
             <CardTitle className="text-base">Información Complementaria</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="estadoCivil" className="text-xs font-medium flex items-center gap-1.5">
-                  <Heart className="h-3.5 w-3.5 text-muted-foreground" />
+                <Label
+                  htmlFor="estadoCivil"
+                  className="flex items-center gap-1.5 text-xs font-medium"
+                >
+                  <Heart className="text-muted-foreground h-3.5 w-3.5" />
                   Estado Civil
                 </Label>
                 <Select
@@ -355,8 +354,11 @@ export function AdditionalInfoStep({
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="ocupacion" className="text-xs font-medium flex items-center gap-1.5">
-                  <Briefcase className="h-3.5 w-3.5 text-muted-foreground" />
+                <Label
+                  htmlFor="ocupacion"
+                  className="flex items-center gap-1.5 text-xs font-medium"
+                >
+                  <Briefcase className="text-muted-foreground h-3.5 w-3.5" />
                   Ocupación
                 </Label>
                 <Input
@@ -369,8 +371,11 @@ export function AdditionalInfoStep({
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="cantidadHijos" className="text-xs font-medium flex items-center gap-1.5">
-                  <Users className="h-3.5 w-3.5 text-muted-foreground" />
+                <Label
+                  htmlFor="cantidadHijos"
+                  className="flex items-center gap-1.5 text-xs font-medium"
+                >
+                  <Users className="text-muted-foreground h-3.5 w-3.5" />
                   Cantidad de Hijos
                 </Label>
                 <Input
@@ -385,7 +390,7 @@ export function AdditionalInfoStep({
               </div>
             </div>
 
-            <div className="h-px bg-border" />
+            <div className="bg-border h-px" />
 
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
@@ -398,9 +403,9 @@ export function AdditionalInfoStep({
                 />
                 <label
                   htmlFor="tieneTarjetasCredito"
-                  className="text-xs font-medium cursor-pointer flex items-center gap-1.5"
+                  className="flex cursor-pointer items-center gap-1.5 text-xs font-medium"
                 >
-                  <CreditCard className="h-3.5 w-3.5 text-muted-foreground" />
+                  <CreditCard className="text-muted-foreground h-3.5 w-3.5" />
                   ¿Tiene tarjetas de crédito?
                 </label>
               </div>
@@ -417,7 +422,7 @@ export function AdditionalInfoStep({
                     onChange={(e) => onFieldChange('cantidadTarjetasCredito', e.target.value)}
                     placeholder="0"
                     min="0"
-                    className="h-9 text-sm max-w-[200px]"
+                    className="h-9 max-w-[200px] text-sm"
                   />
                 </div>
               )}
@@ -434,9 +439,9 @@ export function AdditionalInfoStep({
                 />
                 <label
                   htmlFor="tieneTarjetasDebito"
-                  className="text-xs font-medium cursor-pointer flex items-center gap-1.5"
+                  className="flex cursor-pointer items-center gap-1.5 text-xs font-medium"
                 >
-                  <CreditCard className="h-3.5 w-3.5 text-muted-foreground" />
+                  <CreditCard className="text-muted-foreground h-3.5 w-3.5" />
                   ¿Tiene tarjetas de débito?
                 </label>
               </div>
@@ -453,7 +458,7 @@ export function AdditionalInfoStep({
                     onChange={(e) => onFieldChange('cantidadTarjetasDebito', e.target.value)}
                     placeholder="0"
                     min="0"
-                    className="h-9 text-sm max-w-[200px]"
+                    className="h-9 max-w-[200px] text-sm"
                   />
                 </div>
               )}

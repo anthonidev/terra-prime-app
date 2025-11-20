@@ -28,8 +28,8 @@ export function ClientAddressInput({ form, show }: ClientAddressInputProps) {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
-              <MapPin className="h-5 w-5 text-accent" />
+            <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <MapPin className="text-accent h-5 w-5" />
             </div>
             <div>
               <CardTitle>Dirección del Cliente</CardTitle>
@@ -49,23 +49,20 @@ export function ClientAddressInput({ form, show }: ClientAddressInputProps) {
                 id="clientAddress"
                 placeholder="Ej: Av. Principal 123, Distrito, Ciudad"
                 {...form.register('clientAddress')}
-                className={cn(
-                  'pl-9 transition-all',
-                  error && 'border-destructive'
-                )}
+                className={cn('pl-9 transition-all', error && 'border-destructive')}
               />
-              <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <MapPin className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
             </div>
             {error && (
               <motion.p
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-sm text-destructive flex items-center gap-1"
+                className="text-destructive flex items-center gap-1 text-sm"
               >
                 {error.message}
               </motion.p>
             )}
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Ingrese la dirección completa del cliente para la documentación
             </p>
           </div>

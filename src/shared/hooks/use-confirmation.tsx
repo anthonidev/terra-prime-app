@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { ConfirmationDialog } from '../components/confirmation-dialog';
 
 interface ConfirmationOptions {
@@ -18,6 +18,7 @@ export function useConfirmation() {
     description: '',
   });
   const [onConfirmCallback, setOnConfirmCallback] = useState<(() => void) | null>(null);
+  const cancelHandlerRef = useRef<(() => void) | null>(null);
 
   const confirm = useCallback((opts: ConfirmationOptions): Promise<boolean> => {
     return new Promise((resolve) => {
@@ -35,16 +36,16 @@ export function useConfirmation() {
       };
 
       // Store cancel handler for cleanup
-      (window as any).__confirmationCancelHandler = handleCancel;
+      cancelHandlerRef.current = handleCancel;
     });
   }, []);
 
   const handleOpenChange = useCallback((open: boolean) => {
     if (!open) {
       // User closed the dialog without confirming
-      if ((window as any).__confirmationCancelHandler) {
-        (window as any).__confirmationCancelHandler();
-        delete (window as any).__confirmationCancelHandler;
+      if (cancelHandlerRef.current) {
+        cancelHandlerRef.current();
+        cancelHandlerRef.current = null;
       }
     }
     setIsOpen(open);
@@ -54,7 +55,7 @@ export function useConfirmation() {
     if (onConfirmCallback) {
       onConfirmCallback();
     }
-    delete (window as any).__confirmationCancelHandler;
+    cancelHandlerRef.current = null;
   }, [onConfirmCallback]);
 
   const ConfirmationDialogComponent = useCallback(() => {

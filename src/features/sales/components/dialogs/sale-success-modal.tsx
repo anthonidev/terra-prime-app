@@ -43,8 +43,8 @@ export function SaleSuccessModal({ open, onOpenChange, sale }: SaleSuccessModalP
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success/10">
-            <CheckCircle2 className="h-8 w-8 text-success" />
+          <div className="bg-success/10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
+            <CheckCircle2 className="text-success h-8 w-8" />
           </div>
           <DialogTitle className="text-center text-2xl">¡Venta Registrada!</DialogTitle>
           <DialogDescription className="text-center">
@@ -52,7 +52,7 @@ export function SaleSuccessModal({ open, onOpenChange, sale }: SaleSuccessModalP
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-3 border-t border-border pt-4">
+        <div className="border-border space-y-3 border-t pt-4">
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div className="text-muted-foreground">ID de Venta:</div>
             <div className="font-medium">{sale.id.slice(0, 8).toUpperCase()}</div>
@@ -67,7 +67,8 @@ export function SaleSuccessModal({ open, onOpenChange, sale }: SaleSuccessModalP
 
             <div className="text-muted-foreground">Monto Total:</div>
             <div className="font-medium">
-              {sale.currency} {sale.totalAmount.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+              {sale.currency}{' '}
+              {sale.totalAmount.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
             </div>
 
             <div className="text-muted-foreground">Tipo:</div>
@@ -81,7 +82,7 @@ export function SaleSuccessModal({ open, onOpenChange, sale }: SaleSuccessModalP
           <Button onClick={handleViewSale} className="w-full">
             Ver Detalle de Venta
           </Button>
-          <div className="grid grid-cols-2 gap-2 w-full">
+          <div className="grid w-full grid-cols-2 gap-2">
             <Button variant="outline" onClick={handleViewMySales} className="w-full">
               Mis Ventas
             </Button>

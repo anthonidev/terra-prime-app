@@ -38,8 +38,8 @@ export function DocumentVerificationStep({
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center">
-            <CreditCard className="h-4 w-4 text-primary" />
+          <div className="bg-primary/20 flex h-8 w-8 items-center justify-center rounded">
+            <CreditCard className="text-primary h-4 w-4" />
           </div>
           <CardTitle className="text-base">Verificación de Documento</CardTitle>
         </div>

@@ -52,11 +52,11 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
           <div className="text-sm font-medium">
             {row.original.firstName} {row.original.lastName}
           </div>
-          <div className="flex items-center gap-1.5 mt-0.5">
-            <Badge variant="outline" className="text-xs font-mono">
+          <div className="mt-0.5 flex items-center gap-1.5">
+            <Badge variant="outline" className="font-mono text-xs">
               {documentTypeLabels[row.original.documentType]}
             </Badge>
-            <span className="text-xs text-muted-foreground">{row.original.document}</span>
+            <span className="text-muted-foreground text-xs">{row.original.document}</span>
           </div>
         </div>
       ),
@@ -67,9 +67,7 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
       cell: ({ row }) => (
         <div className="text-xs">
           {row.original.email && (
-            <div className="text-muted-foreground truncate max-w-[200px]">
-              {row.original.email}
-            </div>
+            <div className="text-muted-foreground max-w-[200px] truncate">{row.original.email}</div>
           )}
           {row.original.phone && (
             <div className="text-muted-foreground mt-0.5">{row.original.phone}</div>
@@ -83,12 +81,12 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
       cell: ({ row }) => (
         <div>
           {row.original.isInOffice ? (
-            <Badge className="text-xs bg-success text-success-foreground">
+            <Badge className="bg-success text-success-foreground text-xs">
               <Building2 className="mr-1 h-3 w-3" />
               En Oficina
             </Badge>
           ) : (
-            <Badge variant="outline" className="text-xs text-muted-foreground">
+            <Badge variant="outline" className="text-muted-foreground text-xs">
               <Home className="mr-1 h-3 w-3" />
               Fuera
             </Badge>
@@ -100,7 +98,7 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
       accessorKey: 'createdAt',
       header: 'Registro',
       cell: ({ row }) => (
-        <span className="text-xs text-muted-foreground">
+        <span className="text-muted-foreground text-xs">
           {format(new Date(row.original.createdAt), 'dd/MM/yyyy', { locale: es })}
         </span>
       ),
@@ -152,12 +150,12 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
       <Card>
         <CardContent className="p-8">
           <div className="flex flex-col items-center justify-center gap-3 text-center">
-            <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
-              <Users className="h-6 w-6 text-muted-foreground" />
+            <div className="bg-muted/50 flex h-12 w-12 items-center justify-center rounded-full">
+              <Users className="text-muted-foreground h-6 w-6" />
             </div>
             <div className="space-y-1">
               <p className="text-sm font-medium">No se encontraron leads</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 No hay leads que coincidan con los filtros aplicados
               </p>
             </div>

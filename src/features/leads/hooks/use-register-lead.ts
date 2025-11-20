@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import { registerLead, findLeadByDocument } from '../lib/mutations';
 
@@ -18,9 +19,16 @@ export function useRegisterLead() {
         toast.error(response.message || 'Error al registrar lead');
       }
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       console.error('Error registering lead:', error);
-      toast.error(error?.response?.data?.message || 'Error al registrar lead');
+      let message = 'Error al registrar lead';
+
+      if (error instanceof AxiosError && error.response?.data) {
+        const data = error.response.data as { message?: string };
+        message = data.message || message;
+      }
+
+      toast.error(message);
     },
   });
 }
@@ -28,9 +36,9 @@ export function useRegisterLead() {
 export function useFindLeadByDocument() {
   return useMutation({
     mutationFn: findLeadByDocument,
-    onError: (error: any) => {
+    onError: (error: Error) => {
       console.error('Error finding lead:', error);
-      if (error?.response?.status !== 404) {
+      if (!(error instanceof AxiosError) || error.response?.status !== 404) {
         toast.error('Error al buscar lead');
       }
     },

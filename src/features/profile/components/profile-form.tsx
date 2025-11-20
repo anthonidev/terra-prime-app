@@ -50,8 +50,8 @@ export function ProfileForm({ user }: ProfileFormProps) {
     <Card className="h-full">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded bg-accent/20 flex items-center justify-center">
-            <UserRound className="h-4 w-4 text-accent" />
+          <div className="bg-accent/20 flex h-8 w-8 items-center justify-center rounded">
+            <UserRound className="text-accent h-4 w-4" />
           </div>
           <CardTitle className="text-base">Información Personal</CardTitle>
         </div>
@@ -71,7 +71,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                     <FormControl>
                       <Input
                         placeholder="correo@ejemplo.com"
-                        className="pl-9 h-9 text-sm"
+                        className="h-9 pl-9 text-sm"
                         {...field}
                       />
                     </FormControl>
@@ -90,11 +90,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                   <FormItem>
                     <FormLabel className="text-xs font-medium">Nombre</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Tu nombre"
-                        className="h-9 text-sm"
-                        {...field}
-                      />
+                      <Input placeholder="Tu nombre" className="h-9 text-sm" {...field} />
                     </FormControl>
                     <FormMessage className="text-xs" />
                   </FormItem>
@@ -108,11 +104,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                   <FormItem>
                     <FormLabel className="text-xs font-medium">Apellido</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Tu apellido"
-                        className="h-9 text-sm"
-                        {...field}
-                      />
+                      <Input placeholder="Tu apellido" className="h-9 text-sm" {...field} />
                     </FormControl>
                     <FormMessage className="text-xs" />
                   </FormItem>
@@ -122,12 +114,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
             {/* Submit Button */}
             <div className="pt-2">
-              <Button
-                type="submit"
-                size="sm"
-                className="w-full"
-                disabled={isPending || !isDirty}
-              >
+              <Button type="submit" size="sm" className="w-full" disabled={isPending || !isDirty}>
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />

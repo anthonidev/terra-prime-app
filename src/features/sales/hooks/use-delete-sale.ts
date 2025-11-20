@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { AxiosError } from 'axios';
 import { deleteSale } from '../lib/mutations';
 import { toast } from 'sonner';
 import type { DeleteSaleInput } from '../types';
@@ -23,8 +24,14 @@ export function useDeleteSale() {
       // Redirect to sales list after deletion
       router.push('/ventas');
     },
-    onError: (error: any) => {
-      const message = error?.response?.data?.message || 'Error al eliminar la venta';
+    onError: (error: Error) => {
+      let message = 'Error al eliminar la venta';
+
+      if (error instanceof AxiosError && error.response?.data) {
+        const data = error.response.data as { message?: string };
+        message = data.message || message;
+      }
+
       toast.error(message);
       console.error('Error deleting sale:', error);
     },

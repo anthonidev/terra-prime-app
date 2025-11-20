@@ -1,9 +1,5 @@
 import { apiClient } from '@/shared/lib/api-client';
-import type {
-  Participant,
-  PaginatedResponse,
-  ParticipantsQueryParams,
-} from '../types';
+import type { Participant, PaginatedResponse, ParticipantsQueryParams } from '../types';
 
 export async function getParticipants(
   params: ParticipantsQueryParams = {}

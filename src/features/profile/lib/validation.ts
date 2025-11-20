@@ -26,8 +26,7 @@ export const changePasswordSchema = z
       .min(1, 'La nueva contraseña es requerida')
       .min(6, 'La nueva contraseña debe tener al menos 6 caracteres')
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\W]{6,}$/, {
-        message:
-          'La contraseña debe contener al menos una mayúscula, una minúscula y un número',
+        message: 'La contraseña debe contener al menos una mayúscula, una minúscula y un número',
       }),
     confirmPassword: z.string().min(1, 'Confirma tu nueva contraseña'),
   })
@@ -46,15 +45,9 @@ export const photoFileSchema = z.object({
     .refine((file) => file.size <= 2 * 1024 * 1024, {
       message: 'La imagen no debe superar los 2MB',
     })
-    .refine(
-      (file) =>
-        ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(
-          file.type
-        ),
-      {
-        message: 'Solo se permiten imágenes en formato JPEG, JPG, PNG o WEBP',
-      }
-    ),
+    .refine((file) => ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type), {
+      message: 'Solo se permiten imágenes en formato JPEG, JPG, PNG o WEBP',
+    }),
 });
 
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

@@ -61,8 +61,8 @@ export function ChangePasswordForm() {
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded bg-destructive/20 flex items-center justify-center">
-            <Shield className="h-4 w-4 text-destructive" />
+          <div className="bg-destructive/20 flex h-8 w-8 items-center justify-center rounded">
+            <Shield className="text-destructive h-4 w-4" />
           </div>
           <CardTitle className="text-base">Cambiar Contraseña</CardTitle>
         </div>
@@ -81,7 +81,7 @@ export function ChangePasswordForm() {
                     <div className="relative">
                       <Input
                         type={showCurrentPassword ? 'text' : 'password'}
-                        className="pr-10 h-9 text-sm"
+                        className="h-9 pr-10 text-sm"
                         placeholder="••••••••"
                         {...field}
                       />
@@ -90,9 +90,7 @@ export function ChangePasswordForm() {
                         variant="ghost"
                         size="icon"
                         className="absolute top-0 right-0 h-9 w-9"
-                        onClick={() =>
-                          setShowCurrentPassword(!showCurrentPassword)
-                        }
+                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                       >
                         {showCurrentPassword ? (
                           <EyeOff className="text-muted-foreground h-3.5 w-3.5" />
@@ -119,7 +117,7 @@ export function ChangePasswordForm() {
                       <div className="relative">
                         <Input
                           type={showNewPassword ? 'text' : 'password'}
-                          className="pr-10 h-9 text-sm"
+                          className="h-9 pr-10 text-sm"
                           placeholder="••••••••"
                           {...field}
                         />
@@ -153,7 +151,7 @@ export function ChangePasswordForm() {
                       <div className="relative">
                         <Input
                           type={showConfirmPassword ? 'text' : 'password'}
-                          className="pr-10 h-9 text-sm"
+                          className="h-9 pr-10 text-sm"
                           placeholder="••••••••"
                           {...field}
                         />
@@ -162,9 +160,7 @@ export function ChangePasswordForm() {
                           variant="ghost"
                           size="icon"
                           className="absolute top-0 right-0 h-9 w-9"
-                          onClick={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         >
                           {showConfirmPassword ? (
                             <EyeOff className="text-muted-foreground h-3.5 w-3.5" />
@@ -181,8 +177,9 @@ export function ChangePasswordForm() {
             </div>
 
             {/* Helper Text */}
-            <FormDescription className="text-xs bg-muted/50 p-2 rounded-md">
-              La contraseña debe contener al menos 6 caracteres, una mayúscula, una minúscula y un número
+            <FormDescription className="bg-muted/50 rounded-md p-2 text-xs">
+              La contraseña debe contener al menos 6 caracteres, una mayúscula, una minúscula y un
+              número
             </FormDescription>
 
             {/* Submit Button */}

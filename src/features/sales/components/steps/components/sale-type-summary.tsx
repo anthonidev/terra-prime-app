@@ -61,14 +61,16 @@ export function SaleTypeSummary({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.3 }}
     >
-      <Card className={cn(
-        'border transition-all',
-        isReservation ? 'border-primary/30 bg-primary/5' : 'bg-muted/30 border-muted'
-      )}>
+      <Card
+        className={cn(
+          'border transition-all',
+          isReservation ? 'border-primary/30 bg-primary/5' : 'bg-muted/30 border-muted'
+        )}
+      >
         <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <CheckCircle2 className="h-4 w-4 text-primary" />
-            <h3 className="font-semibold text-xs text-muted-foreground uppercase tracking-wide">
+          <div className="mb-3 flex items-center gap-2">
+            <CheckCircle2 className="text-primary h-4 w-4" />
+            <h3 className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
               Resumen de Configuración
             </h3>
           </div>
@@ -84,20 +86,20 @@ export function SaleTypeSummary({
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ delay: index * 0.05 }}
-                    className="flex items-center justify-between py-1.5 px-2 rounded-md bg-background/50 hover:bg-background transition-colors"
+                    className="bg-background/50 hover:bg-background flex items-center justify-between rounded-md px-2 py-1.5 transition-colors"
                   >
                     <div className="flex items-center gap-2">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
-                        <Icon className="h-3.5 w-3.5 text-primary" />
+                      <div className="bg-primary/10 flex h-6 w-6 items-center justify-center rounded-md">
+                        <Icon className="text-primary h-3.5 w-3.5" />
                       </div>
-                      <span className="text-xs text-muted-foreground">{item.label}:</span>
+                      <span className="text-muted-foreground text-xs">{item.label}:</span>
                     </div>
                     {item.badge ? (
-                      <Badge variant="secondary" className="text-xs font-semibold h-5">
+                      <Badge variant="secondary" className="h-5 text-xs font-semibold">
                         {item.value}
                       </Badge>
                     ) : (
-                      <span className="text-xs font-semibold text-foreground">{item.value}</span>
+                      <span className="text-foreground text-xs font-semibold">{item.value}</span>
                     )}
                   </motion.div>
                 );
@@ -111,16 +113,16 @@ export function SaleTypeSummary({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="mt-3 p-2.5 rounded-md bg-accent/10 border border-accent/20"
+              className="bg-accent/10 border-accent/20 mt-3 rounded-md border p-2.5"
             >
-              <p className="text-[10px] text-muted-foreground leading-relaxed">
-                <span className="font-semibold text-foreground">Nota:</span> El cliente debe pagar{' '}
-                <span className="font-semibold text-accent">
+              <p className="text-muted-foreground text-[10px] leading-relaxed">
+                <span className="text-foreground font-semibold">Nota:</span> El cliente debe pagar{' '}
+                <span className="text-accent font-semibold">
                   {formatCurrency(reservationAmount, currencyType)}
                 </span>{' '}
                 para reservar el lote por{' '}
-                <span className="font-semibold text-accent">{maximumHoldPeriod} días</span>.
-                Este monto será parte del pago total del lote.
+                <span className="text-accent font-semibold">{maximumHoldPeriod} días</span>. Este
+                monto será parte del pago total del lote.
               </p>
             </motion.div>
           )}

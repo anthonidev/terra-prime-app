@@ -24,11 +24,11 @@ export function LeadFormStepper({ currentStep }: LeadFormStepperProps) {
     <div className="mb-6">
       <div className="flex items-center justify-between">
         {steps.map((step, index) => (
-          <div key={step.number} className="flex items-center flex-1">
+          <div key={step.number} className="flex flex-1 items-center">
             <div className="flex flex-col items-center">
               <div
                 className={cn(
-                  'flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all',
+                  'flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all',
                   currentStep > step.number
                     ? 'bg-primary border-primary text-primary-foreground'
                     : currentStep === step.number
@@ -54,7 +54,7 @@ export function LeadFormStepper({ currentStep }: LeadFormStepperProps) {
             {index < steps.length - 1 && (
               <div
                 className={cn(
-                  'h-0.5 flex-1 mx-2 transition-colors',
+                  'mx-2 h-0.5 flex-1 transition-colors',
                   currentStep > step.number ? 'bg-primary' : 'bg-muted-foreground/20'
                 )}
               />

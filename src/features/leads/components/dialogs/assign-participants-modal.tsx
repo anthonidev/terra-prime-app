@@ -1,17 +1,14 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -19,9 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { useParticipants } from '../../hooks/use-participants';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { useAssignParticipants } from '../../hooks/use-assign-participants';
+import { useParticipants } from '../../hooks/use-participants';
 import { ParticipantType, type LeadVisit, type ParticipantResponseActive } from '../../types';
 
 const participantLabels: Record<ParticipantType, string> = {
@@ -70,7 +70,13 @@ export function AssignParticipantsModal({
   const { data: participants, isLoading: isLoadingParticipants } = useParticipants();
   const assignParticipants = useAssignParticipants(leadId);
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<AssignParticipantsFormData>({
+  const {
+    handleSubmit,
+    formState: {},
+    reset,
+    setValue,
+    watch,
+  } = useForm<AssignParticipantsFormData>({
     resolver: zodResolver(assignParticipantsSchema),
   });
 
@@ -78,13 +84,16 @@ export function AssignParticipantsModal({
   const participantsByType = useMemo(() => {
     if (!participants) return {} as Record<ParticipantType, ParticipantResponseActive[]>;
 
-    return participants.reduce((acc, participant) => {
-      if (!acc[participant.participantType]) {
-        acc[participant.participantType] = [];
-      }
-      acc[participant.participantType].push(participant);
-      return acc;
-    }, {} as Record<ParticipantType, ParticipantResponseActive[]>);
+    return participants.reduce(
+      (acc, participant) => {
+        if (!acc[participant.participantType]) {
+          acc[participant.participantType] = [];
+        }
+        acc[participant.participantType].push(participant);
+        return acc;
+      },
+      {} as Record<ParticipantType, ParticipantResponseActive[]>
+    );
   }, [participants]);
 
   // Load current participants when visit changes
@@ -149,8 +158,8 @@ export function AssignParticipantsModal({
                 isLoadingParticipants
                   ? 'Cargando...'
                   : hasParticipants
-                  ? 'Seleccionar participante'
-                  : 'No hay participantes'
+                    ? 'Seleccionar participante'
+                    : 'No hay participantes'
               }
             />
           </SelectTrigger>
@@ -169,7 +178,7 @@ export function AssignParticipantsModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Asignar Participantes a la Visita</DialogTitle>
         </DialogHeader>

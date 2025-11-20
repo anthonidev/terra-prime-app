@@ -23,24 +23,24 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
       <div className="md:hidden">
         {/* Progress bar */}
         <div className="mb-4">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-medium text-muted-foreground">
+          <div className="mb-2 flex items-center justify-between">
+            <p className="text-muted-foreground text-xs font-medium">
               Paso {currentStep} de {steps.length}
             </p>
-            <p className="text-xs font-semibold text-primary">
-              {steps.find(s => s.id === currentStep)?.label}
+            <p className="text-primary text-xs font-semibold">
+              {steps.find((s) => s.id === currentStep)?.label}
             </p>
           </div>
-          <div className="relative h-2 bg-muted/30 rounded-full overflow-hidden">
+          <div className="bg-muted/30 relative h-2 overflow-hidden rounded-full">
             <motion.div
-              className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-accent to-primary rounded-full"
+              className="from-primary via-accent to-primary absolute inset-y-0 left-0 rounded-full bg-gradient-to-r"
               initial={{ width: '0%' }}
               animate={{
                 width: `${((currentStep - 1) / (steps.length - 1)) * 100}%`,
               }}
               transition={{
                 duration: 0.5,
-                ease: "easeOut",
+                ease: 'easeOut',
               }}
             />
           </div>
@@ -63,25 +63,23 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
                   transition={{
                     duration: 2,
                     repeat: isCurrent ? Infinity : 0,
-                    ease: "easeInOut",
+                    ease: 'easeInOut',
                   }}
                   className="relative"
                 >
                   <div
                     className={cn(
                       'relative flex h-7 w-7 items-center justify-center rounded-full border-2 transition-all duration-300',
-                      isCompleted &&
-                      'border-primary bg-primary text-primary-foreground shadow-sm',
+                      isCompleted && 'border-primary bg-primary text-primary-foreground shadow-sm',
                       isCurrent &&
-                      'border-primary bg-background text-primary ring-2 ring-primary/30 shadow-md',
-                      isPending &&
-                      'border-border bg-muted/20 text-muted-foreground'
+                        'border-primary bg-background text-primary ring-primary/30 shadow-md ring-2',
+                      isPending && 'border-border bg-muted/20 text-muted-foreground'
                     )}
                   >
                     {isCompleted ? (
                       <Check className="h-3.5 w-3.5" strokeWidth={3} />
                     ) : isCurrent ? (
-                      <Circle className="h-3.5 w-3.5 fill-primary" strokeWidth={0} />
+                      <Circle className="fill-primary h-3.5 w-3.5" strokeWidth={0} />
                     ) : (
                       <span className="text-[10px] font-bold">{step.id}</span>
                     )}
@@ -113,14 +111,11 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
             return (
               <li
                 key={step.id}
-                className={cn(
-                  'flex flex-1 items-start',
-                  stepIdx !== steps.length - 1 && 'gap-2'
-                )}
+                className={cn('flex flex-1 items-start', stepIdx !== steps.length - 1 && 'gap-2')}
               >
-                <div className="flex flex-col items-center flex-1 min-w-0">
+                <div className="flex min-w-0 flex-1 flex-col items-center">
                   {/* Step indicator and connector */}
-                  <div className="flex items-center w-full relative">
+                  <div className="relative flex w-full items-center">
                     {/* Step circle/icon */}
                     <motion.div
                       initial={false}
@@ -130,19 +125,18 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
                       transition={{
                         duration: 2,
                         repeat: isCurrent ? Infinity : 0,
-                        ease: "easeInOut",
+                        ease: 'easeInOut',
                       }}
                       className="relative z-10 flex-shrink-0"
                     >
                       <div
                         className={cn(
-                          'relative flex h-11 w-11 lg:h-12 lg:w-12 items-center justify-center rounded-full border-2 transition-all duration-300',
+                          'relative flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 lg:h-12 lg:w-12',
                           isCompleted &&
-                          'border-primary bg-primary text-primary-foreground shadow-md',
+                            'border-primary bg-primary text-primary-foreground shadow-md',
                           isCurrent &&
-                          'border-primary bg-background text-primary ring-4 ring-primary/20 shadow-lg',
-                          isPending &&
-                          'border-border bg-muted/30 text-muted-foreground'
+                            'border-primary bg-background text-primary ring-primary/20 shadow-lg ring-4',
+                          isPending && 'border-border bg-muted/30 text-muted-foreground'
                         )}
                       >
                         {isCompleted ? (
@@ -150,7 +144,7 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
                             initial={{ scale: 0, rotate: -180 }}
                             animate={{ scale: 1, rotate: 0 }}
                             transition={{
-                              type: "spring",
+                              type: 'spring',
                               stiffness: 200,
                               damping: 15,
                             }}
@@ -162,29 +156,30 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{
-                              type: "spring",
+                              type: 'spring',
                               stiffness: 200,
                               damping: 15,
                             }}
                           >
-                            <Circle className="h-5 w-5 lg:h-6 lg:w-6 fill-primary" strokeWidth={0} />
+                            <Circle
+                              className="fill-primary h-5 w-5 lg:h-6 lg:w-6"
+                              strokeWidth={0}
+                            />
                           </motion.div>
                         ) : (
-                          <span className="text-sm lg:text-base font-semibold">
-                            {step.id}
-                          </span>
+                          <span className="text-sm font-semibold lg:text-base">{step.id}</span>
                         )}
 
                         {/* Pulse effect for current step */}
                         {isCurrent && (
                           <motion.div
-                            className="absolute inset-0 rounded-full border-2 border-primary"
+                            className="border-primary absolute inset-0 rounded-full border-2"
                             initial={{ scale: 1, opacity: 0.8 }}
                             animate={{ scale: 1.5, opacity: 0 }}
                             transition={{
                               duration: 2,
                               repeat: Infinity,
-                              ease: "easeOut",
+                              ease: 'easeOut',
                             }}
                           />
                         )}
@@ -194,16 +189,16 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
                     {/* Connector line */}
                     {stepIdx !== steps.length - 1 && (
                       <div className="flex-1 px-2 lg:px-3">
-                        <div className="relative h-0.5 w-full bg-border/50 rounded-full overflow-hidden">
+                        <div className="bg-border/50 relative h-0.5 w-full overflow-hidden rounded-full">
                           <motion.div
-                            className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-primary to-accent rounded-full"
+                            className="from-primary via-primary to-accent absolute inset-y-0 left-0 rounded-full bg-gradient-to-r"
                             initial={{ width: '0%' }}
                             animate={{
                               width: isCompleted ? '100%' : '0%',
                             }}
                             transition={{
                               duration: 0.5,
-                              ease: "easeInOut",
+                              ease: 'easeInOut',
                             }}
                           />
                         </div>
@@ -213,14 +208,14 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
 
                   {/* Step label and description */}
                   <motion.div
-                    className="mt-3 text-center w-full px-1"
+                    className="mt-3 w-full px-1 text-center"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: stepIdx * 0.1 }}
                   >
                     <p
                       className={cn(
-                        'text-xs lg:text-sm font-semibold transition-colors duration-300 line-clamp-2',
+                        'line-clamp-2 text-xs font-semibold transition-colors duration-300 lg:text-sm',
                         isCurrent && 'text-primary',
                         isCompleted && 'text-foreground',
                         isPending && 'text-muted-foreground'
@@ -231,7 +226,7 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
                     {step.description && (
                       <p
                         className={cn(
-                          'text-[10px] lg:text-xs mt-1 transition-colors duration-300 line-clamp-2',
+                          'mt-1 line-clamp-2 text-[10px] transition-colors duration-300 lg:text-xs',
                           isCurrent && 'text-primary/70',
                           isCompleted && 'text-muted-foreground',
                           isPending && 'text-muted-foreground/60'

@@ -23,8 +23,18 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 
-import { useCreateStage, useUpdateStage, useCreateBlock, useUpdateBlock } from '../../hooks/use-mutations';
-import { stageSchema, blockSchema, type StageFormData, type BlockFormData } from '../../lib/validation';
+import {
+  useCreateStage,
+  useUpdateStage,
+  useCreateBlock,
+  useUpdateBlock,
+} from '../../hooks/use-mutations';
+import {
+  stageSchema,
+  blockSchema,
+  type StageFormData,
+  type BlockFormData,
+} from '../../lib/validation';
 import type { Stage, Block } from '../../types';
 
 // Stage Dialog
@@ -35,12 +45,7 @@ interface StageFormDialogProps {
   stage?: Stage | null;
 }
 
-export function StageFormDialog({
-  open,
-  onOpenChange,
-  projectId,
-  stage,
-}: StageFormDialogProps) {
+export function StageFormDialog({ open, onOpenChange, projectId, stage }: StageFormDialogProps) {
   const isEditing = !!stage;
   const { mutate: createStage, isPending: isCreating } = useCreateStage(projectId);
   const { mutate: updateStage, isPending: isUpdating } = useUpdateStage(projectId);
@@ -64,15 +69,9 @@ export function StageFormDialog({
 
   const onSubmit = (data: StageFormData) => {
     if (isEditing && stage) {
-      updateStage(
-        { id: stage.id, data },
-        { onSuccess: () => onOpenChange(false) }
-      );
+      updateStage({ id: stage.id, data }, { onSuccess: () => onOpenChange(false) });
     } else {
-      createStage(
-        { ...data, projectId },
-        { onSuccess: () => onOpenChange(false) }
-      );
+      createStage({ ...data, projectId }, { onSuccess: () => onOpenChange(false) });
     }
   };
 
@@ -113,15 +112,12 @@ export function StageFormDialog({
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">Estado</FormLabel>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-muted-foreground text-sm">
                       {field.value ? 'Etapa activa' : 'Etapa inactiva'}
                     </div>
                   </div>
                   <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
                 </FormItem>
               )}
@@ -188,15 +184,9 @@ export function BlockFormDialog({
 
   const onSubmit = (data: BlockFormData) => {
     if (isEditing && block) {
-      updateBlock(
-        { id: block.id, data },
-        { onSuccess: () => onOpenChange(false) }
-      );
+      updateBlock({ id: block.id, data }, { onSuccess: () => onOpenChange(false) });
     } else {
-      createBlock(
-        { ...data, stageId },
-        { onSuccess: () => onOpenChange(false) }
-      );
+      createBlock({ ...data, stageId }, { onSuccess: () => onOpenChange(false) });
     }
   };
 
@@ -237,15 +227,12 @@ export function BlockFormDialog({
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">Estado</FormLabel>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-muted-foreground text-sm">
                       {field.value ? 'Manzana activa' : 'Manzana inactiva'}
                     </div>
                   </div>
                   <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
                 </FormItem>
               )}

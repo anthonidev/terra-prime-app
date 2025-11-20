@@ -1,6 +1,6 @@
 'use client';
 
-import { Building2, CheckCircle, CreditCard, Edit, User, XCircle } from 'lucide-react';
+import { Building2, CheckCircle, Edit, User, XCircle } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -16,21 +16,21 @@ export function LeadDetailHeader({ lead, onEdit }: LeadDetailHeaderProps) {
   const fullName = `${lead.firstName} ${lead.lastName}`;
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b">
+    <div className="flex flex-col justify-between gap-3 border-b pb-3 sm:flex-row sm:items-center">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-          <User className="h-5 w-5 text-primary" />
+        <div className="bg-primary/10 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
+          <User className="text-primary h-5 w-5" />
         </div>
-        <div className="flex-1 min-w-0">
-          <h1 className="text-2xl font-bold tracking-tight truncate">{fullName}</h1>
-          <div className="flex items-center gap-2 mt-1 flex-wrap">
-            <Badge variant="outline" className="text-xs font-mono">
+        <div className="min-w-0 flex-1">
+          <h1 className="truncate text-2xl font-bold tracking-tight">{fullName}</h1>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <Badge variant="outline" className="font-mono text-xs">
               {lead.documentType}
             </Badge>
-            <span className="text-xs text-muted-foreground">{lead.document}</span>
+            <span className="text-muted-foreground text-xs">{lead.document}</span>
             <Badge
               variant={lead.isActive ? 'default' : 'secondary'}
-              className="text-xs flex items-center gap-1"
+              className="flex items-center gap-1 text-xs"
             >
               {lead.isActive ? (
                 <>
@@ -45,7 +45,7 @@ export function LeadDetailHeader({ lead, onEdit }: LeadDetailHeaderProps) {
               )}
             </Badge>
             {lead.isInOffice && (
-              <Badge className="text-xs bg-success text-success-foreground">
+              <Badge className="bg-success text-success-foreground text-xs">
                 <Building2 className="mr-1 h-3 w-3" />
                 En Oficina
               </Badge>

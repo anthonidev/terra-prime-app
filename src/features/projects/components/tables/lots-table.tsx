@@ -64,11 +64,7 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
       cell: ({ row }) => {
         const lotPrice = parseFloat(row.original.lotPrice);
         const currency = row.original.currency === 'USD' ? 'USD' : 'PEN';
-        return (
-          <span className="font-mono text-sm">
-            {formatCurrency(lotPrice, currency)}
-          </span>
-        );
+        return <span className="font-mono text-sm">{formatCurrency(lotPrice, currency)}</span>;
       },
     },
     {
@@ -78,9 +74,7 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
         const urbanizationPrice = parseFloat(row.original.urbanizationPrice);
         const currency = row.original.currency === 'USD' ? 'USD' : 'PEN';
         return (
-          <span className="font-mono text-sm">
-            {formatCurrency(urbanizationPrice, currency)}
-          </span>
+          <span className="font-mono text-sm">{formatCurrency(urbanizationPrice, currency)}</span>
         );
       },
     },
@@ -93,7 +87,7 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
         const total = lotPrice + urbanizationPrice;
         const currency = row.original.currency === 'USD' ? 'USD' : 'PEN';
         return (
-          <span className="font-mono font-semibold text-primary text-sm">
+          <span className="text-primary font-mono text-sm font-semibold">
             {formatCurrency(total, currency)}
           </span>
         );
@@ -112,11 +106,7 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
       id: 'actions',
       header: 'Acciones',
       cell: ({ row }) => (
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => onEdit(row.original)}
-        >
+        <Button size="sm" variant="ghost" onClick={() => onEdit(row.original)}>
           <Edit className="h-4 w-4" />
         </Button>
       ),
@@ -125,10 +115,8 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
 
   if (lots.length === 0) {
     return (
-      <div className="rounded-lg border bg-card shadow-sm p-8">
-        <p className="text-center text-muted-foreground">
-          No se encontraron lotes
-        </p>
+      <div className="bg-card rounded-lg border p-8 shadow-sm">
+        <p className="text-muted-foreground text-center">No se encontraron lotes</p>
       </div>
     );
   }
@@ -136,7 +124,7 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
   return (
     <div className="space-y-4">
       {/* Desktop: Tabla */}
-      <div className="hidden md:block rounded-lg border bg-card shadow-sm">
+      <div className="bg-card hidden rounded-lg border shadow-sm md:block">
         <DataTable columns={columns} data={lots} />
       </div>
 
@@ -148,10 +136,7 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
       </div>
 
       {/* Pagination */}
-      <DataTablePagination
-        meta={meta}
-        onPageChange={onPageChange}
-      />
+      <DataTablePagination meta={meta} onPageChange={onPageChange} />
     </div>
   );
 }

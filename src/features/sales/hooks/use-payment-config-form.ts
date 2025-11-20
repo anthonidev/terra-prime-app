@@ -11,8 +11,17 @@ import {
   type Step3DirectPaymentFormData,
   type Step3FinancedFormData,
 } from '../lib/validation';
-import { SaleType, type ProjectLotResponse, type AmortizationResponse, type Step3Data } from '../types';
-import { DEFAULT_INTEREST_RATE, DEFAULT_HU_INSTALLMENTS, DEFAULT_SALE_INSTALLMENTS } from '../constants';
+import {
+  SaleType,
+  type ProjectLotResponse,
+  type AmortizationResponse,
+  type Step3Data,
+} from '../types';
+import {
+  DEFAULT_INTEREST_RATE,
+  DEFAULT_HU_INSTALLMENTS,
+  DEFAULT_SALE_INSTALLMENTS,
+} from '../constants';
 import { useCalculateAmortization } from './use-calculate-amortization';
 
 interface UsePaymentConfigFormProps {
@@ -61,7 +70,8 @@ export function usePaymentConfigForm({
       totalAmountUrbanDevelopment: initialData?.totalAmountUrbanDevelopment || urbanizationPrice,
       initialAmountUrbanDevelopment: initialData?.initialAmountUrbanDevelopment || 0,
       quantityHuCuotes: initialData?.quantityHuCuotes || DEFAULT_HU_INSTALLMENTS,
-      firstPaymentDateHu: initialData?.firstPaymentDateHu || format(addMonths(new Date(), 1), 'yyyy-MM-dd'),
+      firstPaymentDateHu:
+        initialData?.firstPaymentDateHu || format(addMonths(new Date(), 1), 'yyyy-MM-dd'),
     },
   });
 
@@ -73,11 +83,13 @@ export function usePaymentConfigForm({
       initialAmount: initialData?.initialAmount || 0,
       interestRate: initialData?.interestRate || DEFAULT_INTEREST_RATE,
       quantitySaleCoutes: initialData?.quantitySaleCoutes || DEFAULT_SALE_INSTALLMENTS,
-      firstPaymentDate: initialData?.firstPaymentDate || format(addMonths(new Date(), 1), 'yyyy-MM-dd'),
+      firstPaymentDate:
+        initialData?.firstPaymentDate || format(addMonths(new Date(), 1), 'yyyy-MM-dd'),
       totalAmountUrbanDevelopment: initialData?.totalAmountUrbanDevelopment || urbanizationPrice,
       initialAmountUrbanDevelopment: initialData?.initialAmountUrbanDevelopment || 0,
       quantityHuCuotes: initialData?.quantityHuCuotes || DEFAULT_HU_INSTALLMENTS,
-      firstPaymentDateHu: initialData?.firstPaymentDateHu || format(addMonths(new Date(), 1), 'yyyy-MM-dd'),
+      firstPaymentDateHu:
+        initialData?.firstPaymentDateHu || format(addMonths(new Date(), 1), 'yyyy-MM-dd'),
     },
   });
 
@@ -95,23 +107,35 @@ export function usePaymentConfigForm({
   }, [lotPrice, urbanizationPrice, isDirectPayment, directForm, financedForm]);
 
   // Watch form values
-  const totalAmount = isDirectPayment ? directForm.watch('totalAmount') : financedForm.watch('totalAmount');
+  const totalAmount = isDirectPayment
+    ? directForm.watch('totalAmount')
+    : financedForm.watch('totalAmount');
   const initialAmount = isDirectPayment ? 0 : financedForm.watch('initialAmount');
   const interestRate = isDirectPayment ? 0 : financedForm.watch('interestRate');
   const quantitySaleCoutes = isDirectPayment ? 0 : financedForm.watch('quantitySaleCoutes');
   const firstPaymentDate = isDirectPayment ? undefined : financedForm.watch('firstPaymentDate');
-  const quantityHuCuotes = isDirectPayment ? directForm.watch('quantityHuCuotes') : financedForm.watch('quantityHuCuotes');
+  const quantityHuCuotes = isDirectPayment
+    ? directForm.watch('quantityHuCuotes')
+    : financedForm.watch('quantityHuCuotes');
   const totalAmountUrbanDevelopment = isDirectPayment
     ? directForm.watch('totalAmountUrbanDevelopment')
     : financedForm.watch('totalAmountUrbanDevelopment');
   const initialAmountUrbanDevelopment = isDirectPayment
     ? directForm.watch('initialAmountUrbanDevelopment')
     : financedForm.watch('initialAmountUrbanDevelopment');
-  const firstPaymentDateHu = isDirectPayment ? directForm.watch('firstPaymentDateHu') : financedForm.watch('firstPaymentDateHu');
+  const firstPaymentDateHu = isDirectPayment
+    ? directForm.watch('firstPaymentDateHu')
+    : financedForm.watch('firstPaymentDateHu');
 
   // Generate amortization
   const handleGenerateAmortization = () => {
-    if (!totalAmount || initialAmount === undefined || !interestRate || !quantitySaleCoutes || !firstPaymentDate) {
+    if (
+      !totalAmount ||
+      initialAmount === undefined ||
+      !interestRate ||
+      !quantitySaleCoutes ||
+      !firstPaymentDate
+    ) {
       toast.error('Por favor complete todos los campos requeridos');
       return;
     }
@@ -133,7 +157,10 @@ export function usePaymentConfigForm({
         firstPaymentDate,
         includeDecimals: false,
         totalAmountHu: totalAmountUrbanDevelopment > 0 ? totalAmountUrbanDevelopment : undefined,
-        numberOfPaymentsHu: totalAmountUrbanDevelopment > 0 ? (quantityHuCuotes ?? DEFAULT_HU_INSTALLMENTS) : undefined,
+        numberOfPaymentsHu:
+          totalAmountUrbanDevelopment > 0
+            ? (quantityHuCuotes ?? DEFAULT_HU_INSTALLMENTS)
+            : undefined,
         firstPaymentDateHu: totalAmountUrbanDevelopment > 0 ? firstPaymentDateHu : undefined,
       },
       {

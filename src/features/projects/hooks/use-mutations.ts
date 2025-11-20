@@ -40,8 +40,7 @@ export function useUpdateStage(projectId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateStageInput }) =>
-      updateStage(id, data),
+    mutationFn: ({ id, data }: { id: string; data: UpdateStageInput }) => updateStage(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project', projectId] });
       toast.success('Etapa actualizada correctamente');
@@ -74,8 +73,7 @@ export function useUpdateBlock(projectId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateBlockInput }) =>
-      updateBlock(id, data),
+    mutationFn: ({ id, data }: { id: string; data: UpdateBlockInput }) => updateBlock(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project', projectId] });
       toast.success('Manzana actualizada correctamente');
@@ -109,8 +107,7 @@ export function useUpdateLot(projectId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateLotInput }) =>
-      updateLot(id, data),
+    mutationFn: ({ id, data }: { id: string; data: UpdateLotInput }) => updateLot(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project', projectId] });
       queryClient.invalidateQueries({ queryKey: ['project-lots', projectId] });

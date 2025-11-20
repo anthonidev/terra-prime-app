@@ -46,14 +46,12 @@ export function SalesCardView({ sales }: SalesCardViewProps) {
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <Building2 className="h-5 w-5 text-primary" />
+                  <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                    <Building2 className="text-primary h-5 w-5" />
                   </div>
                   <div>
-                    <p className="font-semibold leading-none">{sale.lot.name}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {sale.lot.project}
-                    </p>
+                    <p className="leading-none font-semibold">{sale.lot.name}</p>
+                    <p className="text-muted-foreground mt-1 text-xs">{sale.lot.project}</p>
                   </div>
                 </div>
                 <Badge variant={statusConfig[sale.status].variant}>
@@ -62,22 +60,22 @@ export function SalesCardView({ sales }: SalesCardViewProps) {
               </div>
             </CardHeader>
 
-            <CardContent className="pb-3 space-y-3">
+            <CardContent className="space-y-3 pb-3">
               {/* Client Info */}
               <div className="flex items-start gap-2">
-                <User className="h-4 w-4 text-muted-foreground mt-0.5" />
-                <div className="flex-1 min-w-0">
+                <User className="text-muted-foreground mt-0.5 h-4 w-4" />
+                <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium">
                     {sale.client.firstName} {sale.client.lastName}
                   </p>
-                  <p className="text-xs text-muted-foreground">{sale.client.phone}</p>
+                  <p className="text-muted-foreground text-xs">{sale.client.phone}</p>
                 </div>
               </div>
 
               {/* Location Info */}
               <div className="flex items-start gap-2">
-                <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-                <div className="flex-1 min-w-0">
+                <MapPin className="text-muted-foreground mt-0.5 h-4 w-4" />
+                <div className="min-w-0 flex-1">
                   <p className="text-sm">
                     {sale.lot.stage} - {sale.lot.block}
                   </p>
@@ -90,9 +88,9 @@ export function SalesCardView({ sales }: SalesCardViewProps) {
               <div className="grid grid-cols-2 gap-3">
                 {/* Sale Type */}
                 <div className="flex items-start gap-2">
-                  <Package className="h-4 w-4 text-muted-foreground mt-0.5" />
+                  <Package className="text-muted-foreground mt-0.5 h-4 w-4" />
                   <div>
-                    <p className="text-xs text-muted-foreground">Tipo</p>
+                    <p className="text-muted-foreground text-xs">Tipo</p>
                     <p className="text-sm font-medium">
                       {sale.type === 'DIRECT_PAYMENT' ? 'Contado' : 'Financiado'}
                     </p>
@@ -101,10 +99,10 @@ export function SalesCardView({ sales }: SalesCardViewProps) {
 
                 {/* Amount */}
                 <div className="flex items-start gap-2">
-                  <DollarSign className="h-4 w-4 text-muted-foreground mt-0.5" />
+                  <DollarSign className="text-muted-foreground mt-0.5 h-4 w-4" />
                   <div>
-                    <p className="text-xs text-muted-foreground">Monto Total</p>
-                    <p className="text-sm font-semibold text-primary">
+                    <p className="text-muted-foreground text-xs">Monto Total</p>
+                    <p className="text-primary text-sm font-semibold">
                       {sale.currency === 'USD' ? '$' : 'S/'}{' '}
                       {sale.totalAmount.toLocaleString('es-PE')}
                     </p>
@@ -114,8 +112,8 @@ export function SalesCardView({ sales }: SalesCardViewProps) {
 
               {/* Date */}
               <div className="flex items-center gap-2 pt-1">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <p className="text-xs text-muted-foreground">
+                <Calendar className="text-muted-foreground h-4 w-4" />
+                <p className="text-muted-foreground text-xs">
                   {format(new Date(sale.createdAt), "dd 'de' MMMM, yyyy", { locale: es })}
                 </p>
               </div>
@@ -124,7 +122,7 @@ export function SalesCardView({ sales }: SalesCardViewProps) {
             <CardFooter className="pt-3">
               <Button variant="default" size="sm" className="w-full" asChild>
                 <Link href={`/ventas/detalle/${sale.id}`}>
-                  <Eye className="h-4 w-4 mr-2" />
+                  <Eye className="mr-2 h-4 w-4" />
                   Ver Detalle
                 </Link>
               </Button>

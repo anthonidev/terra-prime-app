@@ -7,9 +7,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/shared/lib/utils';
 import { DOCUMENT_TYPE_OPTIONS } from '../../../constants';
 import type { DocumentType } from '../../../types';
 import type { Step4FormData } from '../../../lib/validation';
@@ -90,8 +95,8 @@ export function SecondaryClientsForm({
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
-                <Users className="h-5 w-5 text-accent" />
+              <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                <Users className="text-accent h-5 w-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
@@ -135,17 +140,15 @@ export function SecondaryClientsForm({
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.2, delay: index * 0.05 }}
-                    className="p-4 rounded-lg border-2 border-accent/20 bg-accent/5 space-y-4"
+                    className="border-accent/20 bg-accent/5 space-y-4 rounded-lg border-2 p-4"
                   >
                     {/* Header */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-accent/20">
-                          <User className="h-4 w-4 text-accent" />
+                        <div className="bg-accent/20 flex h-8 w-8 items-center justify-center rounded-md">
+                          <User className="text-accent h-4 w-4" />
                         </div>
-                        <h4 className="font-semibold text-sm">
-                          Cliente Secundario #{index + 1}
-                        </h4>
+                        <h4 className="text-sm font-semibold">Cliente Secundario #{index + 1}</h4>
                       </div>
                       <Button
                         type="button"
@@ -158,14 +161,14 @@ export function SecondaryClientsForm({
                       </Button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                       {/* Document Type Select */}
                       <div className="space-y-2">
                         <Label
                           htmlFor={`secondaryClients.${index}.documentType`}
                           className="flex items-center gap-2 text-sm font-medium"
                         >
-                          <IdCard className="h-4 w-4 text-accent" />
+                          <IdCard className="text-accent h-4 w-4" />
                           Tipo de Documento
                           <span className="text-destructive">*</span>
                         </Label>
@@ -194,7 +197,8 @@ export function SecondaryClientsForm({
                       {/* Other Fields */}
                       {clientFields.map((field) => {
                         const Icon = field.icon;
-                        const fieldName = `secondaryClients.${index}.${field.id}` as any;
+                        const fieldName =
+                          `secondaryClients.${index}.${field.id}` as keyof Step4FormData;
 
                         return (
                           <div key={field.id} className="space-y-2">
@@ -202,7 +206,7 @@ export function SecondaryClientsForm({
                               htmlFor={fieldName}
                               className="flex items-center gap-2 text-sm font-medium"
                             >
-                              <Icon className="h-4 w-4 text-accent" />
+                              <Icon className="text-accent h-4 w-4" />
                               {field.label}
                               {field.required && <span className="text-destructive">*</span>}
                             </Label>
@@ -214,7 +218,7 @@ export function SecondaryClientsForm({
                                 {...form.register(fieldName)}
                                 className="pl-9"
                               />
-                              <Icon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Icon className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
                             </div>
                           </div>
                         );

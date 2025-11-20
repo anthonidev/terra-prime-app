@@ -38,7 +38,7 @@ const columns: ColumnDef<Vendor>[] = [
             <div className="text-xs font-bold">
               {vendor.firstName} {vendor.lastName}
             </div>
-            <div className="text-xs text-muted-foreground truncate">{vendor.email}</div>
+            <div className="text-muted-foreground truncate text-xs">{vendor.email}</div>
           </div>
         </div>
       );
@@ -48,7 +48,7 @@ const columns: ColumnDef<Vendor>[] = [
     accessorKey: 'document',
     header: 'Documento',
     cell: ({ row }) => (
-      <Badge variant="outline" className="text-xs font-mono">
+      <Badge variant="outline" className="font-mono text-xs">
         {row.original.document}
       </Badge>
     ),
@@ -59,7 +59,7 @@ const columns: ColumnDef<Vendor>[] = [
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt);
       return (
-        <span className="text-xs text-muted-foreground">
+        <span className="text-muted-foreground text-xs">
           {format(date, 'dd MMM yyyy', { locale: es })}
         </span>
       );
@@ -80,11 +80,7 @@ export function VendorsTable({ vendors }: VendorsTableProps) {
       const email = vendor.email.toLowerCase();
       const document = vendor.document.toLowerCase();
 
-      return (
-        fullName.includes(query) ||
-        email.includes(query) ||
-        document.includes(query)
-      );
+      return fullName.includes(query) || email.includes(query) || document.includes(query);
     });
   }, [vendors, searchQuery]);
 
@@ -92,12 +88,12 @@ export function VendorsTable({ vendors }: VendorsTableProps) {
     <div className="space-y-4">
       {/* Búsqueda */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+        <Search className="text-muted-foreground absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
         <Input
           placeholder="Buscar por nombre, email o documento..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9 h-9 text-sm"
+          className="h-9 pl-9 text-sm"
         />
       </div>
 
@@ -116,7 +112,7 @@ export function VendorsTable({ vendors }: VendorsTableProps) {
 
       {/* Contador */}
       {filteredVendors.length > 0 && (
-        <div className="text-xs text-muted-foreground">
+        <div className="text-muted-foreground text-xs">
           Mostrando {filteredVendors.length} de {vendors.length} vendedores
         </div>
       )}

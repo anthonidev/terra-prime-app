@@ -24,7 +24,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 
 import { useCreateLeadSource, useUpdateLeadSource } from '../../hooks/use-mutations';
-import { leadSourceSchema, type LeadSourceFormData } from '../../lib/validation';
+import { leadSourceSchema } from '../../lib/validation';
 import type { LeadSource } from '../../types';
 
 interface LeadSourceFormDialogProps {
@@ -61,10 +61,7 @@ export function LeadSourceFormDialog({
 
   const onSubmit = (data: { name: string; isActive: boolean }) => {
     if (isEditing && leadSource) {
-      updateLeadSource(
-        { id: leadSource.id, data },
-        { onSuccess: () => onOpenChange(false) }
-      );
+      updateLeadSource({ id: leadSource.id, data }, { onSuccess: () => onOpenChange(false) });
     } else {
       createLeadSource(data, { onSuccess: () => onOpenChange(false) });
     }
@@ -76,9 +73,7 @@ export function LeadSourceFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>
-            {isEditing ? 'Editar' : 'Nueva'} fuente de lead
-          </DialogTitle>
+          <DialogTitle>{isEditing ? 'Editar' : 'Nueva'} fuente de lead</DialogTitle>
           <DialogDescription>
             {isEditing
               ? 'Actualiza la información de la fuente de lead'
@@ -109,15 +104,12 @@ export function LeadSourceFormDialog({
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">Estado</FormLabel>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-muted-foreground text-sm">
                       {field.value ? 'Fuente activa' : 'Fuente inactiva'}
                     </div>
                   </div>
                   <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
                 </FormItem>
               )}

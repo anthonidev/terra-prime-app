@@ -11,9 +11,7 @@ export function PageHeader({ title, description, action }: PageHeaderProps) {
     <div className="flex items-start justify-between gap-4">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-        {description && (
-          <p className="text-muted-foreground mt-2">{description}</p>
-        )}
+        {description && <p className="text-muted-foreground mt-2">{description}</p>}
       </div>
       {action && <div className="flex-shrink-0">{action}</div>}
     </div>

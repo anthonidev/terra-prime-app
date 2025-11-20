@@ -12,11 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from '@/components/ui/input-otp';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { useDeleteSale } from '../../hooks/use-delete-sale';
 import { useValidateAdminToken } from '../../hooks/use-validate-admin-token';
 
@@ -27,12 +23,7 @@ interface DeleteSaleModalProps {
   clientName: string;
 }
 
-export function DeleteSaleModal({
-  open,
-  onOpenChange,
-  saleId,
-  clientName,
-}: DeleteSaleModalProps) {
+export function DeleteSaleModal({ open, onOpenChange, saleId, clientName }: DeleteSaleModalProps) {
   const [pin, setPin] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isValidated, setIsValidated] = useState(false);
@@ -111,19 +102,21 @@ export function DeleteSaleModal({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-destructive">
+          <DialogTitle className="text-destructive flex items-center gap-2">
             <Trash2 className="h-5 w-5" />
             Eliminar Venta
           </DialogTitle>
           <DialogDescription>
-            Esta acción no se puede deshacer. La venta de <strong>{clientName}</strong> será eliminada permanentemente.
+            Esta acción no se puede deshacer. La venta de <strong>{clientName}</strong> será
+            eliminada permanentemente.
           </DialogDescription>
         </DialogHeader>
 
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            <strong>Advertencia:</strong> Esta acción eliminará todos los datos asociados a esta venta.
+            <strong>Advertencia:</strong> Esta acción eliminará todos los datos asociados a esta
+            venta.
           </AlertDescription>
         </Alert>
 
@@ -131,7 +124,7 @@ export function DeleteSaleModal({
           <div className="space-y-4">
             <div className="flex flex-col items-center space-y-4">
               <div className="text-center">
-                <p className="text-sm font-medium mb-2">
+                <p className="mb-2 text-sm font-medium">
                   Ingresa el PIN de administrador para confirmar
                 </p>
               </div>
@@ -152,26 +145,21 @@ export function DeleteSaleModal({
               </InputOTP>
 
               {error && (
-                <div className="flex items-center gap-2 text-sm text-destructive">
+                <div className="text-destructive flex items-center gap-2 text-sm">
                   <AlertCircle className="h-4 w-4" />
                   <span>{error}</span>
                 </div>
               )}
 
               {isValidated && (
-                <div className="flex items-center gap-2 text-sm text-primary">
+                <div className="text-primary flex items-center gap-2 text-sm">
                   <CheckCircle className="h-4 w-4" />
                   <span>PIN validado. Puedes proceder con la eliminación.</span>
                 </div>
               )}
 
               {!isValidated && pin.length === 5 && !isPending && !error && (
-                <Button
-                  type="button"
-                  onClick={handleValidate}
-                  variant="outline"
-                  size="sm"
-                >
+                <Button type="button" onClick={handleValidate} variant="outline" size="sm">
                   Validar PIN
                 </Button>
               )}
@@ -179,7 +167,7 @@ export function DeleteSaleModal({
           </div>
         </div>
 
-        <DialogFooter className="flex-col sm:flex-row gap-2">
+        <DialogFooter className="flex-col gap-2 sm:flex-row">
           <Button
             type="button"
             variant="ghost"
@@ -198,12 +186,12 @@ export function DeleteSaleModal({
           >
             {isDeleting ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Eliminando...
               </>
             ) : (
               <>
-                <Trash2 className="h-4 w-4 mr-2" />
+                <Trash2 className="mr-2 h-4 w-4" />
                 Eliminar Venta
               </>
             )}

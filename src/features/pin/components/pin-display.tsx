@@ -50,9 +50,9 @@ export function PinDisplay({ pin, expiresAt, onRegenerate, isRegenerating }: Pin
     <Card className="max-w-2xl">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+          <div className="bg-muted flex h-8 w-8 items-center justify-center rounded-lg">
             {timeLeft.isExpired ? (
-              <AlertCircle className="h-4 w-4 text-destructive" />
+              <AlertCircle className="text-destructive h-4 w-4" />
             ) : (
               <CheckCircle2 className="h-4 w-4 text-green-600" />
             )}
@@ -67,10 +67,8 @@ export function PinDisplay({ pin, expiresAt, onRegenerate, isRegenerating }: Pin
         <div className="space-y-1.5">
           <label className="text-xs font-medium">PIN de Administrador</label>
           <div className="flex items-center gap-2">
-            <div className="flex-1 p-3 bg-muted rounded-lg border-2 border-border">
-              <p className="text-2xl font-mono font-bold tracking-wider text-center">
-                {pin}
-              </p>
+            <div className="bg-muted border-border flex-1 rounded-lg border-2 p-3">
+              <p className="text-center font-mono text-2xl font-bold tracking-wider">{pin}</p>
             </div>
             <Button
               variant="outline"
@@ -86,21 +84,29 @@ export function PinDisplay({ pin, expiresAt, onRegenerate, isRegenerating }: Pin
 
         {/* Countdown */}
         <div className="space-y-1.5">
-          <label className="text-xs font-medium flex items-center gap-1.5">
+          <label className="flex items-center gap-1.5 text-xs font-medium">
             <Clock className="h-3.5 w-3.5" />
             Tiempo restante
           </label>
-          <div className="p-3 bg-muted rounded-lg border">
+          <div className="bg-muted rounded-lg border p-3">
             <div className="flex items-center justify-between gap-3">
-              <div className="flex-1 min-w-0">
-                <p className={`text-xl font-bold ${timeLeft.isExpired ? 'text-destructive' : 'text-foreground'}`}>
+              <div className="min-w-0 flex-1">
+                <p
+                  className={`text-xl font-bold ${timeLeft.isExpired ? 'text-destructive' : 'text-foreground'}`}
+                >
                   {getCountdownText()}
                 </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Expira el {format(new Date(expiresAt), "dd 'de' MMMM 'de' yyyy 'a las' HH:mm", { locale: es })}
+                <p className="text-muted-foreground mt-0.5 text-xs">
+                  Expira el{' '}
+                  {format(new Date(expiresAt), "dd 'de' MMMM 'de' yyyy 'a las' HH:mm", {
+                    locale: es,
+                  })}
                 </p>
               </div>
-              <Badge variant={timeLeft.isExpired ? 'destructive' : 'default'} className="text-xs shrink-0">
+              <Badge
+                variant={timeLeft.isExpired ? 'destructive' : 'default'}
+                className="shrink-0 text-xs"
+              >
                 {timeLeft.isExpired ? 'Expirado' : 'Activo'}
               </Badge>
             </div>
@@ -109,11 +115,12 @@ export function PinDisplay({ pin, expiresAt, onRegenerate, isRegenerating }: Pin
 
         {/* Status Message */}
         {!timeLeft.isExpired && (
-          <div className="p-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-950">
             <p className="text-xs text-blue-900 dark:text-blue-100">
-              <strong>Nota:</strong> Este PIN está activo y puede ser utilizado para operaciones administrativas.
+              <strong>Nota:</strong> Este PIN está activo y puede ser utilizado para operaciones
+              administrativas.
               {timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes < 10 && (
-                <span className="block mt-1 text-orange-600 dark:text-orange-400 font-medium">
+                <span className="mt-1 block font-medium text-orange-600 dark:text-orange-400">
                   ⚠️ El PIN expirará pronto. Considera regenerarlo.
                 </span>
               )}
@@ -122,10 +129,10 @@ export function PinDisplay({ pin, expiresAt, onRegenerate, isRegenerating }: Pin
         )}
 
         {timeLeft.isExpired && (
-          <div className="p-3 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg">
+          <div className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950">
             <p className="text-xs text-red-900 dark:text-red-100">
-              <strong>Advertencia:</strong> Este PIN ha expirado y ya no puede ser utilizado.
-              Por favor, genera un nuevo PIN.
+              <strong>Advertencia:</strong> Este PIN ha expirado y ya no puede ser utilizado. Por
+              favor, genera un nuevo PIN.
             </p>
           </div>
         )}

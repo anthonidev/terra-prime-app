@@ -23,9 +23,9 @@ export function SalesErrorState({ onRetry }: SalesErrorStateProps) {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
-              className="flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10 mb-4"
+              className="bg-destructive/10 mb-4 flex h-20 w-20 items-center justify-center rounded-full"
             >
-              <AlertCircle className="h-10 w-10 text-destructive" />
+              <AlertCircle className="text-destructive h-10 w-10" />
             </motion.div>
 
             <motion.div
@@ -35,7 +35,7 @@ export function SalesErrorState({ onRetry }: SalesErrorStateProps) {
               className="space-y-2"
             >
               <h3 className="text-lg font-semibold">Error al cargar las ventas</h3>
-              <p className="text-sm text-muted-foreground max-w-sm">
+              <p className="text-muted-foreground max-w-sm text-sm">
                 No pudimos cargar tus ventas en este momento. Por favor, intenta nuevamente.
               </p>
             </motion.div>
@@ -47,7 +47,7 @@ export function SalesErrorState({ onRetry }: SalesErrorStateProps) {
                 transition={{ delay: 0.3 }}
               >
                 <Button onClick={onRetry} className="mt-6" variant="outline">
-                  <RefreshCw className="h-4 w-4 mr-2" />
+                  <RefreshCw className="mr-2 h-4 w-4" />
                   Reintentar
                 </Button>
               </motion.div>

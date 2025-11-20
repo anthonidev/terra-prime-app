@@ -32,8 +32,8 @@ export function SaleTypeSummaryCard({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-              <FileText className="h-5 w-5 text-primary" />
+            <div className="bg-primary/10 flex h-9 w-9 items-center justify-center rounded-lg">
+              <FileText className="text-primary h-5 w-5" />
             </div>
             Tipo de Venta
           </CardTitle>
@@ -63,16 +63,16 @@ export function SaleTypeSummaryCard({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="grid grid-cols-2 gap-4 p-4 bg-gradient-to-br from-primary/5 to-transparent rounded-lg border border-primary/20"
+                className="from-primary/5 border-primary/20 grid grid-cols-2 gap-4 rounded-lg border bg-gradient-to-br to-transparent p-4"
               >
                 <div>
-                  <p className="text-sm text-muted-foreground">Monto de Separación</p>
-                  <p className="font-semibold text-primary">
+                  <p className="text-muted-foreground text-sm">Monto de Separación</p>
+                  <p className="text-primary font-semibold">
                     S/ {reservationAmount?.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Periodo Máximo</p>
+                  <p className="text-muted-foreground text-sm">Periodo Máximo</p>
                   <p className="font-semibold">{maximumHoldPeriod} días</p>
                 </div>
               </motion.div>

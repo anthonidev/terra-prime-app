@@ -14,15 +14,8 @@ import { SalesErrorState } from './components/sales-error-state';
 import { SalesEmptyState } from './components/sales-empty-state';
 
 export function MySalesContainer() {
-  const {
-    sales,
-    totalItems,
-    order,
-    isLoading,
-    isError,
-    isEmpty,
-    toggleOrder,
-  } = useMySalesContainer();
+  const { sales, totalItems, order, isLoading, isError, isEmpty, toggleOrder } =
+    useMySalesContainer();
 
   // Loading state
   if (isLoading) {
@@ -44,7 +37,7 @@ export function MySalesContainer() {
             !isEmpty && !isError ? (
               <Button asChild>
                 <Link href="/ventas/crear-venta">
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="mr-2 h-4 w-4" />
                   Nueva Venta
                 </Link>
               </Button>
@@ -63,11 +56,7 @@ export function MySalesContainer() {
       {!isError && !isEmpty && (
         <>
           {/* Filters */}
-          <SalesFilters
-            order={order}
-            totalItems={totalItems}
-            onToggleOrder={toggleOrder}
-          />
+          <SalesFilters order={order} totalItems={totalItems} onToggleOrder={toggleOrder} />
 
           {/* Desktop Table View */}
           <motion.div

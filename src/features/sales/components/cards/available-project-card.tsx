@@ -1,12 +1,11 @@
 'use client';
 
-import Link from 'next/link';
 import { Building2, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 import type { Project } from '../../types';
 
@@ -24,13 +23,13 @@ export function AvailableProjectCard({ project }: AvailableProjectCardProps) {
 
   return (
     <Link href={`/proyectos/lotes-disponibles/${project.id}`} className="block h-full">
-      <Card className="group h-full transition-all hover:shadow-lg hover:scale-[1.01] cursor-pointer">
+      <Card className="group h-full cursor-pointer transition-all hover:scale-[1.01] hover:shadow-lg">
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between gap-3">
             {/* Logo/Avatar */}
             <Avatar className="h-12 w-12 rounded-lg">
               <AvatarImage src={project.logo || undefined} alt={project.name} />
-              <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-sm font-semibold">
+              <AvatarFallback className="bg-primary/10 text-primary rounded-lg text-sm font-semibold">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -43,20 +42,18 @@ export function AvailableProjectCard({ project }: AvailableProjectCardProps) {
 
           {/* Nombre del proyecto */}
           <div className="pt-2">
-            <h3 className="text-base font-bold group-hover:text-primary transition-colors line-clamp-1">
+            <h3 className="group-hover:text-primary line-clamp-1 text-base font-bold transition-colors">
               {project.name}
             </h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Código: {project.projectCode}
-            </p>
+            <p className="text-muted-foreground mt-0.5 text-xs">Código: {project.projectCode}</p>
           </div>
         </CardHeader>
 
         <CardContent className="pt-0">
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground group-hover:text-primary transition-colors">
+          <div className="text-muted-foreground group-hover:text-primary flex items-center justify-center gap-2 text-sm transition-colors">
             <Building2 className="h-3.5 w-3.5" />
             <span>Ver lotes disponibles</span>
-            <ChevronRight className="h-3.5 w-3.5 ml-auto" />
+            <ChevronRight className="ml-auto h-3.5 w-3.5" />
           </div>
         </CardContent>
       </Card>

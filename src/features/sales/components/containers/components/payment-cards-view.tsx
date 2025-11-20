@@ -54,8 +54,8 @@ export function PaymentCardsView({ payments, currency }: PaymentCardsViewProps) 
                       payment.status === 'APPROVED'
                         ? 'bg-green-500/10'
                         : payment.status === 'REJECTED'
-                        ? 'bg-destructive/10'
-                        : 'bg-primary/10'
+                          ? 'bg-destructive/10'
+                          : 'bg-primary/10'
                     }`}
                   >
                     {payment.status === 'APPROVED' ? (
@@ -69,12 +69,8 @@ export function PaymentCardsView({ payments, currency }: PaymentCardsViewProps) 
                     )}
                   </div>
                   <div>
-                    <p className="font-semibold leading-none">
-                      Pago #{payment.id}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {payment.paymentConfig}
-                    </p>
+                    <p className="leading-none font-semibold">Pago #{payment.id}</p>
+                    <p className="text-muted-foreground mt-1 text-xs">{payment.paymentConfig}</p>
                   </div>
                 </div>
                 <Badge variant={paymentStatusConfig[payment.status].variant}>
@@ -83,15 +79,14 @@ export function PaymentCardsView({ payments, currency }: PaymentCardsViewProps) 
               </div>
             </CardHeader>
 
-            <CardContent className="pb-3 space-y-3">
+            <CardContent className="space-y-3 pb-3">
               {/* Amount */}
-              <div className="flex items-start gap-2 p-3 rounded-lg bg-gradient-to-br from-primary/5 to-transparent border border-primary/20">
-                <DollarSign className="h-4 w-4 text-primary mt-0.5" />
+              <div className="from-primary/5 border-primary/20 flex items-start gap-2 rounded-lg border bg-gradient-to-br to-transparent p-3">
+                <DollarSign className="text-primary mt-0.5 h-4 w-4" />
                 <div className="flex-1">
-                  <p className="text-xs text-muted-foreground">Monto</p>
-                  <p className="text-lg font-bold text-primary">
-                    {currency === 'USD' ? '$' : 'S/'}{' '}
-                    {payment.amount.toLocaleString('es-PE')}
+                  <p className="text-muted-foreground text-xs">Monto</p>
+                  <p className="text-primary text-lg font-bold">
+                    {currency === 'USD' ? '$' : 'S/'} {payment.amount.toLocaleString('es-PE')}
                   </p>
                 </div>
               </div>
@@ -99,9 +94,9 @@ export function PaymentCardsView({ payments, currency }: PaymentCardsViewProps) 
               {/* Dates */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex items-start gap-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground mt-0.5" />
+                  <Calendar className="text-muted-foreground mt-0.5 h-4 w-4" />
                   <div>
-                    <p className="text-xs text-muted-foreground">Creación</p>
+                    <p className="text-muted-foreground text-xs">Creación</p>
                     <p className="text-sm font-medium">
                       {format(new Date(payment.createdAt), 'dd MMM yyyy', { locale: es })}
                     </p>
@@ -110,9 +105,9 @@ export function PaymentCardsView({ payments, currency }: PaymentCardsViewProps) 
 
                 {payment.dateOperation && (
                   <div className="flex items-start gap-2">
-                    <Clock className="h-4 w-4 text-muted-foreground mt-0.5" />
+                    <Clock className="text-muted-foreground mt-0.5 h-4 w-4" />
                     <div>
-                      <p className="text-xs text-muted-foreground">Operación</p>
+                      <p className="text-muted-foreground text-xs">Operación</p>
                       <p className="text-sm font-medium">
                         {format(new Date(payment.dateOperation), 'dd MMM yyyy', { locale: es })}
                       </p>
@@ -128,9 +123,9 @@ export function PaymentCardsView({ payments, currency }: PaymentCardsViewProps) 
                   <div className="space-y-2">
                     {payment.banckName && (
                       <div className="flex items-start gap-2">
-                        <Building2 className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <Building2 className="text-muted-foreground mt-0.5 h-4 w-4" />
                         <div className="flex-1">
-                          <p className="text-xs text-muted-foreground">Banco</p>
+                          <p className="text-muted-foreground text-xs">Banco</p>
                           <p className="text-sm font-medium">{payment.banckName}</p>
                         </div>
                       </div>
@@ -138,20 +133,20 @@ export function PaymentCardsView({ payments, currency }: PaymentCardsViewProps) 
 
                     {payment.codeOperation && (
                       <div className="flex items-start gap-2">
-                        <CreditCard className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <CreditCard className="text-muted-foreground mt-0.5 h-4 w-4" />
                         <div className="flex-1">
-                          <p className="text-xs text-muted-foreground">Código de Operación</p>
-                          <p className="text-sm font-mono">{payment.codeOperation}</p>
+                          <p className="text-muted-foreground text-xs">Código de Operación</p>
+                          <p className="font-mono text-sm">{payment.codeOperation}</p>
                         </div>
                       </div>
                     )}
 
                     {payment.numberTicket && (
                       <div className="flex items-start gap-2">
-                        <Hash className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <Hash className="text-muted-foreground mt-0.5 h-4 w-4" />
                         <div className="flex-1">
-                          <p className="text-xs text-muted-foreground">N° Boleta</p>
-                          <p className="text-sm font-mono">{payment.numberTicket}</p>
+                          <p className="text-muted-foreground text-xs">N° Boleta</p>
+                          <p className="font-mono text-sm">{payment.numberTicket}</p>
                         </div>
                       </div>
                     )}
@@ -165,20 +160,22 @@ export function PaymentCardsView({ payments, currency }: PaymentCardsViewProps) 
                   <Separator />
                   <div className="space-y-2">
                     <div className="flex items-start gap-2">
-                      <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <FileText className="text-muted-foreground mt-0.5 h-4 w-4" />
                       <div className="flex-1">
-                        <p className="text-xs text-muted-foreground">Fecha de Revisión</p>
+                        <p className="text-muted-foreground text-xs">Fecha de Revisión</p>
                         <p className="text-sm font-medium">
-                          {format(new Date(payment.reviewedAt), 'dd MMM yyyy HH:mm', { locale: es })}
+                          {format(new Date(payment.reviewedAt), 'dd MMM yyyy HH:mm', {
+                            locale: es,
+                          })}
                         </p>
                       </div>
                     </div>
 
                     {payment.reason && (
                       <div className="flex items-start gap-2">
-                        <MessageSquare className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <MessageSquare className="text-muted-foreground mt-0.5 h-4 w-4" />
                         <div className="flex-1">
-                          <p className="text-xs text-muted-foreground">Motivo</p>
+                          <p className="text-muted-foreground text-xs">Motivo</p>
                           <p className="text-sm">{payment.reason}</p>
                         </div>
                       </div>

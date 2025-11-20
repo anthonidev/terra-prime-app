@@ -10,13 +10,13 @@ export default function Loading() {
         <Skeleton className="h-4 w-full max-w-2xl" />
       </div>
 
-      <div className="rounded-lg border bg-card shadow-sm p-6">
-        <Skeleton className="h-6 w-48 mb-4" />
+      <div className="bg-card rounded-lg border p-6 shadow-sm">
+        <Skeleton className="mb-4 h-6 w-48" />
         <Skeleton className="h-10 w-48" />
       </div>
 
-      <div className="rounded-lg border bg-card shadow-sm p-6">
-        <Skeleton className="h-6 w-48 mb-4" />
+      <div className="bg-card rounded-lg border p-6 shadow-sm">
+        <Skeleton className="mb-4 h-6 w-48" />
         <Skeleton className="h-10 w-full" />
       </div>
     </div>

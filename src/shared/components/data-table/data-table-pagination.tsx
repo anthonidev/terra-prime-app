@@ -16,10 +16,7 @@ interface DataTablePaginationProps {
   onPageChange: (page: number) => void;
 }
 
-export function DataTablePagination({
-  meta,
-  onPageChange,
-}: DataTablePaginationProps) {
+export function DataTablePagination({ meta, onPageChange }: DataTablePaginationProps) {
   const { currentPage, totalPages, totalItems, itemsPerPage } = meta;
 
   const startItem = (currentPage - 1) * itemsPerPage + 1;
@@ -28,8 +25,8 @@ export function DataTablePagination({
   // Si solo hay 1 página o menos, mostrar mensaje simple
   if (totalPages <= 1) {
     return (
-      <div className="flex w-full items-center justify-center border-t bg-card px-4 py-4">
-        <p className="text-sm text-muted-foreground whitespace-nowrap">
+      <div className="bg-card flex w-full items-center justify-center border-t px-4 py-4">
+        <p className="text-muted-foreground text-sm whitespace-nowrap">
           Mostrando {totalItems} registro{totalItems !== 1 ? 's' : ''}
         </p>
       </div>
@@ -75,15 +72,14 @@ export function DataTablePagination({
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className="flex flex-col gap-4 border-t bg-card px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="bg-card flex flex-col gap-4 border-t px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
       {/* Información de registros */}
-      <div className="text-sm text-muted-foreground text-center sm:text-left">
+      <div className="text-muted-foreground text-center text-sm sm:text-left">
         Mostrando{' '}
-        <span className="font-medium text-foreground">
+        <span className="text-foreground font-medium">
           {startItem} - {endItem}
         </span>{' '}
-        de <span className="font-medium text-foreground">{totalItems}</span>{' '}
-        resultados
+        de <span className="text-foreground font-medium">{totalItems}</span> resultados
       </div>
 
       {/* Paginación */}
@@ -96,11 +92,7 @@ export function DataTablePagination({
                 e.preventDefault();
                 if (currentPage > 1) onPageChange(currentPage - 1);
               }}
-              className={
-                currentPage <= 1
-                  ? 'pointer-events-none opacity-50'
-                  : 'cursor-pointer'
-              }
+              className={currentPage <= 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
             />
           </PaginationItem>
 
@@ -108,7 +100,7 @@ export function DataTablePagination({
           {pageNumbers.map((page, index) =>
             page === 'ellipsis' ? (
               <PaginationItem key={`ellipsis-${index}`}>
-                <PaginationEllipsis className=' ' />
+                <PaginationEllipsis className=" " />
               </PaginationItem>
             ) : (
               <PaginationItem key={page}>
@@ -134,9 +126,7 @@ export function DataTablePagination({
                 if (currentPage < totalPages) onPageChange(currentPage + 1);
               }}
               className={
-                currentPage >= totalPages
-                  ? 'pointer-events-none opacity-50'
-                  : 'cursor-pointer'
+                currentPage >= totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'
               }
             />
           </PaginationItem>

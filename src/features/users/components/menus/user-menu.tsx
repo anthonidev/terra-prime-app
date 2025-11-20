@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/features/auth/hooks/use-auth";
-import { LayoutDashboard, LogOut, User } from "lucide-react";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/dropdown-menu';
+import { useAuth } from '@/features/auth/hooks/use-auth';
+import { LayoutDashboard, LogOut, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export function UserMenu() {
   const router = useRouter();
@@ -30,13 +30,8 @@ export function UserMenu() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage
-              src={user.photo || ""}
-              alt={`${user.firstName} ${user.lastName}`}
-            />
-            <AvatarFallback>
-              {getInitials(user.firstName, user.lastName)}
-            </AvatarFallback>
+            <AvatarImage src={user.photo || ''} alt={`${user.firstName} ${user.lastName}`} />
+            <AvatarFallback>{getInitials(user.firstName, user.lastName)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -46,22 +41,17 @@ export function UserMenu() {
             <p className="font-medium">
               {user.firstName} {user.lastName}
             </p>
-            <p className="w-[200px] truncate text-sm text-muted-foreground">
-              {user.email}
-            </p>
-            <p className="text-xs text-muted-foreground">{user.role?.name}</p>
+            <p className="text-muted-foreground w-[200px] truncate text-sm">{user.email}</p>
+            <p className="text-muted-foreground text-xs">{user.role?.name}</p>
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => handleNavigation("/dashboard")}
-          className="cursor-pointer"
-        >
+        <DropdownMenuItem onClick={() => handleNavigation('/dashboard')} className="cursor-pointer">
           <LayoutDashboard className="mr-2 h-4 w-4" />
           Dashboard
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => handleNavigation("/dashboard/cli-perfil")}
+          onClick={() => handleNavigation('/dashboard/cli-perfil')}
           className="cursor-pointer"
         >
           <User className="mr-2 h-4 w-4" />
@@ -71,7 +61,7 @@ export function UserMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={logout}
-          className="cursor-pointer text-destructive focus:text-destructive"
+          className="text-destructive focus:text-destructive cursor-pointer"
         >
           <LogOut className="mr-2 h-4 w-4" />
           Cerrar Sesión

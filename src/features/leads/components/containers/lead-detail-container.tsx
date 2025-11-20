@@ -46,7 +46,7 @@ export function LeadDetailContainer({ leadId }: LeadDetailContainerProps) {
 
   if (isError || !lead) {
     return (
-      <div className="container mx-auto py-8 px-4">
+      <div className="container mx-auto px-4 py-8">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
@@ -60,7 +60,7 @@ export function LeadDetailContainer({ leadId }: LeadDetailContainerProps) {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 space-y-6">
+    <div className="container mx-auto space-y-6 px-4 py-8">
       <LeadDetailHeader lead={lead} onEdit={handleOpenEditModal} />
 
       {/* Historial de Visitas - Principal */}
@@ -73,11 +73,7 @@ export function LeadDetailContainer({ leadId }: LeadDetailContainerProps) {
       {/* Información del Lead - Secundaria */}
       <LeadInfoSections lead={lead} />
 
-      <EditLeadModal
-        lead={lead}
-        isOpen={isEditModalOpen}
-        onClose={handleCloseEditModal}
-      />
+      <EditLeadModal lead={lead} isOpen={isEditModalOpen} onClose={handleCloseEditModal} />
 
       <AssignParticipantsModal
         visit={selectedVisit}

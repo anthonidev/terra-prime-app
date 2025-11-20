@@ -27,14 +27,14 @@ export function NewProjectContainer() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-            <FolderPlus className="h-6 w-6 text-primary" />
+          <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-lg">
+            <FolderPlus className="text-primary h-6 w-6" />
           </div>
           <div>
-            <div className="flex items-center gap-3 mb-1">
+            <div className="mb-1 flex items-center gap-3">
               <h1 className="text-2xl font-bold tracking-tight">Crear Nuevo Proyecto</h1>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Carga un archivo Excel para crear etapas, manzanas y lotes de forma masiva
             </p>
           </div>
@@ -50,14 +50,14 @@ export function NewProjectContainer() {
       {/* Steps Cards */}
       <div className="grid gap-4 md:grid-cols-2">
         {/* Step 1: Download Template */}
-        <Card className="relative overflow-hidden transition-all duration-300 hover:shadow-md hover:border-primary/50">
-          <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="text-sm font-bold text-primary">1</span>
+        <Card className="hover:border-primary/50 relative overflow-hidden transition-all duration-300 hover:shadow-md">
+          <div className="bg-primary/10 absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full">
+            <span className="text-primary text-sm font-bold">1</span>
           </div>
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-8 h-8 rounded bg-accent/20 flex items-center justify-center">
-                <Download className="h-4 w-4 text-accent" />
+            <div className="mb-1 flex items-center gap-2">
+              <div className="bg-accent/20 flex h-8 w-8 items-center justify-center rounded">
+                <Download className="text-accent h-4 w-4" />
               </div>
               <CardTitle className="text-base">Descarga la Plantilla</CardTitle>
             </div>
@@ -74,14 +74,14 @@ export function NewProjectContainer() {
         </Card>
 
         {/* Step 2: Upload File */}
-        <Card className="relative overflow-hidden transition-all duration-300 hover:shadow-md hover:border-primary/50">
-          <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="text-sm font-bold text-primary">2</span>
+        <Card className="hover:border-primary/50 relative overflow-hidden transition-all duration-300 hover:shadow-md">
+          <div className="bg-primary/10 absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full">
+            <span className="text-primary text-sm font-bold">2</span>
           </div>
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-8 h-8 rounded bg-info/20 flex items-center justify-center">
-                <Upload className="h-4 w-4 text-info" />
+            <div className="mb-1 flex items-center gap-2">
+              <div className="bg-info/20 flex h-8 w-8 items-center justify-center rounded">
+                <Upload className="text-info h-4 w-4" />
               </div>
               <CardTitle className="text-base">Carga tu Archivo</CardTitle>
             </div>
@@ -106,12 +106,12 @@ export function NewProjectContainer() {
 
               {/* Selected File Info */}
               {selectedFile && (
-                <div className="flex items-center justify-between gap-2 p-2 rounded-md bg-muted/50 border">
-                  <div className="flex items-center gap-2 min-w-0 flex-1">
-                    <FileSpreadsheet className="h-4 w-4 text-success shrink-0" />
+                <div className="bg-muted/50 flex items-center justify-between gap-2 rounded-md border p-2">
+                  <div className="flex min-w-0 flex-1 items-center gap-2">
+                    <FileSpreadsheet className="text-success h-4 w-4 shrink-0" />
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium truncate">{selectedFile.name}</p>
-                      <p className="text-[10px] text-muted-foreground">
+                      <p className="truncate text-xs font-medium">{selectedFile.name}</p>
+                      <p className="text-muted-foreground text-[10px]">
                         {(selectedFile.size / 1024).toFixed(2)} KB
                       </p>
                     </div>
@@ -121,7 +121,7 @@ export function NewProjectContainer() {
                     size="sm"
                     onClick={handleReset}
                     disabled={isValidating || isCreating}
-                    className="h-7 w-7 p-0 shrink-0"
+                    className="h-7 w-7 shrink-0 p-0"
                   >
                     <X className="h-3.5 w-3.5" />
                   </Button>
@@ -130,9 +130,9 @@ export function NewProjectContainer() {
 
               {/* Validating State */}
               {isValidating && (
-                <div className="flex items-center gap-2 p-2 rounded-md bg-info/10 border border-info/20">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-info border-t-transparent" />
-                  <span className="text-xs font-medium text-info">Validando archivo...</span>
+                <div className="bg-info/10 border-info/20 flex items-center gap-2 rounded-md border p-2">
+                  <div className="border-info h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
+                  <span className="text-info text-xs font-medium">Validando archivo...</span>
                 </div>
               )}
             </div>
@@ -153,23 +153,14 @@ export function NewProjectContainer() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center justify-between gap-4">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   ¿Listo para crear el proyecto con esta información?
                 </p>
                 <div className="flex gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={handleReset}
-                    disabled={isCreating}
-                    size="sm"
-                  >
+                  <Button variant="outline" onClick={handleReset} disabled={isCreating} size="sm">
                     Cancelar
                   </Button>
-                  <Button
-                    onClick={handleCreateProject}
-                    disabled={isCreating}
-                    size="sm"
-                  >
+                  <Button onClick={handleCreateProject} disabled={isCreating} size="sm">
                     {isCreating ? (
                       <>
                         <div className="mr-2 h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />

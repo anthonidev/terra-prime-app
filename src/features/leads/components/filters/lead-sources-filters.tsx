@@ -43,12 +43,12 @@ export function LeadSourcesFilters({
         className="flex gap-2"
       >
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Search className="text-muted-foreground absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
           <Input
             placeholder="Buscar fuente por nombre..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-9 h-9 text-sm"
+            className="h-9 pl-9 text-sm"
           />
         </div>
         <Button type="submit" size="sm">
@@ -61,7 +61,7 @@ export function LeadSourcesFilters({
       <div className="grid gap-3 sm:grid-cols-2">
         {/* Status Filter */}
         <div className="space-y-1.5">
-          <Label className="text-xs font-medium text-muted-foreground">Estado</Label>
+          <Label className="text-muted-foreground text-xs font-medium">Estado</Label>
           <Select value={isActive} onValueChange={onIsActiveChange}>
             <SelectTrigger className="h-9 text-sm">
               <SelectValue placeholder="Todos los estados" />
@@ -69,19 +69,19 @@ export function LeadSourcesFilters({
             <SelectContent>
               <SelectItem value="all">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-muted-foreground" />
+                  <div className="bg-muted-foreground h-2 w-2 rounded-full" />
                   <span>Todos los estados</span>
                 </div>
               </SelectItem>
               <SelectItem value="true">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+                  <CheckCircle2 className="text-success h-3.5 w-3.5" />
                   <span>Activos</span>
                 </div>
               </SelectItem>
               <SelectItem value="false">
                 <div className="flex items-center gap-2">
-                  <XCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                  <XCircle className="text-muted-foreground h-3.5 w-3.5" />
                   <span>Inactivos</span>
                 </div>
               </SelectItem>
@@ -91,7 +91,7 @@ export function LeadSourcesFilters({
 
         {/* Order */}
         <div className="space-y-1.5">
-          <Label className="text-xs font-medium text-muted-foreground">Ordenar por</Label>
+          <Label className="text-muted-foreground text-xs font-medium">Ordenar por</Label>
           <Select value={order} onValueChange={(value) => onOrderChange(value as 'ASC' | 'DESC')}>
             <SelectTrigger className="h-9 text-sm">
               <SelectValue />
@@ -99,13 +99,13 @@ export function LeadSourcesFilters({
             <SelectContent>
               <SelectItem value="ASC">
                 <div className="flex items-center gap-2">
-                  <ArrowDownUp className="h-3.5 w-3.5 text-muted-foreground" />
+                  <ArrowDownUp className="text-muted-foreground h-3.5 w-3.5" />
                   <span>Más antiguos primero</span>
                 </div>
               </SelectItem>
               <SelectItem value="DESC">
                 <div className="flex items-center gap-2">
-                  <ArrowDownUp className="h-3.5 w-3.5 text-muted-foreground" />
+                  <ArrowDownUp className="text-muted-foreground h-3.5 w-3.5" />
                   <span>Más recientes primero</span>
                 </div>
               </SelectItem>

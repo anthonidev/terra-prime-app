@@ -26,9 +26,11 @@ export const lotSchema = z.object({
   urbanizationPrice: z.number({ message: 'El precio de urbanización es requerido' }).min(0),
 });
 
-export const updateLotSchema = lotSchema.extend({
-  status: z.enum(['Activo', 'Inactivo', 'Vendido', 'Separado']).optional(),
-}).partial();
+export const updateLotSchema = lotSchema
+  .extend({
+    status: z.enum(['Activo', 'Inactivo', 'Vendido', 'Separado']).optional(),
+  })
+  .partial();
 
 export type UpdateProjectFormData = z.infer<typeof updateProjectSchema>;
 export type StageFormData = z.infer<typeof stageSchema>;

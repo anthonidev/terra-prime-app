@@ -22,12 +22,7 @@ interface UsersTableProps {
   onEditUser: (user: User) => void;
 }
 
-export function UsersTable({
-  users,
-  meta,
-  onPageChange,
-  onEditUser,
-}: UsersTableProps) {
+export function UsersTable({ users, meta, onPageChange, onEditUser }: UsersTableProps) {
   const columns: ColumnDef<User>[] = [
     {
       accessorKey: 'photo',
@@ -50,25 +45,23 @@ export function UsersTable({
       cell: ({ row }) => {
         const user = row.original;
         return (
-          <div >
-            <div className="font-medium leading-tight truncate">
+          <div>
+            <div className="truncate leading-tight font-medium">
               {user.firstName} {user.lastName}
             </div>
-            <div className="text-xs text-muted-foreground ">
+            <div className="text-muted-foreground text-xs">
               <span className="block truncate" title={user.email}>
                 {user.email}
               </span>
             </div>
             <div>
-              <span className="text-xs text-muted-foreground">
-                {user.document}
-              </span>
+              <span className="text-muted-foreground text-xs">{user.document}</span>
             </div>
           </div>
         );
       },
     },
-   
+
     {
       accessorKey: 'role',
       header: 'Rol',
@@ -105,11 +98,7 @@ export function UsersTable({
         const user = row.original;
 
         return (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onEditUser(user)}
-          >
+          <Button variant="outline" size="sm" onClick={() => onEditUser(user)}>
             <Pencil className="mr-2 h-4 w-4" />
             Editar
           </Button>
@@ -128,20 +117,16 @@ export function UsersTable({
       {/* Mobile: Cards */}
       <div className="grid gap-4 md:hidden">
         {users.length > 0 ? (
-          users.map((user) => (
-            <UserCard key={user.id} user={user} onEdit={onEditUser} />
-          ))
+          users.map((user) => <UserCard key={user.id} user={user} onEdit={onEditUser} />)
         ) : (
-          <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
+          <div className="bg-card text-muted-foreground rounded-lg border p-8 text-center">
             No se encontraron resultados
           </div>
         )}
       </div>
-     
 
       {/* Paginación (ambos) */}
       <DataTablePagination meta={meta} onPageChange={onPageChange} />
-      
     </div>
   );
 }

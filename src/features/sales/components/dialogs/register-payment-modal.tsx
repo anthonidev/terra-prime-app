@@ -41,7 +41,7 @@ export function RegisterPaymentModal({
   currency,
 }: RegisterPaymentModalProps) {
   const [vouchers, setVouchers] = useState<VoucherFormData[]>([{ ...initialVoucherData }]);
-  const [errors, setErrors] = useState<Record<number, any>>({});
+  const [errors, setErrors] = useState<Record<number, Record<string, string>>>({});
 
   const { mutate, isPending } = useRegisterPayment(saleId);
   const currencySymbol = currency === 'USD' ? '$' : 'S/';
@@ -74,7 +74,7 @@ export function RegisterPaymentModal({
     const newErrors = { ...errors };
     delete newErrors[index];
     // Reindex remaining errors
-    const reindexedErrors: Record<number, any> = {};
+    const reindexedErrors: Record<number, Record<string, string>> = {};
     Object.keys(newErrors).forEach((key) => {
       const oldIndex = parseInt(key);
       const newIndex = oldIndex > index ? oldIndex - 1 : oldIndex;
@@ -96,11 +96,11 @@ export function RegisterPaymentModal({
   };
 
   const validateVouchers = () => {
-    const newErrors: Record<number, any> = {};
+    const newErrors: Record<number, Record<string, string>> = {};
     let isValid = true;
 
     vouchers.forEach((voucher, index) => {
-      const voucherErrors: any = {};
+      const voucherErrors: Record<string, string> = {};
 
       if (!voucher.transactionReference.trim()) {
         voucherErrors.transactionReference = 'La referencia es requerida';
@@ -184,7 +184,7 @@ export function RegisterPaymentModal({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col">
+      <DialogContent className="flex max-h-[90vh] flex-col sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>Registrar Pago</DialogTitle>
           <DialogDescription>
@@ -193,24 +193,20 @@ export function RegisterPaymentModal({
         </DialogHeader>
 
         {/* Amount Summary */}
-        <div className="grid grid-cols-2 gap-4 py-4 px-1">
-          <div className="p-3 rounded-lg bg-muted/50 border">
-            <p className="text-xs text-muted-foreground mb-1">Monto Pendiente</p>
+        <div className="grid grid-cols-2 gap-4 px-1 py-4">
+          <div className="bg-muted/50 rounded-lg border p-3">
+            <p className="text-muted-foreground mb-1 text-xs">Monto Pendiente</p>
             <p className="text-lg font-bold">
               {currencySymbol} {pendingAmount.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
             </p>
           </div>
           <div
-            className={`p-3 rounded-lg border ${
+            className={`rounded-lg border p-3 ${
               amountError ? 'bg-destructive/10 border-destructive' : 'bg-primary/10 border-primary'
             }`}
           >
-            <p className="text-xs text-muted-foreground mb-1">Monto a Registrar</p>
-            <p
-              className={`text-lg font-bold ${
-                amountError ? 'text-destructive' : 'text-primary'
-              }`}
-            >
+            <p className="text-muted-foreground mb-1 text-xs">Monto a Registrar</p>
+            <p className={`text-lg font-bold ${amountError ? 'text-destructive' : 'text-primary'}`}>
               {currencySymbol} {totalAmount.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
             </p>
           </div>
@@ -224,7 +220,7 @@ export function RegisterPaymentModal({
         )}
 
         {/* Vouchers List */}
-        <div className="flex-1 overflow-y-auto max-h-[50vh] pr-2">
+        <div className="max-h-[50vh] flex-1 overflow-y-auto pr-2">
           <div className="space-y-4">
             <AnimatePresence>
               {vouchers.map((voucher, index) => (
@@ -242,7 +238,7 @@ export function RegisterPaymentModal({
           </div>
         </div>
 
-        <DialogFooter className="flex-col sm:flex-row gap-2">
+        <DialogFooter className="flex-col gap-2 sm:flex-row">
           <Button
             type="button"
             variant="outline"
@@ -250,10 +246,10 @@ export function RegisterPaymentModal({
             disabled={isPending}
             className="w-full sm:w-auto"
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             Agregar Comprobante
           </Button>
-          <div className="flex gap-2 w-full sm:w-auto">
+          <div className="flex w-full gap-2 sm:w-auto">
             <Button
               type="button"
               variant="ghost"
@@ -261,7 +257,7 @@ export function RegisterPaymentModal({
               disabled={isPending}
               className="flex-1 sm:flex-none"
             >
-              <X className="h-4 w-4 mr-2" />
+              <X className="mr-2 h-4 w-4" />
               Cancelar
             </Button>
             <Button
@@ -270,7 +266,7 @@ export function RegisterPaymentModal({
               disabled={isPending || !!amountError}
               className="flex-1 sm:flex-none"
             >
-              <Send className="h-4 w-4 mr-2" />
+              <Send className="mr-2 h-4 w-4" />
               {isPending ? 'Registrando...' : 'Registrar Pago'}
             </Button>
           </div>

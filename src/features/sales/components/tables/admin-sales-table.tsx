@@ -82,7 +82,7 @@ function ActionsCell({ sale }: { sale: MySale }) {
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/ventas/detalle/${sale.id}`}>
-            <Eye className="h-4 w-4 mr-2" />
+            <Eye className="mr-2 h-4 w-4" />
             Ver
           </Link>
         </Button>
@@ -97,19 +97,19 @@ function ActionsCell({ sale }: { sale: MySale }) {
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => setIsAssignModalOpen(true)}>
-              <Users className="h-4 w-4 mr-2" />
+              <Users className="mr-2 h-4 w-4" />
               Asignar Participantes
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleGenerateRadication}>
               {sale.radicationPdfUrl ? (
                 <>
-                  <FilePlus className="h-4 w-4 mr-2" />
+                  <FilePlus className="mr-2 h-4 w-4" />
                   Regenerar PDF Radicación
                 </>
               ) : (
                 <>
-                  <FileText className="h-4 w-4 mr-2" />
+                  <FileText className="mr-2 h-4 w-4" />
                   Generar PDF Radicación
                 </>
               )}
@@ -117,12 +117,12 @@ function ActionsCell({ sale }: { sale: MySale }) {
             <DropdownMenuItem onClick={handleGeneratePaymentAccord}>
               {sale.paymentAcordPdfUrl ? (
                 <>
-                  <FilePlus className="h-4 w-4 mr-2" />
+                  <FilePlus className="mr-2 h-4 w-4" />
                   Regenerar PDF Acuerdo de Pagos
                 </>
               ) : (
                 <>
-                  <FileText className="h-4 w-4 mr-2" />
+                  <FileText className="mr-2 h-4 w-4" />
                   Generar PDF Acuerdo de Pagos
                 </>
               )}
@@ -159,7 +159,7 @@ const columns: ColumnDef<MySale>[] = [
           <span className="font-medium">
             {client.firstName} {client.lastName}
           </span>
-          <span className="text-sm text-muted-foreground">{client.phone}</span>
+          <span className="text-muted-foreground text-sm">{client.phone}</span>
         </div>
       );
     },
@@ -172,7 +172,7 @@ const columns: ColumnDef<MySale>[] = [
       return (
         <div className="flex flex-col">
           <span className="font-medium">{lot.name}</span>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-muted-foreground text-sm">
             {lot.project} - {lot.stage}
           </span>
         </div>
@@ -185,9 +185,7 @@ const columns: ColumnDef<MySale>[] = [
     cell: ({ row }) => {
       const type = row.getValue('type') as string;
       return (
-        <span className="capitalize">
-          {type === 'DIRECT_PAYMENT' ? 'Contado' : 'Financiado'}
-        </span>
+        <span className="capitalize">{type === 'DIRECT_PAYMENT' ? 'Contado' : 'Financiado'}</span>
       );
     },
   },
@@ -222,43 +220,23 @@ const columns: ColumnDef<MySale>[] = [
       const hasPaymentAccord = !!sale.paymentAcordPdfUrl;
 
       if (!hasRadication && !hasPaymentAccord) {
-        return (
-          <span className="text-xs text-muted-foreground">Sin reportes</span>
-        );
+        return <span className="text-muted-foreground text-xs">Sin reportes</span>;
       }
 
       return (
         <div className="flex flex-col gap-1">
           {hasRadication && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 px-2 justify-start"
-              asChild
-            >
-              <a
-                href={sale.radicationPdfUrl!}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Download className="h-3 w-3 mr-1" />
+            <Button variant="ghost" size="sm" className="h-7 justify-start px-2" asChild>
+              <a href={sale.radicationPdfUrl!} target="_blank" rel="noopener noreferrer">
+                <Download className="mr-1 h-3 w-3" />
                 <span className="text-xs">Radicación</span>
               </a>
             </Button>
           )}
           {hasPaymentAccord && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 px-2 justify-start"
-              asChild
-            >
-              <a
-                href={sale.paymentAcordPdfUrl!}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Download className="h-3 w-3 mr-1" />
+            <Button variant="ghost" size="sm" className="h-7 justify-start px-2" asChild>
+              <a href={sale.paymentAcordPdfUrl!} target="_blank" rel="noopener noreferrer">
+                <Download className="mr-1 h-3 w-3" />
                 <span className="text-xs">Acuerdo de Pagos</span>
               </a>
             </Button>

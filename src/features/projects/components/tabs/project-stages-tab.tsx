@@ -25,12 +25,12 @@ export function ProjectStagesTab({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Layers className="h-5 w-5 text-primary" />
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+            <Layers className="text-primary h-5 w-5" />
           </div>
           <div>
             <h2 className="text-xl font-bold tracking-tight">Etapas del Proyecto</h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               {project.stages.length} {project.stages.length === 1 ? 'etapa' : 'etapas'} registradas
             </p>
           </div>
@@ -55,12 +55,12 @@ export function ProjectStagesTab({
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-12 rounded-lg border-2 border-dashed bg-muted/20">
-          <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-            <Layers className="h-8 w-8 text-muted-foreground" />
+        <div className="bg-muted/20 flex flex-col items-center justify-center rounded-lg border-2 border-dashed py-12">
+          <div className="bg-muted/50 mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+            <Layers className="text-muted-foreground h-8 w-8" />
           </div>
-          <h3 className="text-lg font-semibold mb-2">No hay etapas creadas</h3>
-          <p className="text-sm text-muted-foreground mb-4 text-center max-w-sm">
+          <h3 className="mb-2 text-lg font-semibold">No hay etapas creadas</h3>
+          <p className="text-muted-foreground mb-4 max-w-sm text-center text-sm">
             Comienza creando la primera etapa de tu proyecto para organizar las manzanas y lotes
           </p>
           <Button onClick={onCreateStage}>

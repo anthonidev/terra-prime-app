@@ -52,7 +52,7 @@ export function ParticipantsFilters({ filters, onFiltersChange }: ParticipantsFi
           {/* Búsqueda */}
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Search className="text-muted-foreground absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
               <Input
                 type="text"
                 placeholder="Buscar por nombre, documento o teléfono..."
@@ -67,7 +67,7 @@ export function ParticipantsFilters({ filters, onFiltersChange }: ParticipantsFi
                     }
                   }
                 }}
-                className="pl-9 h-9 text-sm"
+                className="h-9 pl-9 text-sm"
                 aria-label="Buscar participantes"
               />
             </div>
@@ -75,10 +75,7 @@ export function ParticipantsFilters({ filters, onFiltersChange }: ParticipantsFi
 
           {/* Filtro por tipo */}
           <div className="w-full md:w-[200px]">
-            <Select
-              value={filters.type || 'all'}
-              onValueChange={handleTypeChange}
-            >
+            <Select value={filters.type || 'all'} onValueChange={handleTypeChange}>
               <SelectTrigger className="h-9 text-sm">
                 <Filter className="mr-2 h-3.5 w-3.5" />
                 <SelectValue placeholder="Tipo" />

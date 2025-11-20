@@ -1,6 +1,6 @@
 'use client';
 
-import { Mail, User, FileText } from 'lucide-react';
+import { Mail, FileText } from 'lucide-react';
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -17,11 +17,11 @@ export function VendorCard({ vendor }: VendorCardProps) {
   const initials = `${vendor.firstName[0]}${vendor.lastName[0]}`.toUpperCase();
 
   return (
-    <Card className="group h-full transition-all hover:shadow-lg hover:scale-[1.02]">
+    <Card className="group h-full transition-all hover:scale-[1.02] hover:shadow-lg">
       <CardHeader className="pb-3">
         <div className="flex flex-col items-center gap-3">
           {/* Avatar */}
-          <Avatar className="h-24 w-24 ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all">
+          <Avatar className="ring-primary/10 group-hover:ring-primary/30 h-24 w-24 ring-2 transition-all">
             <AvatarImage src={vendor.photo || undefined} alt={fullName} />
             <AvatarFallback className="bg-primary/10 text-primary text-2xl font-semibold">
               {initials}
@@ -30,7 +30,7 @@ export function VendorCard({ vendor }: VendorCardProps) {
 
           {/* Nombre completo */}
           <div className="text-center">
-            <h3 className="text-xl font-bold group-hover:text-primary transition-colors">
+            <h3 className="group-hover:text-primary text-xl font-bold transition-colors">
               {fullName}
             </h3>
             <Badge variant="outline" className="mt-2">
@@ -43,18 +43,18 @@ export function VendorCard({ vendor }: VendorCardProps) {
       <CardContent className="space-y-3">
         {/* Email */}
         <div className="flex items-start gap-3 text-sm">
-          <Mail className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-          <div className="flex-1 min-w-0">
-            <p className="text-muted-foreground text-xs mb-1">Correo electrónico</p>
-            <p className="font-medium truncate">{vendor.email}</p>
+          <Mail className="text-muted-foreground mt-0.5 h-4 w-4 flex-shrink-0" />
+          <div className="min-w-0 flex-1">
+            <p className="text-muted-foreground mb-1 text-xs">Correo electrónico</p>
+            <p className="truncate font-medium">{vendor.email}</p>
           </div>
         </div>
 
         {/* Documento */}
         <div className="flex items-start gap-3 text-sm">
-          <FileText className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-          <div className="flex-1 min-w-0">
-            <p className="text-muted-foreground text-xs mb-1">Documento</p>
+          <FileText className="text-muted-foreground mt-0.5 h-4 w-4 flex-shrink-0" />
+          <div className="min-w-0 flex-1">
+            <p className="text-muted-foreground mb-1 text-xs">Documento</p>
             <p className="font-medium">{vendor.document}</p>
           </div>
         </div>

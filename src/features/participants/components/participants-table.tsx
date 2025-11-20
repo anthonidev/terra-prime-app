@@ -1,19 +1,14 @@
 'use client';
 
-import { type ColumnDef } from '@tanstack/react-table';
-import { Pencil } from 'lucide-react';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-
+import { Button } from '@/components/ui/button';
 import { DataTable } from '@/shared/components/data-table/data-table';
 import { DataTablePagination } from '@/shared/components/data-table/data-table-pagination';
+import { type ColumnDef } from '@tanstack/react-table';
+import { Pencil } from 'lucide-react';
+import { DOCUMENT_TYPE_LABELS, PARTICIPANT_TYPE_LABELS } from '../constants';
+import type { PaginationMeta, Participant } from '../types';
 import { ParticipantCard } from './participant-card';
-
-import { PARTICIPANT_TYPE_LABELS, DOCUMENT_TYPE_LABELS } from '../constants';
-import type { Participant, PaginationMeta } from '../types';
 
 interface ParticipantsTableProps {
   participants: Participant[];
@@ -39,14 +34,14 @@ export function ParticipantsTable({
             <div className="text-xs font-bold">
               {participant.firstName} {participant.lastName}
             </div>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <Badge variant="outline" className="text-xs font-mono">
+            <div className="mt-0.5 flex items-center gap-1.5">
+              <Badge variant="outline" className="font-mono text-xs">
                 {DOCUMENT_TYPE_LABELS[participant.documentType]}
               </Badge>
-              <span className="text-xs text-muted-foreground">{participant.document}</span>
+              <span className="text-muted-foreground text-xs">{participant.document}</span>
             </div>
             {participant.email && (
-              <div className="text-xs text-muted-foreground mt-0.5 truncate">
+              <div className="text-muted-foreground mt-0.5 truncate text-xs">
                 {participant.email}
               </div>
             )}
@@ -57,9 +52,7 @@ export function ParticipantsTable({
     {
       accessorKey: 'phone',
       header: 'Teléfono',
-      cell: ({ row }) => (
-        <div className="text-xs">{row.getValue('phone')}</div>
-      ),
+      cell: ({ row }) => <div className="text-xs">{row.getValue('phone')}</div>,
     },
     {
       accessorKey: 'participantType',
@@ -69,10 +62,13 @@ export function ParticipantsTable({
         const type = row.getValue('participantType') as Participant['participantType'];
         return (
           <div className="flex flex-col gap-1">
-            <Badge variant="outline" className="text-xs w-fit">
+            <Badge variant="outline" className="w-fit text-xs">
               {PARTICIPANT_TYPE_LABELS[type]}
             </Badge>
-            <Badge variant={participant.isActive ? 'default' : 'destructive'} className="text-xs w-fit">
+            <Badge
+              variant={participant.isActive ? 'default' : 'destructive'}
+              className="w-fit text-xs"
+            >
               {participant.isActive ? 'Activo' : 'Inactivo'}
             </Badge>
           </div>
@@ -118,7 +114,7 @@ export function ParticipantsTable({
             />
           ))
         ) : (
-          <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
+          <div className="bg-card text-muted-foreground rounded-lg border p-8 text-center">
             No se encontraron resultados
           </div>
         )}

@@ -24,7 +24,9 @@
       "Bash(tree:*)",
       "Bash(bun run dev)",
       "Bash(cp:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(bun add:*)",
+      "Bash(bunx husky:*)"
     ],
     "deny": [],
     "ask": []

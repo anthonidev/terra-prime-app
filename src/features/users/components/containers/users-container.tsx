@@ -32,12 +32,10 @@ export function UsersContainer() {
 
   if (isError || !data) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center">
           <p className="text-destructive">Error al cargar los usuarios</p>
-          <p className="text-sm text-muted-foreground mt-2">
-            Intenta recargar la página
-          </p>
+          <p className="text-muted-foreground mt-2 text-sm">Intenta recargar la página</p>
         </div>
       </div>
     );
@@ -53,9 +51,7 @@ export function UsersContainer() {
 
       {/* Actions */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">
-          Total de usuarios: {data.meta.totalItems}
-        </p>
+        <p className="text-muted-foreground text-sm">Total de usuarios: {data.meta.totalItems}</p>
         <Button onClick={handleCreateUser}>
           <Plus className="mr-2 h-4 w-4" />
           Crear usuario
@@ -74,11 +70,7 @@ export function UsersContainer() {
       />
 
       {/* Create/Edit Dialog */}
-      <UserFormDialog
-        open={isDialogOpen}
-        onOpenChange={handleDialogChange}
-        user={selectedUser}
-      />
+      <UserFormDialog open={isDialogOpen} onOpenChange={handleDialogChange} user={selectedUser} />
     </div>
   );
 }

@@ -18,12 +18,10 @@ export function ProjectsContainer() {
 
   if (isError || !data) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center">
           <p className="text-destructive">Error al cargar los proyectos</p>
-          <p className="text-sm text-muted-foreground mt-2">
-            Intenta recargar la página
-          </p>
+          <p className="text-muted-foreground mt-2 text-sm">Intenta recargar la página</p>
         </div>
       </div>
     );
@@ -41,8 +39,8 @@ export function ProjectsContainer() {
 
       {/* Stats */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">
-          Total de proyectos: <span className="font-medium text-foreground">{total}</span>
+        <p className="text-muted-foreground text-sm">
+          Total de proyectos: <span className="text-foreground font-medium">{total}</span>
         </p>
       </div>
 
@@ -58,9 +56,7 @@ export function ProjectsContainer() {
           title="No hay proyectos aún"
           description="Crea tu primer proyecto para comenzar."
         >
-          <Button
-            onClick={() => push('/proyectos/nuevo')}
-          >Crear Proyecto</Button>
+          <Button onClick={() => push('/proyectos/nuevo')}>Crear Proyecto</Button>
         </EmptyContainer>
       )}
     </div>

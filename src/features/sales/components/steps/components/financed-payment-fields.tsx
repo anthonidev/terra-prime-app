@@ -18,7 +18,12 @@ interface FinancedPaymentFieldsProps {
   isLocked?: boolean;
 }
 
-export function FinancedPaymentFields({ form, lotPrice, currency, isLocked = false }: FinancedPaymentFieldsProps) {
+export function FinancedPaymentFields({
+  form,
+  lotPrice,
+  currency,
+  isLocked = false,
+}: FinancedPaymentFieldsProps) {
   const currencyType = currency === 'USD' ? 'USD' : 'PEN';
 
   const fields = [
@@ -73,8 +78,8 @@ export function FinancedPaymentFields({ form, lotPrice, currency, isLocked = fal
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-              <Wallet className="h-5 w-5 text-primary" />
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <Wallet className="text-primary h-5 w-5" />
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
@@ -89,8 +94,7 @@ export function FinancedPaymentFields({ form, lotPrice, currency, isLocked = fal
               <CardDescription>
                 {isLocked
                   ? 'Campos bloqueados - Tabla de amortización generada'
-                  : 'Configure los términos de pago para el financiamiento del lote'
-                }
+                  : 'Configure los términos de pago para el financiamiento del lote'}
               </CardDescription>
             </div>
           </div>
@@ -102,11 +106,8 @@ export function FinancedPaymentFields({ form, lotPrice, currency, isLocked = fal
             animate={{ opacity: 1, y: 0 }}
             className="space-y-2"
           >
-            <Label
-              htmlFor="totalAmount"
-              className="flex items-center gap-2 text-sm font-medium"
-            >
-              <Receipt className="h-4 w-4 text-primary" />
+            <Label htmlFor="totalAmount" className="flex items-center gap-2 text-sm font-medium">
+              <Receipt className="text-primary h-4 w-4" />
               Monto Total del Lote
             </Label>
             <Input
@@ -115,14 +116,14 @@ export function FinancedPaymentFields({ form, lotPrice, currency, isLocked = fal
               value={formatCurrency(lotPrice, currencyType)}
               readOnly
               disabled
-              className="bg-muted font-semibold text-primary cursor-not-allowed"
+              className="bg-muted text-primary cursor-not-allowed font-semibold"
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Precio del lote a financiar (no editable)
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {fields.map((field, index) => {
               const Icon = field.icon;
               const error = form.formState.errors[field.id as keyof Step3FinancedFormData];
@@ -135,11 +136,8 @@ export function FinancedPaymentFields({ form, lotPrice, currency, isLocked = fal
                   transition={{ delay: index * 0.05 }}
                   className="space-y-2"
                 >
-                  <Label
-                    htmlFor={field.id}
-                    className="flex items-center gap-2 text-sm font-medium"
-                  >
-                    <Icon className="h-4 w-4 text-primary" />
+                  <Label htmlFor={field.id} className="flex items-center gap-2 text-sm font-medium">
+                    <Icon className="text-primary h-4 w-4" />
                     {field.label}
                     {field.required && <span className="text-destructive">*</span>}
                   </Label>
@@ -160,18 +158,18 @@ export function FinancedPaymentFields({ form, lotPrice, currency, isLocked = fal
                         isLocked && 'bg-muted cursor-not-allowed'
                       )}
                     />
-                    <Icon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Icon className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
                   </div>
                   {error && (
                     <motion.p
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="text-xs text-destructive flex items-center gap-1"
+                      className="text-destructive flex items-center gap-1 text-xs"
                     >
                       {error.message as string}
                     </motion.p>
                   )}
-                  <p className="text-xs text-muted-foreground">{field.description}</p>
+                  <p className="text-muted-foreground text-xs">{field.description}</p>
                 </motion.div>
               );
             })}

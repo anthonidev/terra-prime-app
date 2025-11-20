@@ -89,7 +89,7 @@ export function ExtendReservationModal({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Clock className="h-5 w-5 text-primary" />
+            <Clock className="text-primary h-5 w-5" />
             Extender Reserva
           </DialogTitle>
           <DialogDescription>
@@ -112,16 +112,14 @@ export function ExtendReservationModal({
               disabled={isPending}
               className={error ? 'border-destructive' : ''}
             />
-            {error && (
-              <p className="text-xs text-destructive">{error}</p>
-            )}
-            <p className="text-xs text-muted-foreground">
+            {error && <p className="text-destructive text-xs">{error}</p>}
+            <p className="text-muted-foreground text-xs">
               Los días adicionales se sumarán al período actual de reserva.
             </p>
           </div>
         </div>
 
-        <DialogFooter className="flex-col sm:flex-row gap-2">
+        <DialogFooter className="flex-col gap-2 sm:flex-row">
           <Button
             type="button"
             variant="ghost"
@@ -139,12 +137,12 @@ export function ExtendReservationModal({
           >
             {isPending ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Extendiendo...
               </>
             ) : (
               <>
-                <Clock className="h-4 w-4 mr-2" />
+                <Clock className="mr-2 h-4 w-4" />
                 Extender Reserva
               </>
             )}

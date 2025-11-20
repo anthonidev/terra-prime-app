@@ -5,7 +5,7 @@ export interface MenuItem {
   icon: string;
   url: string | null;
   order: number;
-  metadata: Record<string, any> | null;
+  metadata: Record<string, unknown> | null;
   children: MenuItem[];
 }
 

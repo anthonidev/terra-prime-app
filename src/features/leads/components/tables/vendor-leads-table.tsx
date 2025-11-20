@@ -30,13 +30,13 @@ const columns: ColumnDef<VendorLead>[] = [
           <div className="text-xs font-bold">
             {lead.firstName} {lead.lastName}
           </div>
-          <div className="flex items-center gap-1.5 mt-0.5">
-            <Badge variant="outline" className="text-xs font-mono">
+          <div className="mt-0.5 flex items-center gap-1.5">
+            <Badge variant="outline" className="font-mono text-xs">
               {lead.documentType}
             </Badge>
-            <span className="text-xs text-muted-foreground">{lead.document}</span>
+            <span className="text-muted-foreground text-xs">{lead.document}</span>
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
+          <div className="text-muted-foreground mt-0.5 flex items-center gap-1.5 text-xs">
             <User className="h-3 w-3" />
             <span>{lead.age} años</span>
           </div>
@@ -52,9 +52,7 @@ const columns: ColumnDef<VendorLead>[] = [
       return (
         <div className="space-y-0.5">
           <div className="text-xs">{lead.phone}</div>
-          {lead.phone2 && (
-            <div className="text-xs text-muted-foreground">{lead.phone2}</div>
-          )}
+          {lead.phone2 && <div className="text-muted-foreground text-xs">{lead.phone2}</div>}
         </div>
       );
     },
@@ -70,7 +68,7 @@ const columns: ColumnDef<VendorLead>[] = [
           <Badge variant="outline" className="text-xs">
             {lead.source.name}
           </Badge>
-          <div className="text-xs text-muted-foreground">
+          <div className="text-muted-foreground text-xs">
             {format(date, 'dd MMM yyyy', { locale: es })}
           </div>
         </div>
@@ -99,12 +97,12 @@ export function VendorLeadsTable({ leads }: VendorLeadsTableProps) {
     <div className="space-y-4">
       {/* Búsqueda */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+        <Search className="text-muted-foreground absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
         <Input
           placeholder="Buscar por nombre o documento..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9 h-9 text-sm"
+          className="h-9 pl-9 text-sm"
         />
       </div>
 
@@ -123,7 +121,7 @@ export function VendorLeadsTable({ leads }: VendorLeadsTableProps) {
 
       {/* Contador */}
       {filteredLeads.length > 0 && (
-        <div className="text-xs text-muted-foreground">
+        <div className="text-muted-foreground text-xs">
           Mostrando {filteredLeads.length} de {leads.length} prospectos
         </div>
       )}

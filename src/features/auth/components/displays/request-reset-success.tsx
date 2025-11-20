@@ -26,9 +26,7 @@ export function RequestResetSuccess({ email }: RequestResetSuccessProps) {
             <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
           </div>
         </div>
-        <CardTitle className="mt-4 text-center text-2xl font-bold">
-          Solicitud enviada
-        </CardTitle>
+        <CardTitle className="mt-4 text-center text-2xl font-bold">Solicitud enviada</CardTitle>
         <CardDescription className="text-center">
           Hemos enviado instrucciones para restablecer tu contraseña a
         </CardDescription>
@@ -36,8 +34,8 @@ export function RequestResetSuccess({ email }: RequestResetSuccessProps) {
       <CardContent className="space-y-4 text-center">
         <div className="text-lg font-medium">{email}</div>
         <p className="text-muted-foreground">
-          Revisa tu bandeja de entrada y sigue las instrucciones para completar
-          el proceso. El enlace será válido por 24 horas.
+          Revisa tu bandeja de entrada y sigue las instrucciones para completar el proceso. El
+          enlace será válido por 24 horas.
         </p>
       </CardContent>
       <CardFooter className="flex justify-center">

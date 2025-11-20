@@ -27,7 +27,9 @@ export function useClientInfoForm({ initialData, onSubmit }: UseClientInfoFormPr
 
   // Find selected lead to get document for client lookup
   const selectedLead = vendorLeads?.find((lead) => lead.id === selectedLeadId);
-  const { data: clientData, isLoading: isLoadingClient } = useClientByDocument(selectedLead?.document || '');
+  const { data: clientData, isLoading: isLoadingClient } = useClientByDocument(
+    selectedLead?.document || ''
+  );
 
   const form = useForm<Step4FormData>({
     resolver: zodResolver(step4Schema),

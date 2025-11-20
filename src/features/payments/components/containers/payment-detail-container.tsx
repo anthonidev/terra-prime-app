@@ -76,11 +76,11 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
               <CardTitle>Actualizar Pago</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-muted-foreground mb-4 text-sm">
                 Este pago ha sido aprobado. Puedes actualizar información adicional.
               </p>
               <Button onClick={() => setCompleteModalOpen(true)}>
-                <Edit className="h-4 w-4 mr-2" />
+                <Edit className="mr-2 h-4 w-4" />
                 Actualizar Pago
               </Button>
             </CardContent>

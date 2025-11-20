@@ -59,28 +59,29 @@ export function ParticipantFormDialog({
 
   const form = useForm<CreateParticipantFormData | UpdateParticipantFormData>({
     resolver: zodResolver(isEditing ? updateParticipantSchema : createParticipantSchema),
-    defaultValues: isEditing && participant
-      ? {
-          firstName: participant.firstName,
-          lastName: participant.lastName,
-          email: participant.email || '',
-          document: participant.document,
-          documentType: participant.documentType,
-          phone: participant.phone,
-          address: participant.address,
-          participantType: participant.participantType,
-          isActive: participant.isActive,
-        }
-      : {
-          firstName: '',
-          lastName: '',
-          email: '',
-          document: '',
-          documentType: DocumentType.DNI,
-          phone: '',
-          address: '',
-          participantType: ParticipantType.TELEMARKETER,
-        },
+    defaultValues:
+      isEditing && participant
+        ? {
+            firstName: participant.firstName,
+            lastName: participant.lastName,
+            email: participant.email || '',
+            document: participant.document,
+            documentType: participant.documentType,
+            phone: participant.phone,
+            address: participant.address,
+            participantType: participant.participantType,
+            isActive: participant.isActive,
+          }
+        : {
+            firstName: '',
+            lastName: '',
+            email: '',
+            document: '',
+            documentType: DocumentType.DNI,
+            phone: '',
+            address: '',
+            participantType: ParticipantType.TELEMARKETER,
+          },
   });
 
   // Reset form cuando cambia el participant o se abre/cierra
@@ -138,7 +139,7 @@ export function ParticipantFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>
             {isEditing ? 'Editar participante' : 'Crear nuevo participante'}
@@ -191,11 +192,7 @@ export function ParticipantFormDialog({
                 <FormItem>
                   <FormLabel>Correo electrónico (opcional)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="correo@ejemplo.com"
-                      {...field}
-                    />
+                    <Input type="email" placeholder="correo@ejemplo.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -210,10 +207,7 @@ export function ParticipantFormDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Tipo</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Tipo" />
@@ -284,10 +278,7 @@ export function ParticipantFormDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tipo de participante</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecciona un tipo" />
@@ -315,15 +306,12 @@ export function ParticipantFormDialog({
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
                       <FormLabel className="text-base">Estado</FormLabel>
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-muted-foreground text-sm">
                         {field.value ? 'Participante activo' : 'Participante inactivo'}
                       </div>
                     </div>
                     <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -341,11 +329,7 @@ export function ParticipantFormDialog({
                 Cancelar
               </Button>
               <Button type="submit" disabled={isPending}>
-                {isPending
-                  ? 'Guardando...'
-                  : isEditing
-                    ? 'Actualizar'
-                    : 'Crear participante'}
+                {isPending ? 'Guardando...' : isEditing ? 'Actualizar' : 'Crear participante'}
               </Button>
             </div>
           </form>

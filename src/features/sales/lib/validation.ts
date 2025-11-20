@@ -47,7 +47,10 @@ export const step3DirectPaymentSchema = z.object({
 export const step3FinancedSchema = z.object({
   totalAmount: z.number().min(0, 'El monto total debe ser mayor o igual a 0'),
   initialAmount: z.number().min(0.01, 'La cuota inicial debe ser mayor a 0'),
-  interestRate: z.number().min(0, 'La tasa de interés debe ser mayor o igual a 0').max(100, 'La tasa no puede ser mayor a 100%'),
+  interestRate: z
+    .number()
+    .min(0, 'La tasa de interés debe ser mayor o igual a 0')
+    .max(100, 'La tasa no puede ser mayor a 100%'),
   quantitySaleCoutes: z.number().min(1, 'Debe ser al menos 1 cuota'),
   firstPaymentDate: z.string().min(1, 'La fecha de primera cuota es requerida'),
   totalAmountUrbanDevelopment: z.number().min(0, 'El monto debe ser mayor o igual a 0'),

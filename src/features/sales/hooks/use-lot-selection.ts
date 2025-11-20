@@ -15,7 +15,9 @@ export function useLotSelection({ initialData }: UseLotSelectionProps = {}) {
   // State for selections
   const [projectId, setProjectId] = useState<string>(initialData?.projectId || '');
   const [projectName, setProjectName] = useState<string>(initialData?.projectName || '');
-  const [projectCurrency, setProjectCurrency] = useState<string>(initialData?.projectCurrency || '');
+  const [projectCurrency, setProjectCurrency] = useState<string>(
+    initialData?.projectCurrency || ''
+  );
   const [stageId, setStageId] = useState<string>(initialData?.stageId || '');
   const [stageName, setStageName] = useState<string>(initialData?.stageName || '');
   const [blockId, setBlockId] = useState<string>(initialData?.blockId || '');

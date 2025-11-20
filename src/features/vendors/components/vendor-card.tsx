@@ -27,11 +27,11 @@ export function VendorCard({ vendor }: VendorCardProps) {
               <AvatarImage src={vendor.photo} alt={`${vendor.firstName} ${vendor.lastName}`} />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-bold truncate">
+            <div className="min-w-0 flex-1">
+              <h3 className="truncate text-sm font-bold">
                 {vendor.firstName} {vendor.lastName}
               </h3>
-              <Badge variant="outline" className="text-xs font-mono mt-1">
+              <Badge variant="outline" className="mt-1 font-mono text-xs">
                 {vendor.document}
               </Badge>
             </div>
@@ -39,15 +39,15 @@ export function VendorCard({ vendor }: VendorCardProps) {
 
           {/* Email */}
           <div className="flex items-center gap-1.5 text-xs">
-            <Mail className="h-3 w-3 text-muted-foreground" />
+            <Mail className="text-muted-foreground h-3 w-3" />
             <span className="text-muted-foreground truncate">{vendor.email}</span>
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-border" />
+          <div className="bg-border h-px" />
 
           {/* Fecha de registro */}
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
             <Calendar className="h-3 w-3" />
             <span>
               Registrado: {format(new Date(vendor.createdAt), 'dd MMM yyyy', { locale: es })}

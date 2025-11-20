@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { extendReservation } from '../lib/mutations';
 import { toast } from 'sonner';
 import type { ExtendReservationInput } from '../types';
@@ -20,8 +21,14 @@ export function useExtendReservation() {
       queryClient.invalidateQueries({ queryKey: ['sales'] });
       toast.success(data.message || 'Reserva extendida exitosamente');
     },
-    onError: (error: any) => {
-      const message = error?.response?.data?.message || 'Error al extender la reserva';
+    onError: (error: Error) => {
+      let message = 'Error al extender la reserva';
+
+      if (error instanceof AxiosError && error.response?.data) {
+        const data = error.response.data as { message?: string };
+        message = data.message || message;
+      }
+
       toast.error(message);
       console.error('Error extending reservation:', error);
     },

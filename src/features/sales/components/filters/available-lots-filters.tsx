@@ -65,12 +65,12 @@ export function AvailableLotsFilters({
         className="flex gap-2"
       >
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Search className="text-muted-foreground absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
           <Input
             placeholder="Buscar lote por nombre..."
             value={term}
             onChange={(e) => onTermChange(e.target.value)}
-            className="pl-9 h-9 text-sm"
+            className="h-9 pl-9 text-sm"
           />
         </div>
         <Button type="submit" size="sm">
@@ -83,7 +83,7 @@ export function AvailableLotsFilters({
       <div className="grid gap-2 sm:grid-cols-3">
         {/* Stage Filter */}
         <div className="space-y-1">
-          <label className="text-xs font-medium text-muted-foreground">Etapa</label>
+          <label className="text-muted-foreground text-xs font-medium">Etapa</label>
           <Select value={stageId} onValueChange={onStageIdChange} disabled={isLoadingStages}>
             <SelectTrigger className="h-9 text-sm">
               <SelectValue placeholder="Todas las etapas" />
@@ -101,7 +101,7 @@ export function AvailableLotsFilters({
 
         {/* Block Filter */}
         <div className="space-y-1">
-          <label className="text-xs font-medium text-muted-foreground">Manzana</label>
+          <label className="text-muted-foreground text-xs font-medium">Manzana</label>
           <Select
             value={blockId}
             onValueChange={onBlockIdChange}
@@ -123,7 +123,7 @@ export function AvailableLotsFilters({
 
         {/* Order */}
         <div className="space-y-1">
-          <label className="text-xs font-medium text-muted-foreground">Orden</label>
+          <label className="text-muted-foreground text-xs font-medium">Orden</label>
           <Select value={order} onValueChange={(value) => onOrderChange(value as 'ASC' | 'DESC')}>
             <SelectTrigger className="h-9 text-sm">
               <SelectValue />

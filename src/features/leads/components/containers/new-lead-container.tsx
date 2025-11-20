@@ -4,7 +4,11 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { UserPlus } from 'lucide-react';
 
-import { useActiveLeadSources, useActiveProjectsForLead, useUbigeos } from '../../hooks/use-lead-form-data';
+import {
+  useActiveLeadSources,
+  useActiveProjectsForLead,
+  useUbigeos,
+} from '../../hooks/use-lead-form-data';
 import { useLeadFormState } from '../../hooks/use-lead-form-state';
 import { useLeadSearch } from '../../hooks/use-lead-search';
 import { useRegisterLead } from '../../hooks/use-register-lead';
@@ -55,8 +59,7 @@ export function NewLeadContainer() {
     },
   });
 
-  const { departments, getProvinces, getDistricts, } =
-    useUbigeoHierarchy(ubigeos);
+  const { departments, getProvinces, getDistricts } = useUbigeoHierarchy(ubigeos);
 
   // Ubigeo computed values
   const provinces = useMemo(
@@ -119,7 +122,8 @@ export function NewLeadContainer() {
       age: formData.age ? parseInt(formData.age) : undefined,
       sourceId: parseInt(formData.sourceId),
       ubigeoId: parseInt(formData.districtId),
-      interestProjects: formData.interestProjects.length > 0 ? formData.interestProjects : undefined,
+      interestProjects:
+        formData.interestProjects.length > 0 ? formData.interestProjects : undefined,
       companionFullName: formData.hasCompanion ? formData.companionFullName : undefined,
       companionDni: formData.hasCompanion ? formData.companionDni : undefined,
       companionRelationship: formData.hasCompanion ? formData.companionRelationship : undefined,
@@ -141,12 +145,12 @@ export function NewLeadContainer() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <UserPlus className="h-5 w-5 text-primary" />
+        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+          <UserPlus className="text-primary h-5 w-5" />
         </div>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Registrar Nuevo Lead</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Complete el formulario para registrar un nuevo lead en el sistema
           </p>
         </div>

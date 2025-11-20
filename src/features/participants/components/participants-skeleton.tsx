@@ -7,7 +7,7 @@ export function ParticipantsSkeleton() {
       {/* Header Skeleton */}
       <div>
         <Skeleton className="h-9 w-64" />
-        <Skeleton className="h-5 w-96 mt-2" />
+        <Skeleton className="mt-2 h-5 w-96" />
       </div>
 
       {/* Actions Row Skeleton */}
@@ -28,7 +28,7 @@ export function ParticipantsSkeleton() {
 
       {/* Desktop Table Skeleton */}
       <div className="hidden md:block">
-        <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
+        <div className="bg-card overflow-hidden rounded-lg border shadow-sm">
           <div className="p-4">
             {/* Header */}
             <div className="flex items-center gap-4 border-b pb-4">
@@ -37,7 +37,7 @@ export function ParticipantsSkeleton() {
               <Skeleton className="h-5 w-20" />
               <Skeleton className="h-5 w-32" />
               <Skeleton className="h-5 w-16" />
-              <Skeleton className="h-5 w-10 ml-auto" />
+              <Skeleton className="ml-auto h-5 w-10" />
             </div>
 
             {/* Rows */}
@@ -51,7 +51,7 @@ export function ParticipantsSkeleton() {
                 <Skeleton className="h-6 w-20" />
                 <Skeleton className="h-6 w-32" />
                 <Skeleton className="h-6 w-16" />
-                <Skeleton className="h-8 w-8 ml-auto" />
+                <Skeleton className="ml-auto h-8 w-8" />
               </div>
             ))}
           </div>
@@ -97,7 +97,7 @@ export function ParticipantsSkeleton() {
       </div>
 
       {/* Pagination Skeleton (Mobile) */}
-      <div className="flex flex-col gap-4 border-t bg-card px-4 py-4">
+      <div className="bg-card flex flex-col gap-4 border-t px-4 py-4">
         <Skeleton className="h-5 w-48" />
         <div className="flex flex-col items-center gap-4">
           <Skeleton className="h-5 w-32" />

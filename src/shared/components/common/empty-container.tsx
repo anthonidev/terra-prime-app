@@ -1,4 +1,4 @@
-import { Megaphone } from "lucide-react"
+import { Megaphone } from 'lucide-react';
 
 import {
   Empty,
@@ -7,14 +7,13 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty"
+} from '@/components/ui/empty';
 
 interface EmptyContainerProps {
-  title?: string
-  description?: string
-  children?: React.ReactNode
+  title?: string;
+  description?: string;
+  children?: React.ReactNode;
 }
-
 
 export function EmptyContainer({ title, description, children }: EmptyContainerProps) {
   return (
@@ -23,17 +22,14 @@ export function EmptyContainer({ title, description, children }: EmptyContainerP
         <EmptyMedia variant="icon">
           <Megaphone />
         </EmptyMedia>
-        <EmptyTitle>{title || "No Projects Yet"}</EmptyTitle>
+        <EmptyTitle>{title || 'No Projects Yet'}</EmptyTitle>
         <EmptyDescription>
-          {description || "Create your first project to get started."}
+          {description || 'Create your first project to get started.'}
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <div className="flex gap-2">
-          {children}
-        </div>
+        <div className="flex gap-2">{children}</div>
       </EmptyContent>
-
     </Empty>
-  )
+  );
 }

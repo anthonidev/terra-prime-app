@@ -36,14 +36,14 @@ export function LotCard({ lot, onEdit }: LotCardProps) {
   const currency = lot.currency === 'USD' ? 'USD' : 'PEN';
 
   return (
-    <Card className="group transition-all duration-300 hover:shadow-md hover:border-primary/50">
+    <Card className="group hover:border-primary/50 transition-all duration-300 hover:shadow-md">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
-          <div className="space-y-1 min-w-0 flex-1">
-            <h3 className="font-bold text-base tracking-tight group-hover:text-primary transition-colors">
+          <div className="min-w-0 flex-1 space-y-1">
+            <h3 className="group-hover:text-primary text-base font-bold tracking-tight transition-colors">
               Lote {lot.name}
             </h3>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
               <MapPin className="h-3 w-3 shrink-0" />
               <span className="truncate">
                 Mzn. {lot.blockName} • {lot.stageName}
@@ -58,12 +58,12 @@ export function LotCard({ lot, onEdit }: LotCardProps) {
 
       <CardContent className="space-y-3">
         {/* Área */}
-        <div className="flex items-center gap-2 p-2 rounded-md bg-muted/30">
-          <div className="w-7 h-7 rounded bg-accent/20 flex items-center justify-center shrink-0">
-            <Ruler className="h-3.5 w-3.5 text-accent" />
+        <div className="bg-muted/30 flex items-center gap-2 rounded-md p-2">
+          <div className="bg-accent/20 flex h-7 w-7 shrink-0 items-center justify-center rounded">
+            <Ruler className="text-accent h-3.5 w-3.5" />
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">
+          <div className="min-w-0 flex-1">
+            <p className="text-muted-foreground text-[10px] font-medium tracking-wide uppercase">
               Área
             </p>
             <p className="text-sm font-bold tabular-nums">{area.toFixed(2)} m²</p>
@@ -72,35 +72,30 @@ export function LotCard({ lot, onEdit }: LotCardProps) {
 
         {/* Precios */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm p-2 rounded-md bg-muted/30">
+          <div className="bg-muted/30 flex items-center justify-between rounded-md p-2 text-sm">
             <span className="text-muted-foreground text-xs">Precio lote:</span>
-            <span className="font-mono font-semibold text-sm">
+            <span className="font-mono text-sm font-semibold">
               {formatCurrency(lotPrice, currency)}
             </span>
           </div>
-          <div className="flex items-center justify-between text-sm p-2 rounded-md bg-muted/30">
+          <div className="bg-muted/30 flex items-center justify-between rounded-md p-2 text-sm">
             <span className="text-muted-foreground text-xs">Urbanización:</span>
-            <span className="font-mono font-semibold text-sm">
+            <span className="font-mono text-sm font-semibold">
               {formatCurrency(urbanizationPrice, currency)}
             </span>
           </div>
-          <div className="flex items-center justify-between p-2 rounded-md bg-primary/10 border border-primary/20">
-            <span className="text-primary font-semibold text-xs uppercase tracking-wide">
+          <div className="bg-primary/10 border-primary/20 flex items-center justify-between rounded-md border p-2">
+            <span className="text-primary text-xs font-semibold tracking-wide uppercase">
               Total:
             </span>
-            <span className="font-mono font-bold text-primary text-base">
+            <span className="text-primary font-mono text-base font-bold">
               {formatCurrency(totalPrice, currency)}
             </span>
           </div>
         </div>
 
         {/* Botón Editar */}
-        <Button
-          size="sm"
-          variant="outline"
-          className="w-full h-8"
-          onClick={() => onEdit(lot)}
-        >
+        <Button size="sm" variant="outline" className="h-8 w-full" onClick={() => onEdit(lot)}>
           <Edit className="mr-2 h-3.5 w-3.5" />
           Editar
         </Button>

@@ -83,9 +83,7 @@ export async function assignParticipantsToSale(
 
 // Generate radication PDF
 export async function generateRadicationPdf(saleId: string): Promise<GeneratePdfResponse> {
-  const response = await apiClient.post<GeneratePdfResponse>(
-    `/api/radication/generate/${saleId}`
-  );
+  const response = await apiClient.post<GeneratePdfResponse>(`/api/radication/generate/${saleId}`);
   return response.data;
 }
 
@@ -115,9 +113,7 @@ export async function regeneratePaymentAccordPdf(saleId: string): Promise<Genera
 
 // Validate admin token
 export async function validateAdminToken(token: string): Promise<boolean> {
-  const response = await apiClient.get<boolean>(
-    `/api/lots/admin-token/validate/${token}`
-  );
+  const response = await apiClient.get<boolean>(`/api/lots/admin-token/validate/${token}`);
   return response.data;
 }
 
@@ -138,9 +134,6 @@ export async function deleteSale(
   saleId: string,
   data: DeleteSaleInput
 ): Promise<DeleteSaleResponse> {
-  const response = await apiClient.delete<DeleteSaleResponse>(
-    `/api/sales/${saleId}`,
-    { data }
-  );
+  const response = await apiClient.delete<DeleteSaleResponse>(`/api/sales/${saleId}`, { data });
   return response.data;
 }

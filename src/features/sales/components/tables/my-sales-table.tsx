@@ -47,7 +47,7 @@ const columns: ColumnDef<MySale>[] = [
           <span className="font-medium">
             {client.firstName} {client.lastName}
           </span>
-          <span className="text-sm text-muted-foreground">{client.phone}</span>
+          <span className="text-muted-foreground text-sm">{client.phone}</span>
         </div>
       );
     },
@@ -60,7 +60,7 @@ const columns: ColumnDef<MySale>[] = [
       return (
         <div className="flex flex-col">
           <span className="font-medium">{lot.name}</span>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-muted-foreground text-sm">
             {lot.project} - {lot.stage}
           </span>
         </div>
@@ -73,9 +73,7 @@ const columns: ColumnDef<MySale>[] = [
     cell: ({ row }) => {
       const type = row.getValue('type') as string;
       return (
-        <span className="capitalize">
-          {type === 'DIRECT_PAYMENT' ? 'Contado' : 'Financiado'}
-        </span>
+        <span className="capitalize">{type === 'DIRECT_PAYMENT' ? 'Contado' : 'Financiado'}</span>
       );
     },
   },
@@ -109,7 +107,7 @@ const columns: ColumnDef<MySale>[] = [
       return (
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/ventas/detalle/${saleId}`}>
-            <Eye className="h-4 w-4 mr-2" />
+            <Eye className="mr-2 h-4 w-4" />
             Ver Detalle
           </Link>
         </Button>

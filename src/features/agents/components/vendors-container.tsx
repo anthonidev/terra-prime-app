@@ -25,23 +25,16 @@ export function VendorsContainer() {
       const email = vendor.email.toLowerCase();
       const document = vendor.document.toLowerCase();
 
-      return (
-        fullName.includes(term) ||
-        email.includes(term) ||
-        document.includes(term)
-      );
+      return fullName.includes(term) || email.includes(term) || document.includes(term);
     });
   }, [vendors, searchTerm]);
 
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <PageHeader
-          title="Vendedores"
-          description="Gestiona los vendedores activos del sistema"
-        />
-        <div className="rounded-lg border bg-card shadow-sm p-8">
-          <p className="text-center text-muted-foreground">Cargando vendedores...</p>
+        <PageHeader title="Vendedores" description="Gestiona los vendedores activos del sistema" />
+        <div className="bg-card rounded-lg border p-8 shadow-sm">
+          <p className="text-muted-foreground text-center">Cargando vendedores...</p>
         </div>
       </div>
     );
@@ -50,14 +43,11 @@ export function VendorsContainer() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <PageHeader
-        title="Vendedores"
-        description="Gestiona los vendedores activos del sistema"
-      />
+      <PageHeader title="Vendedores" description="Gestiona los vendedores activos del sistema" />
 
       {/* Search Bar */}
-      <div className="rounded-lg border bg-card shadow-sm p-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-card rounded-lg border p-6 shadow-sm">
+        <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold">Buscar vendedor</h2>
             {vendors && (
@@ -70,7 +60,7 @@ export function VendorsContainer() {
         </div>
 
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
           <Input
             placeholder="Buscar por nombre, email o documento..."
             value={searchTerm}
@@ -80,7 +70,7 @@ export function VendorsContainer() {
         </div>
 
         {searchTerm && filteredVendors.length === 0 && (
-          <p className="text-sm text-muted-foreground mt-3">
+          <p className="text-muted-foreground mt-3 text-sm">
             No se encontraron vendedores que coincidan con la búsqueda
           </p>
         )}
@@ -94,10 +84,8 @@ export function VendorsContainer() {
           ))}
         </div>
       ) : !searchTerm && (!vendors || vendors.length === 0) ? (
-        <div className="rounded-lg border bg-card shadow-sm p-8">
-          <p className="text-center text-muted-foreground">
-            No hay vendedores activos disponibles
-          </p>
+        <div className="bg-card rounded-lg border p-8 shadow-sm">
+          <p className="text-muted-foreground text-center">No hay vendedores activos disponibles</p>
         </div>
       ) : null}
     </div>

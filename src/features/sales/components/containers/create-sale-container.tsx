@@ -36,9 +36,9 @@ export function CreateSaleContainer() {
   } = useCreateSaleForm();
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto space-y-6 py-6">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Crear Nueva Venta</h1>
+        <h1 className="text-foreground text-3xl font-bold">Crear Nueva Venta</h1>
         <p className="text-muted-foreground mt-1">
           Registra una nueva venta en el sistema siguiendo los pasos a continuación.
         </p>
@@ -57,16 +57,18 @@ export function CreateSaleContainer() {
           <div className="mt-8">
             {currentStep === 1 && (
               <SalesStep1
-                data={formData.step1 || {
-                  projectId: '',
-                  projectName: '',
-                  projectCurrency: '',
-                  stageId: '',
-                  stageName: '',
-                  blockId: '',
-                  blockName: '',
-                  selectedLot: null
-                }}
+                data={
+                  formData.step1 || {
+                    projectId: '',
+                    projectName: '',
+                    projectCurrency: '',
+                    stageId: '',
+                    stageName: '',
+                    blockId: '',
+                    blockName: '',
+                    selectedLot: null,
+                  }
+                }
                 onNext={handleStep1Next}
               />
             )}

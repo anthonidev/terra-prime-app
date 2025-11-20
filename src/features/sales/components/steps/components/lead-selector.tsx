@@ -4,7 +4,13 @@ import { motion } from 'framer-motion';
 import { User, Phone, FileText, Globe, CheckCircle2, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import type { VendorLead } from '@/features/leads/types';
@@ -40,8 +46,8 @@ export function LeadSelector({
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-              <User className="h-5 w-5 text-primary" />
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <User className="text-primary h-5 w-5" />
             </div>
             <div>
               <CardTitle>Información del Cliente</CardTitle>
@@ -82,7 +88,7 @@ export function LeadSelector({
               <motion.p
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-sm text-destructive"
+                className="text-destructive text-sm"
               >
                 {error}
               </motion.p>
@@ -98,22 +104,22 @@ export function LeadSelector({
               transition={{ duration: 0.3 }}
               className="overflow-hidden"
             >
-              <div className="p-4 rounded-lg bg-gradient-to-br from-primary/5 to-transparent border border-primary/20">
-                <div className="flex items-center gap-2 mb-3">
-                  <User className="h-4 w-4 text-primary" />
-                  <h4 className="font-semibold text-sm">Datos del Lead</h4>
+              <div className="from-primary/5 border-primary/20 rounded-lg border bg-gradient-to-br to-transparent p-4">
+                <div className="mb-3 flex items-center gap-2">
+                  <User className="text-primary h-4 w-4" />
+                  <h4 className="text-sm font-semibold">Datos del Lead</h4>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   <motion.div
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
                     className="flex items-start gap-2"
                   >
-                    <User className="h-4 w-4 text-muted-foreground mt-0.5" />
+                    <User className="text-muted-foreground mt-0.5 h-4 w-4" />
                     <div>
-                      <p className="text-xs text-muted-foreground">Nombre completo</p>
+                      <p className="text-muted-foreground text-xs">Nombre completo</p>
                       <p className="text-sm font-semibold">
                         {selectedLead.firstName} {selectedLead.lastName}
                       </p>
@@ -126,9 +132,9 @@ export function LeadSelector({
                     transition={{ delay: 0.15 }}
                     className="flex items-start gap-2"
                   >
-                    <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
+                    <FileText className="text-muted-foreground mt-0.5 h-4 w-4" />
                     <div>
-                      <p className="text-xs text-muted-foreground">Documento</p>
+                      <p className="text-muted-foreground text-xs">Documento</p>
                       <p className="text-sm font-semibold">{selectedLead.document}</p>
                     </div>
                   </motion.div>
@@ -139,9 +145,9 @@ export function LeadSelector({
                     transition={{ delay: 0.2 }}
                     className="flex items-start gap-2"
                   >
-                    <Phone className="h-4 w-4 text-muted-foreground mt-0.5" />
+                    <Phone className="text-muted-foreground mt-0.5 h-4 w-4" />
                     <div>
-                      <p className="text-xs text-muted-foreground">Teléfono</p>
+                      <p className="text-muted-foreground text-xs">Teléfono</p>
                       <p className="text-sm font-semibold">{selectedLead.phone}</p>
                     </div>
                   </motion.div>
@@ -152,9 +158,9 @@ export function LeadSelector({
                     transition={{ delay: 0.25 }}
                     className="flex items-start gap-2"
                   >
-                    <Globe className="h-4 w-4 text-muted-foreground mt-0.5" />
+                    <Globe className="text-muted-foreground mt-0.5 h-4 w-4" />
                     <div>
-                      <p className="text-xs text-muted-foreground">Fuente</p>
+                      <p className="text-muted-foreground text-xs">Fuente</p>
                       <Badge variant="secondary" className="text-xs">
                         {selectedLead.source?.name || 'N/A'}
                       </Badge>
@@ -167,10 +173,10 @@ export function LeadSelector({
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="mt-3 pt-3 border-t border-primary/20 flex items-center gap-2"
+                    className="border-primary/20 mt-3 flex items-center gap-2 border-t pt-3"
                   >
-                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                    <p className="text-sm text-muted-foreground">
+                    <Loader2 className="text-primary h-4 w-4 animate-spin" />
+                    <p className="text-muted-foreground text-sm">
                       Verificando si el cliente existe...
                     </p>
                   </motion.div>
@@ -182,22 +188,24 @@ export function LeadSelector({
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="mt-3 pt-3 border-t border-primary/20"
+                    className="border-primary/20 mt-3 border-t pt-3"
                   >
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="mb-2 flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-600" />
-                      <p className="text-sm text-green-600 font-semibold">
+                      <p className="text-sm font-semibold text-green-600">
                         Cliente existente encontrado
                       </p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                    <div className="grid grid-cols-1 gap-2 text-sm md:grid-cols-2">
                       <div className="flex items-center gap-2">
                         <span className="text-muted-foreground text-xs">Email:</span>
-                        <span className="font-medium text-xs">{clientData.email}</span>
+                        <span className="text-xs font-medium">{clientData.email}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-muted-foreground text-xs">Estado Civil:</span>
-                        <span className="font-medium text-xs">{clientData.civilStatus || 'N/A'}</span>
+                        <span className="text-xs font-medium">
+                          {clientData.civilStatus || 'N/A'}
+                        </span>
                       </div>
                     </div>
                   </motion.div>

@@ -41,10 +41,7 @@ export function LeadSourcesTable({
       accessorKey: 'isActive',
       header: 'Estado',
       cell: ({ row }) => (
-        <Badge
-          variant={row.original.isActive ? 'default' : 'secondary'}
-          className="text-xs"
-        >
+        <Badge variant={row.original.isActive ? 'default' : 'secondary'} className="text-xs">
           {row.original.isActive ? (
             <>
               <CheckCircle2 className="mr-1 h-3 w-3" />
@@ -63,7 +60,7 @@ export function LeadSourcesTable({
       accessorKey: 'createdAt',
       header: 'Creado',
       cell: ({ row }) => (
-        <span className="text-xs text-muted-foreground">
+        <span className="text-muted-foreground text-xs">
           {format(new Date(row.original.createdAt), 'dd/MM/yyyy', { locale: es })}
         </span>
       ),
@@ -72,7 +69,7 @@ export function LeadSourcesTable({
       accessorKey: 'updatedAt',
       header: 'Actualizado',
       cell: ({ row }) => (
-        <span className="text-xs text-muted-foreground">
+        <span className="text-muted-foreground text-xs">
           {format(new Date(row.original.updatedAt), 'dd/MM/yyyy', { locale: es })}
         </span>
       ),
@@ -98,12 +95,12 @@ export function LeadSourcesTable({
       <Card>
         <CardContent className="p-8">
           <div className="flex flex-col items-center justify-center gap-3 text-center">
-            <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
-              <Target className="h-6 w-6 text-muted-foreground" />
+            <div className="bg-muted/50 flex h-12 w-12 items-center justify-center rounded-full">
+              <Target className="text-muted-foreground h-6 w-6" />
             </div>
             <div className="space-y-1">
               <p className="text-sm font-medium">No se encontraron fuentes</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 No hay fuentes de leads que coincidan con los filtros aplicados
               </p>
             </div>
@@ -118,11 +115,7 @@ export function LeadSourcesTable({
       {isMobile ? (
         <div className="space-y-3">
           {leadSources.map((leadSource) => (
-            <LeadSourceCard
-              key={leadSource.id}
-              leadSource={leadSource}
-              onEdit={onEdit}
-            />
+            <LeadSourceCard key={leadSource.id} leadSource={leadSource} onEdit={onEdit} />
           ))}
         </div>
       ) : (

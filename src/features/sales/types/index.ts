@@ -249,7 +249,7 @@ export interface CreateSaleInput {
   firstPaymentDateHu?: string;
   initialAmountUrbanDevelopment?: number;
   quantityHuCuotes?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   notes?: string;
   initialAmount?: number;
   interestRate?: number;
@@ -413,14 +413,14 @@ export interface SaleDetail {
   vendor: VendorInfo;
   paymentsSummary: PaymentSummary[];
 
-  financing?:{
-    lot:{
+  financing?: {
+    lot: {
       id: string;
       initialAmount: number;
       interestRate: number;
       quantityCoutes: number;
     };
-     urbanDevelopment?: {
+    urbanDevelopment?: {
       id: number;
       amount: number;
       initialAmount: number;
@@ -432,7 +432,7 @@ export interface SaleDetail {
         quantityCoutes: number;
       };
     };
-  }
+  };
 }
 
 // Register Payment Types
@@ -501,7 +501,10 @@ export interface AssignParticipantsResponse {
 export interface GeneratePdfResponse {
   success: boolean;
   message: string;
-  data: any;
+  data: {
+    url?: string;
+    [key: string]: unknown;
+  };
 }
 
 // Admin Token Validation

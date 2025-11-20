@@ -36,19 +36,19 @@ export function LeadAssignmentCard({
               onCheckedChange={(checked) => onSelect(lead.id, checked === true)}
               className="mt-0.5"
             />
-            <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-bold truncate">
+            <div className="min-w-0 flex-1">
+              <h3 className="truncate text-sm font-bold">
                 {lead.firstName} {lead.lastName}
               </h3>
-              <div className="flex items-center gap-1.5 mt-1">
-                <Badge variant="outline" className="text-xs font-mono">
+              <div className="mt-1 flex items-center gap-1.5">
+                <Badge variant="outline" className="font-mono text-xs">
                   {lead.documentType}
                 </Badge>
-                <span className="text-xs text-muted-foreground">{lead.document}</span>
+                <span className="text-muted-foreground text-xs">{lead.document}</span>
               </div>
             </div>
             {lead.isInOffice && (
-              <Badge className="text-xs bg-success text-success-foreground shrink-0">
+              <Badge className="bg-success text-success-foreground shrink-0 text-xs">
                 <Building2 className="mr-1 h-3 w-3" />
                 En Oficina
               </Badge>
@@ -59,13 +59,13 @@ export function LeadAssignmentCard({
           {(lead.email || lead.phone) && (
             <div className="space-y-1 text-xs">
               {lead.email && (
-                <div className="flex items-center gap-1.5 text-muted-foreground">
+                <div className="text-muted-foreground flex items-center gap-1.5">
                   <Mail className="h-3 w-3" />
                   <span className="truncate">{lead.email}</span>
                 </div>
               )}
               {lead.phone && (
-                <div className="flex items-center gap-1.5 text-muted-foreground">
+                <div className="text-muted-foreground flex items-center gap-1.5">
                   <Phone className="h-3 w-3" />
                   <span>{lead.phone}</span>
                 </div>
@@ -90,19 +90,19 @@ export function LeadAssignmentCard({
           )}
 
           {/* Divider */}
-          <div className="h-px bg-border" />
+          <div className="bg-border h-px" />
 
           {/* Vendedor Asignado */}
           {hasVendor ? (
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Vendedor Asignado:</p>
+              <p className="text-muted-foreground mb-1 text-xs">Vendedor Asignado:</p>
               <div className="text-xs font-medium">
                 {lead.vendor!.firstName} {lead.vendor!.lastName}
               </div>
-              <div className="text-xs text-muted-foreground">{lead.vendor!.document}</div>
+              <div className="text-muted-foreground text-xs">{lead.vendor!.document}</div>
             </div>
           ) : (
-            <Badge variant="secondary" className="text-xs w-fit">
+            <Badge variant="secondary" className="w-fit text-xs">
               Sin vendedor asignado
             </Badge>
           )}
@@ -112,7 +112,7 @@ export function LeadAssignmentCard({
             <Button
               variant="outline"
               size="sm"
-              className="flex-1 h-8"
+              className="h-8 flex-1"
               onClick={() => onAssign(lead)}
             >
               <UserPlus className="mr-2 h-3.5 w-3.5" />

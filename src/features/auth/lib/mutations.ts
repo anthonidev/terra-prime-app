@@ -1,4 +1,4 @@
-import { apiClient } from "@/shared/lib/api-client";
+import { apiClient } from '@/shared/lib/api-client';
 import type {
   AuthResponse,
   LoginInput,
@@ -7,29 +7,24 @@ import type {
   RequestPasswordResetResponse,
   VerifyResetTokenResponse,
   ResetPasswordResponse,
-} from "../types";
+} from '../types';
 
 export async function login(data: LoginInput): Promise<AuthResponse> {
-  const response = await apiClient.post<AuthResponse>("/api/auth/login", data);
+  const response = await apiClient.post<AuthResponse>('/api/auth/login', data);
   return response.data;
 }
 
-export async function refreshToken(
-  data: RefreshTokenInput
-): Promise<AuthResponse> {
-  const response = await apiClient.post<AuthResponse>(
-    "/api/auth/refresh",
-    data
-  );
+export async function refreshToken(data: RefreshTokenInput): Promise<AuthResponse> {
+  const response = await apiClient.post<AuthResponse>('/api/auth/refresh', data);
   return response.data;
 }
 
 export async function logout(): Promise<void> {
   // Clear local storage
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("user");
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
   }
 }
 
@@ -37,15 +32,13 @@ export async function requestPasswordReset(
   data: RequestPasswordResetInput
 ): Promise<RequestPasswordResetResponse> {
   const response = await apiClient.post<RequestPasswordResetResponse>(
-    "/api/auth/password-reset/request",
+    '/api/auth/password-reset/request',
     data
   );
   return response.data;
 }
 
-export async function verifyResetToken(
-  token: string
-): Promise<VerifyResetTokenResponse> {
+export async function verifyResetToken(token: string): Promise<VerifyResetTokenResponse> {
   const response = await apiClient.post<VerifyResetTokenResponse>(
     `/api/auth/password-reset/verify/${token}`
   );

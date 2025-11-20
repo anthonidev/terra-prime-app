@@ -49,15 +49,15 @@ export function LotSummaryCard({ selectedLot, currencyType }: LotSummaryCardProp
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-              <Building2 className="h-5 w-5 text-primary" />
+            <div className="bg-primary/10 flex h-9 w-9 items-center justify-center rounded-lg">
+              <Building2 className="text-primary h-5 w-5" />
             </div>
             Detalles del Proyecto y Lote
           </CardTitle>
         </CardHeader>
         <CardContent>
           {/* Lot Information */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             {lotInfo.map((info, index) => (
               <motion.div
                 key={info.label}
@@ -65,7 +65,7 @@ export function LotSummaryCard({ selectedLot, currencyType }: LotSummaryCardProp
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
               >
-                <p className="text-sm text-muted-foreground">{info.label}</p>
+                <p className="text-muted-foreground text-sm">{info.label}</p>
                 <p className="font-medium">{info.value}</p>
               </motion.div>
             ))}
@@ -74,7 +74,7 @@ export function LotSummaryCard({ selectedLot, currencyType }: LotSummaryCardProp
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.25 }}
             >
-              <p className="text-sm text-muted-foreground">Estado</p>
+              <p className="text-muted-foreground text-sm">Estado</p>
               <Badge variant="outline">{selectedLot.status}</Badge>
             </motion.div>
           </div>
@@ -82,7 +82,7 @@ export function LotSummaryCard({ selectedLot, currencyType }: LotSummaryCardProp
           <Separator className="my-4" />
 
           {/* Price Information */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             {priceInfo.map((info, index) => (
               <motion.div
                 key={info.label}
@@ -90,8 +90,12 @@ export function LotSummaryCard({ selectedLot, currencyType }: LotSummaryCardProp
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + index * 0.05 }}
               >
-                <p className="text-sm text-muted-foreground">{info.label}</p>
-                <p className={info.highlight ? 'font-semibold text-lg text-primary' : 'font-semibold'}>
+                <p className="text-muted-foreground text-sm">{info.label}</p>
+                <p
+                  className={
+                    info.highlight ? 'text-primary text-lg font-semibold' : 'font-semibold'
+                  }
+                >
                   {info.value}
                 </p>
               </motion.div>

@@ -20,9 +20,9 @@ export function SalesEmptyState() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
-              className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 mb-4"
+              className="bg-primary/10 mb-4 flex h-20 w-20 items-center justify-center rounded-full"
             >
-              <ShoppingCart className="h-10 w-10 text-primary" />
+              <ShoppingCart className="text-primary h-10 w-10" />
             </motion.div>
 
             <motion.div
@@ -32,7 +32,7 @@ export function SalesEmptyState() {
               className="space-y-2"
             >
               <h3 className="text-lg font-semibold">No tienes ventas registradas</h3>
-              <p className="text-sm text-muted-foreground max-w-sm">
+              <p className="text-muted-foreground max-w-sm text-sm">
                 Cuando realices tu primera venta, aparecerá aquí. ¡Comienza ahora!
               </p>
             </motion.div>
@@ -44,7 +44,7 @@ export function SalesEmptyState() {
             >
               <Button className="mt-6" asChild>
                 <Link href="/ventas/crear-venta">
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="mr-2 h-4 w-4" />
                   Crear Primera Venta
                 </Link>
               </Button>

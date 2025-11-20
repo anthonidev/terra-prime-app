@@ -30,7 +30,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 import { useCreateLot, useUpdateLot } from '../../hooks/use-mutations';
-import { lotSchema, updateLotSchema, type LotFormData, type UpdateLotFormData } from '../../lib/validation';
+import {
+  lotSchema,
+  updateLotSchema,
+  type LotFormData,
+  type UpdateLotFormData,
+} from '../../lib/validation';
 import type { Lot } from '../../types';
 
 interface LotFormDialogProps {
@@ -56,20 +61,21 @@ export function LotFormDialog({
 
   const form = useForm<LotFormData | UpdateLotFormData>({
     resolver: zodResolver(isEditing ? updateLotSchema : lotSchema),
-    defaultValues: isEditing && lot
-      ? {
-          name: lot.name,
-          area: parseFloat(lot.area),
-          lotPrice: parseFloat(lot.lotPrice),
-          urbanizationPrice: parseFloat(lot.urbanizationPrice),
-          status: lot.status,
-        }
-      : {
-          name: '',
-          area: 0,
-          lotPrice: 0,
-          urbanizationPrice: 0,
-        },
+    defaultValues:
+      isEditing && lot
+        ? {
+            name: lot.name,
+            area: parseFloat(lot.area),
+            lotPrice: parseFloat(lot.lotPrice),
+            urbanizationPrice: parseFloat(lot.urbanizationPrice),
+            status: lot.status,
+          }
+        : {
+            name: '',
+            area: 0,
+            lotPrice: 0,
+            urbanizationPrice: 0,
+          },
   });
 
   useEffect(() => {
@@ -100,10 +106,7 @@ export function LotFormDialog({
         { onSuccess: () => onOpenChange(false) }
       );
     } else {
-      createLot(
-        { ...(data as LotFormData), blockId },
-        { onSuccess: () => onOpenChange(false) }
-      );
+      createLot({ ...(data as LotFormData), blockId }, { onSuccess: () => onOpenChange(false) });
     }
   };
 

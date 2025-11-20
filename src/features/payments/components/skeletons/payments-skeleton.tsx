@@ -38,7 +38,7 @@ export function PaymentsSkeleton() {
           <CardContent className="pt-6">
             <div className="space-y-3">
               {/* Table Header */}
-              <div className="flex gap-4 pb-2 border-b">
+              <div className="flex gap-4 border-b pb-2">
                 <Skeleton className="h-4 w-24" />
                 <Skeleton className="h-4 w-32" />
                 <Skeleton className="h-4 w-32" />
@@ -50,7 +50,7 @@ export function PaymentsSkeleton() {
 
               {/* Table Rows */}
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="flex gap-4 py-3 border-b">
+                <div key={i} className="flex gap-4 border-b py-3">
                   <Skeleton className="h-4 w-24" />
                   <Skeleton className="h-4 w-32" />
                   <Skeleton className="h-4 w-32" />
@@ -66,7 +66,7 @@ export function PaymentsSkeleton() {
       </div>
 
       {/* Cards Skeleton - Mobile */}
-      <div className="md:hidden space-y-4">
+      <div className="space-y-4 md:hidden">
         {Array.from({ length: 3 }).map((_, i) => (
           <Card key={i}>
             <CardHeader>

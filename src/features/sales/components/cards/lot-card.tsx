@@ -1,6 +1,6 @@
 'use client';
 
-import { Grid3x3, Layers, MapPin, Ruler } from 'lucide-react';
+import { Grid3x3, Layers, Ruler } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -26,7 +26,7 @@ export function LotCard({ lot }: LotCardProps) {
           {/* Header with name */}
           <div>
             <h3 className="text-sm font-bold">{lot.name}</h3>
-            <div className="flex items-center gap-2 mt-1.5">
+            <div className="mt-1.5 flex items-center gap-2">
               <Badge variant="outline" className="text-xs">
                 <Layers className="mr-1 h-3 w-3" />
                 {lot.stageName}
@@ -40,31 +40,31 @@ export function LotCard({ lot }: LotCardProps) {
 
           {/* Area */}
           <div className="flex items-center gap-1.5 text-xs">
-            <Ruler className="h-3.5 w-3.5 text-muted-foreground" />
+            <Ruler className="text-muted-foreground h-3.5 w-3.5" />
             <span className="text-muted-foreground">Área:</span>
             <span className="font-medium">{lot.area} m²</span>
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-border" />
+          <div className="bg-border h-px" />
 
           {/* Prices */}
           <div className="space-y-1.5">
-            <div className="flex justify-between items-center text-xs">
+            <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">Precio Lote:</span>
               <span className="font-medium">
                 {lot.projectCurrency} {formatPrice(lot.lotPrice)}
               </span>
             </div>
-            <div className="flex justify-between items-center text-xs">
+            <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">Urbanización:</span>
               <span className="font-medium">
                 {lot.projectCurrency} {formatPrice(lot.urbanizationPrice)}
               </span>
             </div>
-            <div className="flex justify-between items-center pt-1 border-t">
+            <div className="flex items-center justify-between border-t pt-1">
               <span className="text-xs font-semibold">Precio Total:</span>
-              <span className="text-sm font-bold text-primary">
+              <span className="text-primary text-sm font-bold">
                 {lot.projectCurrency} {formatPrice(lot.totalPrice)}
               </span>
             </div>

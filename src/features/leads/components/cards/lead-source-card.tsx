@@ -22,12 +22,12 @@ export function LeadSourceCard({ leadSource, onEdit }: LeadSourceCardProps) {
         <div className="space-y-3">
           {/* Header with name and status */}
           <div className="flex items-start justify-between gap-2">
-            <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-medium truncate">{leadSource.name}</h3>
+            <div className="min-w-0 flex-1">
+              <h3 className="truncate text-sm font-medium">{leadSource.name}</h3>
             </div>
             <Badge
               variant={leadSource.isActive ? 'default' : 'secondary'}
-              className="text-xs shrink-0"
+              className="shrink-0 text-xs"
             >
               {leadSource.isActive ? (
                 <>
@@ -44,7 +44,7 @@ export function LeadSourceCard({ leadSource, onEdit }: LeadSourceCardProps) {
           </div>
 
           {/* Dates */}
-          <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+          <div className="text-muted-foreground grid grid-cols-2 gap-2 text-xs">
             <div>
               <span className="font-medium">Creado:</span>
               <br />
@@ -58,13 +58,13 @@ export function LeadSourceCard({ leadSource, onEdit }: LeadSourceCardProps) {
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-border" />
+          <div className="bg-border h-px" />
 
           {/* Actions */}
           <Button
             size="sm"
             variant="outline"
-            className="w-full h-8"
+            className="h-8 w-full"
             onClick={() => onEdit(leadSource)}
           >
             <Edit className="mr-2 h-3.5 w-3.5" />

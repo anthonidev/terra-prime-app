@@ -18,17 +18,12 @@ interface TokenVerificationProps {
   isError: boolean;
 }
 
-export function TokenVerification({
-  isVerifying,
-  isError,
-}: TokenVerificationProps) {
+export function TokenVerification({ isVerifying, isError }: TokenVerificationProps) {
   if (isVerifying) {
     return (
       <Card className="border-border shadow-lg">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-center text-2xl font-bold">
-            Verificando...
-          </CardTitle>
+          <CardTitle className="text-center text-2xl font-bold">Verificando...</CardTitle>
           <CardDescription className="text-center">
             Estamos verificando la validez de tu enlace
           </CardDescription>

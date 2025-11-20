@@ -8,7 +8,7 @@ import type { RequestPasswordResetInput } from '../types';
 export function useRequestPasswordReset() {
   return useMutation({
     mutationFn: (data: RequestPasswordResetInput) => requestPasswordReset(data),
-    onSuccess: (data) => {
+    onSuccess: () => {
       // Don't show success toast here - let the component handle the UI
       // This prevents showing both a toast and the success card
     },

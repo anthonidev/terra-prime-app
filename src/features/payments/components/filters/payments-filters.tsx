@@ -68,7 +68,7 @@ export function PaymentsFilters({
         <div className="space-y-4">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
             <Input
               placeholder="Buscar por cliente, documento, lote o código de operación..."
               value={search}
@@ -81,11 +81,8 @@ export function PaymentsFilters({
           <div className="grid gap-4 md:grid-cols-3">
             {/* Status Filter */}
             <div>
-              <label className="text-sm font-medium mb-2 block">Estado</label>
-              <Select
-                value={status || 'all'}
-                onValueChange={handleStatusChange}
-              >
+              <label className="mb-2 block text-sm font-medium">Estado</label>
+              <Select value={status || 'all'} onValueChange={handleStatusChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccionar estado" />
                 </SelectTrigger>
@@ -101,7 +98,7 @@ export function PaymentsFilters({
 
             {/* Start Date Filter */}
             <div>
-              <label className="text-sm font-medium mb-2 block">Fecha desde</label>
+              <label className="mb-2 block text-sm font-medium">Fecha desde</label>
               <Input
                 type="date"
                 value={startDate || ''}
@@ -111,7 +108,7 @@ export function PaymentsFilters({
 
             {/* End Date Filter */}
             <div>
-              <label className="text-sm font-medium mb-2 block">Fecha hasta</label>
+              <label className="mb-2 block text-sm font-medium">Fecha hasta</label>
               <Input
                 type="date"
                 value={endDate || ''}
@@ -122,16 +119,12 @@ export function PaymentsFilters({
 
           {/* Filter Actions */}
           <div className="flex items-center justify-between pt-2">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               {totalItems} {totalItems === 1 ? 'pago encontrado' : 'pagos encontrados'}
             </p>
             {hasActiveFilters && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleClearFilters}
-              >
-                <Filter className="h-4 w-4 mr-2" />
+              <Button variant="ghost" size="sm" onClick={handleClearFilters}>
+                <Filter className="mr-2 h-4 w-4" />
                 Limpiar filtros
               </Button>
             )}

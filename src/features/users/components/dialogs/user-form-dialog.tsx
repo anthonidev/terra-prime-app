@@ -47,11 +47,7 @@ interface UserFormDialogProps {
   user?: User | null;
 }
 
-export function UserFormDialog({
-  open,
-  onOpenChange,
-  user,
-}: UserFormDialogProps) {
+export function UserFormDialog({ open, onOpenChange, user }: UserFormDialogProps) {
   const isEditing = !!user;
   const { data: rolesData, isLoading: rolesLoading } = useRoles();
   const { mutate: createUser, isPending: isCreating } = useCreateUser();
@@ -128,9 +124,7 @@ export function UserFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>
-            {isEditing ? 'Editar usuario' : 'Crear nuevo usuario'}
-          </DialogTitle>
+          <DialogTitle>{isEditing ? 'Editar usuario' : 'Crear nuevo usuario'}</DialogTitle>
           <DialogDescription>
             {isEditing
               ? 'Actualiza la información del usuario'
@@ -147,11 +141,7 @@ export function UserFormDialog({
                 <FormItem>
                   <FormLabel>Correo electrónico</FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="correo@ejemplo.com"
-                      {...field}
-                    />
+                    <Input type="email" placeholder="correo@ejemplo.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -167,11 +157,7 @@ export function UserFormDialog({
                     <FormItem>
                       <FormLabel>Contraseña</FormLabel>
                       <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="••••••••"
-                          {...field}
-                        />
+                        <Input type="password" placeholder="••••••••" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -261,15 +247,12 @@ export function UserFormDialog({
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
                       <FormLabel className="text-base">Estado</FormLabel>
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-muted-foreground text-sm">
                         {field.value ? 'Usuario activo' : 'Usuario inactivo'}
                       </div>
                     </div>
                     <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -286,11 +269,7 @@ export function UserFormDialog({
                 Cancelar
               </Button>
               <Button type="submit" disabled={isPending}>
-                {isPending
-                  ? 'Guardando...'
-                  : isEditing
-                    ? 'Actualizar'
-                    : 'Crear usuario'}
+                {isPending ? 'Guardando...' : isEditing ? 'Actualizar' : 'Crear usuario'}
               </Button>
             </div>
           </form>

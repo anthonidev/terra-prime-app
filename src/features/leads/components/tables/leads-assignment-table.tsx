@@ -24,9 +24,7 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
 
   const handleAssignMultiple = (selectedRows: Lead[]) => {
     const ids = selectedRows.map((lead) => lead.id);
-    const names = selectedRows.map(
-      (lead) => `${lead.firstName} ${lead.lastName}`
-    );
+    const names = selectedRows.map((lead) => `${lead.firstName} ${lead.lastName}`);
     setSelectedLeadIds(ids);
     setSelectedLeadNames(names);
     setIsModalOpen(true);
@@ -62,20 +60,16 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
             <div className="text-xs font-bold">
               {lead.firstName} {lead.lastName}
             </div>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <Badge variant="outline" className="text-xs font-mono">
+            <div className="mt-0.5 flex items-center gap-1.5">
+              <Badge variant="outline" className="font-mono text-xs">
                 {lead.documentType}
               </Badge>
-              <span className="text-xs text-muted-foreground">{lead.document}</span>
+              <span className="text-muted-foreground text-xs">{lead.document}</span>
             </div>
             {lead.email && (
-              <div className="text-xs text-muted-foreground mt-0.5 truncate">
-                {lead.email}
-              </div>
+              <div className="text-muted-foreground mt-0.5 truncate text-xs">{lead.email}</div>
             )}
-            {lead.phone && (
-              <div className="text-xs text-muted-foreground mt-0.5">{lead.phone}</div>
-            )}
+            {lead.phone && <div className="text-muted-foreground mt-0.5 text-xs">{lead.phone}</div>}
           </div>
         );
       },
@@ -88,7 +82,7 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
         return (
           <div className="space-y-1">
             {lead.isInOffice && (
-              <Badge className="text-xs bg-success text-success-foreground">
+              <Badge className="bg-success text-success-foreground text-xs">
                 <Building2 className="mr-1 h-3 w-3" />
                 En Oficina
               </Badge>
@@ -103,7 +97,7 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
       cell: ({ row }) => {
         const projects = row.original.interestProjects;
         if (!projects || projects.length === 0) {
-          return <span className="text-xs text-muted-foreground">-</span>;
+          return <span className="text-muted-foreground text-xs">-</span>;
         }
         return (
           <div className="flex flex-wrap gap-1">
@@ -138,7 +132,7 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
             <div className="text-xs font-medium">
               {vendor.firstName} {vendor.lastName}
             </div>
-            <div className="text-xs text-muted-foreground">{vendor.document}</div>
+            <div className="text-muted-foreground text-xs">{vendor.document}</div>
           </div>
         );
       },
@@ -157,7 +151,7 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
               onClick={() => handleAssignSingle(lead)}
               className="h-8"
             >
-              <UserPlus className="h-3.5 w-3.5 mr-1.5" />
+              <UserPlus className="mr-1.5 h-3.5 w-3.5" />
               {hasVendor ? 'Reasignar' : 'Asignar'}
             </Button>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0" asChild>
@@ -177,11 +171,7 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
         {/* Botón para asignar seleccionados en mobile */}
         {selectedLeadIds.length > 0 && (
           <div className="mb-4">
-            <Button
-              onClick={handleMobileAssignSelected}
-              className="w-full"
-              size="sm"
-            >
+            <Button onClick={handleMobileAssignSelected} className="w-full" size="sm">
               <UserPlus className="mr-2 h-3.5 w-3.5" />
               Asignar seleccionados ({selectedLeadIds.length})
             </Button>

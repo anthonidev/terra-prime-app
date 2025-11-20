@@ -5,7 +5,7 @@ export default function Loading() {
     <div className="space-y-6">
       <div>
         <Skeleton className="h-9 w-96" />
-        <Skeleton className="h-5 w-[600px] mt-2" />
+        <Skeleton className="mt-2 h-5 w-[600px]" />
       </div>
 
       <div className="space-y-4">

@@ -53,12 +53,9 @@ export function RequestResetForm({ onSuccess }: RequestResetFormProps) {
   return (
     <Card className="border-border">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-center text-2xl font-bold">
-          Recuperar contraseña
-        </CardTitle>
+        <CardTitle className="text-center text-2xl font-bold">Recuperar contraseña</CardTitle>
         <CardDescription className="text-center">
-          Ingresa tu correo electrónico para recibir las instrucciones de
-          recuperación
+          Ingresa tu correo electrónico para recibir las instrucciones de recuperación
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -73,11 +70,7 @@ export function RequestResetForm({ onSuccess }: RequestResetFormProps) {
                   <div className="relative">
                     <Mail className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                     <FormControl>
-                      <Input
-                        placeholder="correo@ejemplo.com"
-                        className="pl-10"
-                        {...field}
-                      />
+                      <Input placeholder="correo@ejemplo.com" className="pl-10" {...field} />
                     </FormControl>
                   </div>
                   <FormMessage />

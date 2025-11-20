@@ -26,10 +26,8 @@ export function VouchersSection({ payment }: VouchersSectionProps) {
       <CardContent>
         {vouchers.length === 0 ? (
           <div className="py-8 text-center">
-            <FileText className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
-            <p className="text-sm text-muted-foreground">
-              No hay comprobantes de pago registrados
-            </p>
+            <FileText className="text-muted-foreground/50 mx-auto mb-3 h-12 w-12" />
+            <p className="text-muted-foreground text-sm">No hay comprobantes de pago registrados</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -41,17 +39,13 @@ export function VouchersSection({ payment }: VouchersSectionProps) {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h4 className="font-semibold">Comprobante #{voucher.id}</h4>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-muted-foreground text-sm">
                         Ref: {voucher.transactionReference}
                       </p>
                     </div>
                     <Button variant="outline" size="sm" asChild>
-                      <a
-                        href={voucher.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <ExternalLink className="h-4 w-4 mr-2" />
+                      <a href={voucher.url} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="mr-2 h-4 w-4" />
                         Ver
                       </a>
                     </Button>
@@ -60,9 +54,9 @@ export function VouchersSection({ payment }: VouchersSectionProps) {
                   {/* Voucher Details Grid */}
                   <div className="grid gap-3 md:grid-cols-2">
                     <div className="flex items-start gap-2">
-                      <DollarSign className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <DollarSign className="text-muted-foreground mt-0.5 h-4 w-4" />
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Monto</p>
+                        <p className="text-muted-foreground text-sm font-medium">Monto</p>
                         <p className="text-base font-semibold">
                           {payment.currency === 'USD' ? '$' : 'S/'}{' '}
                           {voucher.amount.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
@@ -71,29 +65,29 @@ export function VouchersSection({ payment }: VouchersSectionProps) {
                     </div>
 
                     <div className="flex items-start gap-2">
-                      <Landmark className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <Landmark className="text-muted-foreground mt-0.5 h-4 w-4" />
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Banco</p>
+                        <p className="text-muted-foreground text-sm font-medium">Banco</p>
                         <p className="text-base">{voucher.bankName}</p>
                       </div>
                     </div>
 
                     <div className="flex items-start gap-2">
-                      <CreditCard className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <CreditCard className="text-muted-foreground mt-0.5 h-4 w-4" />
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">
+                        <p className="text-muted-foreground text-sm font-medium">
                           Referencia de Transacción
                         </p>
-                        <p className="text-base font-mono text-sm">
+                        <p className="font-mono text-base text-sm">
                           {voucher.transactionReference}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-start gap-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <Calendar className="text-muted-foreground mt-0.5 h-4 w-4" />
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">
+                        <p className="text-muted-foreground text-sm font-medium">
                           Fecha de Transacción
                         </p>
                         <p className="text-base">

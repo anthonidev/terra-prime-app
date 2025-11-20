@@ -37,9 +37,7 @@ export function SalesStep5({ formData, onSubmit, onBack, isSubmitting }: SalesSt
               </div>
               Resumen de la Venta
             </CardTitle>
-            <CardDescription>
-              Revise todos los detalles antes de confirmar la venta
-            </CardDescription>
+            <CardDescription>Revise todos los detalles antes de confirmar la venta</CardDescription>
           </CardHeader>
         </Card>
       </motion.div>
@@ -82,13 +80,13 @@ export function SalesStep5({ formData, onSubmit, onBack, isSubmitting }: SalesSt
       >
         <Card className="border-primary/50">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-3 p-4 bg-gradient-to-br from-primary/5 to-transparent rounded-lg border border-primary/20">
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Check className="h-5 w-5 text-primary" />
+            <div className="from-primary/5 border-primary/20 flex items-center gap-3 rounded-lg border bg-gradient-to-br to-transparent p-4">
+              <div className="bg-primary/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
+                <Check className="text-primary h-5 w-5" />
               </div>
               <div>
                 <p className="font-semibold">Confirme los datos antes de continuar</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Una vez confirmada, la venta será registrada en el sistema
                 </p>
               </div>
@@ -115,12 +113,7 @@ export function SalesStep5({ formData, onSubmit, onBack, isSubmitting }: SalesSt
           <ChevronLeft className="mr-2 h-4 w-4" />
           Anterior
         </Button>
-        <Button
-          onClick={onSubmit}
-          disabled={isSubmitting}
-          size="lg"
-          className="min-w-48"
-        >
+        <Button onClick={onSubmit} disabled={isSubmitting} size="lg" className="min-w-48">
           {isSubmitting ? 'Registrando Venta...' : 'Confirmar y Registrar Venta'}
         </Button>
       </motion.div>

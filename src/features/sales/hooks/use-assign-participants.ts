@@ -9,13 +9,8 @@ export function useAssignParticipants() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      saleId,
-      data,
-    }: {
-      saleId: string;
-      data: AssignSaleParticipantsInput;
-    }) => assignParticipantsToSale(saleId, data),
+    mutationFn: ({ saleId, data }: { saleId: string; data: AssignSaleParticipantsInput }) =>
+      assignParticipantsToSale(saleId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['all-sales'] });
       queryClient.invalidateQueries({ queryKey: ['sale-detail'] });

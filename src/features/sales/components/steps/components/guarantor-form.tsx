@@ -7,7 +7,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/shared/lib/utils';
 import { DOCUMENT_TYPE_OPTIONS } from '../../../constants';
 import type { DocumentType } from '../../../types';
@@ -83,14 +89,12 @@ export function GuarantorForm({ form, showGuarantor, onAdd, onRemove }: Guaranto
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                <UserPlus className="h-5 w-5 text-primary" />
+              <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                <UserPlus className="text-primary h-5 w-5" />
               </div>
               <div>
                 <CardTitle>Garante (Opcional)</CardTitle>
-                <CardDescription>
-                  Agregue un garante si el cliente lo requiere
-                </CardDescription>
+                <CardDescription>Agregue un garante si el cliente lo requiere</CardDescription>
               </div>
             </div>
             {!showGuarantor && (
@@ -124,12 +128,12 @@ export function GuarantorForm({ form, showGuarantor, onAdd, onRemove }: Guaranto
                     onClick={onRemove}
                     className="text-destructive hover:text-destructive hover:bg-destructive/10"
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
+                    <Trash2 className="mr-2 h-4 w-4" />
                     Remover Garante
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {/* Document Type Select */}
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -137,8 +141,11 @@ export function GuarantorForm({ form, showGuarantor, onAdd, onRemove }: Guaranto
                     transition={{ delay: 0.1 }}
                     className="space-y-2"
                   >
-                    <Label htmlFor="guarantor.documentType" className="flex items-center gap-2 text-sm font-medium">
-                      <IdCard className="h-4 w-4 text-primary" />
+                    <Label
+                      htmlFor="guarantor.documentType"
+                      className="flex items-center gap-2 text-sm font-medium"
+                    >
+                      <IdCard className="text-primary h-4 w-4" />
                       Tipo de Documento
                       <span className="text-destructive">*</span>
                     </Label>
@@ -164,7 +171,10 @@ export function GuarantorForm({ form, showGuarantor, onAdd, onRemove }: Guaranto
                   {/* Other Fields */}
                   {guarantorFields.map((field, index) => {
                     const Icon = field.icon;
-                    const error = form.formState.errors.guarantor?.[field.id.split('.')[1] as keyof typeof form.formState.errors.guarantor];
+                    const error =
+                      form.formState.errors.guarantor?.[
+                        field.id.split('.')[1] as keyof typeof form.formState.errors.guarantor
+                      ];
 
                     return (
                       <motion.div
@@ -174,8 +184,11 @@ export function GuarantorForm({ form, showGuarantor, onAdd, onRemove }: Guaranto
                         transition={{ delay: 0.1 + index * 0.05 }}
                         className={cn('space-y-2', field.fullWidth && 'md:col-span-2')}
                       >
-                        <Label htmlFor={field.id} className="flex items-center gap-2 text-sm font-medium">
-                          <Icon className="h-4 w-4 text-primary" />
+                        <Label
+                          htmlFor={field.id}
+                          className="flex items-center gap-2 text-sm font-medium"
+                        >
+                          <Icon className="text-primary h-4 w-4" />
                           {field.label}
                           {field.required && <span className="text-destructive">*</span>}
                         </Label>
@@ -184,19 +197,16 @@ export function GuarantorForm({ form, showGuarantor, onAdd, onRemove }: Guaranto
                             id={field.id}
                             type={field.type}
                             placeholder={field.placeholder}
-                            {...form.register(field.id as any)}
-                            className={cn(
-                              'pl-9 transition-all',
-                              error && 'border-destructive'
-                            )}
+                            {...form.register(field.id as keyof Step4FormData)}
+                            className={cn('pl-9 transition-all', error && 'border-destructive')}
                           />
-                          <Icon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Icon className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
                         </div>
                         {error && typeof error === 'object' && 'message' in error && (
                           <motion.p
                             initial={{ opacity: 0, y: -5 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="text-xs text-destructive"
+                            className="text-destructive text-xs"
                           >
                             {error.message}
                           </motion.p>

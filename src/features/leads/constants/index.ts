@@ -4,7 +4,7 @@ export enum EstadoCivil {
   Casado = 'Casado',
   Divorciado = 'Divorciado',
   Conviviente = 'Conviviente',
-  Viudo = 'Viudo'
+  Viudo = 'Viudo',
 }
 export const DOCUMENT_TYPES: Array<{ value: DocumentType; label: string }> = [
   { value: 'DNI', label: 'DNI' },
@@ -13,9 +13,9 @@ export const DOCUMENT_TYPES: Array<{ value: DocumentType; label: string }> = [
 ];
 
 export const MARITAL_STATUS_OPTIONS = [
-    { value: EstadoCivil.Soltero, label: 'Soltero' },
-    { value: EstadoCivil.Casado, label: 'Casado' },
-    { value: EstadoCivil.Divorciado, label: 'Divorciado' },
-    { value: EstadoCivil.Conviviente, label: 'Conviviente' },
-    { value: EstadoCivil.Viudo, label: 'Viudo' }
+  { value: EstadoCivil.Soltero, label: 'Soltero' },
+  { value: EstadoCivil.Casado, label: 'Casado' },
+  { value: EstadoCivil.Divorciado, label: 'Divorciado' },
+  { value: EstadoCivil.Conviviente, label: 'Conviviente' },
+  { value: EstadoCivil.Viudo, label: 'Viudo' },
 ];

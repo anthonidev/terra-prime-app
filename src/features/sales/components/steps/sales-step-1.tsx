@@ -101,12 +101,7 @@ export function SalesStep1({ data, onNext }: SalesStep1Props) {
         transition={{ delay: 0.3 }}
         className="flex justify-end pt-2"
       >
-        <Button
-          onClick={handleNext}
-          disabled={!canProceed}
-          size="lg"
-          className="min-w-32"
-        >
+        <Button onClick={handleNext} disabled={!canProceed} size="lg" className="min-w-32">
           Siguiente
           <ChevronRight className="ml-2 h-4 w-4" />
         </Button>

@@ -6,13 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Loader2, LockKeyhole } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -26,7 +20,6 @@ import { Input } from '@/components/ui/input';
 
 import { resetPasswordSchema } from '../../lib/validation';
 import { useResetPassword } from '../../hooks/use-reset-password';
-import type { ResetPasswordInput } from '../../types';
 
 interface ResetPasswordFormProps {
   token: string;
@@ -34,11 +27,7 @@ interface ResetPasswordFormProps {
   onSuccess: () => void;
 }
 
-export function ResetPasswordForm({
-  token,
-  email,
-  onSuccess,
-}: ResetPasswordFormProps) {
+export function ResetPasswordForm({ token, email, onSuccess }: ResetPasswordFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
@@ -66,9 +55,7 @@ export function ResetPasswordForm({
   return (
     <Card className="border-border shadow-lg">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-center text-2xl font-bold">
-          Crear nueva contraseña
-        </CardTitle>
+        <CardTitle className="text-center text-2xl font-bold">Crear nueva contraseña</CardTitle>
         <CardDescription className="text-center">
           {email ? `Para la cuenta: ${email}` : ''}
         </CardDescription>
@@ -108,8 +95,7 @@ export function ResetPasswordForm({
                     </FormControl>
                   </div>
                   <FormDescription className="text-xs">
-                    Debe contener al menos 6 caracteres, una mayúscula, una
-                    minúscula y un número
+                    Debe contener al menos 6 caracteres, una mayúscula, una minúscula y un número
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -136,9 +122,7 @@ export function ResetPasswordForm({
                           variant="ghost"
                           size="icon"
                           className="absolute top-0 right-0 h-full px-3"
-                          onClick={() =>
-                            setShowPasswordConfirm(!showPasswordConfirm)
-                          }
+                          onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
                         >
                           {showPasswordConfirm ? (
                             <EyeOff className="text-muted-foreground h-4 w-4" />

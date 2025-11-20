@@ -1,19 +1,12 @@
 import { apiClient } from '@/shared/lib/api-client';
-import type {
-  Role,
-  User,
-  PaginatedResponse,
-  UsersQueryParams,
-} from '../types';
+import type { Role, User, PaginatedResponse, UsersQueryParams } from '../types';
 
 export async function getRoles(): Promise<Role[]> {
   const response = await apiClient.get<Role[]>('/api/users/roles');
   return response.data;
 }
 
-export async function getUsers(
-  params: UsersQueryParams = {}
-): Promise<PaginatedResponse<User>> {
+export async function getUsers(params: UsersQueryParams = {}): Promise<PaginatedResponse<User>> {
   const response = await apiClient.get<PaginatedResponse<User>>('/api/users', {
     params: {
       page: params.page ?? 1,

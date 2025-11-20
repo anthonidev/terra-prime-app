@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { approvePayment } from '../lib/mutations';
 import { toast } from 'sonner';
 import type { ApprovePaymentInput } from '../types';
@@ -20,8 +21,14 @@ export function useApprovePayment() {
       queryClient.invalidateQueries({ queryKey: ['payments'] });
       toast.success(data.message || 'Pago aprobado exitosamente');
     },
-    onError: (error: any) => {
-      const message = error?.response?.data?.message || 'Error al aprobar el pago';
+    onError: (error: Error) => {
+      let message = 'Error al aprobar el pago';
+
+      if (error instanceof AxiosError && error.response?.data) {
+        const data = error.response.data as { message?: string };
+        message = data.message || message;
+      }
+
       toast.error(message);
       console.error('Error approving payment:', error);
     },

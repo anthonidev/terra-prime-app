@@ -30,9 +30,7 @@ export async function getLeadSources(
   };
 }
 
-export async function getLeads(
-  params: LeadsQueryParams = {}
-): Promise<PaginatedResponse<Lead>> {
+export async function getLeads(params: LeadsQueryParams = {}): Promise<PaginatedResponse<Lead>> {
   const response = await apiClient.get<{
     data: Lead[];
     meta: {
@@ -71,7 +69,9 @@ export async function getLeadDetail(id: string): Promise<Lead> {
 }
 
 export async function getParticipants(): Promise<ParticipantResponseActive[]> {
-  const response = await apiClient.get<ParticipantResponseActive[]>('/api/participants/all/actives');
+  const response = await apiClient.get<ParticipantResponseActive[]>(
+    '/api/participants/all/actives'
+  );
   return response.data;
 }
 

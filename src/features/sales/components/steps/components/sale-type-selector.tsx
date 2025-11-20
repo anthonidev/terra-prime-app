@@ -1,10 +1,10 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { DollarSign, TrendingUp, Banknote, CalendarClock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/shared/lib/utils';
+import { motion } from 'framer-motion';
+import { Banknote, DollarSign, TrendingUp } from 'lucide-react';
 import { SaleType } from '../../../types';
 
 interface SaleTypeSelectorProps {
@@ -19,22 +19,14 @@ const saleTypeOptions = [
     title: 'Pago Directo',
     description: 'El cliente pagará el monto total del lote en un solo pago o en pocas cuotas',
     icon: Banknote,
-    features: [
-      'Pago único o pocas cuotas',
-      'Sin intereses',
-      'Proceso rápido',
-    ],
+    features: ['Pago único o pocas cuotas', 'Sin intereses', 'Proceso rápido'],
   },
   {
     type: SaleType.FINANCED,
     title: 'Financiado',
     description: 'El cliente pagará una cuota inicial y el resto en cuotas mensuales con interés',
     icon: TrendingUp,
-    features: [
-      'Cuota inicial configurable',
-      'Cuotas mensuales',
-      'Con tasa de interés',
-    ],
+    features: ['Cuota inicial configurable', 'Cuotas mensuales', 'Con tasa de interés'],
   },
 ];
 
@@ -48,8 +40,8 @@ export function SaleTypeSelector({ saleType, onSaleTypeChange, error }: SaleType
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-              <DollarSign className="h-5 w-5 text-primary" />
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <DollarSign className="text-primary h-5 w-5" />
             </div>
             <div>
               <CardTitle>Tipo de Venta</CardTitle>
@@ -62,7 +54,7 @@ export function SaleTypeSelector({ saleType, onSaleTypeChange, error }: SaleType
         <CardContent className="space-y-4">
           <Label className="text-base font-medium">Método de Pago</Label>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {saleTypeOptions.map((option, index) => {
               const isSelected = saleType === option.type;
               const Icon = option.icon;
@@ -76,7 +68,7 @@ export function SaleTypeSelector({ saleType, onSaleTypeChange, error }: SaleType
                   onClick={() => onSaleTypeChange(option.type)}
                   className={cn(
                     'relative flex cursor-pointer rounded-lg border-2 p-5 transition-all',
-                    'hover:shadow-md hover:scale-[1.02]',
+                    'hover:scale-[1.02] hover:shadow-md',
                     isSelected
                       ? 'border-primary bg-primary/5 shadow-md'
                       : 'border-border hover:border-primary/50'
@@ -86,7 +78,7 @@ export function SaleTypeSelector({ saleType, onSaleTypeChange, error }: SaleType
                   {isSelected && (
                     <motion.div
                       layoutId="selected-sale-type"
-                      className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-primary flex items-center justify-center shadow-lg"
+                      className="bg-primary absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full shadow-lg"
                       initial={{ scale: 0, rotate: -180 }}
                       animate={{ scale: 1, rotate: 0 }}
                       transition={{ type: 'spring', stiffness: 200 }}
@@ -100,7 +92,7 @@ export function SaleTypeSelector({ saleType, onSaleTypeChange, error }: SaleType
                     </motion.div>
                   )}
 
-                  <div className="flex flex-col gap-3 w-full">
+                  <div className="flex w-full flex-col gap-3">
                     {/* Header */}
                     <div className="flex items-start gap-3">
                       <div
@@ -118,15 +110,15 @@ export function SaleTypeSelector({ saleType, onSaleTypeChange, error }: SaleType
                       </div>
 
                       <div className="flex-1">
-                        <h3 className="font-semibold text-base mb-1">{option.title}</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
+                        <h3 className="mb-1 text-base font-semibold">{option.title}</h3>
+                        <p className="text-muted-foreground text-sm leading-relaxed">
                           {option.description}
                         </p>
                       </div>
                     </div>
 
                     {/* Features */}
-                    <div className="space-y-1.5 pl-15 mt-2">
+                    <div className="mt-2 space-y-1.5 pl-15">
                       {option.features.map((feature, idx) => (
                         <div key={idx} className="flex items-center gap-2 text-xs">
                           <div
@@ -156,7 +148,7 @@ export function SaleTypeSelector({ saleType, onSaleTypeChange, error }: SaleType
             <motion.p
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-sm text-destructive mt-2"
+              className="text-destructive mt-2 text-sm"
             >
               {error}
             </motion.p>

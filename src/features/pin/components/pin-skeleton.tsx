@@ -7,7 +7,7 @@ export function PinSkeleton() {
       {/* Header Skeleton */}
       <div>
         <Skeleton className="h-9 w-80" />
-        <Skeleton className="h-5 w-96 mt-2" />
+        <Skeleton className="mt-2 h-5 w-96" />
       </div>
 
       {/* Card Skeleton */}

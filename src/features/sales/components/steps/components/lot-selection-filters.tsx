@@ -4,7 +4,13 @@ import { motion } from 'framer-motion';
 import { Building2, Layers, Grid3x3, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/shared/lib/utils';
 
@@ -80,8 +86,8 @@ export function LotSelectionFilters({
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-              <Building2 className="h-5 w-5 text-primary" />
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <Building2 className="text-primary h-5 w-5" />
             </div>
             <div>
               <CardTitle>Selección de Proyecto y Lote</CardTitle>
@@ -96,7 +102,7 @@ export function LotSelectionFilters({
             {/* Project Selection */}
             <motion.div variants={itemVariants} className="space-y-2">
               <Label htmlFor="project" className="flex items-center gap-2 text-sm font-medium">
-                <Building2 className="h-4 w-4 text-primary" />
+                <Building2 className="text-primary h-4 w-4" />
                 Proyecto
               </Label>
               {isLoadingProjects ? (
@@ -105,10 +111,7 @@ export function LotSelectionFilters({
                 <Select value={projectId} onValueChange={onProjectChange}>
                   <SelectTrigger
                     id="project"
-                    className={cn(
-                      'transition-all',
-                      projectId && 'border-primary/50 bg-primary/5'
-                    )}
+                    className={cn('transition-all', projectId && 'border-primary/50 bg-primary/5')}
                   >
                     <SelectValue placeholder="Seleccione un proyecto" />
                   </SelectTrigger>
@@ -116,7 +119,7 @@ export function LotSelectionFilters({
                     {projects?.map((project) => (
                       <SelectItem key={project.id} value={project.id}>
                         <div className="flex items-center gap-2">
-                          <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
+                          <Building2 className="text-muted-foreground h-3.5 w-3.5" />
                           {project.name}
                         </div>
                       </SelectItem>
@@ -129,12 +132,12 @@ export function LotSelectionFilters({
             {/* Stage Selection */}
             <motion.div
               variants={itemVariants}
-              className={cn('space-y-2', !projectId && 'opacity-50 pointer-events-none')}
+              className={cn('space-y-2', !projectId && 'pointer-events-none opacity-50')}
             >
               <Label htmlFor="stage" className="flex items-center gap-2 text-sm font-medium">
-                <Layers className="h-4 w-4 text-primary" />
+                <Layers className="text-primary h-4 w-4" />
                 Etapa
-                {projectId && <ChevronRight className="h-3 w-3 text-muted-foreground" />}
+                {projectId && <ChevronRight className="text-muted-foreground h-3 w-3" />}
               </Label>
               {isLoadingStages ? (
                 <Skeleton className="h-10 w-full" />
@@ -142,10 +145,7 @@ export function LotSelectionFilters({
                 <Select value={stageId} onValueChange={onStageChange} disabled={!projectId}>
                   <SelectTrigger
                     id="stage"
-                    className={cn(
-                      'transition-all',
-                      stageId && 'border-primary/50 bg-primary/5'
-                    )}
+                    className={cn('transition-all', stageId && 'border-primary/50 bg-primary/5')}
                   >
                     <SelectValue placeholder="Seleccione una etapa" />
                   </SelectTrigger>
@@ -153,7 +153,7 @@ export function LotSelectionFilters({
                     {stages?.map((stage) => (
                       <SelectItem key={stage.id} value={stage.id}>
                         <div className="flex items-center gap-2">
-                          <Layers className="h-3.5 w-3.5 text-muted-foreground" />
+                          <Layers className="text-muted-foreground h-3.5 w-3.5" />
                           {stage.name}
                         </div>
                       </SelectItem>
@@ -166,12 +166,12 @@ export function LotSelectionFilters({
             {/* Block Selection */}
             <motion.div
               variants={itemVariants}
-              className={cn('space-y-2', !stageId && 'opacity-50 pointer-events-none')}
+              className={cn('space-y-2', !stageId && 'pointer-events-none opacity-50')}
             >
               <Label htmlFor="block" className="flex items-center gap-2 text-sm font-medium">
-                <Grid3x3 className="h-4 w-4 text-primary" />
+                <Grid3x3 className="text-primary h-4 w-4" />
                 Manzana
-                {stageId && <ChevronRight className="h-3 w-3 text-muted-foreground" />}
+                {stageId && <ChevronRight className="text-muted-foreground h-3 w-3" />}
               </Label>
               {isLoadingBlocks ? (
                 <Skeleton className="h-10 w-full" />
@@ -179,10 +179,7 @@ export function LotSelectionFilters({
                 <Select value={blockId} onValueChange={onBlockChange} disabled={!stageId}>
                   <SelectTrigger
                     id="block"
-                    className={cn(
-                      'transition-all',
-                      blockId && 'border-primary/50 bg-primary/5'
-                    )}
+                    className={cn('transition-all', blockId && 'border-primary/50 bg-primary/5')}
                   >
                     <SelectValue placeholder="Seleccione una manzana" />
                   </SelectTrigger>
@@ -190,7 +187,7 @@ export function LotSelectionFilters({
                     {blocks?.map((block) => (
                       <SelectItem key={block.id} value={block.id}>
                         <div className="flex items-center gap-2">
-                          <Grid3x3 className="h-3.5 w-3.5 text-muted-foreground" />
+                          <Grid3x3 className="text-muted-foreground h-3.5 w-3.5" />
                           {block.name}
                         </div>
                       </SelectItem>

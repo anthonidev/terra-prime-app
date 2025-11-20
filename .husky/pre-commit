@@ -1,0 +1,76 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Colores para mensajes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+echo "${BLUE}╔════════════════════════════════════════════════╗${NC}"
+echo "${BLUE}║  🚀 Ejecutando verificaciones pre-commit...   ║${NC}"
+echo "${BLUE}╔════════════════════════════════════════════════╗${NC}"
+echo ""
+
+# 1. Formateo de código con Prettier
+echo "${YELLOW}💅 Formateando código con Prettier...${NC}"
+if ! bun run format:check; then
+  echo ""
+  echo "${YELLOW}⚠️  Código no está formateado correctamente${NC}"
+  echo "${YELLOW}   Aplicando formato automáticamente...${NC}"
+  bun run format
+
+  # Agregar archivos formateados al staging area
+  git add -u
+
+  echo "${GREEN}✅ Código formateado y agregado al commit${NC}"
+else
+  echo "${GREEN}✅ Código ya está correctamente formateado${NC}"
+fi
+echo ""
+
+# 2. Verificación de tipos con TypeScript
+echo "${YELLOW}📝 Verificando tipos con TypeScript...${NC}"
+if ! bun run tsc --noEmit; then
+  echo ""
+  echo "${RED}❌ Error: Falló la verificación de tipos TypeScript${NC}"
+  echo "${RED}   Por favor, corrige los errores de tipos antes de hacer commit.${NC}"
+  echo ""
+  exit 1
+fi
+echo "${GREEN}✅ Verificación de tipos completada exitosamente${NC}"
+echo ""
+
+# 3. Linting con ESLint
+echo "${YELLOW}🔍 Ejecutando linter (ESLint)...${NC}"
+if ! bun run lint; then
+  echo ""
+  echo "${RED}❌ Error: Falló el linting${NC}"
+  echo "${RED}   Por favor, corrige los errores de ESLint antes de hacer commit.${NC}"
+  echo ""
+  exit 1
+fi
+echo "${GREEN}✅ Linting completado exitosamente${NC}"
+echo ""
+
+# 4. Verificar que no se estén agregando archivos sensibles
+echo "${YELLOW}🔒 Verificando archivos sensibles...${NC}"
+SENSITIVE_FILES=".env.local .env.production.local credentials.json"
+for file in $SENSITIVE_FILES; do
+  if git diff --cached --name-only | grep -q "^$file$"; then
+    echo ""
+    echo "${RED}❌ Error: Intentando hacer commit de archivo sensible: $file${NC}"
+    echo "${RED}   Este archivo contiene información confidencial y no debe ser commiteado.${NC}"
+    echo ""
+    exit 1
+  fi
+done
+echo "${GREEN}✅ No se detectaron archivos sensibles${NC}"
+echo ""
+
+echo "${GREEN}╔════════════════════════════════════════════════╗${NC}"
+echo "${GREEN}║  ✨ Todas las verificaciones pasaron!         ║${NC}"
+echo "${GREEN}║  Procediendo con el commit...                  ║${NC}"
+echo "${GREEN}╔════════════════════════════════════════════════╗${NC}"
+echo ""

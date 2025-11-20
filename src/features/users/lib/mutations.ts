@@ -6,10 +6,7 @@ export async function createUser(data: CreateUserInput): Promise<User> {
   return response.data;
 }
 
-export async function updateUser(
-  id: string,
-  data: UpdateUserInput
-): Promise<User> {
+export async function updateUser(id: string, data: UpdateUserInput): Promise<User> {
   const response = await apiClient.patch<User>(`/api/users/${id}`, data);
   return response.data;
 }

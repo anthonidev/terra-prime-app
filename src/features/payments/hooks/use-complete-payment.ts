@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { completePayment } from '../lib/mutations';
 import { toast } from 'sonner';
 import type { CompletePaymentInput } from '../types';
@@ -20,8 +21,14 @@ export function useCompletePayment() {
       queryClient.invalidateQueries({ queryKey: ['payments'] });
       toast.success(data.message || 'Pago actualizado exitosamente');
     },
-    onError: (error: any) => {
-      const message = error?.response?.data?.message || 'Error al actualizar el pago';
+    onError: (error: Error) => {
+      let message = 'Error al actualizar el pago';
+
+      if (error instanceof AxiosError && error.response?.data) {
+        const data = error.response.data as { message?: string };
+        message = data.message || message;
+      }
+
       toast.error(message);
       console.error('Error completing payment:', error);
     },

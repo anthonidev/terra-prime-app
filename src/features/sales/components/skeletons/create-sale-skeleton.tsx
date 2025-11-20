@@ -3,10 +3,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export function CreateSaleSkeleton() {
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto space-y-6 py-6">
       <div>
         <Skeleton className="h-9 w-64" />
-        <Skeleton className="h-5 w-96 mt-2" />
+        <Skeleton className="mt-2 h-5 w-96" />
       </div>
 
       <Card>
@@ -15,7 +15,7 @@ export function CreateSaleSkeleton() {
             <Skeleton className="h-6 w-48" />
           </CardTitle>
           <CardDescription>
-            <Skeleton className="h-4 w-72 mt-1" />
+            <Skeleton className="mt-1 h-4 w-72" />
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -23,12 +23,12 @@ export function CreateSaleSkeleton() {
           <div className="mb-8">
             <div className="flex items-center justify-between gap-8">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="flex flex-col items-center flex-1">
-                  <div className="flex items-center gap-4 w-full">
+                <div key={i} className="flex flex-1 flex-col items-center">
+                  <div className="flex w-full items-center gap-4">
                     <Skeleton className="h-10 w-10 rounded-full" />
                     {i !== 5 && <Skeleton className="h-0.5 flex-1" />}
                   </div>
-                  <Skeleton className="h-4 w-20 mt-2" />
+                  <Skeleton className="mt-2 h-4 w-20" />
                 </div>
               ))}
             </div>

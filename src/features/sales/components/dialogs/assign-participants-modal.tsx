@@ -66,7 +66,7 @@ export function AssignParticipantsModal({
   const onSubmit = (data: AssignParticipantsFormData) => {
     // Filter out undefined values
     const cleanedData = Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => value !== undefined && value !== '')
+      Object.entries(data).filter(([, value]) => value !== undefined && value !== '')
     );
 
     mutate(
@@ -94,20 +94,21 @@ export function AssignParticipantsModal({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
             Asignar Participantes
           </DialogTitle>
           <DialogDescription>
-            Selecciona los participantes que deseas asignar a esta venta. Todos los campos son opcionales.
+            Selecciona los participantes que deseas asignar a esta venta. Todos los campos son
+            opcionales.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {/* Liner */}
               <FormField
                 control={form.control}
@@ -156,11 +157,13 @@ export function AssignParticipantsModal({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {getParticipantsByType(ParticipantType.TELEMARKETING_SUPERVISOR).map((p) => (
-                          <SelectItem key={p.id} value={p.id}>
-                            {p.firstName} {p.lastName}
-                          </SelectItem>
-                        ))}
+                        {getParticipantsByType(ParticipantType.TELEMARKETING_SUPERVISOR).map(
+                          (p) => (
+                            <SelectItem key={p.id} value={p.id}>
+                              {p.firstName} {p.lastName}
+                            </SelectItem>
+                          )
+                        )}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -440,17 +443,12 @@ export function AssignParticipantsModal({
             </div>
 
             <DialogFooter>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={handleClose}
-                disabled={isPending}
-              >
-                <X className="h-4 w-4 mr-2" />
+              <Button type="button" variant="ghost" onClick={handleClose} disabled={isPending}>
+                <X className="mr-2 h-4 w-4" />
                 Cancelar
               </Button>
               <Button type="submit" disabled={isPending || isLoadingParticipants}>
-                <Users className="h-4 w-4 mr-2" />
+                <Users className="mr-2 h-4 w-4" />
                 {isPending ? 'Asignando...' : 'Asignar Participantes'}
               </Button>
             </DialogFooter>

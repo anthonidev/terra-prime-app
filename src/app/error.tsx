@@ -4,11 +4,17 @@ import { useEffect } from 'react';
 import { AlertTriangle, Home } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 export default function Error({
   error,
-  reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
@@ -19,27 +25,28 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+    <div className="bg-background flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
-            <AlertTriangle className="h-8 w-8 text-destructive" />
+          <div className="bg-destructive/10 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+            <AlertTriangle className="text-destructive h-8 w-8" />
           </div>
           <CardTitle className="text-2xl">Algo salió mal</CardTitle>
           <CardDescription>
-            Se ha producido un error inesperado. Por favor, intenta nuevamente o contacta con soporte si el problema persiste.
+            Se ha producido un error inesperado. Por favor, intenta nuevamente o contacta con
+            soporte si el problema persiste.
           </CardDescription>
         </CardHeader>
 
         <CardContent>
           {process.env.NODE_ENV === 'development' && error.message && (
-            <div className="rounded-md border border-destructive/20 bg-destructive/5 p-3">
-              <p className="text-sm font-medium text-destructive">Error técnico:</p>
-              <p className="mt-1 text-xs text-muted-foreground font-mono break-words">
+            <div className="border-destructive/20 bg-destructive/5 rounded-md border p-3">
+              <p className="text-destructive text-sm font-medium">Error técnico:</p>
+              <p className="text-muted-foreground mt-1 font-mono text-xs break-words">
                 {error.message}
               </p>
               {error.digest && (
-                <p className="mt-2 text-xs text-muted-foreground">
+                <p className="text-muted-foreground mt-2 text-xs">
                   ID de error: <span className="font-mono">{error.digest}</span>
                 </p>
               )}
@@ -48,11 +55,7 @@ export default function Error({
         </CardContent>
 
         <CardFooter className="flex justify-center">
-          <Button
-            asChild
-            className="w-full sm:w-auto"
-            variant="default"
-          >
+          <Button asChild className="w-full sm:w-auto" variant="default">
             <Link href="/">
               <Home className="mr-2 h-4 w-4" />
               Volver al inicio

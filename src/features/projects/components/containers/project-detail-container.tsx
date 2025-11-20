@@ -63,12 +63,10 @@ export function ProjectDetailContainer({ projectId }: ProjectDetailContainerProp
 
   if (isError || !project) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center">
           <p className="text-destructive">Error al cargar el proyecto</p>
-          <p className="text-sm text-muted-foreground mt-2">
-            Intenta recargar la página
-          </p>
+          <p className="text-muted-foreground mt-2 text-sm">Intenta recargar la página</p>
         </div>
       </div>
     );
@@ -85,19 +83,19 @@ export function ProjectDetailContainer({ projectId }: ProjectDetailContainerProp
       </Link>
 
       {/* Header del Proyecto */}
-      <div className="rounded-lg border bg-card shadow-sm p-6">
+      <div className="bg-card rounded-lg border p-6 shadow-sm">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20 rounded-lg">
               <AvatarImage src={project.logo || undefined} alt={project.name} />
-              <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-2xl font-semibold">
+              <AvatarFallback className="bg-primary/10 text-primary rounded-lg text-2xl font-semibold">
                 {projectInitials}
               </AvatarFallback>
             </Avatar>
 
             <div>
               <h1 className="text-3xl font-bold">{project.name}</h1>
-              <div className="flex items-center gap-2 mt-2">
+              <div className="mt-2 flex items-center gap-2">
                 <Badge variant={project.isActive ? 'default' : 'secondary'}>
                   {project.isActive ? 'Activo' : 'Inactivo'}
                 </Badge>
@@ -117,17 +115,17 @@ export function ProjectDetailContainer({ projectId }: ProjectDetailContainerProp
 
       {/* Tabs: Etapas y Lotes */}
       <Tabs value={activeTab} onValueChange={handleTabChange}>
-        <div className="border-b border-border dark:border-primary/20">
-          <TabsList className="h-auto p-0 border-0">
+        <div className="border-border dark:border-primary/20 border-b">
+          <TabsList className="h-auto border-0 p-0">
             <TabsTrigger
               value="stages"
-              className="relative  rounded-none border-b-2 border-transparent bg-transparent px-6 py-3 font-semibold text-muted-foreground shadow-none transition-all hover:bg-muted/50 hover:text-foreground data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none dark:data-[state=active]:border-primary/20"
+              className="text-muted-foreground hover:bg-muted/50 hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground dark:data-[state=active]:border-primary/20 relative rounded-none border-b-2 border-transparent bg-transparent px-6 py-3 font-semibold shadow-none transition-all data-[state=active]:bg-transparent data-[state=active]:shadow-none"
             >
               Etapas
             </TabsTrigger>
             <TabsTrigger
               value="lots"
-              className="relative rounded-none border-b-2 border-transparent bg-transparent px-6 py-3 font-semibold text-muted-foreground shadow-none transition-all hover:bg-muted/50 hover:text-foreground data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none dark:data-[state=active]:border-primary/20"
+              className="text-muted-foreground hover:bg-muted/50 hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground dark:data-[state=active]:border-primary/20 relative rounded-none border-b-2 border-transparent bg-transparent px-6 py-3 font-semibold shadow-none transition-all data-[state=active]:bg-transparent data-[state=active]:shadow-none"
             >
               Lotes
             </TabsTrigger>
@@ -214,7 +212,7 @@ function ProjectDetailSkeleton() {
     <div className="space-y-6">
       <Skeleton className="h-10 w-40" />
 
-      <div className="rounded-lg border bg-card shadow-sm p-6">
+      <div className="bg-card rounded-lg border p-6 shadow-sm">
         <div className="flex items-start gap-4">
           <Skeleton className="h-20 w-20 rounded-lg" />
           <div className="space-y-2">
@@ -227,12 +225,12 @@ function ProjectDetailSkeleton() {
         </div>
       </div>
 
-      <div className="rounded-lg border bg-card shadow-sm p-6">
-        <Skeleton className="h-6 w-32 mb-4" />
+      <div className="bg-card rounded-lg border p-6 shadow-sm">
+        <Skeleton className="mb-4 h-6 w-32" />
         <div className="space-y-4">
           {Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="rounded-lg border p-4">
-              <Skeleton className="h-5 w-40 mb-3" />
+              <Skeleton className="mb-3 h-5 w-40" />
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {Array.from({ length: 4 }).map((_, j) => (
                   <Skeleton key={j} className="h-32 rounded-md" />

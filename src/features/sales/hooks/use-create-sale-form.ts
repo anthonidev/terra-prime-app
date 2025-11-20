@@ -68,13 +68,12 @@ export function useCreateSaleForm() {
         ...(formData.step4.guarantor && { createGuarantor: formData.step4.guarantor }),
         ...(formData.step4.secondaryClients &&
           formData.step4.secondaryClients.length > 0 && {
-          createSecondaryClient: formData.step4.secondaryClients,
-        }),
+            createSecondaryClient: formData.step4.secondaryClients,
+          }),
       };
 
-      const guarantorClientResult = await createGuarantorClientMutation.mutateAsync(
-        guarantorClientInput
-      );
+      const guarantorClientResult =
+        await createGuarantorClientMutation.mutateAsync(guarantorClientInput);
 
       // Step 2: Create sale
       const saleInput: CreateSaleInput = {
@@ -89,26 +88,30 @@ export function useCreateSaleForm() {
         }),
         ...(guarantorClientResult.secondaryClientIds &&
           guarantorClientResult.secondaryClientIds.length > 0 && {
-          secondaryClientsIds: guarantorClientResult.secondaryClientIds,
-        }),
+            secondaryClientsIds: guarantorClientResult.secondaryClientIds,
+          }),
         ...(formData.step2.isReservation && {
           isReservation: true,
           reservationAmount: formData.step2.reservationAmount,
           maximumHoldPeriod: formData.step2.maximumHoldPeriod,
         }),
         // Campos de financiamiento (solo para ventas FINANCED)
-        ...(formData.step2.saleType === SaleType.FINANCED && formData.step3.initialAmount !== undefined && {
-          initialAmount: formData.step3.initialAmount,
-        }),
-        ...(formData.step2.saleType === SaleType.FINANCED && formData.step3.interestRate !== undefined && {
-          interestRate: formData.step3.interestRate,
-        }),
-        ...(formData.step2.saleType === SaleType.FINANCED && formData.step3.quantitySaleCoutes !== undefined && {
-          quantitySaleCoutes: formData.step3.quantitySaleCoutes,
-        }),
-        ...(formData.step2.saleType === SaleType.FINANCED && formData.step3.combinedInstallments && {
-          combinedInstallments: formData.step3.combinedInstallments,
-        }),
+        ...(formData.step2.saleType === SaleType.FINANCED &&
+          formData.step3.initialAmount !== undefined && {
+            initialAmount: formData.step3.initialAmount,
+          }),
+        ...(formData.step2.saleType === SaleType.FINANCED &&
+          formData.step3.interestRate !== undefined && {
+            interestRate: formData.step3.interestRate,
+          }),
+        ...(formData.step2.saleType === SaleType.FINANCED &&
+          formData.step3.quantitySaleCoutes !== undefined && {
+            quantitySaleCoutes: formData.step3.quantitySaleCoutes,
+          }),
+        ...(formData.step2.saleType === SaleType.FINANCED &&
+          formData.step3.combinedInstallments && {
+            combinedInstallments: formData.step3.combinedInstallments,
+          }),
         // Campos de HU (para ambos tipos de venta si tienen urbanización)
         ...(formData.step3.quantityHuCuotes !== undefined && {
           quantityHuCuotes: formData.step3.quantityHuCuotes,

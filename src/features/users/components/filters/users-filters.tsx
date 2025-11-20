@@ -58,7 +58,7 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
           {/* Búsqueda */}
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
               <Input
                 type="text"
                 placeholder="Buscar por nombre, email o documento..."
@@ -82,11 +82,7 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
           {/* Filtro por estado */}
           <Select
             value={
-              filters.isActive === undefined
-                ? 'all'
-                : filters.isActive
-                  ? 'active'
-                  : 'inactive'
+              filters.isActive === undefined ? 'all' : filters.isActive ? 'active' : 'inactive'
             }
             onValueChange={handleStatusChange}
           >
@@ -102,10 +98,7 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
           </Select>
 
           {/* Orden */}
-          <Select
-            value={filters.order || 'DESC'}
-            onValueChange={handleOrderChange}
-          >
+          <Select value={filters.order || 'DESC'} onValueChange={handleOrderChange}>
             <SelectTrigger className="w-full md:w-[180px]">
               <SelectValue placeholder="Orden" />
             </SelectTrigger>

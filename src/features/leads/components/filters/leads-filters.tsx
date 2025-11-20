@@ -51,12 +51,12 @@ export function LeadsFilters({
         className="flex gap-2"
       >
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Search className="text-muted-foreground absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
           <Input
             placeholder="Buscar lead por nombre, email o documento..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-9 h-9 text-sm"
+            className="h-9 pl-9 text-sm"
           />
         </div>
         <Button type="submit" size="sm">
@@ -69,8 +69,8 @@ export function LeadsFilters({
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {/* Start Date */}
         <div className="space-y-1.5">
-          <Label className="text-xs font-medium flex items-center gap-1.5">
-            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+          <Label className="flex items-center gap-1.5 text-xs font-medium">
+            <Calendar className="text-muted-foreground h-3.5 w-3.5" />
             Fecha inicio
           </Label>
           <Input
@@ -83,8 +83,8 @@ export function LeadsFilters({
 
         {/* End Date */}
         <div className="space-y-1.5">
-          <Label className="text-xs font-medium flex items-center gap-1.5">
-            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+          <Label className="flex items-center gap-1.5 text-xs font-medium">
+            <Calendar className="text-muted-foreground h-3.5 w-3.5" />
             Fecha fin
           </Label>
           <Input
@@ -97,7 +97,7 @@ export function LeadsFilters({
 
         {/* Is In Office Filter */}
         <div className="space-y-1.5">
-          <Label className="text-xs font-medium text-muted-foreground">Ubicación</Label>
+          <Label className="text-muted-foreground text-xs font-medium">Ubicación</Label>
           <Select value={isInOffice} onValueChange={onIsInOfficeChange}>
             <SelectTrigger className="h-9 text-sm">
               <SelectValue placeholder="Todas las ubicaciones" />
@@ -105,19 +105,19 @@ export function LeadsFilters({
             <SelectContent>
               <SelectItem value="all">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-muted-foreground" />
+                  <div className="bg-muted-foreground h-2 w-2 rounded-full" />
                   <span>Todas</span>
                 </div>
               </SelectItem>
               <SelectItem value="true">
                 <div className="flex items-center gap-2">
-                  <Building2 className="h-3.5 w-3.5 text-primary" />
+                  <Building2 className="text-primary h-3.5 w-3.5" />
                   <span>En oficina</span>
                 </div>
               </SelectItem>
               <SelectItem value="false">
                 <div className="flex items-center gap-2">
-                  <Home className="h-3.5 w-3.5 text-muted-foreground" />
+                  <Home className="text-muted-foreground h-3.5 w-3.5" />
                   <span>Fuera de oficina</span>
                 </div>
               </SelectItem>
@@ -127,7 +127,7 @@ export function LeadsFilters({
 
         {/* Order */}
         <div className="space-y-1.5">
-          <Label className="text-xs font-medium text-muted-foreground">Ordenar por</Label>
+          <Label className="text-muted-foreground text-xs font-medium">Ordenar por</Label>
           <Select value={order} onValueChange={(value) => onOrderChange(value as 'ASC' | 'DESC')}>
             <SelectTrigger className="h-9 text-sm">
               <SelectValue />
@@ -135,13 +135,13 @@ export function LeadsFilters({
             <SelectContent>
               <SelectItem value="ASC">
                 <div className="flex items-center gap-2">
-                  <ArrowDownUp className="h-3.5 w-3.5 text-muted-foreground" />
+                  <ArrowDownUp className="text-muted-foreground h-3.5 w-3.5" />
                   <span>Más antiguos primero</span>
                 </div>
               </SelectItem>
               <SelectItem value="DESC">
                 <div className="flex items-center gap-2">
-                  <ArrowDownUp className="h-3.5 w-3.5 text-muted-foreground" />
+                  <ArrowDownUp className="text-muted-foreground h-3.5 w-3.5" />
                   <span>Más recientes primero</span>
                 </div>
               </SelectItem>

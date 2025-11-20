@@ -31,13 +31,7 @@ export function ResetPasswordContainer({ token }: ResetPasswordContainerProps) {
     }
 
     if (data?.success) {
-      return (
-        <ResetPasswordForm
-          token={token}
-          email={data.email}
-          onSuccess={handleResetSuccess}
-        />
-      );
+      return <ResetPasswordForm token={token} email={data.email} onSuccess={handleResetSuccess} />;
     }
 
     return <TokenVerification isVerifying={false} isError={true} />;

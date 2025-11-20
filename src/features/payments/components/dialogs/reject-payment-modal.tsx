@@ -22,11 +22,7 @@ interface RejectPaymentModalProps {
   paymentId: string;
 }
 
-export function RejectPaymentModal({
-  open,
-  onOpenChange,
-  paymentId,
-}: RejectPaymentModalProps) {
+export function RejectPaymentModal({ open, onOpenChange, paymentId }: RejectPaymentModalProps) {
   const [rejectionReason, setRejectionReason] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -88,11 +84,12 @@ export function RejectPaymentModal({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <XCircle className="h-5 w-5 text-destructive" />
+            <XCircle className="text-destructive h-5 w-5" />
             Rechazar Pago
           </DialogTitle>
           <DialogDescription>
-            Proporciona la razón por la cual estás rechazando este pago. Esta acción no se puede deshacer.
+            Proporciona la razón por la cual estás rechazando este pago. Esta acción no se puede
+            deshacer.
           </DialogDescription>
         </DialogHeader>
 
@@ -111,16 +108,12 @@ export function RejectPaymentModal({
               className={error ? 'border-destructive' : ''}
               rows={4}
             />
-            {error && (
-              <p className="text-xs text-destructive">{error}</p>
-            )}
-            <p className="text-xs text-muted-foreground">
-              {rejectionReason.length} caracteres
-            </p>
+            {error && <p className="text-destructive text-xs">{error}</p>}
+            <p className="text-muted-foreground text-xs">{rejectionReason.length} caracteres</p>
           </div>
         </div>
 
-        <DialogFooter className="flex-col sm:flex-row gap-2">
+        <DialogFooter className="flex-col gap-2 sm:flex-row">
           <Button
             type="button"
             variant="ghost"
@@ -139,12 +132,12 @@ export function RejectPaymentModal({
           >
             {isPending ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Rechazando...
               </>
             ) : (
               <>
-                <XCircle className="h-4 w-4 mr-2" />
+                <XCircle className="mr-2 h-4 w-4" />
                 Rechazar Pago
               </>
             )}

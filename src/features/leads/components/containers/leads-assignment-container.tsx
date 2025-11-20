@@ -27,24 +27,24 @@ export function LeadsAssignmentContainer() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <UserPlus className="h-5 w-5 text-primary" />
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+            <UserPlus className="text-primary h-5 w-5" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Asignación de Leads</h1>
-            <p className="text-sm text-muted-foreground">Asigna vendedores a los leads del día</p>
+            <p className="text-muted-foreground text-sm">Asigna vendedores a los leads del día</p>
           </div>
         </div>
 
         <Card>
           <CardContent className="p-8">
             <div className="flex flex-col items-center justify-center gap-3 text-center">
-              <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
-                <Users className="h-6 w-6 text-destructive" />
+              <div className="bg-destructive/10 flex h-12 w-12 items-center justify-center rounded-full">
+                <Users className="text-destructive h-6 w-6" />
               </div>
               <div className="space-y-1">
-                <p className="text-sm font-medium text-destructive">Error al cargar los leads</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-destructive text-sm font-medium">Error al cargar los leads</p>
+                <p className="text-muted-foreground text-xs">
                   {error instanceof Error ? error.message : 'Ha ocurrido un error inesperado'}
                 </p>
               </div>
@@ -60,24 +60,24 @@ export function LeadsAssignmentContainer() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <UserPlus className="h-5 w-5 text-primary" />
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+            <UserPlus className="text-primary h-5 w-5" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Asignación de Leads</h1>
-            <p className="text-sm text-muted-foreground">Asigna vendedores a los leads del día</p>
+            <p className="text-muted-foreground text-sm">Asigna vendedores a los leads del día</p>
           </div>
         </div>
 
         <Card>
           <CardContent className="p-8">
             <div className="flex flex-col items-center justify-center gap-3 text-center">
-              <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
-                <Users className="h-6 w-6 text-muted-foreground" />
+              <div className="bg-muted/50 flex h-12 w-12 items-center justify-center rounded-full">
+                <Users className="text-muted-foreground h-6 w-6" />
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium">No hay leads del día</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   No se encontraron leads para asignar en el día de hoy
                 </p>
               </div>
@@ -97,12 +97,12 @@ export function LeadsAssignmentContainer() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <UserPlus className="h-5 w-5 text-primary" />
+        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+          <UserPlus className="text-primary h-5 w-5" />
         </div>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Asignación de Leads</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             {totalLeads} {totalLeads === 1 ? 'lead del día' : 'leads del día'}
           </p>
         </div>
@@ -111,10 +111,10 @@ export function LeadsAssignmentContainer() {
       <LeadsAssignmentTable leads={items} />
 
       {meta.totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-xs text-muted-foreground">
-            Mostrando {(page - 1) * limit + 1} a{' '}
-            {Math.min(page * limit, meta.totalItems)} de {meta.totalItems}
+        <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
+          <div className="text-muted-foreground text-xs">
+            Mostrando {(page - 1) * limit + 1} a {Math.min(page * limit, meta.totalItems)} de{' '}
+            {meta.totalItems}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -124,7 +124,7 @@ export function LeadsAssignmentContainer() {
               disabled={!canGoPrevious}
               className="h-8"
             >
-              <ChevronLeft className="h-3.5 w-3.5 mr-1" />
+              <ChevronLeft className="mr-1 h-3.5 w-3.5" />
               Anterior
             </Button>
             <div className="text-xs">
@@ -138,7 +138,7 @@ export function LeadsAssignmentContainer() {
               className="h-8"
             >
               Siguiente
-              <ChevronRight className="h-3.5 w-3.5 ml-1" />
+              <ChevronRight className="ml-1 h-3.5 w-3.5" />
             </Button>
           </div>
         </div>

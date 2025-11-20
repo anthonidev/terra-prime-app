@@ -27,26 +27,24 @@ export function PinContainer() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Key className="h-5 w-5 text-primary" />
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+            <Key className="text-primary h-5 w-5" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Gestión de PIN</h1>
-            <p className="text-sm text-muted-foreground">PIN de administrador</p>
+            <p className="text-muted-foreground text-sm">PIN de administrador</p>
           </div>
         </div>
 
         <Card>
           <CardContent className="p-8">
             <div className="flex flex-col items-center justify-center gap-3 text-center">
-              <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
-                <AlertCircle className="h-6 w-6 text-destructive" />
+              <div className="bg-destructive/10 flex h-12 w-12 items-center justify-center rounded-full">
+                <AlertCircle className="text-destructive h-6 w-6" />
               </div>
               <div className="space-y-1">
-                <p className="text-sm font-medium text-destructive">Error al cargar el PIN</p>
-                <p className="text-xs text-muted-foreground">
-                  Intenta recargar la página
-                </p>
+                <p className="text-destructive text-sm font-medium">Error al cargar el PIN</p>
+                <p className="text-muted-foreground text-xs">Intenta recargar la página</p>
               </div>
             </div>
           </CardContent>
@@ -61,13 +59,15 @@ export function PinContainer() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <Key className="h-5 w-5 text-primary" />
+        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+          <Key className="text-primary h-5 w-5" />
         </div>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Gestión de PIN</h1>
-          <p className="text-sm text-muted-foreground">
-            {hasActivePin && data.expiresAt ? 'PIN de administrador activo' : 'Genera el PIN de administrador'}
+          <p className="text-muted-foreground text-sm">
+            {hasActivePin && data.expiresAt
+              ? 'PIN de administrador activo'
+              : 'Genera el PIN de administrador'}
           </p>
         </div>
       </div>
@@ -84,7 +84,7 @@ export function PinContainer() {
         <Card className="max-w-2xl">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+              <div className="bg-muted flex h-8 w-8 items-center justify-center rounded-lg">
                 <Key className="h-4 w-4" />
               </div>
               <CardTitle className="text-base">No hay PIN activo</CardTitle>
@@ -94,20 +94,16 @@ export function PinContainer() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="p-3 bg-muted rounded-lg border">
-              <h4 className="text-sm font-medium mb-1.5">¿Qué es el PIN de administrador?</h4>
-              <p className="text-xs text-muted-foreground">
+            <div className="bg-muted rounded-lg border p-3">
+              <h4 className="mb-1.5 text-sm font-medium">¿Qué es el PIN de administrador?</h4>
+              <p className="text-muted-foreground text-xs">
                 El PIN de administrador es un código de seguridad temporal que permite realizar
-                operaciones administrativas sensibles. El PIN tiene una fecha de expiración
-                y debe ser regenerado periódicamente por seguridad.
+                operaciones administrativas sensibles. El PIN tiene una fecha de expiración y debe
+                ser regenerado periódicamente por seguridad.
               </p>
             </div>
 
-            <Button
-              onClick={handleGeneratePin}
-              disabled={isCreating}
-              size="sm"
-            >
+            <Button onClick={handleGeneratePin} disabled={isCreating} size="sm">
               <Plus className="mr-2 h-3.5 w-3.5" />
               {isCreating ? 'Generando PIN...' : 'Generar nuevo PIN'}
             </Button>

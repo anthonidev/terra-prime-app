@@ -31,12 +31,10 @@ export function ParticipantsContainer() {
 
   if (isError || !data) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center">
           <p className="text-destructive">Error al cargar los participantes</p>
-          <p className="text-sm text-muted-foreground mt-2">
-            Intenta recargar la página
-          </p>
+          <p className="text-muted-foreground mt-2 text-sm">Intenta recargar la página</p>
         </div>
       </div>
     );
@@ -49,13 +47,14 @@ export function ParticipantsContainer() {
       {/* Header */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Users className="h-5 w-5 text-primary" />
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+            <Users className="text-primary h-5 w-5" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Participantes</h1>
-            <p className="text-sm text-muted-foreground">
-              {totalParticipants} {totalParticipants === 1 ? 'participante registrado' : 'participantes registrados'}
+            <p className="text-muted-foreground text-sm">
+              {totalParticipants}{' '}
+              {totalParticipants === 1 ? 'participante registrado' : 'participantes registrados'}
             </p>
           </div>
         </div>

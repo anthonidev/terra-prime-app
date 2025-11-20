@@ -142,7 +142,7 @@ export function SalePaymentsTable({ payments, currency }: SalePaymentsTableProps
         <div className="flex items-center justify-between">
           <CardTitle>Resumen de Pagos</CardTitle>
           <div className="text-right">
-            <p className="text-sm text-muted-foreground">Total Pagado</p>
+            <p className="text-muted-foreground text-sm">Total Pagado</p>
             <p className="text-lg font-bold">
               {currency === 'USD' ? '$' : 'S/'} {totalAmount.toLocaleString('es-PE')}
             </p>
@@ -153,7 +153,7 @@ export function SalePaymentsTable({ payments, currency }: SalePaymentsTableProps
         {payments.length > 0 ? (
           <DataTable columns={columns} data={payments} />
         ) : (
-          <div className="flex items-center justify-center h-32 rounded-lg border bg-muted/30">
+          <div className="bg-muted/30 flex h-32 items-center justify-center rounded-lg border">
             <p className="text-muted-foreground">No hay pagos registrados</p>
           </div>
         )}

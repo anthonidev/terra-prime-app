@@ -68,23 +68,19 @@ export function AssignVendorModal({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>
-            Asignar {isMultiple ? 'leads' : 'lead'} a vendedor
-          </DialogTitle>
+          <DialogTitle>Asignar {isMultiple ? 'leads' : 'lead'} a vendedor</DialogTitle>
           <DialogDescription>
             {isMultiple ? (
               <>
                 Selecciona un vendedor para asignar {leadIds.length} leads
                 {leadNames && leadNames.length > 0 && (
                   <div className="mt-2 space-y-1">
-                    <p className="font-medium text-foreground">Leads seleccionados:</p>
+                    <p className="text-foreground font-medium">Leads seleccionados:</p>
                     <ul className="list-inside list-disc text-sm">
                       {leadNames.slice(0, 5).map((name, index) => (
                         <li key={index}>{name}</li>
                       ))}
-                      {leadNames.length > 5 && (
-                        <li>y {leadNames.length - 5} más...</li>
-                      )}
+                      {leadNames.length > 5 && <li>y {leadNames.length - 5} más...</li>}
                     </ul>
                   </div>
                 )}
@@ -93,10 +89,7 @@ export function AssignVendorModal({
               <>
                 Selecciona un vendedor para asignar el lead
                 {leadNames && leadNames[0] && (
-                  <span className="font-medium text-foreground">
-                    {' '}
-                    &quot;{leadNames[0]}&quot;
-                  </span>
+                  <span className="text-foreground font-medium"> &quot;{leadNames[0]}&quot;</span>
                 )}
               </>
             )}
@@ -137,19 +130,10 @@ export function AssignVendorModal({
         </div>
 
         <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleClose}
-            disabled={isPending}
-          >
+          <Button type="button" variant="outline" onClick={handleClose} disabled={isPending}>
             Cancelar
           </Button>
-          <Button
-            type="button"
-            onClick={handleAssign}
-            disabled={!selectedVendorId || isPending}
-          >
+          <Button type="button" onClick={handleAssign} disabled={!selectedVendorId || isPending}>
             {isPending ? 'Asignando...' : 'Asignar'}
           </Button>
         </DialogFooter>

@@ -42,6 +42,7 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
   };
 
   const handleRegisterDeparture = async (visitId: string) => {
+    console.log('visitId', visitId);
     const confirmed = await confirm({
       title: 'Registrar Hora de Salida',
       description: '¿Está seguro de registrar la hora de salida para esta visita?',
@@ -79,20 +80,20 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center">
-                <Clock className="h-4 w-4 text-primary" />
+              <div className="bg-primary/20 flex h-8 w-8 items-center justify-center rounded">
+                <Clock className="text-primary h-4 w-4" />
               </div>
               <CardTitle className="text-base">Historial de Visitas</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col items-center justify-center gap-3 text-center py-8">
-              <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
-                <Clock className="h-6 w-6 text-muted-foreground" />
+            <div className="flex flex-col items-center justify-center gap-3 py-8 text-center">
+              <div className="bg-muted/50 flex h-12 w-12 items-center justify-center rounded-full">
+                <Clock className="text-muted-foreground h-6 w-6" />
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium">Sin visitas registradas</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   No se han registrado visitas para este lead
                 </p>
               </div>
@@ -109,12 +110,10 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center">
-              <Clock className="h-4 w-4 text-primary" />
+            <div className="bg-primary/20 flex h-8 w-8 items-center justify-center rounded">
+              <Clock className="text-primary h-4 w-4" />
             </div>
-            <CardTitle className="text-base">
-              Historial de Visitas ({visits.length})
-            </CardTitle>
+            <CardTitle className="text-base">Historial de Visitas ({visits.length})</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -144,7 +143,7 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
                     <TableHead className="text-xs">Estado</TableHead>
                     <TableHead className="text-xs">Reporte</TableHead>
                     <TableHead className="text-xs">Participantes</TableHead>
-                    <TableHead className="text-xs text-right">Acciones</TableHead>
+                    <TableHead className="text-right text-xs">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -172,16 +171,23 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
                           {visit.departureTime ? (
                             formatDateTime(visit.departureTime)
                           ) : (
-                            <Badge variant="outline" className="text-xs bg-warning/10 text-warning border-warning/20">
+                            <Badge
+                              variant="outline"
+                              className="bg-warning/10 text-warning border-warning/20 text-xs"
+                            >
                               En curso
                             </Badge>
                           )}
                         </TableCell>
                         <TableCell>
                           {visit.departureTime ? (
-                            <Badge variant="secondary" className="text-xs">Finalizada</Badge>
+                            <Badge variant="secondary" className="text-xs">
+                              Finalizada
+                            </Badge>
                           ) : (
-                            <Badge variant="default" className="text-xs bg-success">Activa</Badge>
+                            <Badge variant="default" className="bg-success text-xs">
+                              Activa
+                            </Badge>
                           )}
                         </TableCell>
                         <TableCell>
@@ -196,11 +202,16 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
                               Ver PDF
                             </Button>
                           ) : (
-                            <Badge variant="outline" className="text-xs">Sin reporte</Badge>
+                            <Badge variant="outline" className="text-xs">
+                              Sin reporte
+                            </Badge>
                           )}
                         </TableCell>
                         <TableCell>
-                          <Badge variant={hasParticipants ? 'default' : 'outline'} className="text-xs">
+                          <Badge
+                            variant={hasParticipants ? 'default' : 'outline'}
+                            className="text-xs"
+                          >
                             {hasParticipants ? 'Asignados' : 'Sin asignar'}
                           </Badge>
                         </TableCell>

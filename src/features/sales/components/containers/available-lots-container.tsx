@@ -47,14 +47,14 @@ export function AvailableLotsContainer({ projectId, projectName }: AvailableLots
 
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <Building2 className="h-5 w-5 text-primary" />
+        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+          <Building2 className="text-primary h-5 w-5" />
         </div>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
             {projectName || 'Lotes Disponibles'}
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             {totalLots} {totalLots === 1 ? 'lote disponible' : 'lotes disponibles'}
           </p>
         </div>
@@ -64,8 +64,8 @@ export function AvailableLotsContainer({ projectId, projectName }: AvailableLots
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-accent/20 flex items-center justify-center">
-              <Filter className="h-4 w-4 text-accent" />
+            <div className="bg-accent/20 flex h-8 w-8 items-center justify-center rounded">
+              <Filter className="text-accent h-4 w-4" />
             </div>
             <CardTitle className="text-base">Filtros de Búsqueda</CardTitle>
           </div>
@@ -92,8 +92,8 @@ export function AvailableLotsContainer({ projectId, projectName }: AvailableLots
           <CardContent className="p-6">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                <span className="text-sm text-muted-foreground">Cargando lotes...</span>
+                <Loader2 className="text-primary h-4 w-4 animate-spin" />
+                <span className="text-muted-foreground text-sm">Cargando lotes...</span>
               </div>
               {Array.from({ length: 5 }).map((_, index) => (
                 <Skeleton key={index} className="h-12 w-full" />
@@ -102,11 +102,7 @@ export function AvailableLotsContainer({ projectId, projectName }: AvailableLots
           </CardContent>
         </Card>
       ) : data ? (
-        <AvailableLotsTable
-          lots={data.items}
-          meta={data.meta}
-          onPageChange={setPage}
-        />
+        <AvailableLotsTable lots={data.items} meta={data.meta} onPageChange={setPage} />
       ) : null}
     </div>
   );

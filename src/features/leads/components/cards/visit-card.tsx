@@ -72,7 +72,7 @@ export function VisitCard({
                   Finalizada
                 </Badge>
               ) : (
-                <Badge variant="default" className="text-xs bg-success">
+                <Badge variant="default" className="bg-success text-xs">
                   <CheckCircle className="mr-1 h-3 w-3" />
                   Activa
                 </Badge>
@@ -86,21 +86,24 @@ export function VisitCard({
           {/* Visit times */}
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div>
-              <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+              <div className="text-muted-foreground mb-1 flex items-center gap-1.5">
                 <Clock className="h-3.5 w-3.5" />
                 <span className="font-medium">Llegada</span>
               </div>
               <p className="text-foreground">{formatDateTime(visit.arrivalTime)}</p>
             </div>
             <div>
-              <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+              <div className="text-muted-foreground mb-1 flex items-center gap-1.5">
                 <Calendar className="h-3.5 w-3.5" />
                 <span className="font-medium">Salida</span>
               </div>
               {visit.departureTime ? (
                 <p className="text-foreground">{formatDateTime(visit.departureTime)}</p>
               ) : (
-                <Badge variant="outline" className="text-xs bg-warning/10 text-warning border-warning/20">
+                <Badge
+                  variant="outline"
+                  className="bg-warning/10 text-warning border-warning/20 text-xs"
+                >
                   En curso
                 </Badge>
               )}
@@ -113,7 +116,7 @@ export function VisitCard({
               <Button
                 variant="outline"
                 size="sm"
-                className="flex-1 h-8"
+                className="h-8 flex-1"
                 onClick={() => window.open(visit.reportPdfUrl!, '_blank')}
               >
                 <ExternalLink className="mr-2 h-3.5 w-3.5" />
@@ -123,7 +126,7 @@ export function VisitCard({
           )}
 
           {/* Divider */}
-          <div className="h-px bg-border" />
+          <div className="bg-border h-px" />
 
           {/* Actions */}
           <div className="grid grid-cols-2 gap-2">

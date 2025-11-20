@@ -11,11 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from '@/components/ui/input-otp';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { useValidateAdminToken } from '../../hooks/use-validate-admin-token';
 
 interface RequestEditModalProps {
@@ -24,11 +20,7 @@ interface RequestEditModalProps {
   onSuccess: () => void;
 }
 
-export function RequestEditModal({
-  open,
-  onOpenChange,
-  onSuccess,
-}: RequestEditModalProps) {
+export function RequestEditModal({ open, onOpenChange, onSuccess }: RequestEditModalProps) {
   const [pin, setPin] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -81,22 +73,18 @@ export function RequestEditModal({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Key className="h-5 w-5 text-primary" />
+            <Key className="text-primary h-5 w-5" />
             Solicitar Edición
           </DialogTitle>
           <DialogDescription>
-            Ingresa el PIN de administrador de 5 dígitos para habilitar la edición de los montos totales.
+            Ingresa el PIN de administrador de 5 dígitos para habilitar la edición de los montos
+            totales.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-6">
           <div className="flex flex-col items-center space-y-4">
-            <InputOTP
-              maxLength={5}
-              value={pin}
-              onChange={handleChange}
-              disabled={isPending}
-            >
+            <InputOTP maxLength={5} value={pin} onChange={handleChange} disabled={isPending}>
               <InputOTPGroup>
                 <InputOTPSlot index={0} />
                 <InputOTPSlot index={1} />
@@ -107,22 +95,22 @@ export function RequestEditModal({
             </InputOTP>
 
             {error && (
-              <div className="flex items-center gap-2 text-sm text-destructive">
+              <div className="text-destructive flex items-center gap-2 text-sm">
                 <AlertCircle className="h-4 w-4" />
                 <span>{error}</span>
               </div>
             )}
 
             {!error && pin.length === 5 && !isPending && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <CheckCircle className="h-4 w-4 text-primary" />
+              <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                <CheckCircle className="text-primary h-4 w-4" />
                 <span>PIN completo. Presiona Validar para continuar.</span>
               </div>
             )}
           </div>
         </div>
 
-        <DialogFooter className="flex-col sm:flex-row gap-2">
+        <DialogFooter className="flex-col gap-2 sm:flex-row">
           <Button
             type="button"
             variant="ghost"
@@ -140,12 +128,12 @@ export function RequestEditModal({
           >
             {isPending ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Validando...
               </>
             ) : (
               <>
-                <Key className="h-4 w-4 mr-2" />
+                <Key className="mr-2 h-4 w-4" />
                 Validar PIN
               </>
             )}

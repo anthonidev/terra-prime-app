@@ -39,8 +39,24 @@ export function SaleDetailHeader({
 }: SaleDetailHeaderProps) {
   const config = statusConfig[status];
 
-  const handleDownload = (url: string, filename: string) => {
-    window.open(url, '_blank');
+  const handleDownload = (url: string, filename?: string) => {
+    if (!url) return;
+    // If a filename is provided, try to trigger a download. Otherwise open in new tab.
+    if (filename) {
+      try {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } catch {
+        window.open(url, '_blank');
+      }
+    } else {
+      window.open(url, '_blank');
+    }
   };
 
   return (
@@ -48,13 +64,13 @@ export function SaleDetailHeader({
       {/* Back button */}
       <Button variant="ghost" size="sm" asChild>
         <Link href="/ventas/mis-ventas">
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ArrowLeft className="mr-2 h-4 w-4" />
           Volver a Mis Ventas
         </Link>
       </Button>
 
       {/* Header info */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{clientName}</h1>
           <div className="mt-2">
@@ -72,7 +88,7 @@ export function SaleDetailHeader({
               size="sm"
               onClick={() => handleDownload(radicationPdfUrl, 'radicacion.pdf')}
             >
-              <FileDown className="h-4 w-4 mr-2" />
+              <FileDown className="mr-2 h-4 w-4" />
               Radicación
             </Button>
           )}
@@ -82,7 +98,7 @@ export function SaleDetailHeader({
               size="sm"
               onClick={() => handleDownload(paymentAcordPdfUrl, 'acuerdo-pago.pdf')}
             >
-              <FileDown className="h-4 w-4 mr-2" />
+              <FileDown className="mr-2 h-4 w-4" />
               Acuerdo de Pago
             </Button>
           )}

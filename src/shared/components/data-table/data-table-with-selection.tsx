@@ -1,13 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  type ColumnDef,
-  type RowSelectionState,
-} from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -18,6 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  type ColumnDef,
+  type RowSelectionState,
+} from '@tanstack/react-table';
+import { useState } from 'react';
 
 interface DataTableWithSelectionProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -43,8 +43,7 @@ export function DataTableWithSelection<TData, TValue>({
     header: ({ table }) => (
       <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
+          table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Seleccionar todo"
@@ -68,8 +67,7 @@ export function DataTableWithSelection<TData, TValue>({
     columns: columnsWithSelection,
     getCoreRowModel: getCoreRowModel(),
     onRowSelectionChange: (updater) => {
-      const newSelection =
-        typeof updater === 'function' ? updater(rowSelection) : updater;
+      const newSelection = typeof updater === 'function' ? updater(rowSelection) : updater;
       setRowSelection(newSelection);
 
       if (onSelectionChange) {
@@ -86,16 +84,15 @@ export function DataTableWithSelection<TData, TValue>({
   });
 
   const selectedRowsCount = Object.keys(rowSelection).length;
-  const selectedRows = table
-    .getSelectedRowModel()
-    .rows.map((row) => row.original);
+  const selectedRows = table.getSelectedRowModel().rows.map((row) => row.original);
 
   return (
     <div className="space-y-4">
       {selectionAction && selectedRowsCount > 0 && (
-        <div className="flex items-center justify-between rounded-lg border bg-muted/50 p-4">
+        <div className="bg-muted/50 flex items-center justify-between rounded-lg border p-4">
           <div className="text-sm font-medium">
-            {selectedRowsCount} {selectedRowsCount === 1 ? 'fila seleccionada' : 'filas seleccionadas'}
+            {selectedRowsCount}{' '}
+            {selectedRowsCount === 1 ? 'fila seleccionada' : 'filas seleccionadas'}
           </div>
           <Button
             onClick={() => selectionAction.onClick(selectedRows)}
@@ -106,7 +103,7 @@ export function DataTableWithSelection<TData, TValue>({
         </div>
       )}
 
-      <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
+      <div className="bg-card overflow-hidden rounded-lg border shadow-sm">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -116,10 +113,7 @@ export function DataTableWithSelection<TData, TValue>({
                     <TableHead key={header.id} className="font-semibold">
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                        : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
                 })}
@@ -132,7 +126,7 @@ export function DataTableWithSelection<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className="transition-colors hover:bg-muted/50"
+                  className="hover:bg-muted/50 transition-colors"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -145,7 +139,7 @@ export function DataTableWithSelection<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columnsWithSelection.length}
-                  className="h-32 text-center text-muted-foreground"
+                  className="text-muted-foreground h-32 text-center"
                 >
                   No se encontraron resultados
                 </TableCell>

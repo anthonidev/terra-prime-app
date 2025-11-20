@@ -18,10 +18,13 @@ export function ProjectSummary({ data }: ProjectSummaryProps) {
   const totalLots = data.lots.length;
 
   // Group lots by status
-  const statusCounts = data.lots.reduce((acc, lot) => {
-    acc[lot.status] = (acc[lot.status] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const statusCounts = data.lots.reduce(
+    (acc, lot) => {
+      acc[lot.status] = (acc[lot.status] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
   const statusConfig = {
     ACTIVE: {
@@ -29,28 +32,28 @@ export function ProjectSummary({ data }: ProjectSummaryProps) {
       bgClass: 'bg-success/10',
       borderClass: 'border-success/20',
       textClass: 'text-success',
-      dotClass: 'bg-success'
+      dotClass: 'bg-success',
     },
     INACTIVE: {
       label: 'Inactivos',
       bgClass: 'bg-muted',
       borderClass: 'border-muted-foreground/20',
       textClass: 'text-muted-foreground',
-      dotClass: 'bg-muted-foreground'
+      dotClass: 'bg-muted-foreground',
     },
     SOLD: {
       label: 'Vendidos',
       bgClass: 'bg-primary/10',
       borderClass: 'border-primary/20',
       textClass: 'text-primary',
-      dotClass: 'bg-primary'
+      dotClass: 'bg-primary',
     },
     RESERVED: {
       label: 'Separados',
       bgClass: 'bg-info/10',
       borderClass: 'border-info/20',
       textClass: 'text-info',
-      dotClass: 'bg-info'
+      dotClass: 'bg-info',
     },
   };
 
@@ -60,15 +63,14 @@ export function ProjectSummary({ data }: ProjectSummaryProps) {
       <Card className="border-success/50 bg-success/5">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center shrink-0">
-              <CheckCircle2 className="h-5 w-5 text-success" />
+            <div className="bg-success/20 flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
+              <CheckCircle2 className="text-success h-5 w-5" />
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-success mb-1">
-                ¡Archivo validado correctamente!
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Los datos son válidos y están listos para crear el proyecto. Revisa el resumen a continuación.
+            <div className="min-w-0 flex-1">
+              <h3 className="text-success mb-1 font-semibold">¡Archivo validado correctamente!</h3>
+              <p className="text-muted-foreground text-sm">
+                Los datos son válidos y están listos para crear el proyecto. Revisa el resumen a
+                continuación.
               </p>
             </div>
           </div>
@@ -79,8 +81,8 @@ export function ProjectSummary({ data }: ProjectSummaryProps) {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center">
-              <Building2 className="h-4 w-4 text-primary" />
+            <div className="bg-primary/20 flex h-8 w-8 items-center justify-center rounded">
+              <Building2 className="text-primary h-4 w-4" />
             </div>
             <CardTitle className="text-base">Información del Proyecto</CardTitle>
           </div>
@@ -88,16 +90,16 @@ export function ProjectSummary({ data }: ProjectSummaryProps) {
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+              <p className="text-muted-foreground text-[10px] font-medium tracking-wide uppercase">
                 Nombre del Proyecto
               </p>
               <p className="text-xl font-bold">{data.name}</p>
             </div>
             <div className="space-y-1.5">
-              <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+              <p className="text-muted-foreground text-[10px] font-medium tracking-wide uppercase">
                 Moneda
               </p>
-              <Badge variant="outline" className="h-7 px-3 text-base font-mono font-bold">
+              <Badge variant="outline" className="h-7 px-3 font-mono text-base font-bold">
                 {data.currency}
               </Badge>
             </div>
@@ -107,43 +109,43 @@ export function ProjectSummary({ data }: ProjectSummaryProps) {
 
       {/* Statistics Grid */}
       <div className="grid gap-3 sm:grid-cols-3">
-        <Card className="transition-all duration-300 hover:shadow-md hover:border-accent/50">
+        <Card className="hover:border-accent/50 transition-all duration-300 hover:shadow-md">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Etapas</p>
+                <p className="text-muted-foreground text-xs font-medium">Etapas</p>
                 <p className="mt-1 text-2xl font-bold tabular-nums">{stages}</p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
-                <Layers className="h-5 w-5 text-accent" />
+              <div className="bg-accent/20 flex h-10 w-10 items-center justify-center rounded-lg">
+                <Layers className="text-accent h-5 w-5" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="transition-all duration-300 hover:shadow-md hover:border-primary/50">
+        <Card className="hover:border-primary/50 transition-all duration-300 hover:shadow-md">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Manzanas</p>
+                <p className="text-muted-foreground text-xs font-medium">Manzanas</p>
                 <p className="mt-1 text-2xl font-bold tabular-nums">{blocks}</p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                <Grid3x3 className="h-5 w-5 text-primary" />
+              <div className="bg-primary/20 flex h-10 w-10 items-center justify-center rounded-lg">
+                <Grid3x3 className="text-primary h-5 w-5" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="transition-all duration-300 hover:shadow-md hover:border-success/50">
+        <Card className="hover:border-success/50 transition-all duration-300 hover:shadow-md">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Lotes</p>
+                <p className="text-muted-foreground text-xs font-medium">Lotes</p>
                 <p className="mt-1 text-2xl font-bold tabular-nums">{totalLots}</p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-success/20 flex items-center justify-center">
-                <Package className="h-5 w-5 text-success" />
+              <div className="bg-success/20 flex h-10 w-10 items-center justify-center rounded-lg">
+                <Package className="text-success h-5 w-5" />
               </div>
             </div>
           </CardContent>
@@ -163,7 +165,7 @@ export function ProjectSummary({ data }: ProjectSummaryProps) {
                 bgClass: 'bg-muted',
                 borderClass: 'border-muted-foreground/20',
                 textClass: 'text-muted-foreground',
-                dotClass: 'bg-muted-foreground'
+                dotClass: 'bg-muted-foreground',
               };
               const percentage = ((count / totalLots) * 100).toFixed(1);
 
@@ -175,19 +177,13 @@ export function ProjectSummary({ data }: ProjectSummaryProps) {
                   <div className="flex items-center gap-2.5">
                     <div className={`h-2.5 w-2.5 rounded-full ${config.dotClass}`} />
                     <div>
-                      <p className={`text-sm font-semibold ${config.textClass}`}>
-                        {config.label}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {percentage}% del total
-                      </p>
+                      <p className={`text-sm font-semibold ${config.textClass}`}>{config.label}</p>
+                      <p className="text-muted-foreground text-xs">{percentage}% del total</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className={`text-xl font-bold tabular-nums ${config.textClass}`}>
-                      {count}
-                    </p>
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-wide">
+                    <p className={`text-xl font-bold tabular-nums ${config.textClass}`}>{count}</p>
+                    <p className="text-muted-foreground text-[10px] tracking-wide uppercase">
                       lotes
                     </p>
                   </div>

@@ -16,7 +16,7 @@ export function SaleDetailErrorState() {
       >
         <Button variant="ghost" asChild>
           <Link href="/ventas/mis-ventas">
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="mr-2 h-4 w-4" />
             Volver a Mis Ventas
           </Link>
         </Button>
@@ -34,9 +34,9 @@ export function SaleDetailErrorState() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-                className="flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10 mb-4"
+                className="bg-destructive/10 mb-4 flex h-20 w-20 items-center justify-center rounded-full"
               >
-                <AlertCircle className="h-10 w-10 text-destructive" />
+                <AlertCircle className="text-destructive h-10 w-10" />
               </motion.div>
 
               <motion.div
@@ -46,7 +46,7 @@ export function SaleDetailErrorState() {
                 className="space-y-2"
               >
                 <h3 className="text-lg font-semibold">Error al cargar el detalle de la venta</h3>
-                <p className="text-sm text-muted-foreground max-w-sm">
+                <p className="text-muted-foreground max-w-sm text-sm">
                   No pudimos cargar la información de esta venta. Por favor, verifica el ID e
                   intenta nuevamente.
                 </p>
@@ -59,7 +59,7 @@ export function SaleDetailErrorState() {
               >
                 <Button className="mt-6" asChild>
                   <Link href="/ventas/mis-ventas">
-                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    <ArrowLeft className="mr-2 h-4 w-4" />
                     Volver a la Lista
                   </Link>
                 </Button>

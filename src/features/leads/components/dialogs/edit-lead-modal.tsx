@@ -63,12 +63,9 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
     if (!lead) return;
 
     // Filter out undefined and empty string values
-    const filteredData = Object.entries(data).reduce((acc, [key, value]) => {
-      if (value !== undefined && value !== '') {
-        (acc as any)[key] = value;
-      }
-      return acc;
-    }, {} as Partial<UpdateLeadFormData>);
+    const filteredData = Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined && value !== '')
+    ) as Partial<UpdateLeadFormData>;
 
     await updateLead.mutateAsync(filteredData);
     onClose();
@@ -81,7 +78,7 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Editar Lead</DialogTitle>
         </DialogHeader>
@@ -93,13 +90,9 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
               <Label htmlFor="firstName">
                 Nombre <span className="text-destructive">*</span>
               </Label>
-              <Input
-                id="firstName"
-                {...register('firstName')}
-                placeholder="Ingrese el nombre"
-              />
+              <Input id="firstName" {...register('firstName')} placeholder="Ingrese el nombre" />
               {errors.firstName && (
-                <p className="text-sm text-destructive">{errors.firstName.message}</p>
+                <p className="text-destructive text-sm">{errors.firstName.message}</p>
               )}
             </div>
 
@@ -108,13 +101,9 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
               <Label htmlFor="lastName">
                 Apellido <span className="text-destructive">*</span>
               </Label>
-              <Input
-                id="lastName"
-                {...register('lastName')}
-                placeholder="Ingrese el apellido"
-              />
+              <Input id="lastName" {...register('lastName')} placeholder="Ingrese el apellido" />
               {errors.lastName && (
-                <p className="text-sm text-destructive">{errors.lastName.message}</p>
+                <p className="text-destructive text-sm">{errors.lastName.message}</p>
               )}
             </div>
 
@@ -123,7 +112,9 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
               <Label htmlFor="documentType">Tipo de Documento</Label>
               <Select
                 value={watch('documentType')}
-                onValueChange={(value) => setValue('documentType', value as any)}
+                onValueChange={(value) =>
+                  setValue('documentType', value as 'DNI' | 'CE' | 'PASSPORT' | 'RUC')
+                }
               >
                 <SelectTrigger id="documentType">
                   <SelectValue placeholder="Seleccionar tipo" />
@@ -136,20 +127,16 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
                 </SelectContent>
               </Select>
               {errors.documentType && (
-                <p className="text-sm text-destructive">{errors.documentType.message}</p>
+                <p className="text-destructive text-sm">{errors.documentType.message}</p>
               )}
             </div>
 
             {/* Document */}
             <div className="space-y-2">
               <Label htmlFor="document">Documento</Label>
-              <Input
-                id="document"
-                {...register('document')}
-                placeholder="Ingrese el documento"
-              />
+              <Input id="document" {...register('document')} placeholder="Ingrese el documento" />
               {errors.document && (
-                <p className="text-sm text-destructive">{errors.document.message}</p>
+                <p className="text-destructive text-sm">{errors.document.message}</p>
               )}
             </div>
 
@@ -162,9 +149,7 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
                 {...register('email')}
                 placeholder="Ingrese el email"
               />
-              {errors.email && (
-                <p className="text-sm text-destructive">{errors.email.message}</p>
-              )}
+              {errors.email && <p className="text-destructive text-sm">{errors.email.message}</p>}
             </div>
 
             {/* Age */}
@@ -176,22 +161,14 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
                 {...register('age', { valueAsNumber: true })}
                 placeholder="Ingrese la edad"
               />
-              {errors.age && (
-                <p className="text-sm text-destructive">{errors.age.message}</p>
-              )}
+              {errors.age && <p className="text-destructive text-sm">{errors.age.message}</p>}
             </div>
 
             {/* Phone */}
             <div className="space-y-2">
               <Label htmlFor="phone">Teléfono Principal</Label>
-              <Input
-                id="phone"
-                {...register('phone')}
-                placeholder="Ingrese el teléfono"
-              />
-              {errors.phone && (
-                <p className="text-sm text-destructive">{errors.phone.message}</p>
-              )}
+              <Input id="phone" {...register('phone')} placeholder="Ingrese el teléfono" />
+              {errors.phone && <p className="text-destructive text-sm">{errors.phone.message}</p>}
             </div>
 
             {/* Phone 2 */}
@@ -202,9 +179,7 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
                 {...register('phone2')}
                 placeholder="Ingrese el teléfono secundario"
               />
-              {errors.phone2 && (
-                <p className="text-sm text-destructive">{errors.phone2.message}</p>
-              )}
+              {errors.phone2 && <p className="text-destructive text-sm">{errors.phone2.message}</p>}
             </div>
           </div>
 
@@ -218,7 +193,7 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
               rows={4}
             />
             {errors.observations && (
-              <p className="text-sm text-destructive">{errors.observations.message}</p>
+              <p className="text-destructive text-sm">{errors.observations.message}</p>
             )}
           </div>
 

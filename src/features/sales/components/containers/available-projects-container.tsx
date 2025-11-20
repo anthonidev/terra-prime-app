@@ -2,7 +2,7 @@
 
 import { Building2, Loader2 } from 'lucide-react';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { useActiveProjects } from '../../hooks/use-active-projects';
@@ -18,12 +18,12 @@ export function AvailableProjectsContainer() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Building2 className="h-5 w-5 text-primary" />
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+            <Building2 className="text-primary h-5 w-5" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Lotes Disponibles</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Selecciona un proyecto para ver los lotes disponibles
             </p>
           </div>
@@ -34,8 +34,8 @@ export function AvailableProjectsContainer() {
           <CardContent className="p-6">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                <span className="text-sm text-muted-foreground">Cargando proyectos...</span>
+                <Loader2 className="text-primary h-4 w-4 animate-spin" />
+                <span className="text-muted-foreground text-sm">Cargando proyectos...</span>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, index) => (
@@ -54,12 +54,12 @@ export function AvailableProjectsContainer() {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Building2 className="h-5 w-5 text-primary" />
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+            <Building2 className="text-primary h-5 w-5" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Lotes Disponibles</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Selecciona un proyecto para ver los lotes disponibles
             </p>
           </div>
@@ -69,12 +69,12 @@ export function AvailableProjectsContainer() {
         <Card>
           <CardContent className="p-8">
             <div className="flex flex-col items-center justify-center gap-3 text-center">
-              <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
-                <Building2 className="h-6 w-6 text-muted-foreground" />
+              <div className="bg-muted/50 flex h-12 w-12 items-center justify-center rounded-full">
+                <Building2 className="text-muted-foreground h-6 w-6" />
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium">No hay proyectos disponibles</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   No hay proyectos activos con lotes disponibles
                 </p>
               </div>
@@ -89,12 +89,12 @@ export function AvailableProjectsContainer() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <Building2 className="h-5 w-5 text-primary" />
+        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+          <Building2 className="text-primary h-5 w-5" />
         </div>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Lotes Disponibles</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             {totalProjects} {totalProjects === 1 ? 'proyecto disponible' : 'proyectos disponibles'}
           </p>
         </div>

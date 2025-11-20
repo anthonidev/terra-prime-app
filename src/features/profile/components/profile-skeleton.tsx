@@ -1,9 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 export function ProfileSkeleton() {
   return (
@@ -11,7 +7,7 @@ export function ProfileSkeleton() {
       {/* Header Skeleton */}
       <div>
         <Skeleton className="h-9 w-64" />
-        <Skeleton className="h-5 w-96 mt-2" />
+        <Skeleton className="mt-2 h-5 w-96" />
       </div>
 
       {/* Content Grid */}
@@ -21,13 +17,13 @@ export function ProfileSkeleton() {
           <Card>
             <CardHeader>
               <Skeleton className="h-6 w-32" />
-              <Skeleton className="h-4 w-full mt-2" />
+              <Skeleton className="mt-2 h-4 w-full" />
             </CardHeader>
             <CardContent className="flex flex-col items-center gap-6">
-              <Skeleton className="w-32 h-32 rounded-full" />
-              <div className="text-center space-y-2 w-full">
-                <Skeleton className="h-6 w-48 mx-auto" />
-                <Skeleton className="h-4 w-32 mx-auto" />
+              <Skeleton className="h-32 w-32 rounded-full" />
+              <div className="w-full space-y-2 text-center">
+                <Skeleton className="mx-auto h-6 w-48" />
+                <Skeleton className="mx-auto h-4 w-32" />
               </div>
               <Skeleton className="h-10 w-full" />
             </CardContent>
@@ -39,7 +35,7 @@ export function ProfileSkeleton() {
           <Card>
             <CardHeader>
               <Skeleton className="h-6 w-48" />
-              <Skeleton className="h-4 w-64 mt-2" />
+              <Skeleton className="mt-2 h-4 w-64" />
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -64,7 +60,7 @@ export function ProfileSkeleton() {
       <Card>
         <CardHeader>
           <Skeleton className="h-6 w-48" />
-          <Skeleton className="h-4 w-80 mt-2" />
+          <Skeleton className="mt-2 h-4 w-80" />
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -74,7 +70,7 @@ export function ProfileSkeleton() {
           <div className="space-y-2">
             <Skeleton className="h-4 w-32" />
             <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-3 w-full mt-1" />
+            <Skeleton className="mt-1 h-3 w-full" />
           </div>
           <div className="space-y-2">
             <Skeleton className="h-4 w-48" />

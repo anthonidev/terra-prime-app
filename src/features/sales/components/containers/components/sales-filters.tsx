@@ -1,10 +1,10 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { ArrowUpDown, ArrowUp, ArrowDown, Receipt } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { motion } from 'framer-motion';
+import { ArrowDown, ArrowUp, Receipt } from 'lucide-react';
 
 interface SalesFiltersProps {
   order: 'ASC' | 'DESC';
@@ -26,11 +26,11 @@ export function SalesFilters({ order, totalItems, onToggleOrder }: SalesFiltersP
           <div className="flex items-center justify-between gap-4">
             {/* Total Sales Badge */}
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                <Receipt className="h-5 w-5 text-primary" />
+              <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                <Receipt className="text-primary h-5 w-5" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total de Ventas</p>
+                <p className="text-muted-foreground text-sm">Total de Ventas</p>
                 <div className="flex items-center gap-2">
                   <p className="text-2xl font-bold">{totalItems}</p>
                   <Badge variant="secondary" className="text-xs">
@@ -41,12 +41,7 @@ export function SalesFilters({ order, totalItems, onToggleOrder }: SalesFiltersP
             </div>
 
             {/* Order Toggle Button */}
-            <Button
-              variant="outline"
-              size="default"
-              onClick={onToggleOrder}
-              className="gap-2"
-            >
+            <Button variant="outline" size="default" onClick={onToggleOrder} className="gap-2">
               <OrderIcon className="h-4 w-4" />
               <span className="hidden sm:inline">
                 {order === 'ASC' ? 'Más Antiguas' : 'Más Recientes'}

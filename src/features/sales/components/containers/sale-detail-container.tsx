@@ -136,7 +136,7 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
                     variant="outline"
                     className="flex-1"
                   >
-                    <Clock className="h-4 w-4 mr-2" />
+                    <Clock className="mr-2 h-4 w-4" />
                     Extender Reserva
                   </Button>
                 )}
@@ -147,7 +147,7 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
                     onClick={() => setIsDeleteSaleModalOpen(true)}
                     className="flex-1"
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
+                    <Trash2 className="mr-2 h-4 w-4" />
                     Eliminar Venta
                   </Button>
                 )}
@@ -166,9 +166,7 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
         currency={sale.currency}
         action={
           showRegisterPayment ? (
-            <Button onClick={() => setIsPaymentModalOpen(true)}>
-              Registrar Pago
-            </Button>
+            <Button onClick={() => setIsPaymentModalOpen(true)}>Registrar Pago</Button>
           ) : undefined
         }
       />
@@ -204,7 +202,7 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
         >
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-center justify-center h-32 rounded-lg border bg-muted/30">
+              <div className="bg-muted/30 flex h-32 items-center justify-center rounded-lg border">
                 <p className="text-muted-foreground">No hay pagos registrados</p>
               </div>
             </CardContent>

@@ -19,11 +19,7 @@ interface AvailableLotsTableProps {
   onPageChange: (page: number) => void;
 }
 
-export function AvailableLotsTable({
-  lots,
-  meta,
-  onPageChange,
-}: AvailableLotsTableProps) {
+export function AvailableLotsTable({ lots, meta, onPageChange }: AvailableLotsTableProps) {
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   const formatPrice = (price: string | number) => {
@@ -37,9 +33,7 @@ export function AvailableLotsTable({
     {
       accessorKey: 'name',
       header: 'Lote',
-      cell: ({ row }) => (
-        <span className="text-xs font-bold">{row.original.name}</span>
-      ),
+      cell: ({ row }) => <span className="text-xs font-bold">{row.original.name}</span>,
     },
     {
       accessorKey: 'stageName',
@@ -64,11 +58,7 @@ export function AvailableLotsTable({
     {
       accessorKey: 'area',
       header: 'Área',
-      cell: ({ row }) => (
-        <span className="text-xs">
-          {row.original.area} m²
-        </span>
-      ),
+      cell: ({ row }) => <span className="text-xs">{row.original.area} m²</span>,
     },
     {
       accessorKey: 'lotPrice',
@@ -92,7 +82,7 @@ export function AvailableLotsTable({
       accessorKey: 'totalPrice',
       header: 'Total',
       cell: ({ row }) => (
-        <span className="text-xs font-bold text-primary">
+        <span className="text-primary text-xs font-bold">
           {row.original.projectCurrency} {formatPrice(row.original.totalPrice)}
         </span>
       ),
@@ -104,12 +94,12 @@ export function AvailableLotsTable({
       <Card>
         <CardContent className="p-8">
           <div className="flex flex-col items-center justify-center gap-3 text-center">
-            <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
-              <Grid3x3 className="h-6 w-6 text-muted-foreground" />
+            <div className="bg-muted/50 flex h-12 w-12 items-center justify-center rounded-full">
+              <Grid3x3 className="text-muted-foreground h-6 w-6" />
             </div>
             <div className="space-y-1">
               <p className="text-sm font-medium">No se encontraron lotes</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 No hay lotes que coincidan con los filtros aplicados
               </p>
             </div>

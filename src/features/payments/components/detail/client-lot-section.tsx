@@ -25,7 +25,7 @@ export function ClientLotSection({ payment }: ClientLotSectionProps) {
       <CardContent className="space-y-4">
         {/* Client Information */}
         <div>
-          <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold">
             <User className="h-4 w-4" />
             Información del Cliente
           </h3>
@@ -33,7 +33,7 @@ export function ClientLotSection({ payment }: ClientLotSectionProps) {
           {lead && (lead.firstName || lead.lastName) ? (
             <div className="space-y-2">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Nombre Completo</p>
+                <p className="text-muted-foreground text-sm font-medium">Nombre Completo</p>
                 <p className="text-base">
                   {lead.firstName} {lead.lastName}
                 </p>
@@ -41,20 +41,20 @@ export function ClientLotSection({ payment }: ClientLotSectionProps) {
 
               {lead.document && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Documento</p>
+                  <p className="text-muted-foreground text-sm font-medium">Documento</p>
                   <p className="text-base">{lead.document}</p>
                 </div>
               )}
 
               {client?.address && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Dirección</p>
+                  <p className="text-muted-foreground text-sm font-medium">Dirección</p>
                   <p className="text-base">{client.address}</p>
                 </div>
               )}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">Sin información del cliente</p>
+            <p className="text-muted-foreground text-sm">Sin información del cliente</p>
           )}
         </div>
 
@@ -62,7 +62,7 @@ export function ClientLotSection({ payment }: ClientLotSectionProps) {
 
         {/* Lot Information */}
         <div>
-          <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold">
             <Building2 className="h-4 w-4" />
             Información del Lote
           </h3>
@@ -70,22 +70,22 @@ export function ClientLotSection({ payment }: ClientLotSectionProps) {
           {lot && lot.name ? (
             <div className="space-y-2">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Lote</p>
+                <p className="text-muted-foreground text-sm font-medium">Lote</p>
                 <p className="text-base font-semibold">{lot.name}</p>
               </div>
 
               {lot.project && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Proyecto</p>
+                  <p className="text-muted-foreground text-sm font-medium">Proyecto</p>
                   <p className="text-base">{lot.project}</p>
                 </div>
               )}
 
               {(lot.stage || lot.block) && (
                 <div className="flex items-start gap-2">
-                  <MapPin className="h-4 w-4 text-muted-foreground mt-1" />
+                  <MapPin className="text-muted-foreground mt-1 h-4 w-4" />
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Ubicación</p>
+                    <p className="text-muted-foreground text-sm font-medium">Ubicación</p>
                     <p className="text-base">
                       {[lot.stage, lot.block].filter(Boolean).join(' - ')}
                     </p>
@@ -95,7 +95,7 @@ export function ClientLotSection({ payment }: ClientLotSectionProps) {
 
               {lot.lotPrice && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Precio del Lote</p>
+                  <p className="text-muted-foreground text-sm font-medium">Precio del Lote</p>
                   <p className="text-base font-semibold">
                     {payment.currency === 'USD' ? '$' : 'S/'} {lot.lotPrice}
                   </p>
@@ -103,7 +103,7 @@ export function ClientLotSection({ payment }: ClientLotSectionProps) {
               )}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">Sin información del lote</p>
+            <p className="text-muted-foreground text-sm">Sin información del lote</p>
           )}
         </div>
       </CardContent>

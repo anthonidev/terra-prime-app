@@ -20,23 +20,23 @@ export function UserCard({ user, onEdit }: UserCardProps) {
   const initials = `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
 
   return (
-    <Card className="overflow-hidden transition-colors hover:bg-muted/50">
+    <Card className="hover:bg-muted/50 overflow-hidden transition-colors">
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-4">
           {/* Avatar y Info Principal */}
-          <div className="flex gap-3 flex-1 min-w-0">
+          <div className="flex min-w-0 flex-1 gap-3">
             <Avatar className="h-12 w-12 shrink-0">
               <AvatarImage src={user.photo || undefined} alt={user.firstName} />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
 
-            <div className="flex-1 min-w-0 space-y-2">
+            <div className="min-w-0 flex-1 space-y-2">
               {/* Nombre */}
               <div>
-                <h3 className="font-semibold truncate">
+                <h3 className="truncate font-semibold">
                   {user.firstName} {user.lastName}
                 </h3>
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <div className="text-muted-foreground flex items-center gap-1 text-sm">
                   <Mail className="h-3 w-3 shrink-0" />
                   <span className="truncate">{user.email}</span>
                 </div>
@@ -50,16 +50,13 @@ export function UserCard({ user, onEdit }: UserCardProps) {
                 <Badge variant="secondary" className="text-xs">
                   {user.role.name}
                 </Badge>
-                <Badge
-                  variant={user.isActive ? 'default' : 'destructive'}
-                  className="text-xs"
-                >
+                <Badge variant={user.isActive ? 'default' : 'destructive'} className="text-xs">
                   {user.isActive ? 'Activo' : 'Inactivo'}
                 </Badge>
               </div>
 
               {/* Fecha */}
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <div className="text-muted-foreground flex items-center gap-1 text-xs">
                 <Calendar className="h-3 w-3" />
                 <span>
                   {format(new Date(user.createdAt), 'dd MMM yyyy', {
@@ -71,12 +68,7 @@ export function UserCard({ user, onEdit }: UserCardProps) {
           </div>
 
           {/* Acción directa: Editar */}
-          <Button
-            variant="outline"
-            size="sm"
-            className="shrink-0"
-            onClick={() => onEdit(user)}
-          >
+          <Button variant="outline" size="sm" className="shrink-0" onClick={() => onEdit(user)}>
             <Pencil className="mr-2 h-4 w-4" />
             Editar
           </Button>

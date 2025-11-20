@@ -58,12 +58,12 @@ export function ProfilePhotoSection({ user }: ProfilePhotoSectionProps) {
 
   return (
     <Card className="h-full">
-      <CardContent className="p-6 flex flex-col items-center gap-4">
+      <CardContent className="flex flex-col items-center gap-4 p-6">
         {/* Avatar */}
         <div className="relative">
           <div
             className={cn(
-              'w-28 h-28 rounded-full overflow-hidden border-4 border-border ring-2 ring-primary/20 relative transition-all duration-300',
+              'border-border ring-primary/20 relative h-28 w-28 overflow-hidden rounded-full border-4 ring-2 transition-all duration-300',
               isPending && 'opacity-50'
             )}
           >
@@ -73,23 +73,23 @@ export function ProfilePhotoSection({ user }: ProfilePhotoSectionProps) {
                 alt="Foto de perfil"
                 width={112}
                 height={112}
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
             ) : (
-              <div className="w-full h-full bg-muted flex items-center justify-center">
-                <User className="w-14 h-14 text-muted-foreground" />
+              <div className="bg-muted flex h-full w-full items-center justify-center">
+                <User className="text-muted-foreground h-14 w-14" />
               </div>
             )}
           </div>
           {isPending && (
-            <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-full backdrop-blur-sm">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <div className="bg-background/50 absolute inset-0 flex items-center justify-center rounded-full backdrop-blur-sm">
+              <Loader2 className="text-primary h-8 w-8 animate-spin" />
             </div>
           )}
         </div>
 
         {/* User Info */}
-        <div className="text-center space-y-2 w-full">
+        <div className="w-full space-y-2 text-center">
           <h3 className="text-lg font-bold tracking-tight">{user.fullName}</h3>
           <Badge variant="outline" className="font-medium">
             {user.role.name}
@@ -97,7 +97,7 @@ export function ProfilePhotoSection({ user }: ProfilePhotoSectionProps) {
         </div>
 
         {/* Divider */}
-        <div className="w-full h-px bg-border" />
+        <div className="bg-border h-px w-full" />
 
         {/* Change Photo Button */}
         <div className="w-full space-y-2">
@@ -129,7 +129,7 @@ export function ProfilePhotoSection({ user }: ProfilePhotoSectionProps) {
               </>
             )}
           </Button>
-          <p className="text-[10px] text-center text-muted-foreground">
+          <p className="text-muted-foreground text-center text-[10px]">
             Tamaño máximo: 2MB (JPG, PNG, WEBP)
           </p>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { rejectPayment } from '../lib/mutations';
 import { toast } from 'sonner';
 import type { RejectPaymentInput } from '../types';
@@ -20,8 +21,14 @@ export function useRejectPayment() {
       queryClient.invalidateQueries({ queryKey: ['payments'] });
       toast.success(data.message || 'Pago rechazado exitosamente');
     },
-    onError: (error: any) => {
-      const message = error?.response?.data?.message || 'Error al rechazar el pago';
+    onError: (error: Error) => {
+      let message = 'Error al rechazar el pago';
+
+      if (error instanceof AxiosError && error.response?.data) {
+        const data = error.response.data as { message?: string };
+        message = data.message || message;
+      }
+
       toast.error(message);
       console.error('Error rejecting payment:', error);
     },

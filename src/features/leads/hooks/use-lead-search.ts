@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { AxiosError } from 'axios';
 import { useFindLeadByDocument } from './use-register-lead';
 import type { Lead, DocumentType } from '../types';
 
@@ -54,9 +55,9 @@ export function useLeadSearch({
             }
           }
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
           // 404 = No se encontró el lead
-          if (error?.response?.status === 404) {
+          if (error instanceof AxiosError && error.response?.status === 404) {
             onLeadNotFound();
           }
         },

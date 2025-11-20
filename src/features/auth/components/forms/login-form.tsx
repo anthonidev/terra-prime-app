@@ -1,13 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { motion, AnimatePresence } from "framer-motion";
-import { Eye, EyeOff, IdCard, KeyRound, Loader2 } from "lucide-react";
-import Link from "next/link";
+import { useState, useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Eye, EyeOff, IdCard, KeyRound, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { AxiosError } from 'axios';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -15,12 +16,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
-import { loginSchema, type LoginInput } from "../../lib/validation";
-import { useLogin } from "../../hooks/use-login";
+import { loginSchema, type LoginInput } from '../../lib/validation';
+import { useLogin } from '../../hooks/use-login';
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,16 +31,26 @@ export function LoginForm() {
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      document: "",
-      password: "",
+      document: '',
+      password: '',
     },
   });
 
   // Check if it's an authentication error or network error
-  const isAuthError = (error as any)?.response?.status === 401;
-  const isNetworkError =
-    error &&
-    ((error as any)?.message === "Network Error" || !(error as any)?.response);
+  const isAuthError = useMemo(() => {
+    if (error instanceof AxiosError) {
+      return error.response?.status === 401;
+    }
+    return false;
+  }, [error]);
+
+  const isNetworkError = useMemo(() => {
+    if (!error) return false;
+    if (error instanceof AxiosError) {
+      return error.message === 'Network Error' || !error.response;
+    }
+    return false;
+  }, [error]);
 
   // Show error message and auto-hide after 5 seconds
   useEffect(() => {
@@ -50,6 +61,8 @@ export function LoginForm() {
       }, 5000);
 
       return () => clearTimeout(timer);
+    } else {
+      setShowErrorMessage(false);
     }
   }, [isAuthError, isNetworkError]);
 
@@ -72,18 +85,13 @@ export function LoginForm() {
         >
           <Card className="border-none bg-transparent shadow-none dark:bg-none">
             <CardHeader className="space-y-1 pb-6">
-              <CardTitle className="text-center text-2xl font-bold">
-                Iniciar Sesión
-              </CardTitle>
+              <CardTitle className="text-center text-2xl font-bold">Iniciar Sesión</CardTitle>
               <CardDescription className="text-center">
                 Ingresa tus credenciales para acceder al sistema
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <motion.div
                   className="space-y-2"
                   initial={{ opacity: 0, y: 10 }}
@@ -97,15 +105,13 @@ export function LoginForm() {
                       id="document"
                       type="text"
                       placeholder="Ingresa tu documento"
-                      {...form.register("document")}
+                      {...form.register('document')}
                       className="focus:bg-background bg-white pl-10 transition-all dark:bg-gray-900"
                       aria-invalid={!!form.formState.errors.document}
                     />
                   </div>
                   {form.formState.errors.document && (
-                    <p className="text-sm text-red-500">
-                      {form.formState.errors.document.message}
-                    </p>
+                    <p className="text-sm text-red-500">{form.formState.errors.document.message}</p>
                   )}
                 </motion.div>
 
@@ -120,9 +126,9 @@ export function LoginForm() {
                     <KeyRound className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                     <Input
                       id="password"
-                      type={showPassword ? "text" : "password"}
+                      type={showPassword ? 'text' : 'password'}
                       placeholder="Ingresa tu contraseña"
-                      {...form.register("password")}
+                      {...form.register('password')}
                       className="focus:bg-background bg-white pl-10 transition-all dark:bg-gray-900"
                       aria-invalid={!!form.formState.errors.password}
                     />
@@ -142,9 +148,7 @@ export function LoginForm() {
                     </Button>
                   </div>
                   {form.formState.errors.password && (
-                    <p className="text-sm text-red-500">
-                      {form.formState.errors.password.message}
-                    </p>
+                    <p className="text-sm text-red-500">{form.formState.errors.password.message}</p>
                   )}
                 </motion.div>
 
@@ -153,7 +157,7 @@ export function LoginForm() {
                   {showErrorMessage && (isAuthError || isNetworkError) && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
+                      animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.3 }}
                       className="overflow-hidden"
@@ -161,18 +165,15 @@ export function LoginForm() {
                       <div className="rounded-md border border-red-200 bg-red-50 p-3 dark:border-red-900 dark:bg-red-950">
                         <p className="text-center text-sm font-medium text-red-600 dark:text-red-400">
                           {isAuthError
-                            ? "Documento o contraseña incorrecta"
-                            : "No se pudo conectar con el servidor. Verifica la URL de la API."}
+                            ? 'Documento o contraseña incorrecta'
+                            : 'No se pudo conectar con el servidor. Verifica la URL de la API.'}
                         </p>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
 
-                <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                >
+                <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                   <Button
                     type="submit"
                     className="w-full"
@@ -184,7 +185,7 @@ export function LoginForm() {
                         Cargando...
                       </>
                     ) : (
-                      "Iniciar Sesión"
+                      'Iniciar Sesión'
                     )}
                   </Button>
                 </motion.div>
@@ -192,11 +193,8 @@ export function LoginForm() {
             </CardContent>
             <CardFooter className="text-center text-sm">
               <div className="w-full">
-                ¿Olvidaste tu contraseña?{" "}
-                <Link
-                  href="/auth/reset-password"
-                  className="text-primary hover:underline"
-                >
+                ¿Olvidaste tu contraseña?{' '}
+                <Link href="/auth/reset-password" className="text-primary hover:underline">
                   Recuperar contraseña
                 </Link>
               </div>

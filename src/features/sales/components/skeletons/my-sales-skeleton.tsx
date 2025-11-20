@@ -14,11 +14,11 @@ export function MySalesSkeleton() {
       {/* Header skeleton */}
       <div>
         <Skeleton className="h-9 w-64" />
-        <Skeleton className="h-5 w-96 mt-2" />
+        <Skeleton className="mt-2 h-5 w-96" />
       </div>
 
       {/* Table skeleton */}
-      <div className="rounded-lg border bg-card shadow-sm">
+      <div className="bg-card rounded-lg border shadow-sm">
         <Table>
           <TableHeader className="bg-muted/30">
             <TableRow className="hover:bg-transparent">
@@ -47,7 +47,7 @@ export function MySalesSkeleton() {
           </TableHeader>
           <TableBody>
             {Array.from({ length: 5 }).map((_, i) => (
-              <TableRow key={i} className="transition-colors hover:bg-muted/50">
+              <TableRow key={i} className="hover:bg-muted/50 transition-colors">
                 <TableCell>
                   <Skeleton className="h-5 w-24" />
                 </TableCell>

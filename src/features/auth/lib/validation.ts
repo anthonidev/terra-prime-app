@@ -28,8 +28,7 @@ export const resetPasswordSchema = z
       .string()
       .min(6, 'La contraseña debe tener al menos 6 caracteres')
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\W]{6,}$/, {
-        message:
-          'La contraseña debe contener al menos una mayúscula, una minúscula y un número',
+        message: 'La contraseña debe contener al menos una mayúscula, una minúscula y un número',
       }),
     passwordConfirm: z.string().min(1, 'Confirma tu contraseña'),
   })

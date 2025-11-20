@@ -13,7 +13,7 @@ export function VendorsSkeleton() {
     <div className="space-y-6">
       <div>
         <Skeleton className="h-9 w-48" />
-        <Skeleton className="h-5 w-96 mt-2" />
+        <Skeleton className="mt-2 h-5 w-96" />
       </div>
 
       <div className="space-y-4">

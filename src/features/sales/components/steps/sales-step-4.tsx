@@ -81,13 +81,7 @@ export function SalesStep4({ data, onNext, onBack }: SalesStep4Props) {
         transition={{ delay: 0.4 }}
         className="flex justify-between pt-2"
       >
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onBack}
-          size="lg"
-          className="min-w-32"
-        >
+        <Button type="button" variant="outline" onClick={onBack} size="lg" className="min-w-32">
           <ChevronLeft className="mr-2 h-4 w-4" />
           Anterior
         </Button>

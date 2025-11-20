@@ -55,21 +55,22 @@ export async function getStageBlocks(stageId: string): Promise<ProjectBlock[]> {
 
 // Get block lots (filtered by active status)
 export async function getBlockLots(blockId: string): Promise<ProjectLotResponse[]> {
-  const response = await apiClient.get<ProjectLotResponse[]>(
-    `/api/sales/lots/${blockId}`,
-    { params: { status: 'Activo' } }
-  );
+  const response = await apiClient.get<ProjectLotResponse[]>(`/api/sales/lots/${blockId}`, {
+    params: { status: 'Activo' },
+  });
   return response.data;
 }
 
 // Get client by document
-export async function getClientByDocument(document: string): Promise<ClientByDocumentResponse | null> {
+export async function getClientByDocument(
+  document: string
+): Promise<ClientByDocumentResponse | null> {
   try {
     const response = await apiClient.get<ClientByDocumentResponse>(
       `/api/sales/clients/document/${document}`
     );
     return response.data;
-  } catch (error) {
+  } catch {
     // Return null if client not found (404)
     return null;
   }

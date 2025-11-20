@@ -22,15 +22,12 @@ export function PaymentActions({ paymentId }: PaymentActionsProps) {
           <CardTitle>Acciones de Revisión</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="text-muted-foreground mb-4 text-sm">
             Este pago está pendiente de revisión. Puedes aprobarlo o rechazarlo.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Button
-              onClick={() => setApproveModalOpen(true)}
-              className="flex-1"
-            >
-              <CheckCircle className="h-4 w-4 mr-2" />
+            <Button onClick={() => setApproveModalOpen(true)} className="flex-1">
+              <CheckCircle className="mr-2 h-4 w-4" />
               Aprobar Pago
             </Button>
 
@@ -39,7 +36,7 @@ export function PaymentActions({ paymentId }: PaymentActionsProps) {
               onClick={() => setRejectModalOpen(true)}
               className="flex-1"
             >
-              <XCircle className="h-4 w-4 mr-2" />
+              <XCircle className="mr-2 h-4 w-4" />
               Rechazar Pago
             </Button>
           </div>

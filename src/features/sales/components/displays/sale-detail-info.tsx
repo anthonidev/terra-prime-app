@@ -26,53 +26,53 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <p className="text-sm text-muted-foreground">Proyecto</p>
+            <p className="text-muted-foreground text-sm">Proyecto</p>
             <p className="font-medium">{sale.lot.project}</p>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-muted-foreground">Etapa</p>
+              <p className="text-muted-foreground text-sm">Etapa</p>
               <p className="font-medium">{sale.lot.stage}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Manzana</p>
+              <p className="text-muted-foreground text-sm">Manzana</p>
               <p className="font-medium">{sale.lot.block}</p>
             </div>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">Lote</p>
+            <p className="text-muted-foreground text-sm">Lote</p>
             <p className="font-medium">{sale.lot.name}</p>
           </div>
           <Separator />
           <div>
-            <p className="text-sm text-muted-foreground">Precio del Lote</p>
-            <p className="font-medium text-lg">
+            <p className="text-muted-foreground text-sm">Precio del Lote</p>
+            <p className="text-lg font-medium">
               {formatCurrency(sale.lot.lotPrice, sale.currency)}
             </p>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">Monto Total de la Venta</p>
-            <p className="font-medium text-lg">
-              {formatCurrency(sale.totalAmount, sale.currency)}
-            </p>
+            <p className="text-muted-foreground text-sm">Monto Total de la Venta</p>
+            <p className="text-lg font-medium">{formatCurrency(sale.totalAmount, sale.currency)}</p>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-muted-foreground">Tipo de Venta</p>
+              <p className="text-muted-foreground text-sm">Tipo de Venta</p>
               <p className="font-medium">
                 {sale.type === 'DIRECT_PAYMENT' ? 'Contado' : 'Financiado'}
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Fecha de Contrato</p>
+              <p className="text-muted-foreground text-sm">Fecha de Contrato</p>
               <p className="font-medium">
-                {sale.contractDate ? format(new Date(sale.contractDate), 'dd MMM yyyy', { locale: es }) : 'N/A'}
+                {sale.contractDate
+                  ? format(new Date(sale.contractDate), 'dd MMM yyyy', { locale: es })
+                  : 'N/A'}
               </p>
             </div>
           </div>
           {sale.reservationAmount && (
             <div>
-              <p className="text-sm text-muted-foreground">Monto de Reserva</p>
+              <p className="text-muted-foreground text-sm">Monto de Reserva</p>
               <p className="font-medium">
                 {sale.currency === 'USD' ? '$' : 'S/'}{' '}
                 {sale.reservationAmount.toLocaleString('es-PE')}
@@ -92,18 +92,18 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <p className="text-sm text-muted-foreground">Nombre Completo</p>
+            <p className="text-muted-foreground text-sm">Nombre Completo</p>
             <p className="font-medium">
               {sale.client.firstName} {sale.client.lastName}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-muted-foreground">Teléfono</p>
+              <p className="text-muted-foreground text-sm">Teléfono</p>
               <p className="font-medium">{sale.client.phone}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Dirección</p>
+              <p className="text-muted-foreground text-sm">Dirección</p>
               <p className="font-medium">{sale.client.address}</p>
             </div>
           </div>
@@ -112,10 +112,10 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
             <>
               <Separator />
               <div>
-                <p className="text-sm font-semibold text-muted-foreground">Garante</p>
+                <p className="text-muted-foreground text-sm font-semibold">Garante</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Nombre Completo</p>
+                <p className="text-muted-foreground text-sm">Nombre Completo</p>
                 <p className="font-medium">
                   {sale.guarantor.firstName} {sale.guarantor.lastName}
                 </p>
@@ -127,20 +127,16 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
             <>
               <Separator />
               <div>
-                <p className="text-sm font-semibold text-muted-foreground">
-                  Clientes Secundarios
-                </p>
+                <p className="text-muted-foreground text-sm font-semibold">Clientes Secundarios</p>
               </div>
               {sale.secondaryClients.map((client, index) => (
                 <div key={index} className="space-y-2">
                   <div>
-                    <p className="text-sm text-muted-foreground">
-                      Cliente Secundario {index + 1}
-                    </p>
+                    <p className="text-muted-foreground text-sm">Cliente Secundario {index + 1}</p>
                     <p className="font-medium">
                       {client.firstName} {client.lastName}
                     </p>
-                    <p className="text-sm text-muted-foreground">{client.phone}</p>
+                    <p className="text-muted-foreground text-sm">{client.phone}</p>
                   </div>
                   {index < sale.secondaryClients.length - 1 && <Separator />}
                 </div>
@@ -163,18 +159,18 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
             {/* Vendor */}
             {sale.vendor && (sale.vendor.firstName || sale.vendor.lastName) && (
               <div>
-                <p className="text-sm font-semibold text-muted-foreground mb-2">Vendedor</p>
+                <p className="text-muted-foreground mb-2 text-sm font-semibold">Vendedor</p>
                 <p className="font-medium">
                   {sale.vendor.firstName} {sale.vendor.lastName}
                 </p>
-                <p className="text-sm text-muted-foreground">{sale.vendor.document}</p>
+                <p className="text-muted-foreground text-sm">{sale.vendor.document}</p>
               </div>
             )}
 
             {/* Liner */}
             {sale.liner && (sale.liner.firstName || sale.liner.lastName) && (
               <div>
-                <p className="text-sm font-semibold text-muted-foreground mb-2">Liner</p>
+                <p className="text-muted-foreground mb-2 text-sm font-semibold">Liner</p>
                 <p className="font-medium">
                   {sale.liner.firstName} {sale.liner.lastName}
                 </p>
@@ -183,65 +179,55 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
 
             {/* Telemarketing Supervisor */}
             {sale.telemarketingSupervisor &&
-              (sale.telemarketingSupervisor.firstName ||
-                sale.telemarketingSupervisor.lastName) && (
+              (sale.telemarketingSupervisor.firstName || sale.telemarketingSupervisor.lastName) && (
                 <div>
-                  <p className="text-sm font-semibold text-muted-foreground mb-2">
+                  <p className="text-muted-foreground mb-2 text-sm font-semibold">
                     Supervisor Telemarketing
                   </p>
                   <p className="font-medium">
-                    {sale.telemarketingSupervisor.firstName}{' '}
-                    {sale.telemarketingSupervisor.lastName}
+                    {sale.telemarketingSupervisor.firstName} {sale.telemarketingSupervisor.lastName}
                   </p>
                 </div>
               )}
 
             {/* Telemarketing Confirmer */}
             {sale.telemarketingConfirmer &&
-              (sale.telemarketingConfirmer.firstName ||
-                sale.telemarketingConfirmer.lastName) && (
+              (sale.telemarketingConfirmer.firstName || sale.telemarketingConfirmer.lastName) && (
                 <div>
-                  <p className="text-sm font-semibold text-muted-foreground mb-2">
+                  <p className="text-muted-foreground mb-2 text-sm font-semibold">
                     Confirmador Telemarketing
                   </p>
                   <p className="font-medium">
-                    {sale.telemarketingConfirmer.firstName}{' '}
-                    {sale.telemarketingConfirmer.lastName}
+                    {sale.telemarketingConfirmer.firstName} {sale.telemarketingConfirmer.lastName}
                   </p>
                 </div>
               )}
 
             {/* Telemarketer */}
-            {sale.telemarketer &&
-              (sale.telemarketer.firstName || sale.telemarketer.lastName) && (
-                <div>
-                  <p className="text-sm font-semibold text-muted-foreground mb-2">
-                    Telemarketer
-                  </p>
-                  <p className="font-medium">
-                    {sale.telemarketer.firstName} {sale.telemarketer.lastName}
-                  </p>
-                </div>
-              )}
+            {sale.telemarketer && (sale.telemarketer.firstName || sale.telemarketer.lastName) && (
+              <div>
+                <p className="text-muted-foreground mb-2 text-sm font-semibold">Telemarketer</p>
+                <p className="font-medium">
+                  {sale.telemarketer.firstName} {sale.telemarketer.lastName}
+                </p>
+              </div>
+            )}
 
             {/* Field Manager */}
-            {sale.fieldManager &&
-              (sale.fieldManager.firstName || sale.fieldManager.lastName) && (
-                <div>
-                  <p className="text-sm font-semibold text-muted-foreground mb-2">
-                    Gerente de Campo
-                  </p>
-                  <p className="font-medium">
-                    {sale.fieldManager.firstName} {sale.fieldManager.lastName}
-                  </p>
-                </div>
-              )}
+            {sale.fieldManager && (sale.fieldManager.firstName || sale.fieldManager.lastName) && (
+              <div>
+                <p className="text-muted-foreground mb-2 text-sm font-semibold">Gerente de Campo</p>
+                <p className="font-medium">
+                  {sale.fieldManager.firstName} {sale.fieldManager.lastName}
+                </p>
+              </div>
+            )}
 
             {/* Field Supervisor */}
             {sale.fieldSupervisor &&
               (sale.fieldSupervisor.firstName || sale.fieldSupervisor.lastName) && (
                 <div>
-                  <p className="text-sm font-semibold text-muted-foreground mb-2">
+                  <p className="text-muted-foreground mb-2 text-sm font-semibold">
                     Supervisor de Campo
                   </p>
                   <p className="font-medium">
@@ -251,17 +237,16 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
               )}
 
             {/* Field Seller */}
-            {sale.fieldSeller &&
-              (sale.fieldSeller.firstName || sale.fieldSeller.lastName) && (
-                <div>
-                  <p className="text-sm font-semibold text-muted-foreground mb-2">
-                    Vendedor de Campo
-                  </p>
-                  <p className="font-medium">
-                    {sale.fieldSeller.firstName} {sale.fieldSeller.lastName}
-                  </p>
-                </div>
-              )}
+            {sale.fieldSeller && (sale.fieldSeller.firstName || sale.fieldSeller.lastName) && (
+              <div>
+                <p className="text-muted-foreground mb-2 text-sm font-semibold">
+                  Vendedor de Campo
+                </p>
+                <p className="font-medium">
+                  {sale.fieldSeller.firstName} {sale.fieldSeller.lastName}
+                </p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

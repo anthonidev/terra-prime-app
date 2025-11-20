@@ -1,15 +1,6 @@
 'use client';
 
-import {
-  ArrowLeft,
-  CheckCircle,
-  FileText,
-  Info,
-  Loader2,
-  Target,
-  User,
-  Users,
-} from 'lucide-react';
+import { ArrowLeft, CheckCircle, FileText, Info, Loader2, Target, User, Users } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -100,46 +91,47 @@ export function SummaryStep({
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-accent/20 flex items-center justify-center">
-              <User className="h-4 w-4 text-accent" />
+            <div className="bg-accent/20 flex h-8 w-8 items-center justify-center rounded">
+              <User className="text-accent h-4 w-4" />
             </div>
             <CardTitle className="text-base">Datos Personales</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+          <div className="grid grid-cols-1 gap-2 text-xs md:grid-cols-2">
             <div>
-              <span className="font-medium text-muted-foreground">Documento:</span>{' '}
+              <span className="text-muted-foreground font-medium">Documento:</span>{' '}
               <span>
                 {documentTypeLabel} - {document}
               </span>
             </div>
             <div>
-              <span className="font-medium text-muted-foreground">Nombres:</span>{' '}
+              <span className="text-muted-foreground font-medium">Nombres:</span>{' '}
               <span>{firstName}</span>
             </div>
             <div>
-              <span className="font-medium text-muted-foreground">Apellidos:</span>{' '}
+              <span className="text-muted-foreground font-medium">Apellidos:</span>{' '}
               <span>{lastName}</span>
             </div>
             {email && (
               <div>
-                <span className="font-medium text-muted-foreground">Email:</span> <span>{email}</span>
+                <span className="text-muted-foreground font-medium">Email:</span>{' '}
+                <span>{email}</span>
               </div>
             )}
             <div>
-              <span className="font-medium text-muted-foreground">Teléfono:</span>{' '}
+              <span className="text-muted-foreground font-medium">Teléfono:</span>{' '}
               <span>{phone}</span>
             </div>
             {phone2 && (
               <div>
-                <span className="font-medium text-muted-foreground">Teléfono 2:</span>{' '}
+                <span className="text-muted-foreground font-medium">Teléfono 2:</span>{' '}
                 <span>{phone2}</span>
               </div>
             )}
             {age && (
               <div>
-                <span className="font-medium text-muted-foreground">Edad:</span>{' '}
+                <span className="text-muted-foreground font-medium">Edad:</span>{' '}
                 <span>{age} años</span>
               </div>
             )}
@@ -151,21 +143,21 @@ export function SummaryStep({
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-info/20 flex items-center justify-center">
-              <Target className="h-4 w-4 text-info" />
+            <div className="bg-info/20 flex h-8 w-8 items-center justify-center rounded">
+              <Target className="text-info h-4 w-4" />
             </div>
             <CardTitle className="text-base">Información Adicional</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-1 gap-2 text-xs md:grid-cols-2">
               <div>
-                <span className="font-medium text-muted-foreground">Fuente:</span>{' '}
+                <span className="text-muted-foreground font-medium">Fuente:</span>{' '}
                 <span>{sourceName}</span>
               </div>
               <div>
-                <span className="font-medium text-muted-foreground">Ubicación:</span>{' '}
+                <span className="text-muted-foreground font-medium">Ubicación:</span>{' '}
                 <span>
                   {districtName}, {provinceName}, {departmentName}
                 </span>
@@ -173,10 +165,10 @@ export function SummaryStep({
             </div>
             {selectedProjects.length > 0 && (
               <div>
-                <span className="text-xs font-medium text-muted-foreground">
+                <span className="text-muted-foreground text-xs font-medium">
                   Proyectos de Interés:
                 </span>
-                <div className="flex flex-wrap gap-1.5 mt-1.5">
+                <div className="mt-1.5 flex flex-wrap gap-1.5">
                   {selectedProjects.map((projectName, index) => (
                     <Badge key={index} variant="secondary" className="text-xs">
                       {projectName}
@@ -194,24 +186,24 @@ export function SummaryStep({
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded bg-accent/20 flex items-center justify-center">
-                <Users className="h-4 w-4 text-accent" />
+              <div className="bg-accent/20 flex h-8 w-8 items-center justify-center rounded">
+                <Users className="text-accent h-4 w-4" />
               </div>
               <CardTitle className="text-base">Acompañante</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+            <div className="grid grid-cols-1 gap-2 text-xs md:grid-cols-3">
               <div>
-                <span className="font-medium text-muted-foreground">Nombre:</span>{' '}
+                <span className="text-muted-foreground font-medium">Nombre:</span>{' '}
                 <span>{companionFullName}</span>
               </div>
               <div>
-                <span className="font-medium text-muted-foreground">DNI:</span>{' '}
+                <span className="text-muted-foreground font-medium">DNI:</span>{' '}
                 <span>{companionDni}</span>
               </div>
               <div>
-                <span className="font-medium text-muted-foreground">Parentesco:</span>{' '}
+                <span className="text-muted-foreground font-medium">Parentesco:</span>{' '}
                 <span>{companionRelationship}</span>
               </div>
             </div>
@@ -220,45 +212,49 @@ export function SummaryStep({
       )}
 
       {/* Metadata */}
-      {(estadoCivil || ocupacion || cantidadHijos || tieneTarjetasCredito || tieneTarjetasDebito) && (
+      {(estadoCivil ||
+        ocupacion ||
+        cantidadHijos ||
+        tieneTarjetasCredito ||
+        tieneTarjetasDebito) && (
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded bg-info/20 flex items-center justify-center">
-                <Info className="h-4 w-4 text-info" />
+              <div className="bg-info/20 flex h-8 w-8 items-center justify-center rounded">
+                <Info className="text-info h-4 w-4" />
               </div>
               <CardTitle className="text-base">Información Complementaria</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-1 gap-2 text-xs md:grid-cols-2">
               {estadoCivil && (
                 <div>
-                  <span className="font-medium text-muted-foreground">Estado Civil:</span>{' '}
+                  <span className="text-muted-foreground font-medium">Estado Civil:</span>{' '}
                   <span>{maritalStatusLabel}</span>
                 </div>
               )}
               {ocupacion && (
                 <div>
-                  <span className="font-medium text-muted-foreground">Ocupación:</span>{' '}
+                  <span className="text-muted-foreground font-medium">Ocupación:</span>{' '}
                   <span>{ocupacion}</span>
                 </div>
               )}
               {cantidadHijos && (
                 <div>
-                  <span className="font-medium text-muted-foreground">Hijos:</span>{' '}
+                  <span className="text-muted-foreground font-medium">Hijos:</span>{' '}
                   <span>{cantidadHijos}</span>
                 </div>
               )}
               {tieneTarjetasCredito && (
                 <div>
-                  <span className="font-medium text-muted-foreground">Tarjetas de Crédito:</span>{' '}
+                  <span className="text-muted-foreground font-medium">Tarjetas de Crédito:</span>{' '}
                   <span>{cantidadTarjetasCredito || 'Sí'}</span>
                 </div>
               )}
               {tieneTarjetasDebito && (
                 <div>
-                  <span className="font-medium text-muted-foreground">Tarjetas de Débito:</span>{' '}
+                  <span className="text-muted-foreground font-medium">Tarjetas de Débito:</span>{' '}
                   <span>{cantidadTarjetasDebito || 'Sí'}</span>
                 </div>
               )}
@@ -271,8 +267,8 @@ export function SummaryStep({
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center">
-              <FileText className="h-4 w-4 text-primary" />
+            <div className="bg-primary/20 flex h-8 w-8 items-center justify-center rounded">
+              <FileText className="text-primary h-4 w-4" />
             </div>
             <CardTitle className="text-base">Observaciones</CardTitle>
           </div>
@@ -288,7 +284,7 @@ export function SummaryStep({
               onChange={(e) => onObservationsChange(e.target.value)}
               placeholder="Ingrese observaciones adicionales..."
               rows={4}
-              className="text-sm resize-none"
+              className="resize-none text-sm"
             />
           </div>
         </CardContent>

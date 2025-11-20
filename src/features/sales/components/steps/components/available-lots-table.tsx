@@ -45,8 +45,8 @@ export function AvailableLotsTable({
       ),
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10">
-            <MapPin className="h-4 w-4 text-primary" />
+          <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-md">
+            <MapPin className="text-primary h-4 w-4" />
           </div>
           <span className="font-semibold">{row.original.name}</span>
         </div>
@@ -63,7 +63,7 @@ export function AvailableLotsTable({
       cell: ({ row }) => (
         <div className="flex items-center gap-1.5">
           <span className="font-medium">{row.original.area}</span>
-          <span className="text-xs text-muted-foreground">m²</span>
+          <span className="text-muted-foreground text-xs">m²</span>
         </div>
       ),
     },
@@ -76,14 +76,11 @@ export function AvailableLotsTable({
         </div>
       ),
       cell: ({ row }) => {
-        const price = typeof row.original.lotPrice === 'string'
-          ? parseFloat(row.original.lotPrice)
-          : row.original.lotPrice;
-        return (
-          <div className="font-medium">
-            {formatCurrency(price, currencyType)}
-          </div>
-        );
+        const price =
+          typeof row.original.lotPrice === 'string'
+            ? parseFloat(row.original.lotPrice)
+            : row.original.lotPrice;
+        return <div className="font-medium">{formatCurrency(price, currencyType)}</div>;
       },
     },
     {
@@ -95,14 +92,11 @@ export function AvailableLotsTable({
         </div>
       ),
       cell: ({ row }) => {
-        const price = typeof row.original.urbanizationPrice === 'string'
-          ? parseFloat(row.original.urbanizationPrice)
-          : row.original.urbanizationPrice;
-        return (
-          <div className="font-medium">
-            {formatCurrency(price, currencyType)}
-          </div>
-        );
+        const price =
+          typeof row.original.urbanizationPrice === 'string'
+            ? parseFloat(row.original.urbanizationPrice)
+            : row.original.urbanizationPrice;
+        return <div className="font-medium">{formatCurrency(price, currencyType)}</div>;
       },
     },
     {
@@ -114,9 +108,10 @@ export function AvailableLotsTable({
         </div>
       ),
       cell: ({ row }) => {
-        const price = typeof row.original.totalPrice === 'string'
-          ? parseFloat(row.original.totalPrice)
-          : row.original.totalPrice;
+        const price =
+          typeof row.original.totalPrice === 'string'
+            ? parseFloat(row.original.totalPrice)
+            : row.original.totalPrice;
         return (
           <Badge variant="secondary" className="font-bold">
             {formatCurrency(price, currencyType)}
@@ -145,10 +140,7 @@ export function AvailableLotsTable({
             variant={isSelected ? 'default' : 'outline'}
             size="sm"
             onClick={() => onSelectLot(lot)}
-            className={cn(
-              'transition-all',
-              isSelected && 'shadow-md'
-            )}
+            className={cn('transition-all', isSelected && 'shadow-md')}
           >
             {isSelected && <CheckCircle2 className="mr-1.5 h-3.5 w-3.5" />}
             {isSelected ? 'Seleccionado' : 'Seleccionar'}
@@ -163,14 +155,12 @@ export function AvailableLotsTable({
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-              <MapPin className="h-5 w-5 text-primary" />
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <MapPin className="text-primary h-5 w-5" />
             </div>
             <div>
               <CardTitle>Lotes Disponibles</CardTitle>
-              <CardDescription>
-                Seleccione el lote que desea vender
-              </CardDescription>
+              <CardDescription>Seleccione el lote que desea vender</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -194,8 +184,8 @@ export function AvailableLotsTable({
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-              <MapPin className="h-5 w-5 text-primary" />
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <MapPin className="text-primary h-5 w-5" />
             </div>
             <div>
               <CardTitle>Lotes Disponibles</CardTitle>
@@ -216,18 +206,19 @@ export function AvailableLotsTable({
               </div>
 
               {/* Mobile cards */}
-              <div className="md:hidden space-y-3">
+              <div className="space-y-3 md:hidden">
                 {lots.map((lot, index) => {
                   const isSelected = selectedLot?.id === lot.id;
-                  const lotPrice = typeof lot.lotPrice === 'string'
-                    ? parseFloat(lot.lotPrice)
-                    : lot.lotPrice;
-                  const urbanPrice = typeof lot.urbanizationPrice === 'string'
-                    ? parseFloat(lot.urbanizationPrice)
-                    : lot.urbanizationPrice;
-                  const totalPrice = typeof lot.totalPrice === 'string'
-                    ? parseFloat(lot.totalPrice)
-                    : lot.totalPrice;
+                  const lotPrice =
+                    typeof lot.lotPrice === 'string' ? parseFloat(lot.lotPrice) : lot.lotPrice;
+                  const urbanPrice =
+                    typeof lot.urbanizationPrice === 'string'
+                      ? parseFloat(lot.urbanizationPrice)
+                      : lot.urbanizationPrice;
+                  const totalPrice =
+                    typeof lot.totalPrice === 'string'
+                      ? parseFloat(lot.totalPrice)
+                      : lot.totalPrice;
 
                   return (
                     <motion.div
@@ -238,21 +229,21 @@ export function AvailableLotsTable({
                     >
                       <Card
                         className={cn(
-                          'transition-all cursor-pointer hover:shadow-md',
-                          isSelected && 'border-2 border-primary bg-primary/5 shadow-lg'
+                          'cursor-pointer transition-all hover:shadow-md',
+                          isSelected && 'border-primary bg-primary/5 border-2 shadow-lg'
                         )}
                         onClick={() => onSelectLot(lot)}
                       >
                         <CardContent className="p-4">
                           {/* Header */}
-                          <div className="flex items-start justify-between mb-3">
+                          <div className="mb-3 flex items-start justify-between">
                             <div className="flex items-center gap-2">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                                <MapPin className="h-5 w-5 text-primary" />
+                              <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                                <MapPin className="text-primary h-5 w-5" />
                               </div>
                               <div>
-                                <p className="font-bold text-lg">{lot.name}</p>
-                                <Badge variant="outline" className="text-xs mt-0.5">
+                                <p className="text-lg font-bold">{lot.name}</p>
+                                <Badge variant="outline" className="mt-0.5 text-xs">
                                   {lot.status}
                                 </Badge>
                               </div>
@@ -263,7 +254,7 @@ export function AvailableLotsTable({
                                 animate={{ scale: 1, rotate: 0 }}
                                 transition={{ type: 'spring', stiffness: 200 }}
                               >
-                                <CheckCircle2 className="h-6 w-6 text-primary" />
+                                <CheckCircle2 className="text-primary h-6 w-6" />
                               </motion.div>
                             )}
                           </div>
@@ -271,8 +262,8 @@ export function AvailableLotsTable({
                           {/* Info Grid */}
                           <div className="space-y-2.5">
                             {/* Area */}
-                            <div className="flex items-center justify-between py-2 border-b border-border/50">
-                              <div className="flex items-center gap-2 text-muted-foreground">
+                            <div className="border-border/50 flex items-center justify-between border-b py-2">
+                              <div className="text-muted-foreground flex items-center gap-2">
                                 <Ruler className="h-4 w-4" />
                                 <span className="text-sm">Área</span>
                               </div>
@@ -280,8 +271,8 @@ export function AvailableLotsTable({
                             </div>
 
                             {/* Lot Price */}
-                            <div className="flex items-center justify-between py-2 border-b border-border/50">
-                              <div className="flex items-center gap-2 text-muted-foreground">
+                            <div className="border-border/50 flex items-center justify-between border-b py-2">
+                              <div className="text-muted-foreground flex items-center gap-2">
                                 <DollarSign className="h-4 w-4" />
                                 <span className="text-sm">Precio Lote</span>
                               </div>
@@ -291,8 +282,8 @@ export function AvailableLotsTable({
                             </div>
 
                             {/* Urbanization Price */}
-                            <div className="flex items-center justify-between py-2 border-b border-border/50">
-                              <div className="flex items-center gap-2 text-muted-foreground">
+                            <div className="border-border/50 flex items-center justify-between border-b py-2">
+                              <div className="text-muted-foreground flex items-center gap-2">
                                 <DollarSign className="h-4 w-4" />
                                 <span className="text-sm">H. Urbana</span>
                               </div>
@@ -303,7 +294,7 @@ export function AvailableLotsTable({
 
                             {/* Total Price */}
                             <div className="flex items-center justify-between pt-2">
-                              <div className="flex items-center gap-2 text-foreground">
+                              <div className="text-foreground flex items-center gap-2">
                                 <DollarSign className="h-4 w-4" />
                                 <span className="text-sm font-semibold">Total</span>
                               </div>
@@ -316,10 +307,7 @@ export function AvailableLotsTable({
                           {/* Action Button */}
                           <Button
                             variant={isSelected ? 'default' : 'outline'}
-                            className={cn(
-                              'w-full mt-4',
-                              isSelected && 'shadow-md'
-                            )}
+                            className={cn('mt-4 w-full', isSelected && 'shadow-md')}
                             onClick={(e) => {
                               e.stopPropagation();
                               onSelectLot(lot);
@@ -337,10 +325,10 @@ export function AvailableLotsTable({
             </>
           ) : (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted/50 mb-4">
-                <MapPin className="h-8 w-8 text-muted-foreground" />
+              <div className="bg-muted/50 mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+                <MapPin className="text-muted-foreground h-8 w-8" />
               </div>
-              <p className="text-sm font-medium text-muted-foreground">
+              <p className="text-muted-foreground text-sm font-medium">
                 No hay lotes disponibles en esta manzana
               </p>
             </div>

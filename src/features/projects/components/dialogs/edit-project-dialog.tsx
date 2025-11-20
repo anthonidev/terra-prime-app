@@ -35,11 +35,7 @@ interface EditProjectDialogProps {
   project: ProjectDetail;
 }
 
-export function EditProjectDialog({
-  open,
-  onOpenChange,
-  project,
-}: EditProjectDialogProps) {
+export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDialogProps) {
   const [logoPreview, setLogoPreview] = useState<string | null>(project.logo);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -116,9 +112,7 @@ export function EditProjectDialog({
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Editar proyecto</DialogTitle>
-          <DialogDescription>
-            Actualiza la información del proyecto
-          </DialogDescription>
+          <DialogDescription>Actualiza la información del proyecto</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -129,7 +123,7 @@ export function EditProjectDialog({
               <div className="flex items-center gap-4">
                 <Avatar className="h-20 w-20 rounded-lg">
                   <AvatarImage src={logoPreview || undefined} />
-                  <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-lg">
+                  <AvatarFallback className="bg-primary/10 text-primary rounded-lg text-lg">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
@@ -153,20 +147,13 @@ export function EditProjectDialog({
                       {logoPreview ? 'Cambiar' : 'Subir'} logo
                     </Button>
                     {logoPreview && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleRemoveLogo}
-                      >
+                      <Button type="button" variant="ghost" size="sm" onClick={handleRemoveLogo}>
                         <X className="mr-2 h-4 w-4" />
                         Quitar
                       </Button>
                     )}
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    PNG, JPG hasta 2MB
-                  </p>
+                  <p className="text-muted-foreground text-xs">PNG, JPG hasta 2MB</p>
                 </div>
               </div>
             </div>
@@ -194,15 +181,12 @@ export function EditProjectDialog({
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">Estado</FormLabel>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-muted-foreground text-sm">
                       {field.value ? 'Proyecto activo' : 'Proyecto inactivo'}
                     </div>
                   </div>
                   <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
                 </FormItem>
               )}
