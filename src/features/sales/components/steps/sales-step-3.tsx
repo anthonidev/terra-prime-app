@@ -79,7 +79,7 @@ export function SalesStep3({
       {/* Urbanization Configuration */}
       {hasUrbanization && (
         <UrbanizationConfig
-          form={isDirectPayment ? directForm : financedForm}
+          form={isDirectPayment ? (directForm as any) : (financedForm as any)}
           urbanizationPrice={urbanizationPrice}
           currency={selectedLot.projectCurrency}
         />
