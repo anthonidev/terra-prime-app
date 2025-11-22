@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertCircle, UserCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 import { useProfile } from '../hooks/use-profile';
@@ -41,35 +41,32 @@ export function ProfileContainer() {
   const user = data.data;
 
   return (
-    <div className="space-y-4">
+    <div className="mx-auto max-w-5xl space-y-8">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-          <UserCircle className="text-primary h-5 w-5" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Mi Perfil</h1>
-          <p className="text-muted-foreground text-sm">
-            Gestiona tu información personal y configuración de cuenta
-          </p>
-        </div>
+      <div className="flex flex-col gap-1">
+        <h1 className="text-foreground text-3xl font-bold tracking-tight">Mi Perfil</h1>
+        <p className="text-muted-foreground text-base">
+          Gestiona tu información personal y configuración de cuenta
+        </p>
       </div>
 
       {/* First Row: Photo + Profile Info */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-8 md:grid-cols-12">
         {/* Photo Section */}
-        <div className="md:col-span-1">
+        <div className="md:col-span-4 lg:col-span-3">
           <ProfilePhotoSection user={user} />
         </div>
 
         {/* Profile Form */}
-        <div className="md:col-span-2">
+        <div className="md:col-span-8 lg:col-span-9">
           <ProfileForm user={user} />
         </div>
       </div>
 
       {/* Second Row: Change Password (Full Width) */}
-      <ChangePasswordForm />
+      <div className="pt-4">
+        <ChangePasswordForm />
+      </div>
     </div>
   );
 }

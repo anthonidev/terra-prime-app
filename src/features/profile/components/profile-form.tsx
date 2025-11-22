@@ -47,52 +47,59 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const isDirty = form.formState.isDirty;
 
   return (
-    <Card className="h-full">
-      <CardHeader className="pb-3">
-        <div className="flex items-center gap-2">
-          <div className="bg-accent/20 flex h-8 w-8 items-center justify-center rounded">
-            <UserRound className="text-accent h-4 w-4" />
+    <Card className="bg-card/50 h-full border shadow-sm backdrop-blur-sm">
+      <CardHeader className="px-6 pt-4 pb-2">
+        <div className="flex items-center gap-3">
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-xl">
+            <UserRound className="text-primary h-5 w-5" />
           </div>
-          <CardTitle className="text-base">Información Personal</CardTitle>
+          <div>
+            <CardTitle className="text-lg font-bold tracking-tight">Información Personal</CardTitle>
+            <p className="text-muted-foreground text-sm">Actualiza tus datos básicos</p>
+          </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-6 pb-5">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {/* Email */}
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xs font-medium">Correo Electrónico</FormLabel>
+                  <FormLabel className="text-sm font-medium">Correo Electrónico</FormLabel>
                   <div className="relative">
-                    <Mail className="text-muted-foreground absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
+                    <Mail className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                     <FormControl>
                       <Input
                         placeholder="correo@ejemplo.com"
-                        className="h-9 pl-9 text-sm"
+                        className="bg-background/50 border-input/50 focus:bg-background h-11 pl-10 text-base transition-all"
                         {...field}
                       />
                     </FormControl>
                   </div>
-                  <FormMessage className="text-xs" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
 
             {/* Grid for First and Last Name */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-6">
               <FormField
                 control={form.control}
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs font-medium">Nombre</FormLabel>
+                    <FormLabel className="text-sm font-medium">Nombre</FormLabel>
                     <FormControl>
-                      <Input placeholder="Tu nombre" className="h-9 text-sm" {...field} />
+                      <Input
+                        placeholder="Tu nombre"
+                        className="bg-background/50 border-input/50 focus:bg-background h-11 text-base transition-all"
+                        {...field}
+                      />
                     </FormControl>
-                    <FormMessage className="text-xs" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -102,27 +109,36 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs font-medium">Apellido</FormLabel>
+                    <FormLabel className="text-sm font-medium">Apellido</FormLabel>
                     <FormControl>
-                      <Input placeholder="Tu apellido" className="h-9 text-sm" {...field} />
+                      <Input
+                        placeholder="Tu apellido"
+                        className="bg-background/50 border-input/50 focus:bg-background h-11 text-base transition-all"
+                        {...field}
+                      />
                     </FormControl>
-                    <FormMessage className="text-xs" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
 
             {/* Submit Button */}
-            <div className="pt-2">
-              <Button type="submit" size="sm" className="w-full" disabled={isPending || !isDirty}>
+            <div className="flex justify-end pt-4">
+              <Button
+                type="submit"
+                size="lg"
+                className="min-w-[140px] font-semibold shadow-md transition-all hover:shadow-lg"
+                disabled={isPending || !isDirty}
+              >
                 {isPending ? (
                   <>
-                    <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Guardando...
                   </>
                 ) : (
                   <>
-                    <Save className="mr-2 h-3.5 w-3.5" />
+                    <Save className="mr-2 h-4 w-4" />
                     Guardar cambios
                   </>
                 )}
