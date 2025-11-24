@@ -54,6 +54,7 @@ export function UserFormDialog({ open, onOpenChange, user }: UserFormDialogProps
       isEditing && user
         ? {
             email: user.email,
+            password: '',
             firstName: user.firstName,
             lastName: user.lastName,
             roleId: user.role.id,
@@ -75,6 +76,7 @@ export function UserFormDialog({ open, onOpenChange, user }: UserFormDialogProps
       if (isEditing && user) {
         form.reset({
           email: user.email,
+          password: '',
           firstName: user.firstName,
           lastName: user.lastName,
           roleId: user.role.id,
@@ -101,6 +103,8 @@ export function UserFormDialog({ open, onOpenChange, user }: UserFormDialogProps
       const payload: any = {};
 
       if (updateData.email !== undefined) payload.email = updateData.email;
+      if (updateData.password && updateData.password.trim() !== '')
+        payload.password = updateData.password;
       if (updateData.firstName !== undefined) payload.firstName = updateData.firstName;
       if (updateData.lastName !== undefined) payload.lastName = updateData.lastName;
       if (updateData.roleId !== undefined) payload.roleId = updateData.roleId;
@@ -169,52 +173,60 @@ export function UserFormDialog({ open, onOpenChange, user }: UserFormDialogProps
           )}
         />
 
-        {/* Campos solo para creación */}
-        {!isEditing && (
-          <>
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem className="space-y-1.5">
-                  <FormLabel className="text-foreground flex items-center gap-1.5 text-sm font-medium">
-                    <Lock className="h-3.5 w-3.5" />
-                    Contraseña
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="••••••••"
-                      className="focus-visible:ring-primary/30 h-9 transition-all"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+        {/* Password Field */}
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem className="space-y-1.5">
+              <FormLabel className="text-foreground flex items-center gap-1.5 text-sm font-medium">
+                <Lock className="h-3.5 w-3.5" />
+                Contraseña{' '}
+                {isEditing && (
+                  <span className="text-muted-foreground text-xs font-normal">(opcional)</span>
+                )}
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="password"
+                  placeholder={isEditing ? 'Dejar en blanco para mantener la actual' : '••••••••'}
+                  className="focus-visible:ring-primary/30 h-9 transition-all"
+                  {...field}
+                />
+              </FormControl>
+              {isEditing ? (
+                <p className="text-muted-foreground text-xs">
+                  Solo completa este campo si deseas cambiar la contraseña
+                </p>
+              ) : (
+                <FormMessage />
               )}
-            />
+            </FormItem>
+          )}
+        />
 
-            <FormField
-              control={form.control}
-              name="document"
-              render={({ field }) => (
-                <FormItem className="space-y-1.5">
-                  <FormLabel className="text-foreground flex items-center gap-1.5 text-sm font-medium">
-                    <UserIcon className="h-3.5 w-3.5" />
-                    Documento
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="12345678"
-                      className="focus-visible:ring-primary/30 h-9 transition-all"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
+        {/* Documento - solo para creación */}
+        {!isEditing && (
+          <FormField
+            control={form.control}
+            name="document"
+            render={({ field }) => (
+              <FormItem className="space-y-1.5">
+                <FormLabel className="text-foreground flex items-center gap-1.5 text-sm font-medium">
+                  <UserIcon className="h-3.5 w-3.5" />
+                  Documento
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="12345678"
+                    className="focus-visible:ring-primary/30 h-9 transition-all"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         )}
 
         {/* Nombre y Apellido */}
