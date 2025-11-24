@@ -21,94 +21,91 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <Link href={`/proyectos/detalle/${project.id}`}>
-      <Card className="group hover:border-primary/50 h-full cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-md">
-        <CardHeader className="pb-3">
+      <Card className="group h-full cursor-pointer overflow-hidden border-none shadow-sm transition-shadow hover:shadow-md">
+        <CardHeader className="px-4 pt-4 pb-3">
           <div className="flex items-start justify-between gap-2">
             {/* Logo/Avatar más compacto */}
-            <Avatar className="ring-border group-hover:ring-primary/50 h-12 w-12 rounded-lg ring-1 transition-all duration-300">
+            <Avatar className="h-10 w-10 rounded-lg border">
               <AvatarImage src={project.logo || undefined} alt={project.name} />
-              <AvatarFallback className="from-primary/20 to-primary/5 text-primary rounded-lg text-base font-bold">
+              <AvatarFallback className="bg-primary/5 text-primary rounded-lg text-sm font-bold">
                 {initials}
               </AvatarFallback>
             </Avatar>
 
             {/* Estado y Moneda */}
-            <div className="flex flex-col items-end gap-1.5">
+            <div className="flex flex-col items-end gap-1">
               <Badge
                 variant={project.isActive ? 'default' : 'secondary'}
-                className="text-xs transition-all duration-300 group-hover:scale-105"
+                className="h-5 px-1.5 text-[10px] font-medium"
               >
                 {project.isActive ? 'Activo' : 'Inactivo'}
               </Badge>
-              <Badge
-                variant="outline"
-                className="group-hover:border-primary/50 font-mono text-xs transition-all duration-300"
-              >
+              <Badge variant="outline" className="h-5 px-1.5 font-mono text-[10px] font-medium">
                 {project.currency}
               </Badge>
             </div>
           </div>
 
           {/* Nombre del proyecto */}
-          <div className="pt-2">
-            <h3 className="group-hover:text-primary line-clamp-1 text-lg font-bold tracking-tight transition-colors duration-300">
+          <div className="pt-3">
+            <h3 className="group-hover:text-primary line-clamp-1 text-base font-bold tracking-tight transition-colors">
               {project.name}
             </h3>
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-3 px-4 pb-4">
           {/* Estadísticas principales más compactas */}
           <div className="grid grid-cols-2 gap-2">
             {/* Etapas */}
-            <div className="group/stat bg-muted/30 hover:bg-muted/50 flex items-center gap-2 rounded-md p-2 transition-colors duration-300">
-              <div className="bg-accent/20 group-hover/stat:bg-accent/30 flex h-8 w-8 items-center justify-center rounded transition-colors duration-300">
-                <Layers className="text-accent h-4 w-4" />
+            <div className="bg-muted/30 flex items-center gap-2 rounded-md p-2">
+              <div className="bg-primary/10 flex h-7 w-7 items-center justify-center rounded">
+                <Layers className="text-primary h-3.5 w-3.5" />
               </div>
               <div className="min-w-0">
-                <p className="text-muted-foreground text-[10px] font-medium tracking-wide uppercase">
+                <p className="text-muted-foreground text-[9px] font-medium tracking-wide uppercase">
                   Etapas
                 </p>
-                <p className="text-base font-bold tabular-nums">{project.stageCount}</p>
+                <p className="text-sm font-bold tabular-nums">{project.stageCount}</p>
               </div>
             </div>
 
             {/* Manzanas */}
-            <div className="group/stat bg-muted/30 hover:bg-muted/50 flex items-center gap-2 rounded-md p-2 transition-colors duration-300">
-              <div className="bg-primary/20 group-hover/stat:bg-primary/30 flex h-8 w-8 items-center justify-center rounded transition-colors duration-300">
-                <Grid3x3 className="text-primary h-4 w-4" />
+            <div className="bg-muted/30 flex items-center gap-2 rounded-md p-2">
+              <div className="bg-primary/10 flex h-7 w-7 items-center justify-center rounded">
+                <Grid3x3 className="text-primary h-3.5 w-3.5" />
               </div>
               <div className="min-w-0">
-                <p className="text-muted-foreground text-[10px] font-medium tracking-wide uppercase">
+                <p className="text-muted-foreground text-[9px] font-medium tracking-wide uppercase">
                   Manzanas
                 </p>
-                <p className="text-base font-bold tabular-nums">{project.blockCount}</p>
+                <p className="text-sm font-bold tabular-nums">{project.blockCount}</p>
               </div>
             </div>
 
             {/* Lotes */}
-            <div className="group/stat bg-muted/30 hover:bg-muted/50 flex items-center gap-2 rounded-md p-2 transition-colors duration-300">
-              <div className="bg-info/20 group-hover/stat:bg-info/30 flex h-8 w-8 items-center justify-center rounded transition-colors duration-300">
-                <Package className="text-info h-4 w-4" />
+            <div className="bg-muted/30 flex items-center gap-2 rounded-md p-2">
+              <div className="bg-info/10 flex h-7 w-7 items-center justify-center rounded">
+                <Package className="text-info h-3.5 w-3.5" />
               </div>
               <div className="min-w-0">
-                <p className="text-muted-foreground text-[10px] font-medium tracking-wide uppercase">
+                <p className="text-muted-foreground text-[9px] font-medium tracking-wide uppercase">
                   Lotes
                 </p>
-                <p className="text-base font-bold tabular-nums">{project.lotCount}</p>
+                <p className="text-sm font-bold tabular-nums">{project.lotCount}</p>
               </div>
             </div>
 
             {/* Disponibles */}
-            <div className="group/stat bg-muted/30 hover:bg-muted/50 flex items-center gap-2 rounded-md p-2 transition-colors duration-300">
-              <div className="bg-success/20 group-hover/stat:bg-success/30 flex h-8 w-8 items-center justify-center rounded transition-colors duration-300">
-                <TrendingUp className="text-success h-4 w-4" />
+            <div className="bg-muted/30 flex items-center gap-2 rounded-md p-2">
+              <div className="bg-success/10 flex h-7 w-7 items-center justify-center rounded">
+                <TrendingUp className="text-success h-3.5 w-3.5" />
               </div>
               <div className="min-w-0">
-                <p className="text-muted-foreground text-[10px] font-medium tracking-wide uppercase">
+                <p className="text-muted-foreground text-[9px] font-medium tracking-wide uppercase">
                   Disponibles
                 </p>
-                <p className="text-success text-base font-bold tabular-nums">
+                <p className="text-success text-sm font-bold tabular-nums">
                   {project.activeLotCount}
                 </p>
               </div>

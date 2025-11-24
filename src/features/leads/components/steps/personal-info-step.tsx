@@ -33,20 +33,20 @@ export function PersonalInfoStep({
   const isValid = firstName && lastName && phone;
 
   return (
-    <Card>
+    <Card className="border-none shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <div className="bg-accent/20 flex h-8 w-8 items-center justify-center rounded">
+          <div className="bg-accent/10 flex h-8 w-8 items-center justify-center rounded-lg">
             <User className="text-accent h-4 w-4" />
           </div>
           <CardTitle className="text-base">Datos Personales</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="firstName" className="text-xs font-medium">
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="firstName">
                 Nombres <span className="text-destructive">*</span>
               </Label>
               <Input
@@ -54,12 +54,12 @@ export function PersonalInfoStep({
                 value={firstName}
                 onChange={(e) => onFieldChange('firstName', e.target.value)}
                 placeholder="Ingrese nombres"
-                className="h-9 text-sm"
+                className="h-10"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="lastName" className="text-xs font-medium">
+            <div className="space-y-2">
+              <Label htmlFor="lastName">
                 Apellidos <span className="text-destructive">*</span>
               </Label>
               <Input
@@ -67,68 +67,74 @@ export function PersonalInfoStep({
                 value={lastName}
                 onChange={(e) => onFieldChange('lastName', e.target.value)}
                 placeholder="Ingrese apellidos"
-                className="h-9 text-sm"
+                className="h-10"
               />
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-xs font-medium">
-              Email
-            </Label>
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
             <div className="relative">
-              <Mail className="text-muted-foreground absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
+              <Mail className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => onFieldChange('email', e.target.value)}
                 placeholder="correo@ejemplo.com"
-                className="h-9 pl-9 text-sm"
+                className="h-10 pl-10"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="phone" className="text-xs font-medium">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="phone">
                 Teléfono <span className="text-destructive">*</span>
               </Label>
               <div className="relative">
-                <Phone className="text-muted-foreground absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
+                <Phone className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                 <Input
                   id="phone"
                   type="tel"
                   value={phone}
-                  onChange={(e) => onFieldChange('phone', e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value)) {
+                      onFieldChange('phone', value);
+                    }
+                  }}
                   placeholder="999 999 999"
-                  className="h-9 pl-9 text-sm"
+                  className="h-10 pl-10"
+                  maxLength={9}
                 />
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="phone2" className="text-xs font-medium">
-                Teléfono 2
-              </Label>
+            <div className="space-y-2">
+              <Label htmlFor="phone2">Teléfono 2 (Opcional)</Label>
               <div className="relative">
-                <Phone className="text-muted-foreground absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
+                <Phone className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                 <Input
                   id="phone2"
                   type="tel"
                   value={phone2}
-                  onChange={(e) => onFieldChange('phone2', e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value)) {
+                      onFieldChange('phone2', value);
+                    }
+                  }}
                   placeholder="999 999 999"
-                  className="h-9 pl-9 text-sm"
+                  className="h-10 pl-10"
+                  maxLength={9}
                 />
               </div>
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="age" className="text-xs font-medium">
-              Edad
-            </Label>
+          <div className="space-y-2">
+            <Label htmlFor="age">Edad</Label>
             <Input
               id="age"
               type="number"
@@ -137,18 +143,18 @@ export function PersonalInfoStep({
               placeholder="Edad"
               min="0"
               max="120"
-              className="h-9 text-sm"
+              className="h-10 max-w-[120px]"
             />
           </div>
 
-          <div className="flex justify-between pt-2">
-            <Button type="button" variant="outline" size="sm" onClick={onBack}>
-              <ArrowLeft className="mr-2 h-3.5 w-3.5" />
+          <div className="flex justify-between pt-4">
+            <Button type="button" variant="outline" onClick={onBack}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
               Atrás
             </Button>
-            <Button size="sm" onClick={onNext} disabled={!isValid}>
+            <Button onClick={onNext} disabled={!isValid}>
               Siguiente
-              <ArrowRight className="ml-2 h-3.5 w-3.5" />
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
         </div>

@@ -14,7 +14,7 @@ export function ProfileSkeleton() {
       <div className="grid gap-8 md:grid-cols-12">
         {/* Photo Section Skeleton */}
         <div className="md:col-span-4 lg:col-span-3">
-          <Card className="bg-card/50 h-full border shadow-sm backdrop-blur-sm">
+          <Card className="bg-card h-full border shadow-sm">
             <CardContent className="flex flex-col items-center gap-4 p-5">
               <div className="relative">
                 <Skeleton className="h-32 w-32 rounded-full" />
@@ -30,7 +30,7 @@ export function ProfileSkeleton() {
 
         {/* Profile Form Skeleton */}
         <div className="md:col-span-8 lg:col-span-9">
-          <Card className="bg-card/50 h-full border shadow-sm backdrop-blur-sm">
+          <Card className="bg-card h-full border shadow-sm">
             <CardHeader className="px-6 pt-4 pb-2">
               <div className="flex items-center gap-3">
                 <Skeleton className="h-10 w-10 rounded-xl" />

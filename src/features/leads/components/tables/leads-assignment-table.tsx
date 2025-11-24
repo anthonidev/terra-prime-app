@@ -10,6 +10,7 @@ import { DataTableWithSelection } from '@/shared/components/data-table/data-tabl
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { AssignVendorModal } from '../dialogs/assign-vendor-modal';
 import { LeadAssignmentCard } from '../cards/lead-assignment-card';
+import { UserInfo } from '@/shared/components/user-info';
 import type { Lead } from '../../types';
 
 interface LeadsAssignmentTableProps {
@@ -128,12 +129,11 @@ export function LeadsAssignmentTable({ leads }: LeadsAssignmentTableProps) {
           );
         }
         return (
-          <div>
-            <div className="text-xs font-medium">
-              {vendor.firstName} {vendor.lastName}
-            </div>
-            <div className="text-muted-foreground text-xs">{vendor.document}</div>
-          </div>
+          <UserInfo
+            name={`${vendor.firstName} ${vendor.lastName}`}
+            document={vendor.document}
+            className="gap-2"
+          />
         );
       },
     },

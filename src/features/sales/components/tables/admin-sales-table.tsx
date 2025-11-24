@@ -18,6 +18,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { DataTable } from '@/shared/components/data-table/data-table';
+import { UserInfo } from '@/shared/components/user-info';
+import { Calendar, DollarSign, MapPin } from 'lucide-react';
 import type { MySale, StatusSale } from '../../types';
 import { AssignParticipantsModal } from '../dialogs/assign-participants-modal';
 import {
@@ -143,36 +145,50 @@ function ActionsCell({ sale }: { sale: MySale }) {
 const columns: ColumnDef<MySale>[] = [
   {
     accessorKey: 'createdAt',
-    header: 'Fecha',
+    header: ({}) => (
+      <div className="flex items-center gap-2">
+        <Calendar className="text-muted-foreground h-4 w-4" />
+        <span>Fecha</span>
+      </div>
+    ),
     cell: ({ row }) => {
       const date = new Date(row.getValue('createdAt'));
-      return format(date, 'dd MMM yyyy', { locale: es });
+      return <span className="font-medium">{format(date, 'dd MMM yyyy', { locale: es })}</span>;
     },
   },
   {
     accessorKey: 'client',
-    header: 'Cliente',
+    header: ({}) => (
+      <div className="flex items-center gap-2">
+        <Users className="text-muted-foreground h-4 w-4" />
+        <span>Cliente</span>
+      </div>
+    ),
     cell: ({ row }) => {
       const client = row.original.client;
       return (
-        <div className="flex flex-col">
-          <span className="font-medium">
-            {client.firstName} {client.lastName}
-          </span>
-          <span className="text-muted-foreground text-sm">{client.phone}</span>
-        </div>
+        <UserInfo
+          name={`${client.firstName} ${client.lastName}`}
+          phone={client.phone}
+          className="p-0"
+        />
       );
     },
   },
   {
     accessorKey: 'lot',
-    header: 'Lote',
+    header: ({}) => (
+      <div className="flex items-center gap-2">
+        <MapPin className="text-muted-foreground h-4 w-4" />
+        <span>Lote</span>
+      </div>
+    ),
     cell: ({ row }) => {
       const lot = row.original.lot;
       return (
         <div className="flex flex-col">
           <span className="font-medium">{lot.name}</span>
-          <span className="text-muted-foreground text-sm">
+          <span className="text-muted-foreground text-xs">
             {lot.project} - {lot.stage}
           </span>
         </div>
@@ -181,17 +197,29 @@ const columns: ColumnDef<MySale>[] = [
   },
   {
     accessorKey: 'type',
-    header: 'Tipo',
+    header: ({}) => (
+      <div className="flex items-center gap-2">
+        <FileText className="text-muted-foreground h-4 w-4" />
+        <span>Tipo</span>
+      </div>
+    ),
     cell: ({ row }) => {
       const type = row.getValue('type') as string;
       return (
-        <span className="capitalize">{type === 'DIRECT_PAYMENT' ? 'Contado' : 'Financiado'}</span>
+        <Badge variant="outline" className="font-normal">
+          {type === 'DIRECT_PAYMENT' ? 'Contado' : 'Financiado'}
+        </Badge>
       );
     },
   },
   {
     accessorKey: 'totalAmount',
-    header: 'Monto Total',
+    header: ({}) => (
+      <div className="flex items-center gap-2">
+        <DollarSign className="text-muted-foreground h-4 w-4" />
+        <span>Monto Total</span>
+      </div>
+    ),
     cell: ({ row }) => {
       const amount = row.getValue('totalAmount') as number;
       const currency = row.original.currency;

@@ -72,7 +72,7 @@ export function PaymentSummaryCard({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-6">
             {/* Payment Details Grid */}
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
               {paymentDetails
@@ -83,8 +83,11 @@ export function PaymentSummaryCard({
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.25 + index * 0.05 }}
+                    className="space-y-1"
                   >
-                    <p className="text-muted-foreground text-sm">{detail.label}</p>
+                    <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                      {detail.label}
+                    </p>
                     <p className="font-semibold">{detail.value}</p>
                   </motion.div>
                 ))}
@@ -96,9 +99,9 @@ export function PaymentSummaryCard({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="from-primary/5 border-primary/20 rounded-lg border bg-gradient-to-br to-transparent p-4"
+                className="bg-muted/30 rounded-lg p-4"
               >
-                <div className="mb-3 flex items-center gap-2">
+                <div className="mb-4 flex items-center gap-2 border-b pb-2">
                   <TrendingUp className="text-primary h-4 w-4" />
                   <h4 className="font-semibold">Resumen de Amortización</h4>
                 </div>
@@ -108,7 +111,7 @@ export function PaymentSummaryCard({
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.45 }}
-                    className="bg-background/50 rounded-lg p-3"
+                    className="bg-background rounded-lg border p-3 shadow-sm"
                   >
                     <p className="text-muted-foreground mb-1 text-xs">Total Lote</p>
                     <p className="font-semibold">
@@ -125,10 +128,10 @@ export function PaymentSummaryCard({
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.5 }}
-                      className="bg-background/50 rounded-lg p-3"
+                      className="bg-background rounded-lg border p-3 shadow-sm"
                     >
                       <p className="text-muted-foreground mb-1 text-xs">Total HU</p>
-                      <p className="text-accent font-semibold">
+                      <p className="font-semibold">
                         {formatCurrency(step3.amortizationMeta.huTotalAmount, currencyType)}
                       </p>
                       <p className="text-muted-foreground mt-1 text-xs">
@@ -142,7 +145,7 @@ export function PaymentSummaryCard({
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.55 }}
-                    className="bg-primary/10 border-primary/20 rounded-lg border p-3"
+                    className="bg-primary/5 border-primary/20 rounded-lg border p-3"
                   >
                     <p className="text-muted-foreground mb-1 text-xs">Total General</p>
                     <p className="text-primary text-base font-semibold">

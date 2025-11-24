@@ -15,7 +15,7 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
     <motion.nav
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="border-border bg-layout-topbar text-layout-topbar-foreground bg-opacity-95 w-full border-b shadow-sm backdrop-blur-sm"
+      className="border-border bg-layout-topbar text-layout-topbar-foreground w-full border-b shadow-sm"
     >
       <div className="flex h-16 items-center justify-between px-6">
         <div className="flex items-center space-x-4">

@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { UserPlus } from 'lucide-react';
 
+import { PageHeader } from '@/shared/components/common/page-header';
+
 import {
   useActiveLeadSources,
   useActiveProjectsForLead,
@@ -142,19 +144,13 @@ export function NewLeadContainer() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-          <UserPlus className="text-primary h-5 w-5" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Registrar Nuevo Lead</h1>
-          <p className="text-muted-foreground text-sm">
-            Complete el formulario para registrar un nuevo lead en el sistema
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Registrar Nuevo Lead"
+        description="Complete el formulario para registrar un nuevo lead en el sistema"
+        icon={UserPlus}
+      />
 
       <LeadFormStepper currentStep={currentStep} />
 
@@ -163,7 +159,7 @@ export function NewLeadContainer() {
           documentType={formData.documentType}
           document={formData.document}
           isSearching={isSearching}
-          onDocumentTypeChange={(value) => updateFormData({ documentType: value })}
+          onDocumentTypeChange={(value) => updateFormData({ documentType: value, document: '' })}
           onDocumentChange={(value) => updateFormData({ document: value })}
           onSearch={handleDocumentSearch}
         />

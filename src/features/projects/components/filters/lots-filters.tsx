@@ -41,6 +41,15 @@ export function LotsFilters({
   onSearchChange,
   onSearchSubmit,
 }: LotsFiltersProps) {
+  // Filtrar bloques según la etapa seleccionada
+  const filteredBlocks =
+    selectedStageId === 'all'
+      ? blocks
+      : blocks.filter((block) => block.stageId === selectedStageId);
+
+  // Verificar si el filtro de manzanas debe estar habilitado
+  const isBlockFilterDisabled = selectedStageId === 'all';
+
   return (
     <div className="space-y-4">
       {/* Search */}
@@ -66,7 +75,16 @@ export function LotsFilters({
       {/* Filters Row */}
       <div className="grid gap-3 sm:grid-cols-3">
         {/* Stage Filter */}
-        <Select value={selectedStageId} onValueChange={onStageChange}>
+        <Select
+          value={selectedStageId}
+          onValueChange={(value) => {
+            onStageChange(value);
+            // Resetear el filtro de manzana cuando cambie la etapa
+            if (selectedBlockId !== 'all') {
+              onBlockChange('all');
+            }
+          }}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Todas las etapas" />
           </SelectTrigger>
@@ -81,13 +99,21 @@ export function LotsFilters({
         </Select>
 
         {/* Block Filter */}
-        <Select value={selectedBlockId} onValueChange={onBlockChange}>
+        <Select
+          value={selectedBlockId}
+          onValueChange={onBlockChange}
+          disabled={isBlockFilterDisabled}
+        >
           <SelectTrigger>
-            <SelectValue placeholder="Todas las manzanas" />
+            <SelectValue
+              placeholder={
+                isBlockFilterDisabled ? 'Selecciona una etapa primero' : 'Todas las manzanas'
+              }
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todas las manzanas</SelectItem>
-            {blocks.map((block) => (
+            {filteredBlocks.map((block) => (
               <SelectItem key={block.id} value={block.id}>
                 Manzana {block.name}
               </SelectItem>

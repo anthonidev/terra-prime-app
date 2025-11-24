@@ -47,7 +47,7 @@ export function PinDisplay({ pin, expiresAt, onRegenerate, isRegenerating }: Pin
   };
 
   return (
-    <Card className="max-w-2xl">
+    <Card className="max-w-2xl border-none shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
           <div className="bg-muted flex h-8 w-8 items-center justify-center rounded-lg">
@@ -62,33 +62,35 @@ export function PinDisplay({ pin, expiresAt, onRegenerate, isRegenerating }: Pin
           </CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         {/* PIN Display */}
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <label className="text-xs font-medium">PIN de Administrador</label>
           <div className="flex items-center gap-2">
-            <div className="bg-muted border-border flex-1 rounded-lg border-2 p-3">
-              <p className="text-center font-mono text-2xl font-bold tracking-wider">{pin}</p>
+            <div className="bg-muted/50 border-border flex-1 rounded-lg border-2 border-dashed p-4">
+              <p className="text-foreground text-center font-mono text-3xl font-bold tracking-[0.2em]">
+                {pin}
+              </p>
             </div>
             <Button
               variant="outline"
               size="sm"
               onClick={copyToClipboard}
               title="Copiar PIN"
-              className="h-[52px] w-[52px] p-0"
+              className="hover:bg-muted/50 h-[68px] w-[68px] p-0"
             >
-              <Copy className="h-3.5 w-3.5" />
+              <Copy className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
         {/* Countdown */}
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <label className="flex items-center gap-1.5 text-xs font-medium">
             <Clock className="h-3.5 w-3.5" />
             Tiempo restante
           </label>
-          <div className="bg-muted rounded-lg border p-3">
+          <div className="bg-muted/30 rounded-lg border p-4">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <p
@@ -115,7 +117,7 @@ export function PinDisplay({ pin, expiresAt, onRegenerate, isRegenerating }: Pin
 
         {/* Status Message */}
         {!timeLeft.isExpired && (
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-950">
+          <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-3 dark:border-blue-800 dark:bg-blue-950/50">
             <p className="text-xs text-blue-900 dark:text-blue-100">
               <strong>Nota:</strong> Este PIN está activo y puede ser utilizado para operaciones
               administrativas.
@@ -129,7 +131,7 @@ export function PinDisplay({ pin, expiresAt, onRegenerate, isRegenerating }: Pin
         )}
 
         {timeLeft.isExpired && (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950">
+          <div className="rounded-lg border border-red-200 bg-red-50/50 p-3 dark:border-red-800 dark:bg-red-950/50">
             <p className="text-xs text-red-900 dark:text-red-100">
               <strong>Advertencia:</strong> Este PIN ha expirado y ya no puede ser utilizado. Por
               favor, genera un nuevo PIN.

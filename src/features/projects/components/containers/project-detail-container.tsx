@@ -83,30 +83,33 @@ export function ProjectDetailContainer({ projectId }: ProjectDetailContainerProp
       </Link>
 
       {/* Header del Proyecto */}
-      <div className="bg-card rounded-lg border p-6 shadow-sm">
+      <div className="bg-card rounded-lg border-none p-6 shadow-sm">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-20 w-20 rounded-lg">
+          <div className="flex items-center gap-5">
+            <Avatar className="h-20 w-20 rounded-xl border">
               <AvatarImage src={project.logo || undefined} alt={project.name} />
-              <AvatarFallback className="bg-primary/10 text-primary rounded-lg text-2xl font-semibold">
+              <AvatarFallback className="bg-primary/5 text-primary rounded-xl text-2xl font-bold">
                 {projectInitials}
               </AvatarFallback>
             </Avatar>
 
-            <div>
-              <h1 className="text-3xl font-bold">{project.name}</h1>
-              <div className="mt-2 flex items-center gap-2">
-                <Badge variant={project.isActive ? 'default' : 'secondary'}>
+            <div className="space-y-1">
+              <h1 className="text-2xl font-bold tracking-tight">{project.name}</h1>
+              <div className="flex items-center gap-2">
+                <Badge
+                  variant={project.isActive ? 'default' : 'secondary'}
+                  className="h-5 px-2 text-xs"
+                >
                   {project.isActive ? 'Activo' : 'Inactivo'}
                 </Badge>
-                <Badge variant="outline" className="font-mono">
+                <Badge variant="outline" className="h-5 px-2 font-mono text-xs">
                   {project.currency}
                 </Badge>
               </div>
             </div>
           </div>
 
-          <Button onClick={() => handleEditProjectChange(true)}>
+          <Button onClick={() => handleEditProjectChange(true)} variant="outline" size="sm">
             <Edit className="mr-2 h-4 w-4" />
             Editar proyecto
           </Button>
@@ -212,9 +215,9 @@ function ProjectDetailSkeleton() {
     <div className="space-y-6">
       <Skeleton className="h-10 w-40" />
 
-      <div className="bg-card rounded-lg border p-6 shadow-sm">
+      <div className="bg-card rounded-lg border-none p-6 shadow-sm">
         <div className="flex items-start gap-4">
-          <Skeleton className="h-20 w-20 rounded-lg" />
+          <Skeleton className="h-20 w-20 rounded-xl" />
           <div className="space-y-2">
             <Skeleton className="h-8 w-48" />
             <div className="flex gap-2">

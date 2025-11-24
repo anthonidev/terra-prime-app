@@ -21,22 +21,34 @@ interface LeadFormStepperProps {
 
 export function LeadFormStepper({ currentStep }: LeadFormStepperProps) {
   return (
-    <div className="mb-6">
-      <div className="flex items-center justify-between">
-        {steps.map((step, index) => (
-          <div key={step.number} className="flex flex-1 items-center">
-            <div className="flex flex-col items-center">
+    <div className="mb-8">
+      <div className="relative flex items-center justify-between">
+        {/* Progress Bar Background */}
+        <div className="bg-muted absolute top-1/2 left-0 -z-10 h-0.5 w-full -translate-y-1/2" />
+
+        {/* Active Progress Bar */}
+        <div
+          className="bg-primary absolute top-1/2 left-0 -z-10 h-0.5 -translate-y-1/2 transition-all duration-500"
+          style={{
+            width: `${((currentStep - 1) / (steps.length - 1)) * 100}%`,
+          }}
+        />
+
+        {steps.map((step) => {
+          const isActive = currentStep >= step.number;
+          const isCompleted = currentStep > step.number;
+
+          return (
+            <div key={step.number} className="bg-background flex flex-col items-center gap-2 px-2">
               <div
                 className={cn(
-                  'flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all',
-                  currentStep > step.number
-                    ? 'bg-primary border-primary text-primary-foreground'
-                    : currentStep === step.number
-                      ? 'border-primary text-primary bg-primary/5'
-                      : 'border-muted-foreground/30 text-muted-foreground'
+                  'flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all duration-300',
+                  isActive
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : 'border-muted-foreground/30 bg-background text-muted-foreground'
                 )}
               >
-                {currentStep > step.number ? (
+                {isCompleted ? (
                   <Check className="h-4 w-4" />
                 ) : (
                   <span className="text-xs font-semibold">{step.number}</span>
@@ -44,24 +56,29 @@ export function LeadFormStepper({ currentStep }: LeadFormStepperProps) {
               </div>
               <span
                 className={cn(
-                  'mt-1.5 text-xs font-medium transition-colors',
-                  currentStep >= step.number ? 'text-foreground' : 'text-muted-foreground'
+                  'absolute top-10 w-32 text-center text-xs font-medium transition-colors duration-300',
+                  isActive ? 'text-foreground' : 'text-muted-foreground',
+                  // Hide title on mobile for non-active steps to avoid clutter, or just show active
+                  'hidden sm:block'
+                )}
+              >
+                {step.title}
+              </span>
+              {/* Mobile only title for active step */}
+              <span
+                className={cn(
+                  'absolute top-10 w-32 text-center text-xs font-medium sm:hidden',
+                  currentStep === step.number ? 'text-foreground block' : 'hidden'
                 )}
               >
                 {step.title}
               </span>
             </div>
-            {index < steps.length - 1 && (
-              <div
-                className={cn(
-                  'mx-2 h-0.5 flex-1 transition-colors',
-                  currentStep > step.number ? 'bg-primary' : 'bg-muted-foreground/20'
-                )}
-              />
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
+      {/* Spacer for titles */}
+      <div className="h-6" />
     </div>
   );
 }

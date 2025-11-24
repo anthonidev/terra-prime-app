@@ -60,14 +60,17 @@ export function LotPaymentInfo({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <Card className="border-primary/20 from-primary/5 border-2 bg-gradient-to-br to-transparent">
-          <CardContent className="p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="bg-primary/20 flex h-8 w-8 items-center justify-center rounded-lg">
-                  <Receipt className="text-primary h-4 w-4" />
+        <Card>
+          <CardContent className="p-6">
+            <div className="mb-6 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                  <Receipt className="text-primary h-5 w-5" />
                 </div>
-                <h3 className="text-sm font-semibold">Resumen del Lote</h3>
+                <div>
+                  <h3 className="text-lg font-semibold">Resumen del Lote</h3>
+                  <p className="text-muted-foreground text-sm">Información base para el cálculo</p>
+                </div>
               </div>
 
               {!isEditEnabled && (
@@ -84,47 +87,48 @@ export function LotPaymentInfo({
               )}
 
               {isEditEnabled && (
-                <div className="text-primary flex items-center gap-2 text-xs">
+                <div className="bg-primary/10 text-primary flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium">
                   <Edit className="h-3 w-3" />
-                  <span className="font-medium">Edición habilitada</span>
+                  <span>Edición habilitada</span>
                 </div>
               )}
             </div>
 
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {/* Precio del Lote */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0 }}
-                className="bg-background/50 border-border rounded-lg border p-3"
+                className="space-y-2"
               >
-                <div className="flex items-start gap-2">
-                  <div className="bg-primary/10 mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md">
-                    <Receipt className="text-primary h-4 w-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <Label
-                      htmlFor="lotPrice"
-                      className="text-muted-foreground mb-1 block text-[10px] tracking-wide uppercase"
-                    >
-                      Precio del Lote
-                    </Label>
-                    {isEditEnabled ? (
+                <Label
+                  htmlFor="lotPrice"
+                  className="text-muted-foreground flex items-center gap-2 text-xs font-medium tracking-wider uppercase"
+                >
+                  <Receipt className="h-3 w-3" />
+                  Precio del Lote
+                </Label>
+                <div className="bg-muted/30 rounded-lg p-3">
+                  {isEditEnabled ? (
+                    <div className="relative">
                       <Input
                         id="lotPrice"
                         type="number"
                         step="0.01"
                         value={lotPrice}
                         onChange={(e) => handleLotPriceChange(e.target.value)}
-                        className="h-8 text-sm font-bold"
+                        className="h-9 pl-8 font-mono font-bold"
                       />
-                    ) : (
-                      <p className="text-primary truncate text-sm font-bold">
-                        {formatCurrency(lotPrice, currencyType)}
-                      </p>
-                    )}
-                  </div>
+                      <span className="text-muted-foreground absolute top-2.5 left-3 text-xs">
+                        $
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="text-foreground text-xl font-bold">
+                      {formatCurrency(lotPrice, currencyType)}
+                    </p>
+                  )}
                 </div>
               </motion.div>
 
@@ -134,34 +138,35 @@ export function LotPaymentInfo({
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 }}
-                  className="bg-background/50 border-border rounded-lg border p-3"
+                  className="space-y-2"
                 >
-                  <div className="flex items-start gap-2">
-                    <div className="bg-primary/10 mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md">
-                      <Home className="text-primary h-4 w-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <Label
-                        htmlFor="urbanizationPrice"
-                        className="text-muted-foreground mb-1 block text-[10px] tracking-wide uppercase"
-                      >
-                        Habilitación Urbana
-                      </Label>
-                      {isEditEnabled ? (
+                  <Label
+                    htmlFor="urbanizationPrice"
+                    className="text-muted-foreground flex items-center gap-2 text-xs font-medium tracking-wider uppercase"
+                  >
+                    <Home className="h-3 w-3" />
+                    Habilitación Urbana
+                  </Label>
+                  <div className="bg-muted/30 rounded-lg p-3">
+                    {isEditEnabled ? (
+                      <div className="relative">
                         <Input
                           id="urbanizationPrice"
                           type="number"
                           step="0.01"
                           value={urbanizationPrice}
                           onChange={(e) => handleUrbanizationPriceChange(e.target.value)}
-                          className="h-8 text-sm font-bold"
+                          className="h-9 pl-8 font-mono font-bold"
                         />
-                      ) : (
-                        <p className="text-primary truncate text-sm font-bold">
-                          {formatCurrency(urbanizationPrice, currencyType)}
-                        </p>
-                      )}
-                    </div>
+                        <span className="text-muted-foreground absolute top-2.5 left-3 text-xs">
+                          $
+                        </span>
+                      </div>
+                    ) : (
+                      <p className="text-foreground text-xl font-bold">
+                        {formatCurrency(urbanizationPrice, currencyType)}
+                      </p>
+                    )}
                   </div>
                 </motion.div>
               )}
@@ -171,20 +176,14 @@ export function LotPaymentInfo({
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: hasUrbanization ? 0.2 : 0.1 }}
-                className="bg-background/50 border-border rounded-lg border p-3"
+                className="space-y-2"
               >
-                <div className="flex items-start gap-2">
-                  <div className="bg-primary/10 mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md">
-                    <Ruler className="text-primary h-4 w-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-muted-foreground mb-0.5 text-[10px] tracking-wide uppercase">
-                      Área
-                    </p>
-                    <p className="text-foreground truncate text-sm font-bold">
-                      {selectedLot.area} m²
-                    </p>
-                  </div>
+                <Label className="text-muted-foreground flex items-center gap-2 text-xs font-medium tracking-wider uppercase">
+                  <Ruler className="h-3 w-3" />
+                  Área Total
+                </Label>
+                <div className="bg-muted/30 rounded-lg p-3">
+                  <p className="text-foreground text-xl font-bold">{selectedLot.area} m²</p>
                 </div>
               </motion.div>
             </div>

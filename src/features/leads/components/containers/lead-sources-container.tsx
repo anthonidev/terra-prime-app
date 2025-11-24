@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Filter, Loader2, Plus, Target } from 'lucide-react';
+import { Loader2, Plus, Target } from 'lucide-react';
+
+import { PageHeader } from '@/shared/components/common/page-header';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { useLeadSources } from '../../hooks/use-lead-sources';
@@ -48,36 +50,21 @@ export function LeadSourcesContainer() {
   const totalSources = data?.meta.totalItems || 0;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-            <Target className="text-primary h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Fuentes de Leads</h1>
-            <p className="text-muted-foreground text-sm">
-              {totalSources} {totalSources === 1 ? 'fuente registrada' : 'fuentes registradas'}
-            </p>
-          </div>
-        </div>
+      <PageHeader
+        title="Fuentes de Leads"
+        description={`${totalSources} ${totalSources === 1 ? 'fuente registrada' : 'fuentes registradas'}`}
+        icon={Target}
+      >
         <Button size="sm" onClick={handleCreate}>
           <Plus className="mr-2 h-4 w-4" />
           Nueva fuente
         </Button>
-      </div>
+      </PageHeader>
 
       {/* Filters Card */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <div className="bg-accent/20 flex h-8 w-8 items-center justify-center rounded">
-              <Filter className="text-accent h-4 w-4" />
-            </div>
-            <CardTitle className="text-base">Filtros de Búsqueda</CardTitle>
-          </div>
-        </CardHeader>
+      <Card className="border-none shadow-sm">
         <CardContent>
           <LeadSourcesFilters
             search={search}
@@ -93,7 +80,7 @@ export function LeadSourcesContainer() {
 
       {/* Table or Loading */}
       {isLoading ? (
-        <Card>
+        <Card className="border-none shadow-sm">
           <CardContent className="p-6">
             <div className="space-y-3">
               <div className="flex items-center gap-2">

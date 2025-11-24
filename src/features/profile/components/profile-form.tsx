@@ -1,8 +1,8 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, Mail, Save, UserRound } from 'lucide-react';
+import { Loader2, Save, UserRound } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,8 +16,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import { updateProfileSchema } from '../lib/validation';
 import { useUpdateProfile } from '../hooks/use-update-profile';
+import { updateProfileSchema } from '../lib/validation';
 import type { ProfileUser } from '../types';
 
 interface ProfileFormProps {
@@ -47,7 +47,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const isDirty = form.formState.isDirty;
 
   return (
-    <Card className="bg-card/50 h-full border shadow-sm backdrop-blur-sm">
+    <Card className="bg-card h-full border shadow-sm">
       <CardHeader className="px-6 pt-4 pb-2">
         <div className="flex items-center gap-3">
           <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-xl">
@@ -70,11 +70,10 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 <FormItem>
                   <FormLabel className="text-sm font-medium">Correo Electrónico</FormLabel>
                   <div className="relative">
-                    <Mail className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                     <FormControl>
                       <Input
                         placeholder="correo@ejemplo.com"
-                        className="bg-background/50 border-input/50 focus:bg-background h-11 pl-10 text-base transition-all"
+                        className="bg-background border-input focus:bg-background h-11 text-base transition-all"
                         {...field}
                       />
                     </FormControl>

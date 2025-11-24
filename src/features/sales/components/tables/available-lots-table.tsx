@@ -39,7 +39,7 @@ export function AvailableLotsTable({ lots, meta, onPageChange }: AvailableLotsTa
       accessorKey: 'stageName',
       header: 'Etapa',
       cell: ({ row }) => (
-        <Badge variant="outline" className="text-xs">
+        <Badge variant="outline" className="bg-background text-xs font-normal">
           <Layers className="mr-1 h-3 w-3" />
           {row.original.stageName}
         </Badge>
@@ -49,7 +49,7 @@ export function AvailableLotsTable({ lots, meta, onPageChange }: AvailableLotsTa
       accessorKey: 'blockName',
       header: 'Manzana',
       cell: ({ row }) => (
-        <Badge variant="outline" className="text-xs">
+        <Badge variant="outline" className="bg-background text-xs font-normal">
           <Grid3x3 className="mr-1 h-3 w-3" />
           {row.original.blockName}
         </Badge>
@@ -58,7 +58,7 @@ export function AvailableLotsTable({ lots, meta, onPageChange }: AvailableLotsTa
     {
       accessorKey: 'area',
       header: 'Área',
-      cell: ({ row }) => <span className="text-xs">{row.original.area} m²</span>,
+      cell: ({ row }) => <span className="text-xs font-medium">{row.original.area} m²</span>,
     },
     {
       accessorKey: 'lotPrice',
@@ -72,11 +72,16 @@ export function AvailableLotsTable({ lots, meta, onPageChange }: AvailableLotsTa
     {
       accessorKey: 'urbanizationPrice',
       header: 'P. Urbanización',
-      cell: ({ row }) => (
-        <span className="text-xs font-medium">
-          {row.original.projectCurrency} {formatPrice(row.original.urbanizationPrice)}
-        </span>
-      ),
+      cell: ({ row }) => {
+        const price = Number(row.original.urbanizationPrice);
+        return (
+          <span className="text-xs font-medium">
+            {price > 0
+              ? `${row.original.projectCurrency} ${formatPrice(row.original.urbanizationPrice)}`
+              : '--'}
+          </span>
+        );
+      },
     },
     {
       accessorKey: 'totalPrice',
@@ -91,7 +96,7 @@ export function AvailableLotsTable({ lots, meta, onPageChange }: AvailableLotsTa
 
   if (lots.length === 0) {
     return (
-      <Card>
+      <Card className="border-none shadow-sm">
         <CardContent className="p-8">
           <div className="flex flex-col items-center justify-center gap-3 text-center">
             <div className="bg-muted/50 flex h-12 w-12 items-center justify-center rounded-full">
@@ -118,9 +123,7 @@ export function AvailableLotsTable({ lots, meta, onPageChange }: AvailableLotsTa
           ))}
         </div>
       ) : (
-        <Card>
-          <DataTable columns={columns} data={lots} />
-        </Card>
+        <DataTable columns={columns} data={lots} />
       )}
 
       <DataTablePagination meta={meta} onPageChange={onPageChange} />

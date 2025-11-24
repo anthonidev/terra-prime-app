@@ -1,6 +1,8 @@
 'use client';
 
+import { FilePlus } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageHeader } from '@/shared/components/common/page-header';
 import { Stepper, type Step } from '@/shared/components/common/stepper';
 import { useCreateSaleForm } from '../../hooks/use-create-sale-form';
 import { SaleType, type SalesFormData } from '../../types';
@@ -36,15 +38,14 @@ export function CreateSaleContainer() {
   } = useCreateSaleForm();
 
   return (
-    <div className="container mx-auto space-y-6 py-6">
-      <div>
-        <h1 className="text-foreground text-3xl font-bold">Crear Nueva Venta</h1>
-        <p className="text-muted-foreground mt-1">
-          Registra una nueva venta en el sistema siguiendo los pasos a continuación.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Crear Nueva Venta"
+        description="Registra una nueva venta en el sistema siguiendo los pasos a continuación."
+        icon={FilePlus}
+      />
 
-      <Card>
+      <Card className="border-none shadow-sm">
         <CardHeader>
           <CardTitle>Proceso de Registro</CardTitle>
           <CardDescription>

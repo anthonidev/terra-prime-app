@@ -4,6 +4,7 @@ import { Building2, Loader2 } from 'lucide-react';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PageHeader } from '@/shared/components/common/page-header';
 
 import { useActiveProjects } from '../../hooks/use-active-projects';
 import { AvailableProjectCard } from '../cards/available-project-card';
@@ -15,22 +16,15 @@ export function AvailableProjectsContainer() {
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-            <Building2 className="text-primary h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Lotes Disponibles</h1>
-            <p className="text-muted-foreground text-sm">
-              Selecciona un proyecto para ver los lotes disponibles
-            </p>
-          </div>
-        </div>
+      <div className="space-y-6">
+        <PageHeader
+          title="Lotes Disponibles"
+          description="Selecciona un proyecto para ver los lotes disponibles"
+          icon={Building2}
+        />
 
         {/* Loading State */}
-        <Card>
+        <Card className="border-none shadow-sm">
           <CardContent className="p-6">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
@@ -51,22 +45,15 @@ export function AvailableProjectsContainer() {
 
   if (!projects || projects.length === 0) {
     return (
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-            <Building2 className="text-primary h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Lotes Disponibles</h1>
-            <p className="text-muted-foreground text-sm">
-              Selecciona un proyecto para ver los lotes disponibles
-            </p>
-          </div>
-        </div>
+      <div className="space-y-6">
+        <PageHeader
+          title="Lotes Disponibles"
+          description="Selecciona un proyecto para ver los lotes disponibles"
+          icon={Building2}
+        />
 
         {/* Empty State */}
-        <Card>
+        <Card className="border-none shadow-sm">
           <CardContent className="p-8">
             <div className="flex flex-col items-center justify-center gap-3 text-center">
               <div className="bg-muted/50 flex h-12 w-12 items-center justify-center rounded-full">
@@ -86,19 +73,12 @@ export function AvailableProjectsContainer() {
   }
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-          <Building2 className="text-primary h-5 w-5" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Lotes Disponibles</h1>
-          <p className="text-muted-foreground text-sm">
-            {totalProjects} {totalProjects === 1 ? 'proyecto disponible' : 'proyectos disponibles'}
-          </p>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Lotes Disponibles"
+        description={`${totalProjects} ${totalProjects === 1 ? 'proyecto disponible' : 'proyectos disponibles'}`}
+        icon={Building2}
+      />
 
       {/* Projects Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

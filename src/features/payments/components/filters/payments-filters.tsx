@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, Calendar, CheckCircle2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { StatusPayment } from '../../types';
+import { Separator } from '@/components/ui/separator';
 
 interface PaymentsFiltersProps {
   search: string;
@@ -63,71 +64,90 @@ export function PaymentsFilters({
   const hasActiveFilters = search || status || startDate || endDate;
 
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="space-y-4">
+    <Card className="border-none shadow-sm">
+      <CardContent className="space-y-4 p-4">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           {/* Search */}
-          <div className="relative">
+          <div className="relative flex-1 md:max-w-md">
             <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
             <Input
-              placeholder="Buscar por cliente, documento, lote o código de operación..."
+              placeholder="Buscar por cliente, documento, lote o código..."
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-10"
+              className="bg-muted/30 border-muted-foreground/20 focus-visible:bg-background pl-9 transition-colors"
             />
           </div>
 
-          {/* Filters Grid */}
-          <div className="grid gap-4 md:grid-cols-3">
-            {/* Status Filter */}
-            <div>
-              <label className="mb-2 block text-sm font-medium">Estado</label>
-              <Select value={status || 'all'} onValueChange={handleStatusChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar estado" />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Start Date Filter */}
-            <div>
-              <label className="mb-2 block text-sm font-medium">Fecha desde</label>
-              <Input
-                type="date"
-                value={startDate || ''}
-                onChange={(e) => onStartDateChange(e.target.value || undefined)}
-              />
-            </div>
-
-            {/* End Date Filter */}
-            <div>
-              <label className="mb-2 block text-sm font-medium">Fecha hasta</label>
-              <Input
-                type="date"
-                value={endDate || ''}
-                onChange={(e) => onEndDateChange(e.target.value || undefined)}
-              />
-            </div>
-          </div>
-
           {/* Filter Actions */}
-          <div className="flex items-center justify-between pt-2">
-            <p className="text-muted-foreground text-sm">
-              {totalItems} {totalItems === 1 ? 'pago encontrado' : 'pagos encontrados'}
-            </p>
+          <div className="flex items-center gap-2">
             {hasActiveFilters && (
-              <Button variant="ghost" size="sm" onClick={handleClearFilters}>
-                <Filter className="mr-2 h-4 w-4" />
-                Limpiar filtros
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClearFilters}
+                className="text-muted-foreground hover:text-foreground h-9"
+              >
+                <Filter className="mr-2 h-3.5 w-3.5" />
+                Limpiar
               </Button>
             )}
+            <div className="text-muted-foreground bg-muted/30 border-border/50 rounded-md border px-3 py-1.5 text-sm">
+              <span className="text-foreground font-medium">{totalItems}</span>{' '}
+              {totalItems === 1 ? 'pago' : 'pagos'}
+            </div>
+          </div>
+        </div>
+
+        <Separator className="bg-border/50" />
+
+        {/* Filters Grid */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Status Filter */}
+          <div className="space-y-1.5">
+            <label className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              Estado
+            </label>
+            <Select value={status || 'all'} onValueChange={handleStatusChange}>
+              <SelectTrigger className="bg-background border-input/60 h-9">
+                <SelectValue placeholder="Seleccionar estado" />
+              </SelectTrigger>
+              <SelectContent>
+                {statusOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Start Date Filter */}
+          <div className="space-y-1.5">
+            <label className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+              <Calendar className="h-3.5 w-3.5" />
+              Desde
+            </label>
+            <Input
+              type="date"
+              value={startDate || ''}
+              onChange={(e) => onStartDateChange(e.target.value || undefined)}
+              className="bg-background border-input/60 h-9"
+            />
+          </div>
+
+          {/* End Date Filter */}
+          <div className="space-y-1.5">
+            <label className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+              <Calendar className="h-3.5 w-3.5" />
+              Hasta
+            </label>
+            <Input
+              type="date"
+              value={endDate || ''}
+              onChange={(e) => onEndDateChange(e.target.value || undefined)}
+              className="bg-background border-input/60 h-9"
+            />
           </div>
         </div>
       </CardContent>

@@ -86,226 +86,262 @@ export function SummaryStep({
   const selectedProjects = interestProjects;
 
   return (
-    <div className="space-y-3">
-      {/* Personal Info */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <div className="bg-accent/20 flex h-8 w-8 items-center justify-center rounded">
-              <User className="text-accent h-4 w-4" />
-            </div>
-            <CardTitle className="text-base">Datos Personales</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 gap-2 text-xs md:grid-cols-2">
-            <div>
-              <span className="text-muted-foreground font-medium">Documento:</span>{' '}
-              <span>
-                {documentTypeLabel} - {document}
-              </span>
-            </div>
-            <div>
-              <span className="text-muted-foreground font-medium">Nombres:</span>{' '}
-              <span>{firstName}</span>
-            </div>
-            <div>
-              <span className="text-muted-foreground font-medium">Apellidos:</span>{' '}
-              <span>{lastName}</span>
-            </div>
-            {email && (
-              <div>
-                <span className="text-muted-foreground font-medium">Email:</span>{' '}
-                <span>{email}</span>
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* Left Column */}
+        <div className="space-y-6">
+          {/* Personal Info */}
+          <Card className="border-none shadow-sm">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <div className="bg-accent/10 flex h-8 w-8 items-center justify-center rounded-lg">
+                  <User className="text-accent h-4 w-4" />
+                </div>
+                <CardTitle className="text-base">Datos Personales</CardTitle>
               </div>
-            )}
-            <div>
-              <span className="text-muted-foreground font-medium">Teléfono:</span>{' '}
-              <span>{phone}</span>
-            </div>
-            {phone2 && (
-              <div>
-                <span className="text-muted-foreground font-medium">Teléfono 2:</span>{' '}
-                <span>{phone2}</span>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+                <div className="space-y-1">
+                  <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                    Documento
+                  </span>
+                  <span className="font-medium">
+                    {documentTypeLabel} - {document}
+                  </span>
+                </div>
+                <div className="space-y-1">
+                  <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                    Nombre Completo
+                  </span>
+                  <span className="font-medium">
+                    {firstName} {lastName}
+                  </span>
+                </div>
+                {email && (
+                  <div className="space-y-1 sm:col-span-2">
+                    <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                      Email
+                    </span>
+                    <span className="font-medium">{email}</span>
+                  </div>
+                )}
+                <div className="space-y-1">
+                  <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                    Teléfono
+                  </span>
+                  <span className="font-medium">{phone}</span>
+                </div>
+                {phone2 && (
+                  <div className="space-y-1">
+                    <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                      Teléfono 2
+                    </span>
+                    <span className="font-medium">{phone2}</span>
+                  </div>
+                )}
+                {age && (
+                  <div className="space-y-1">
+                    <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                      Edad
+                    </span>
+                    <span className="font-medium">{age} años</span>
+                  </div>
+                )}
               </div>
-            )}
-            {age && (
-              <div>
-                <span className="text-muted-foreground font-medium">Edad:</span>{' '}
-                <span>{age} años</span>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
 
-      {/* Additional Info */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <div className="bg-info/20 flex h-8 w-8 items-center justify-center rounded">
-              <Target className="text-info h-4 w-4" />
-            </div>
-            <CardTitle className="text-base">Información Adicional</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <div className="grid grid-cols-1 gap-2 text-xs md:grid-cols-2">
-              <div>
-                <span className="text-muted-foreground font-medium">Fuente:</span>{' '}
-                <span>{sourceName}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground font-medium">Ubicación:</span>{' '}
-                <span>
-                  {districtName}, {provinceName}, {departmentName}
-                </span>
-              </div>
-            </div>
-            {selectedProjects.length > 0 && (
-              <div>
-                <span className="text-muted-foreground text-xs font-medium">
-                  Proyectos de Interés:
-                </span>
-                <div className="mt-1.5 flex flex-wrap gap-1.5">
-                  {selectedProjects.map((projectName, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {projectName}
-                    </Badge>
-                  ))}
+          {/* Additional Info */}
+          <Card className="border-none shadow-sm">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <div className="bg-info/10 flex h-8 w-8 items-center justify-center rounded-lg">
+                  <Target className="text-info h-4 w-4" />
                 </div>
+                <CardTitle className="text-base">Información Adicional</CardTitle>
               </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+                  <div className="space-y-1">
+                    <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                      Fuente
+                    </span>
+                    <span className="font-medium">{sourceName}</span>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                      Ubicación
+                    </span>
+                    <span className="font-medium">
+                      {districtName}, {provinceName}, {departmentName}
+                    </span>
+                  </div>
+                </div>
+                {selectedProjects.length > 0 && (
+                  <div className="space-y-2">
+                    <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                      Proyectos de Interés
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedProjects.map((projectName, index) => (
+                        <Badge key={index} variant="secondary" className="px-2 py-1">
+                          {projectName}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Companion */}
-      {hasCompanion && (
-        <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <div className="bg-accent/20 flex h-8 w-8 items-center justify-center rounded">
-                <Users className="text-accent h-4 w-4" />
-              </div>
-              <CardTitle className="text-base">Acompañante</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 gap-2 text-xs md:grid-cols-3">
-              <div>
-                <span className="text-muted-foreground font-medium">Nombre:</span>{' '}
-                <span>{companionFullName}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground font-medium">DNI:</span>{' '}
-                <span>{companionDni}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground font-medium">Parentesco:</span>{' '}
-                <span>{companionRelationship}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+        {/* Right Column */}
+        <div className="space-y-6">
+          {/* Companion */}
+          {hasCompanion && (
+            <Card className="border-none shadow-sm">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="bg-accent/10 flex h-8 w-8 items-center justify-center rounded-lg">
+                    <Users className="text-accent h-4 w-4" />
+                  </div>
+                  <CardTitle className="text-base">Acompañante</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+                  <div className="space-y-1 sm:col-span-2">
+                    <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                      Nombre
+                    </span>
+                    <span className="font-medium">{companionFullName}</span>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                      DNI
+                    </span>
+                    <span className="font-medium">{companionDni}</span>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                      Parentesco
+                    </span>
+                    <span className="font-medium">{companionRelationship}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-      {/* Metadata */}
-      {(estadoCivil ||
-        ocupacion ||
-        cantidadHijos ||
-        tieneTarjetasCredito ||
-        tieneTarjetasDebito) && (
-        <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <div className="bg-info/20 flex h-8 w-8 items-center justify-center rounded">
-                <Info className="text-info h-4 w-4" />
-              </div>
-              <CardTitle className="text-base">Información Complementaria</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 gap-2 text-xs md:grid-cols-2">
-              {estadoCivil && (
-                <div>
-                  <span className="text-muted-foreground font-medium">Estado Civil:</span>{' '}
-                  <span>{maritalStatusLabel}</span>
+          {/* Metadata */}
+          {(estadoCivil ||
+            ocupacion ||
+            cantidadHijos ||
+            tieneTarjetasCredito ||
+            tieneTarjetasDebito) && (
+            <Card className="border-none shadow-sm">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="bg-info/10 flex h-8 w-8 items-center justify-center rounded-lg">
+                    <Info className="text-info h-4 w-4" />
+                  </div>
+                  <CardTitle className="text-base">Información Complementaria</CardTitle>
                 </div>
-              )}
-              {ocupacion && (
-                <div>
-                  <span className="text-muted-foreground font-medium">Ocupación:</span>{' '}
-                  <span>{ocupacion}</span>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+                  {estadoCivil && (
+                    <div className="space-y-1">
+                      <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                        Estado Civil
+                      </span>
+                      <span className="font-medium">{maritalStatusLabel}</span>
+                    </div>
+                  )}
+                  {ocupacion && (
+                    <div className="space-y-1">
+                      <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                        Ocupación
+                      </span>
+                      <span className="font-medium">{ocupacion}</span>
+                    </div>
+                  )}
+                  {cantidadHijos && (
+                    <div className="space-y-1">
+                      <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                        Hijos
+                      </span>
+                      <span className="font-medium">{cantidadHijos}</span>
+                    </div>
+                  )}
+                  {tieneTarjetasCredito && (
+                    <div className="space-y-1">
+                      <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                        Tarjetas de Crédito
+                      </span>
+                      <span className="font-medium">{cantidadTarjetasCredito || 'Sí'}</span>
+                    </div>
+                  )}
+                  {tieneTarjetasDebito && (
+                    <div className="space-y-1">
+                      <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                        Tarjetas de Débito
+                      </span>
+                      <span className="font-medium">{cantidadTarjetasDebito || 'Sí'}</span>
+                    </div>
+                  )}
                 </div>
-              )}
-              {cantidadHijos && (
-                <div>
-                  <span className="text-muted-foreground font-medium">Hijos:</span>{' '}
-                  <span>{cantidadHijos}</span>
-                </div>
-              )}
-              {tieneTarjetasCredito && (
-                <div>
-                  <span className="text-muted-foreground font-medium">Tarjetas de Crédito:</span>{' '}
-                  <span>{cantidadTarjetasCredito || 'Sí'}</span>
-                </div>
-              )}
-              {tieneTarjetasDebito && (
-                <div>
-                  <span className="text-muted-foreground font-medium">Tarjetas de Débito:</span>{' '}
-                  <span>{cantidadTarjetasDebito || 'Sí'}</span>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+              </CardContent>
+            </Card>
+          )}
 
-      {/* Observations */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary/20 flex h-8 w-8 items-center justify-center rounded">
-              <FileText className="text-primary h-4 w-4" />
-            </div>
-            <CardTitle className="text-base">Observaciones</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-1.5">
-            <Label htmlFor="observations" className="text-xs font-medium">
-              Observaciones adicionales (opcional)
-            </Label>
-            <Textarea
-              id="observations"
-              value={observations}
-              onChange={(e) => onObservationsChange(e.target.value)}
-              placeholder="Ingrese observaciones adicionales..."
-              rows={4}
-              className="resize-none text-sm"
-            />
-          </div>
-        </CardContent>
-      </Card>
+          {/* Observations */}
+          <Card className="border-none shadow-sm">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-lg">
+                  <FileText className="text-primary h-4 w-4" />
+                </div>
+                <CardTitle className="text-base">Observaciones</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <Label htmlFor="observations">Observaciones adicionales (opcional)</Label>
+                <Textarea
+                  id="observations"
+                  value={observations}
+                  onChange={(e) => onObservationsChange(e.target.value)}
+                  placeholder="Ingrese observaciones adicionales..."
+                  rows={4}
+                  className="resize-none"
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
       {/* Navigation Buttons */}
-      <div className="flex justify-between">
-        <Button type="button" variant="outline" size="sm" onClick={onBack}>
-          <ArrowLeft className="mr-2 h-3.5 w-3.5" />
+      <div className="flex justify-between pt-4">
+        <Button type="button" variant="outline" onClick={onBack}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
           Atrás
         </Button>
-        <Button size="sm" onClick={onSubmit} disabled={isSubmitting}>
+        <Button onClick={onSubmit} disabled={isSubmitting} className="w-32">
           {isSubmitting ? (
             <>
-              <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-              Registrando...
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ...
             </>
           ) : (
             <>
-              <CheckCircle className="mr-2 h-3.5 w-3.5" />
-              Registrar Lead
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Registrar
             </>
           )}
         </Button>

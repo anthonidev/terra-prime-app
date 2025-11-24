@@ -5,13 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Upload, X } from 'lucide-react';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { FormDialog } from '@/shared/components/form-dialog';
 import {
   Form,
   FormControl,
@@ -108,107 +102,94 @@ export function EditProjectDialog({ open, onOpenChange, project }: EditProjectDi
     .slice(0, 2);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Editar proyecto</DialogTitle>
-          <DialogDescription>Actualiza la información del proyecto</DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Editar proyecto"
+      description="Actualiza la información del proyecto"
+      isPending={isPending}
+      onSubmit={form.handleSubmit(onSubmit)}
+      submitLabel="Guardar cambios"
+      isEditing={true}
+    >
+      <Form {...form}>
+        <div className="space-y-4">
+          {/* Logo Upload */}
+          <div className="space-y-2">
+            <FormLabel>Logo del proyecto</FormLabel>
+            <div className="flex items-center gap-4">
+              <Avatar className="h-20 w-20 rounded-lg">
+                <AvatarImage src={logoPreview || undefined} />
+                <AvatarFallback className="bg-primary/10 text-primary rounded-lg text-lg">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {/* Logo Upload */}
-            <div className="space-y-2">
-              <FormLabel>Logo del proyecto</FormLabel>
-              <div className="flex items-center gap-4">
-                <Avatar className="h-20 w-20 rounded-lg">
-                  <AvatarImage src={logoPreview || undefined} />
-                  <AvatarFallback className="bg-primary/10 text-primary rounded-lg text-lg">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-
-                <div className="flex-1 space-y-2">
-                  <Input
-                    id="logo-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => document.getElementById('logo-upload')?.click()}
-                    >
-                      <Upload className="mr-2 h-4 w-4" />
-                      {logoPreview ? 'Cambiar' : 'Subir'} logo
+              <div className="flex-1 space-y-2">
+                <Input
+                  id="logo-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => document.getElementById('logo-upload')?.click()}
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    {logoPreview ? 'Cambiar' : 'Subir'} logo
+                  </Button>
+                  {logoPreview && (
+                    <Button type="button" variant="ghost" size="sm" onClick={handleRemoveLogo}>
+                      <X className="mr-2 h-4 w-4" />
+                      Quitar
                     </Button>
-                    {logoPreview && (
-                      <Button type="button" variant="ghost" size="sm" onClick={handleRemoveLogo}>
-                        <X className="mr-2 h-4 w-4" />
-                        Quitar
-                      </Button>
-                    )}
-                  </div>
-                  <p className="text-muted-foreground text-xs">PNG, JPG hasta 2MB</p>
+                  )}
                 </div>
+                <p className="text-muted-foreground text-xs">PNG, JPG hasta 2MB</p>
               </div>
             </div>
+          </div>
 
-            {/* Name */}
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nombre del proyecto</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ej: Villa Hermosa" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          {/* Name */}
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre del proyecto</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ej: Villa Hermosa" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            {/* Is Active */}
-            <FormField
-              control={form.control}
-              name="isActive"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">Estado</FormLabel>
-                    <div className="text-muted-foreground text-sm">
-                      {field.value ? 'Proyecto activo' : 'Proyecto inactivo'}
-                    </div>
+          {/* Is Active */}
+          <FormField
+            control={form.control}
+            name="isActive"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <FormLabel className="text-base">Estado</FormLabel>
+                  <div className="text-muted-foreground text-sm">
+                    {field.value ? 'Proyecto activo' : 'Proyecto inactivo'}
                   </div>
-                  <FormControl>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            {/* Actions */}
-            <div className="flex justify-end gap-3 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isPending}
-              >
-                Cancelar
-              </Button>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? 'Guardando...' : 'Guardar cambios'}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+                </div>
+                <FormControl>
+                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
+      </Form>
+    </FormDialog>
   );
 }

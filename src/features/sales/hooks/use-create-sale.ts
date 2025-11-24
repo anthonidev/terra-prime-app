@@ -12,6 +12,8 @@ export function useCreateSale() {
     onSuccess: () => {
       // Invalidate sales queries to refetch the updated data
       queryClient.invalidateQueries({ queryKey: ['sales'] });
+      queryClient.invalidateQueries({ queryKey: ['my-sales'] });
+      queryClient.invalidateQueries({ queryKey: ['all-sales'] });
       toast.success('Venta creada exitosamente');
     },
     onError: (error) => {

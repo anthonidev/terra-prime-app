@@ -1,16 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Clock, Loader2 } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { FormDialog } from '@/shared/components/form-dialog';
+
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useExtendReservation } from '../../hooks/use-extend-reservation';
@@ -85,70 +77,37 @@ export function ExtendReservationModal({
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Clock className="text-primary h-5 w-5" />
-            Extender Reserva
-          </DialogTitle>
-          <DialogDescription>
-            Ingresa el número de días adicionales para extender el período de reserva.
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="additionalDays">
-              Días Adicionales <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="additionalDays"
-              type="number"
-              min="1"
-              value={additionalDays}
-              onChange={(e) => handleChange(e.target.value)}
-              placeholder="Ej: 15"
-              disabled={isPending}
-              className={error ? 'border-destructive' : ''}
-            />
-            {error && <p className="text-destructive text-xs">{error}</p>}
-            <p className="text-muted-foreground text-xs">
-              Los días adicionales se sumarán al período actual de reserva.
-            </p>
-          </div>
-        </div>
-
-        <DialogFooter className="flex-col gap-2 sm:flex-row">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={handleClose}
+    <FormDialog
+      open={open}
+      onOpenChange={handleClose}
+      title="Extender Reserva"
+      description="Ingresa el número de días adicionales para extender el período de reserva."
+      submitLabel="Extender Reserva"
+      cancelLabel="Cancelar"
+      onSubmit={() => handleSubmit()}
+      isPending={isPending}
+    >
+      <div className="space-y-4 py-4">
+        <div className="space-y-2">
+          <Label htmlFor="additionalDays">
+            Días Adicionales <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            id="additionalDays"
+            type="number"
+            min="1"
+            value={additionalDays}
+            onChange={(e) => handleChange(e.target.value)}
+            placeholder="Ej: 15"
             disabled={isPending}
-            className="w-full sm:w-auto"
-          >
-            Cancelar
-          </Button>
-          <Button
-            type="button"
-            onClick={handleSubmit}
-            disabled={isPending || !additionalDays}
-            className="w-full sm:w-auto"
-          >
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Extendiendo...
-              </>
-            ) : (
-              <>
-                <Clock className="mr-2 h-4 w-4" />
-                Extender Reserva
-              </>
-            )}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+            className={error ? 'border-destructive' : ''}
+          />
+          {error && <p className="text-destructive text-xs">{error}</p>}
+          <p className="text-muted-foreground text-xs">
+            Los días adicionales se sumarán al período actual de reserva.
+          </p>
+        </div>
+      </div>
+    </FormDialog>
   );
 }

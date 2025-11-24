@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
@@ -49,49 +50,83 @@ export function SalesStep1({ data, onNext }: SalesStep1Props) {
     canProceed,
   } = useLotSelection({ initialData: data });
 
+  // Refs for auto-scrolling
+  const lotsTableRef = useRef<HTMLDivElement>(null);
+  const summaryRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to lots table when block is selected
+  useEffect(() => {
+    if (blockId && lotsTableRef.current) {
+      // Small delay to ensure content is rendered
+      setTimeout(() => {
+        lotsTableRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    }
+  }, [blockId]);
+
+  // Auto-scroll to summary when lot is selected
+  useEffect(() => {
+    if (selectedLot && summaryRef.current) {
+      // Small delay to ensure content is rendered
+      setTimeout(() => {
+        summaryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    }
+  }, [selectedLot]);
+
   const handleNext = () => {
     if (!canProceed) return;
     onNext(getFormData());
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Filters */}
-      <LotSelectionFilters
-        projectId={projectId}
-        projects={projects}
-        isLoadingProjects={isLoadingProjects}
-        onProjectChange={handleProjectChange}
-        stageId={stageId}
-        stages={stages}
-        isLoadingStages={isLoadingStages}
-        onStageChange={handleStageChange}
-        blockId={blockId}
-        blocks={blocks}
-        isLoadingBlocks={isLoadingBlocks}
-        onBlockChange={handleBlockChange}
-      />
+      <section>
+        <LotSelectionFilters
+          projectId={projectId}
+          projects={projects}
+          isLoadingProjects={isLoadingProjects}
+          onProjectChange={handleProjectChange}
+          stageId={stageId}
+          stages={stages}
+          isLoadingStages={isLoadingStages}
+          onStageChange={handleStageChange}
+          blockId={blockId}
+          blocks={blocks}
+          isLoadingBlocks={isLoadingBlocks}
+          onBlockChange={handleBlockChange}
+        />
+      </section>
 
       {/* Lots Table */}
       {blockId && (
-        <AvailableLotsTable
-          lots={lots}
-          isLoading={isLoadingLots}
-          selectedLot={selectedLot}
-          projectCurrency={projectCurrency}
-          onSelectLot={handleSelectLot}
-        />
+        <>
+          <section ref={lotsTableRef} className="scroll-mt-6">
+            <AvailableLotsTable
+              lots={lots}
+              isLoading={isLoadingLots}
+              selectedLot={selectedLot}
+              projectCurrency={projectCurrency}
+              onSelectLot={handleSelectLot}
+            />
+          </section>
+        </>
       )}
 
       {/* Selected Lot Summary */}
       {selectedLot && (
-        <SelectedLotSummary
-          projectName={projectName}
-          stageName={stageName}
-          blockName={blockName}
-          selectedLot={selectedLot}
-          projectCurrency={projectCurrency}
-        />
+        <>
+          <section ref={summaryRef} className="scroll-mt-6">
+            <SelectedLotSummary
+              projectName={projectName}
+              stageName={stageName}
+              blockName={blockName}
+              selectedLot={selectedLot}
+              projectCurrency={projectCurrency}
+            />
+          </section>
+        </>
       )}
 
       {/* Navigation */}
@@ -99,7 +134,7 @@ export function SalesStep1({ data, onNext }: SalesStep1Props) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="flex justify-end pt-2"
+        className="flex justify-end pt-4"
       >
         <Button onClick={handleNext} disabled={!canProceed} size="lg" className="min-w-32">
           Siguiente

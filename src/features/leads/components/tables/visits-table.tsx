@@ -77,10 +77,10 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
   if (!visits || visits.length === 0) {
     return (
       <>
-        <Card>
+        <Card className="border-none shadow-sm">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <div className="bg-primary/20 flex h-8 w-8 items-center justify-center rounded">
+              <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-lg">
                 <Clock className="text-primary h-4 w-4" />
               </div>
               <CardTitle className="text-base">Historial de Visitas</CardTitle>
@@ -107,10 +107,10 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
 
   return (
     <>
-      <Card>
+      <Card className="border-none shadow-sm">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <div className="bg-primary/20 flex h-8 w-8 items-center justify-center rounded">
+            <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-lg">
               <Clock className="text-primary h-4 w-4" />
             </div>
             <CardTitle className="text-base">Historial de Visitas ({visits.length})</CardTitle>
@@ -137,13 +137,13 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
             <div className="rounded-md border">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted/50">
-                    <TableHead className="text-xs">Llegada</TableHead>
-                    <TableHead className="text-xs">Salida</TableHead>
-                    <TableHead className="text-xs">Estado</TableHead>
-                    <TableHead className="text-xs">Reporte</TableHead>
-                    <TableHead className="text-xs">Participantes</TableHead>
-                    <TableHead className="text-right text-xs">Acciones</TableHead>
+                  <TableRow className="bg-muted/50 hover:bg-muted/50">
+                    <TableHead className="text-xs font-medium">Llegada</TableHead>
+                    <TableHead className="text-xs font-medium">Salida</TableHead>
+                    <TableHead className="text-xs font-medium">Estado</TableHead>
+                    <TableHead className="text-xs font-medium">Reporte</TableHead>
+                    <TableHead className="text-xs font-medium">Participantes</TableHead>
+                    <TableHead className="text-right text-xs font-medium">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -163,8 +163,8 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
                     );
 
                     return (
-                      <TableRow key={visit.id}>
-                        <TableCell className="text-xs">
+                      <TableRow key={visit.id} className="hover:bg-muted/5">
+                        <TableCell className="text-xs font-medium">
                           {formatDateTime(visit.arrivalTime)}
                         </TableCell>
                         <TableCell className="text-xs">
@@ -173,7 +173,7 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
                           ) : (
                             <Badge
                               variant="outline"
-                              className="bg-warning/10 text-warning border-warning/20 text-xs"
+                              className="bg-warning/10 text-warning border-warning/20 text-[10px] font-medium shadow-none"
                             >
                               En curso
                             </Badge>
@@ -181,11 +181,17 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
                         </TableCell>
                         <TableCell>
                           {visit.departureTime ? (
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge
+                              variant="secondary"
+                              className="text-[10px] font-medium shadow-none"
+                            >
                               Finalizada
                             </Badge>
                           ) : (
-                            <Badge variant="default" className="bg-success text-xs">
+                            <Badge
+                              variant="default"
+                              className="bg-success/10 text-success hover:bg-success/20 border-success/20 text-[10px] font-medium shadow-none"
+                            >
                               Activa
                             </Badge>
                           )}
@@ -195,14 +201,17 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-8 text-xs"
+                              className="h-7 px-2 text-xs"
                               onClick={() => window.open(visit.reportPdfUrl!, '_blank')}
                             >
-                              <ExternalLink className="mr-1.5 h-3.5 w-3.5" />
+                              <ExternalLink className="mr-1.5 h-3 w-3" />
                               Ver PDF
                             </Button>
                           ) : (
-                            <Badge variant="outline" className="text-xs">
+                            <Badge
+                              variant="outline"
+                              className="text-muted-foreground text-[10px] font-normal shadow-none"
+                            >
                               Sin reporte
                             </Badge>
                           )}
@@ -210,7 +219,11 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
                         <TableCell>
                           <Badge
                             variant={hasParticipants ? 'default' : 'outline'}
-                            className="text-xs"
+                            className={
+                              hasParticipants
+                                ? 'bg-primary/10 text-primary hover:bg-primary/20 border-primary/20 text-[10px] font-medium shadow-none'
+                                : 'text-muted-foreground text-[10px] font-normal shadow-none'
+                            }
                           >
                             {hasParticipants ? 'Asignados' : 'Sin asignar'}
                           </Badge>
@@ -219,49 +232,49 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
                           <div className="flex items-center justify-end gap-1">
                             {!visit.departureTime && (
                               <Button
-                                variant="outline"
-                                size="sm"
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => handleRegisterDeparture(visit.id)}
                                 disabled={registerDeparture.isPending}
-                                className="h-8 w-8 p-0"
+                                className="h-8 w-8"
                                 title="Registrar hora de salida"
                               >
-                                <LogOut className="h-3.5 w-3.5" />
+                                <LogOut className="h-4 w-4" />
                               </Button>
                             )}
 
                             {!visit.reportPdfUrl ? (
                               <Button
-                                variant="outline"
-                                size="sm"
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => handleGenerateReport(visit.id)}
                                 disabled={generateReport.isPending}
-                                className="h-8 w-8 p-0"
+                                className="h-8 w-8"
                                 title="Generar reporte"
                               >
-                                <FileText className="h-3.5 w-3.5" />
+                                <FileText className="h-4 w-4" />
                               </Button>
                             ) : (
                               <Button
-                                variant="outline"
-                                size="sm"
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => handleRegenerateReport(visit.id)}
                                 disabled={regenerateReport.isPending}
-                                className="h-8 w-8 p-0"
+                                className="h-8 w-8"
                                 title="Regenerar reporte"
                               >
-                                <RefreshCw className="h-3.5 w-3.5" />
+                                <RefreshCw className="h-4 w-4" />
                               </Button>
                             )}
 
                             <Button
-                              variant="outline"
-                              size="sm"
+                              variant="ghost"
+                              size="icon"
                               onClick={() => onAssignParticipants(visit)}
-                              className="h-8 w-8 p-0"
+                              className="h-8 w-8"
                               title="Asignar participantes"
                             >
-                              <Users className="h-3.5 w-3.5" />
+                              <Users className="h-4 w-4" />
                             </Button>
                           </div>
                         </TableCell>

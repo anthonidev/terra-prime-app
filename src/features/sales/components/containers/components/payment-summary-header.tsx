@@ -47,7 +47,7 @@ export function PaymentSummaryHeader({
                 </p>
               </div>
             </div>
-            {action && <div className="flex-shrink-0">{action}</div>}
+            {action && <div className="shrink-0">{action}</div>}
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -62,7 +62,7 @@ export function PaymentSummaryHeader({
                 initial={{ width: 0 }}
                 animate={{ width: `${progressPercentage}%` }}
                 transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-                className="from-primary h-full rounded-full bg-gradient-to-r to-green-600"
+                className="from-primary h-full rounded-full bg-linear-to-r to-green-600"
               />
             </div>
           </div>
@@ -76,14 +76,18 @@ export function PaymentSummaryHeader({
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.1 }}
-              className="from-primary/5 border-primary/20 rounded-lg border bg-gradient-to-br to-transparent p-4"
+              className="bg-background rounded-lg border p-4 shadow-sm"
             >
-              <div className="flex items-start gap-2">
-                <TrendingUp className="text-primary mt-1 h-4 w-4" />
+              <div className="flex items-start gap-3">
+                <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full">
+                  <TrendingUp className="text-primary h-4 w-4" />
+                </div>
                 <div>
-                  <p className="text-muted-foreground mb-1 text-xs">Monto Total</p>
+                  <p className="text-muted-foreground mb-1 text-xs font-medium tracking-wider uppercase">
+                    Monto Total
+                  </p>
                   <p className="text-lg font-bold">
-                    {currencySymbol} {totalAmount.toLocaleString('es-PE')}
+                    {currencySymbol} {totalAmount.toLocaleString('es-PE')} {}
                   </p>
                 </div>
               </div>
@@ -94,12 +98,16 @@ export function PaymentSummaryHeader({
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.15 }}
-              className="rounded-lg border border-green-500/20 bg-gradient-to-br from-green-500/5 to-transparent p-4"
+              className="bg-background rounded-lg border p-4 shadow-sm"
             >
-              <div className="flex items-start gap-2">
-                <CheckCircle2 className="mt-1 h-4 w-4 text-green-600" />
+              <div className="flex items-start gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/10">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                </div>
                 <div>
-                  <p className="text-muted-foreground mb-1 text-xs">Total Pagado</p>
+                  <p className="text-muted-foreground mb-1 text-xs font-medium tracking-wider uppercase">
+                    Total Pagado
+                  </p>
                   <p className="text-lg font-bold text-green-600">
                     {currencySymbol} {totalPaid.toLocaleString('es-PE')}
                   </p>
@@ -112,12 +120,16 @@ export function PaymentSummaryHeader({
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="rounded-lg border border-orange-500/20 bg-gradient-to-br from-orange-500/5 to-transparent p-4"
+              className="bg-background rounded-lg border p-4 shadow-sm"
             >
-              <div className="flex items-start gap-2">
-                <Clock className="mt-1 h-4 w-4 text-orange-600" />
+              <div className="flex items-start gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500/10">
+                  <Clock className="h-4 w-4 text-orange-600" />
+                </div>
                 <div>
-                  <p className="text-muted-foreground mb-1 text-xs">Monto Pendiente</p>
+                  <p className="text-muted-foreground mb-1 text-xs font-medium tracking-wider uppercase">
+                    Monto Pendiente
+                  </p>
                   <p className="text-lg font-bold text-orange-600">
                     {currencySymbol} {pendingAmount.toLocaleString('es-PE')}
                   </p>

@@ -11,20 +11,20 @@
   /* Layout */
   --layout-sidebar: hsl(0, 0%, 100%);
   --layout-sidebar-foreground: hsl(220, 20%, 20%);
-  --layout-topbar: hsl(0, 0%, 100% / 0.8);
+  --layout-topbar: hsl(0, 0%, 100%);
   --layout-topbar-foreground: hsl(220, 20%, 20%);
   --layout-content: hsl(210, 20%, 98%);
   --layout-footer: hsl(0, 0%, 100%);
   --layout-footer-foreground: hsl(220, 20%, 20%);
 
-  /* Card - Glassy Light */
-  --card: hsl(0, 0%, 100% / 0.7);
+  /* Card - Solid Light */
+  --card: hsl(0, 0%, 100%);
   --card-foreground: hsl(220, 20%, 20%);
-  --card-hover: hsl(0, 0%, 100% / 0.9);
-  --card-active: hsl(0, 0%, 100%);
+  --card-hover: hsl(210, 20%, 98%);
+  --card-active: hsl(210, 20%, 96%);
 
   /* Popover */
-  --popover: hsl(0, 0%, 100% / 0.8);
+  --popover: hsl(0, 0%, 100%);
   --popover-foreground: hsl(220, 20%, 20%);
 
   /* Primary - Muted Crystal Blue */
@@ -91,9 +91,9 @@
   /* Table */
   --table-header: hsl(0, 0%, 100%);
   --table-header-foreground: hsl(220, 20%, 20%);
-  --table-row: hsl(0, 0%, 100% / 0.5);
+  --table-row: hsl(0, 0%, 100%);
   --table-row-foreground: hsl(220, 20%, 20%);
-  --table-row-alternate: hsl(210, 20%, 98% / 0.5);
+  --table-row-alternate: hsl(210, 20%, 98%);
   --table-border: hsl(220, 15%, 90%);
   --table-row-hover: hsl(210, 20%, 96%);
   --table-row-selected: hsl(210, 20%, 94%);
@@ -127,23 +127,23 @@
   --background: hsl(222, 20%, 5%); /* Desaturated obsidian */
   --foreground: hsl(210, 20%, 90%);
 
-  /* Layout - Glassy Obsidian */
-  --layout-sidebar: hsl(222, 20%, 8% / 0.8);
+  /* Layout - Solid Obsidian */
+  --layout-sidebar: hsl(222, 20%, 8%);
   --layout-sidebar-foreground: hsl(210, 20%, 90%);
-  --layout-topbar: hsl(222, 20%, 8% / 0.6);
+  --layout-topbar: hsl(222, 20%, 8%);
   --layout-topbar-foreground: hsl(210, 20%, 90%);
   --layout-content: hsl(222, 20%, 5%);
   --layout-footer: hsl(222, 20%, 8%);
   --layout-footer-foreground: hsl(210, 20%, 90%);
 
-  /* Card - Glass Obsidian */
-  --card: hsl(222, 20%, 10% / 0.4);
+  /* Card - Solid Obsidian */
+  --card: hsl(222, 20%, 10%);
   --card-foreground: hsl(210, 20%, 90%);
-  --card-hover: hsl(222, 20%, 14% / 0.5);
-  --card-active: hsl(222, 20%, 16% / 0.6);
+  --card-hover: hsl(222, 20%, 14%);
+  --card-active: hsl(222, 20%, 16%);
 
   /* Popover */
-  --popover: hsl(222, 20%, 10% / 0.8);
+  --popover: hsl(222, 20%, 10%);
   --popover-foreground: hsl(210, 20%, 90%);
 
   /* Primary - Soft Cyan/Blue */
@@ -207,12 +207,12 @@
   /* Table */
   --table-header: hsl(222, 20%, 8%);
   --table-header-foreground: hsl(210, 20%, 90%);
-  --table-row: hsl(222, 20%, 10% / 0.4);
+  --table-row: hsl(222, 20%, 10%);
   --table-row-foreground: hsl(210, 20%, 90%);
-  --table-row-alternate: hsl(222, 20%, 12% / 0.4);
+  --table-row-alternate: hsl(222, 20%, 12%);
   --table-border: hsl(217, 20%, 15%);
-  --table-row-hover: hsl(222, 20%, 16% / 0.5);
-  --table-row-selected: hsl(222, 20%, 20% / 0.6);
+  --table-row-hover: hsl(222, 20%, 16%);
+  --table-row-selected: hsl(222, 20%, 20%);
   --table-row-selected-foreground: hsl(200, 60%, 60%);
   --table-sort-indicator: hsl(200, 60%, 60%);
   --table-filter-background: hsl(222, 20%, 10%);

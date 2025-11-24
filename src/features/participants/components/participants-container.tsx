@@ -2,6 +2,7 @@
 
 import { Plus, Users } from 'lucide-react';
 
+import { PageHeader } from '@/shared/components/common/page-header';
 import { Button } from '@/components/ui/button';
 
 import { useParticipantsContainer } from '../hooks/use-participants-container';
@@ -45,24 +46,18 @@ export function ParticipantsContainer() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-            <Users className="text-primary h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Participantes</h1>
-            <p className="text-muted-foreground text-sm">
-              {totalParticipants}{' '}
-              {totalParticipants === 1 ? 'participante registrado' : 'participantes registrados'}
-            </p>
-          </div>
-        </div>
+      <PageHeader
+        title="Participantes"
+        description={`${totalParticipants} ${
+          totalParticipants === 1 ? 'participante registrado' : 'participantes registrados'
+        }`}
+        icon={Users}
+      >
         <Button onClick={handleCreateParticipant} size="sm">
           <Plus className="mr-2 h-3.5 w-3.5" />
           Crear
         </Button>
-      </div>
+      </PageHeader>
 
       {/* Filters */}
       <ParticipantsFilters filters={filters} onFiltersChange={handleFiltersChange} />

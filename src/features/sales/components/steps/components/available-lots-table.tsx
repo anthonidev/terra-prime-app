@@ -119,18 +119,9 @@ export function AvailableLotsTable({
         );
       },
     },
-    {
-      accessorKey: 'status',
-      header: 'Estado',
-      cell: ({ row }) => (
-        <Badge variant="outline" className="text-xs">
-          {row.original.status}
-        </Badge>
-      ),
-    },
+
     {
       id: 'actions',
-      header: 'Acciones',
       cell: ({ row }) => {
         const lot = row.original;
         const isSelected = selectedLot?.id === lot.id;
@@ -140,7 +131,7 @@ export function AvailableLotsTable({
             variant={isSelected ? 'default' : 'outline'}
             size="sm"
             onClick={() => onSelectLot(lot)}
-            className={cn('transition-all', isSelected && 'shadow-md')}
+            className={cn('transition-all', isSelected && 'shadow-sm')}
           >
             {isSelected && <CheckCircle2 className="mr-1.5 h-3.5 w-3.5" />}
             {isSelected ? 'Seleccionado' : 'Seleccionar'}
@@ -152,7 +143,7 @@ export function AvailableLotsTable({
 
   if (isLoading) {
     return (
-      <Card>
+      <Card className="border-none shadow-sm">
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
@@ -202,7 +193,14 @@ export function AvailableLotsTable({
             <>
               {/* Desktop table */}
               <div className="hidden md:block">
-                <DataTable columns={columns} data={lots} />
+                <DataTable
+                  columns={columns}
+                  data={lots}
+                  onRowClick={onSelectLot}
+                  rowClassName={(lot) =>
+                    selectedLot?.id === lot.id ? 'bg-primary/5 border-l-2 border-l-primary' : ''
+                  }
+                />
               </div>
 
               {/* Mobile cards */}
@@ -229,8 +227,8 @@ export function AvailableLotsTable({
                     >
                       <Card
                         className={cn(
-                          'cursor-pointer transition-all hover:shadow-md',
-                          isSelected && 'border-primary bg-primary/5 border-2 shadow-lg'
+                          'cursor-pointer border-none shadow-sm transition-all',
+                          isSelected && 'bg-primary/5 ring-primary ring-2'
                         )}
                         onClick={() => onSelectLot(lot)}
                       >
@@ -307,7 +305,7 @@ export function AvailableLotsTable({
                           {/* Action Button */}
                           <Button
                             variant={isSelected ? 'default' : 'outline'}
-                            className={cn('mt-4 w-full', isSelected && 'shadow-md')}
+                            className={cn('mt-4 w-full', isSelected && 'shadow-sm')}
                             onClick={(e) => {
                               e.stopPropagation();
                               onSelectLot(lot);

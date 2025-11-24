@@ -6,7 +6,7 @@ export default function LayoutAuth({ children }: { children: React.ReactNode }) 
     <main className="animate-fade flex min-h-screen flex-col">
       <div className="bg-alternative flex flex-1 flex-col">
         <div className="flex flex-1">
-          <aside className="from-primary to-primary/80 relative z-10 hidden flex-1 flex-shrink basis-1/4 flex-col items-center justify-center overflow-hidden bg-gradient-to-br xl:flex">
+          <aside className="from-primary to-primary/80 relative z-10 hidden flex-1 shrink basis-1/4 flex-col items-center justify-center overflow-hidden bg-linear-to-br xl:flex">
             <div className="absolute inset-0 opacity-20"></div>
 
             <div className="relative z-10 px-8 text-center">
@@ -20,7 +20,7 @@ export default function LayoutAuth({ children }: { children: React.ReactNode }) 
 
               <div className="space-y-3 text-white/90">
                 <div className="flex items-center justify-start text-left">
-                  <span className="mr-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-lg font-bold text-white backdrop-blur-sm">
+                  <span className="mr-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-lg font-bold text-white">
                     S
                   </span>
                   <span className="text-lg font-medium">
@@ -29,7 +29,7 @@ export default function LayoutAuth({ children }: { children: React.ReactNode }) 
                 </div>
 
                 <div className="flex items-center justify-start text-left">
-                  <span className="mr-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-lg font-bold text-white backdrop-blur-sm">
+                  <span className="mr-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-lg font-bold text-white">
                     M
                   </span>
                   <span className="text-lg font-medium">
@@ -38,7 +38,7 @@ export default function LayoutAuth({ children }: { children: React.ReactNode }) 
                 </div>
 
                 <div className="flex items-center justify-start text-left">
-                  <span className="mr-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-lg font-bold text-white backdrop-blur-sm">
+                  <span className="mr-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-lg font-bold text-white">
                     A
                   </span>
                   <span className="text-lg font-medium">
@@ -47,7 +47,7 @@ export default function LayoutAuth({ children }: { children: React.ReactNode }) 
                 </div>
 
                 <div className="flex items-center justify-start text-left">
-                  <span className="mr-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-lg font-bold text-white backdrop-blur-sm">
+                  <span className="mr-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-lg font-bold text-white">
                     R
                   </span>
                   <span className="text-lg font-medium">
@@ -56,7 +56,7 @@ export default function LayoutAuth({ children }: { children: React.ReactNode }) 
                 </div>
 
                 <div className="flex items-center justify-start text-left">
-                  <span className="mr-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-lg font-bold text-white backdrop-blur-sm">
+                  <span className="mr-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-lg font-bold text-white">
                     T
                   </span>
                   <span className="text-lg font-medium">

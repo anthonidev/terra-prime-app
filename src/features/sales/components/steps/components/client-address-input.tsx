@@ -28,8 +28,8 @@ export function ClientAddressInput({ form, show }: ClientAddressInputProps) {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-lg">
-              <MapPin className="text-accent h-5 w-5" />
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <MapPin className="text-primary h-5 w-5" />
             </div>
             <div>
               <CardTitle>Dirección del Cliente</CardTitle>

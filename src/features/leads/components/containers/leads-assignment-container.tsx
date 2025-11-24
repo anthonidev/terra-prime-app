@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, UserPlus, Users } from 'lucide-react';
 import { useDayLeads } from '../../hooks/use-day-leads';
 import { LeadsAssignmentTable } from '../tables/leads-assignment-table';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PageHeader } from '@/shared/components/common/page-header';
 
 export function LeadsAssignmentContainer() {
   const [page, setPage] = useState(1);
@@ -15,7 +16,7 @@ export function LeadsAssignmentContainer() {
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-6">
         <Skeleton className="h-20 w-full" />
         <Skeleton className="h-[600px] w-full" />
       </div>
@@ -24,19 +25,14 @@ export function LeadsAssignmentContainer() {
 
   if (isError) {
     return (
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-            <UserPlus className="text-primary h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Asignación de Leads</h1>
-            <p className="text-muted-foreground text-sm">Asigna vendedores a los leads del día</p>
-          </div>
-        </div>
+      <div className="space-y-6">
+        <PageHeader
+          title="Asignación de Leads"
+          description="Asigna vendedores a los leads del día"
+          icon={UserPlus}
+        />
 
-        <Card>
+        <Card className="border-none shadow-sm">
           <CardContent className="p-8">
             <div className="flex flex-col items-center justify-center gap-3 text-center">
               <div className="bg-destructive/10 flex h-12 w-12 items-center justify-center rounded-full">
@@ -57,19 +53,14 @@ export function LeadsAssignmentContainer() {
 
   if (!data || data.items.length === 0) {
     return (
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-            <UserPlus className="text-primary h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Asignación de Leads</h1>
-            <p className="text-muted-foreground text-sm">Asigna vendedores a los leads del día</p>
-          </div>
-        </div>
+      <div className="space-y-6">
+        <PageHeader
+          title="Asignación de Leads"
+          description="Asigna vendedores a los leads del día"
+          icon={UserPlus}
+        />
 
-        <Card>
+        <Card className="border-none shadow-sm">
           <CardContent className="p-8">
             <div className="flex flex-col items-center justify-center gap-3 text-center">
               <div className="bg-muted/50 flex h-12 w-12 items-center justify-center rounded-full">
@@ -94,19 +85,12 @@ export function LeadsAssignmentContainer() {
   const totalLeads = meta.totalItems;
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-          <UserPlus className="text-primary h-5 w-5" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Asignación de Leads</h1>
-          <p className="text-muted-foreground text-sm">
-            {totalLeads} {totalLeads === 1 ? 'lead del día' : 'leads del día'}
-          </p>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Asignación de Leads"
+        description={`${totalLeads} ${totalLeads === 1 ? 'lead del día' : 'leads del día'}`}
+        icon={UserPlus}
+      />
 
       <LeadsAssignmentTable leads={items} />
 
@@ -122,12 +106,12 @@ export function LeadsAssignmentContainer() {
               size="sm"
               onClick={() => setPage((p) => p - 1)}
               disabled={!canGoPrevious}
-              className="h-8"
+              className="h-8 px-2"
             >
               <ChevronLeft className="mr-1 h-3.5 w-3.5" />
               Anterior
             </Button>
-            <div className="text-xs">
+            <div className="text-xs font-medium">
               Página {page} de {meta.totalPages}
             </div>
             <Button
@@ -135,7 +119,7 @@ export function LeadsAssignmentContainer() {
               size="sm"
               onClick={() => setPage((p) => p + 1)}
               disabled={!canGoNext}
-              className="h-8"
+              className="h-8 px-2"
             >
               Siguiente
               <ChevronRight className="ml-1 h-3.5 w-3.5" />

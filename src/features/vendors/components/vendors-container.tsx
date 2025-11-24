@@ -3,6 +3,7 @@
 import { Briefcase, Users } from 'lucide-react';
 
 import { Card, CardContent } from '@/components/ui/card';
+import { PageHeader } from '@/shared/components/common/page-header';
 
 import { useVendors } from '../hooks/use-vendors';
 import { VendorsTable } from './vendors-table';
@@ -17,19 +18,14 @@ export function VendorsContainer() {
 
   if (isError) {
     return (
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-            <Briefcase className="text-primary h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Vendedores</h1>
-            <p className="text-muted-foreground text-sm">Gestiona el equipo de ventas</p>
-          </div>
-        </div>
+      <div className="space-y-6">
+        <PageHeader
+          title="Vendedores"
+          description="Gestiona el equipo de ventas"
+          icon={Briefcase}
+        />
 
-        <Card>
+        <Card className="border-none shadow-sm">
           <CardContent className="p-8">
             <div className="flex flex-col items-center justify-center gap-3 text-center">
               <div className="bg-destructive/10 flex h-12 w-12 items-center justify-center rounded-full">
@@ -50,19 +46,14 @@ export function VendorsContainer() {
 
   if (!data || data.length === 0) {
     return (
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-            <Briefcase className="text-primary h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Vendedores</h1>
-            <p className="text-muted-foreground text-sm">Gestiona el equipo de ventas</p>
-          </div>
-        </div>
+      <div className="space-y-6">
+        <PageHeader
+          title="Vendedores"
+          description="Gestiona el equipo de ventas"
+          icon={Briefcase}
+        />
 
-        <Card>
+        <Card className="border-none shadow-sm">
           <CardContent className="p-8">
             <div className="flex flex-col items-center justify-center gap-3 text-center">
               <div className="bg-muted/50 flex h-12 w-12 items-center justify-center rounded-full">
@@ -84,19 +75,12 @@ export function VendorsContainer() {
   const totalVendors = data.length;
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-          <Briefcase className="text-primary h-5 w-5" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Vendedores</h1>
-          <p className="text-muted-foreground text-sm">
-            {totalVendors} {totalVendors === 1 ? 'vendedor registrado' : 'vendedores registrados'}
-          </p>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Vendedores"
+        description={`${totalVendors} ${totalVendors === 1 ? 'vendedor registrado' : 'vendedores registrados'}`}
+        icon={Briefcase}
+      />
 
       <VendorsTable vendors={data} />
     </div>

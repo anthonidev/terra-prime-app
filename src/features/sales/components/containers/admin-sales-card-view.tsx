@@ -26,7 +26,6 @@ import {
   MapPin,
   MoreVertical,
   Package,
-  User,
   Users,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -39,6 +38,7 @@ import {
 } from '../../hooks/use-generate-pdfs';
 import type { MySale, StatusSale } from '../../types';
 import { AssignParticipantsModal } from '../dialogs/assign-participants-modal';
+import { UserInfo } from '@/shared/components/user-info';
 
 // Status badge configurations
 const statusConfig: Record<
@@ -117,15 +117,11 @@ function SaleCard({ sale, index }: { sale: MySale; index: number }) {
 
           <CardContent className="space-y-3 pb-3">
             {/* Client Info */}
-            <div className="flex items-start gap-2">
-              <User className="text-muted-foreground mt-0.5 h-4 w-4" />
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium">
-                  {sale.client.firstName} {sale.client.lastName}
-                </p>
-                <p className="text-muted-foreground text-xs">{sale.client.phone}</p>
-              </div>
-            </div>
+            <UserInfo
+              name={`${sale.client.firstName} ${sale.client.lastName}`}
+              phone={sale.client.phone}
+              className="p-0"
+            />
 
             {/* Location Info */}
             <div className="flex items-start gap-2">

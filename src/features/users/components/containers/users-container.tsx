@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus } from 'lucide-react';
+import { Plus, Users } from 'lucide-react';
 
 import { PageHeader } from '@/shared/components/common/page-header';
 import { Button } from '@/components/ui/button';
@@ -46,17 +46,14 @@ export function UsersContainer() {
       {/* Header */}
       <PageHeader
         title="Gestión de usuarios"
-        description="Administra los usuarios de la aplicación"
-      />
-
-      {/* Actions */}
-      <div className="flex items-center justify-between">
-        <p className="text-muted-foreground text-sm">Total de usuarios: {data.meta.totalItems}</p>
+        description={`Total de usuarios: ${data.meta.totalItems}`}
+        icon={Users}
+      >
         <Button onClick={handleCreateUser}>
           <Plus className="mr-2 h-4 w-4" />
           Crear usuario
         </Button>
-      </div>
+      </PageHeader>
 
       {/* Filters */}
       <UsersFilters filters={filters} onFiltersChange={handleFiltersChange} />

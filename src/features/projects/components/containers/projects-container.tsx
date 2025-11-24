@@ -7,6 +7,7 @@ import { useProjects } from '../../hooks/use-projects';
 import { ProjectCard } from '../cards/project-card';
 import { ProjectsSkeleton } from '../skeletons/projects-skeleton';
 import { useRouter } from 'next/navigation';
+import { Folder, Plus } from 'lucide-react';
 
 export function ProjectsContainer() {
   const { push } = useRouter();
@@ -32,17 +33,12 @@ export function ProjectsContainer() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <PageHeader
-        title="Proyectos"
-        description="Gestiona los proyectos inmobiliarios y sus lotes"
-      />
-
-      {/* Stats */}
-      <div className="flex items-center justify-between">
-        <p className="text-muted-foreground text-sm">
-          Total de proyectos: <span className="text-foreground font-medium">{total}</span>
-        </p>
-      </div>
+      <PageHeader title="Proyectos" description={`Total de proyectos: ${total}`} icon={Folder}>
+        <Button onClick={() => push('/proyectos/nuevo')}>
+          <Plus className="mr-2 h-4 w-4" />
+          Crear Proyecto
+        </Button>
+      </PageHeader>
 
       {/* Grid de proyectos */}
       {projects.length > 0 ? (

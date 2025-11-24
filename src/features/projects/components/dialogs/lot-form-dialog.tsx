@@ -4,13 +4,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { FormDialog } from '@/shared/components/form-dialog';
 import {
   Form,
   FormControl,
@@ -27,7 +21,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 
 import { useCreateLot, useUpdateLot } from '../../hooks/use-mutations';
 import {
@@ -113,24 +106,29 @@ export function LotFormDialog({
   const isPending = isCreating || isUpdating;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>{isEditing ? 'Editar' : 'Nuevo'} lote</DialogTitle>
-          <DialogDescription>
-            {isEditing
-              ? 'Actualiza la información del lote'
-              : `Crea un nuevo lote para la manzana ${blockName}`}
-          </DialogDescription>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={isEditing ? 'Editar lote' : 'Nuevo lote'}
+      description={
+        isEditing
+          ? 'Actualiza la información del lote'
+          : `Crea un nuevo lote para la manzana ${blockName}`
+      }
+      isPending={isPending}
+      onSubmit={form.handleSubmit(onSubmit)}
+      submitLabel={isEditing ? 'Actualizar' : 'Crear lote'}
+      isEditing={isEditing}
+      maxWidth="md"
+    >
+      <Form {...form}>
+        <div className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="sm:col-span-2">
                   <FormLabel>Nombre del lote</FormLabel>
                   <FormControl>
                     <Input placeholder="Ej: 1, 2, 3..." {...field} />
@@ -205,9 +203,9 @@ export function LotFormDialog({
                 control={form.control}
                 name="status"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="sm:col-span-2">
                     <FormLabel>Estado</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value as string}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecciona un estado" />
@@ -225,23 +223,9 @@ export function LotFormDialog({
                 )}
               />
             )}
-
-            <div className="flex justify-end gap-3 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isPending}
-              >
-                Cancelar
-              </Button>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? 'Guardando...' : isEditing ? 'Actualizar' : 'Crear lote'}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+          </div>
+        </div>
+      </Form>
+    </FormDialog>
   );
 }

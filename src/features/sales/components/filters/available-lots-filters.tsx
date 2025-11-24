@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Search } from 'lucide-react';
+import { Search, Filter, ArrowUpDown } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -55,7 +55,7 @@ export function AvailableLotsFilters({
   }, [stageId, blocks, blockId, onBlockIdChange]);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* Search */}
       <form
         onSubmit={(e) => {
@@ -70,22 +70,25 @@ export function AvailableLotsFilters({
             placeholder="Buscar lote por nombre..."
             value={term}
             onChange={(e) => onTermChange(e.target.value)}
-            className="h-9 pl-9 text-sm"
+            className="focus-visible:ring-primary/30 h-9 pl-9 text-sm transition-all"
           />
         </div>
-        <Button type="submit" size="sm">
+        <Button type="submit" size="sm" className="h-9 px-4 shadow-sm">
           <Search className="mr-2 h-3.5 w-3.5" />
           Buscar
         </Button>
       </form>
 
       {/* Filters Row */}
-      <div className="grid gap-2 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-3">
         {/* Stage Filter */}
-        <div className="space-y-1">
-          <label className="text-muted-foreground text-xs font-medium">Etapa</label>
+        <div className="space-y-1.5">
+          <label className="text-foreground flex items-center gap-1.5 text-xs font-medium">
+            <Filter className="h-3.5 w-3.5" />
+            Etapa
+          </label>
           <Select value={stageId} onValueChange={onStageIdChange} disabled={isLoadingStages}>
-            <SelectTrigger className="h-9 text-sm">
+            <SelectTrigger className="focus:ring-primary/30 h-9 text-sm transition-all">
               <SelectValue placeholder="Todas las etapas" />
             </SelectTrigger>
             <SelectContent>
@@ -100,14 +103,17 @@ export function AvailableLotsFilters({
         </div>
 
         {/* Block Filter */}
-        <div className="space-y-1">
-          <label className="text-muted-foreground text-xs font-medium">Manzana</label>
+        <div className="space-y-1.5">
+          <label className="text-foreground flex items-center gap-1.5 text-xs font-medium">
+            <Filter className="h-3.5 w-3.5" />
+            Manzana
+          </label>
           <Select
             value={blockId}
             onValueChange={onBlockIdChange}
             disabled={!stageId || stageId === 'all' || isLoadingBlocks}
           >
-            <SelectTrigger className="h-9 text-sm">
+            <SelectTrigger className="focus:ring-primary/30 h-9 text-sm transition-all">
               <SelectValue placeholder="Todas las manzanas" />
             </SelectTrigger>
             <SelectContent>
@@ -122,10 +128,13 @@ export function AvailableLotsFilters({
         </div>
 
         {/* Order */}
-        <div className="space-y-1">
-          <label className="text-muted-foreground text-xs font-medium">Orden</label>
+        <div className="space-y-1.5">
+          <label className="text-foreground flex items-center gap-1.5 text-xs font-medium">
+            <ArrowUpDown className="h-3.5 w-3.5" />
+            Orden
+          </label>
           <Select value={order} onValueChange={(value) => onOrderChange(value as 'ASC' | 'DESC')}>
-            <SelectTrigger className="h-9 text-sm">
+            <SelectTrigger className="focus:ring-primary/30 h-9 text-sm transition-all">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

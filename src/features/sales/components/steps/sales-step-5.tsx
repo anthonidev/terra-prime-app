@@ -78,14 +78,14 @@ export function SalesStep5({ formData, onSubmit, onBack, isSubmitting }: SalesSt
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.4 }}
       >
-        <Card className="border-primary/50">
+        <Card className="border-primary/50 bg-primary/5">
           <CardContent className="pt-6">
-            <div className="from-primary/5 border-primary/20 flex items-center gap-3 rounded-lg border bg-gradient-to-br to-transparent p-4">
-              <div className="bg-primary/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
-                <Check className="text-primary h-5 w-5" />
+            <div className="flex items-center gap-4">
+              <div className="bg-primary/10 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full">
+                <Check className="text-primary h-6 w-6" />
               </div>
               <div>
-                <p className="font-semibold">Confirme los datos antes de continuar</p>
+                <p className="text-lg font-semibold">Confirme los datos antes de continuar</p>
                 <p className="text-muted-foreground text-sm">
                   Una vez confirmada, la venta será registrada en el sistema
                 </p>

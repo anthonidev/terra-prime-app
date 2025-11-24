@@ -111,7 +111,10 @@ export function LotSelectionFilters({
                 <Select value={projectId} onValueChange={onProjectChange}>
                   <SelectTrigger
                     id="project"
-                    className={cn('transition-all', projectId && 'border-primary/50 bg-primary/5')}
+                    className={cn(
+                      'transition-all',
+                      projectId && 'border-primary/50 bg-primary/5 focus:ring-primary/30'
+                    )}
                   >
                     <SelectValue placeholder="Seleccione un proyecto" />
                   </SelectTrigger>
@@ -145,7 +148,10 @@ export function LotSelectionFilters({
                 <Select value={stageId} onValueChange={onStageChange} disabled={!projectId}>
                   <SelectTrigger
                     id="stage"
-                    className={cn('transition-all', stageId && 'border-primary/50 bg-primary/5')}
+                    className={cn(
+                      'transition-all',
+                      stageId && 'border-primary/50 bg-primary/5 focus:ring-primary/30'
+                    )}
                   >
                     <SelectValue placeholder="Seleccione una etapa" />
                   </SelectTrigger>
@@ -179,7 +185,10 @@ export function LotSelectionFilters({
                 <Select value={blockId} onValueChange={onBlockChange} disabled={!stageId}>
                   <SelectTrigger
                     id="block"
-                    className={cn('transition-all', blockId && 'border-primary/50 bg-primary/5')}
+                    className={cn(
+                      'transition-all',
+                      blockId && 'border-primary/50 bg-primary/5 focus:ring-primary/30'
+                    )}
                   >
                     <SelectValue placeholder="Seleccione una manzana" />
                   </SelectTrigger>

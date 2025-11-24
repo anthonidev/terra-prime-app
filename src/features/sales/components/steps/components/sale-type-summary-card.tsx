@@ -63,7 +63,7 @@ export function SaleTypeSummaryCard({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="from-primary/5 border-primary/20 grid grid-cols-2 gap-4 rounded-lg border bg-gradient-to-br to-transparent p-4"
+                className="bg-muted/30 grid grid-cols-2 gap-4 rounded-lg p-4"
               >
                 <div>
                   <p className="text-muted-foreground text-sm">Monto de Separación</p>

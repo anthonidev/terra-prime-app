@@ -124,7 +124,7 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
-          <Card className="border-primary/20 bg-primary/5">
+          <Card className="border-destructive/20 bg-destructive/5">
             <CardHeader>
               <CardTitle>Acciones de Gestión</CardTitle>
             </CardHeader>

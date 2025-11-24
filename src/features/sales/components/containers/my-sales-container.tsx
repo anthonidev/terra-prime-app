@@ -30,20 +30,16 @@ export function MySalesContainer() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <PageHeader
-          title="Mis ventas"
-          description="Lista de ventas realizadas por ti"
-          action={
-            !isEmpty && !isError ? (
-              <Button asChild>
-                <Link href="/ventas/crear-venta">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Nueva Venta
-                </Link>
-              </Button>
-            ) : undefined
-          }
-        />
+        <PageHeader title="Mis ventas" description="Lista de ventas realizadas por ti">
+          {!isEmpty && !isError && (
+            <Button asChild>
+              <Link href="/ventas/crear-venta">
+                <Plus className="mr-2 h-4 w-4" />
+                Nueva Venta
+              </Link>
+            </Button>
+          )}
+        </PageHeader>
       </motion.div>
 
       {/* Error State */}

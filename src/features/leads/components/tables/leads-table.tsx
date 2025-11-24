@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { DataTable } from '@/shared/components/data-table/data-table';
 import { DataTablePagination } from '@/shared/components/data-table/data-table-pagination';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
+import { UserInfo } from '@/shared/components/user-info';
 
 import { LeadCard } from '../cards/lead-card';
 import type { DocumentType, Lead } from '../../types';
@@ -48,31 +49,13 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
       accessorKey: 'firstName',
       header: 'Lead',
       cell: ({ row }) => (
-        <div>
-          <div className="text-sm font-medium">
-            {row.original.firstName} {row.original.lastName}
-          </div>
-          <div className="mt-0.5 flex items-center gap-1.5">
-            <Badge variant="outline" className="font-mono text-xs">
-              {documentTypeLabels[row.original.documentType]}
-            </Badge>
-            <span className="text-muted-foreground text-xs">{row.original.document}</span>
-          </div>
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'email',
-      header: 'Contacto',
-      cell: ({ row }) => (
-        <div className="text-xs">
-          {row.original.email && (
-            <div className="text-muted-foreground max-w-[200px] truncate">{row.original.email}</div>
-          )}
-          {row.original.phone && (
-            <div className="text-muted-foreground mt-0.5">{row.original.phone}</div>
-          )}
-        </div>
+        <UserInfo
+          name={`${row.original.firstName} ${row.original.lastName}`}
+          email={row.original.email || undefined}
+          document={row.original.document}
+          documentType={documentTypeLabels[row.original.documentType]}
+          phone={row.original.phone || undefined}
+        />
       ),
     },
     {
@@ -81,12 +64,12 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
       cell: ({ row }) => (
         <div>
           {row.original.isInOffice ? (
-            <Badge className="bg-success text-success-foreground text-xs">
+            <Badge className="bg-success/10 text-success hover:bg-success/20 border-success/20 shadow-none">
               <Building2 className="mr-1 h-3 w-3" />
               En Oficina
             </Badge>
           ) : (
-            <Badge variant="outline" className="text-muted-foreground text-xs">
+            <Badge variant="outline" className="text-muted-foreground shadow-none">
               <Home className="mr-1 h-3 w-3" />
               Fuera
             </Badge>
@@ -105,39 +88,43 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
     },
     {
       id: 'actions',
-      header: 'Acciones',
       cell: ({ row }) => (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center justify-end gap-1">
           {row.original.reportPdfUrl ? (
             <Button
               size="sm"
-              variant="outline"
+              variant="ghost"
               onClick={() =>
                 handleDownloadReport(
                   row.original.reportPdfUrl!,
                   `${row.original.firstName}-${row.original.lastName}`
                 )
               }
-              className="h-8 w-8 p-0"
+              className="text-muted-foreground hover:text-foreground h-8 w-8 p-0"
               title="Descargar reporte PDF"
             >
-              <Download className="h-3.5 w-3.5" />
+              <Download className="h-4 w-4" />
             </Button>
           ) : (
             <Button
               size="sm"
-              variant="outline"
+              variant="ghost"
               disabled
-              className="h-8 w-8 p-0"
+              className="text-muted-foreground/50 h-8 w-8 p-0"
               title="Sin reporte disponible"
             >
-              <Download className="h-3.5 w-3.5 opacity-50" />
+              <Download className="h-4 w-4" />
             </Button>
           )}
 
           <Link href={`/leads/detalle/${row.original.id}`}>
-            <Button size="sm" variant="ghost" className="h-8 w-8 p-0" title="Ver detalle">
-              <Eye className="h-3.5 w-3.5" />
+            <Button
+              size="sm"
+              variant="ghost"
+              className="text-muted-foreground hover:text-primary h-8 w-8 p-0"
+              title="Ver detalle"
+            >
+              <Eye className="h-4 w-4" />
             </Button>
           </Link>
         </div>
@@ -147,7 +134,7 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
 
   if (leads.length === 0) {
     return (
-      <Card>
+      <Card className="border-none shadow-sm">
         <CardContent className="p-8">
           <div className="flex flex-col items-center justify-center gap-3 text-center">
             <div className="bg-muted/50 flex h-12 w-12 items-center justify-center rounded-full">
@@ -174,9 +161,7 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
           ))}
         </div>
       ) : (
-        <Card>
-          <DataTable columns={columns} data={leads} />
-        </Card>
+        <DataTable columns={columns} data={leads} />
       )}
 
       <DataTablePagination meta={meta} onPageChange={onPageChange} />

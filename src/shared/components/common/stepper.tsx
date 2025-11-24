@@ -33,7 +33,7 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
           </div>
           <div className="bg-muted/30 relative h-2 overflow-hidden rounded-full">
             <motion.div
-              className="from-primary via-accent to-primary absolute inset-y-0 left-0 rounded-full bg-gradient-to-r"
+              className="from-primary via-accent to-primary absolute inset-y-0 left-0 rounded-full bg-linear-to-r"
               initial={{ width: '0%' }}
               animate={{
                 width: `${((currentStep - 1) / (steps.length - 1)) * 100}%`,
@@ -72,7 +72,7 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
                       'relative flex h-7 w-7 items-center justify-center rounded-full border-2 transition-all duration-300',
                       isCompleted && 'border-primary bg-primary text-primary-foreground shadow-sm',
                       isCurrent &&
-                        'border-primary bg-background text-primary ring-primary/30 shadow-md ring-2',
+                        'border-primary bg-background text-primary ring-primary/30 shadow-sm ring-2',
                       isPending && 'border-border bg-muted/20 text-muted-foreground'
                     )}
                   >
@@ -127,15 +127,15 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
                         repeat: isCurrent ? Infinity : 0,
                         ease: 'easeInOut',
                       }}
-                      className="relative z-10 flex-shrink-0"
+                      className="relative z-10 shrink-0"
                     >
                       <div
                         className={cn(
                           'relative flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 lg:h-12 lg:w-12',
                           isCompleted &&
-                            'border-primary bg-primary text-primary-foreground shadow-md',
+                            'border-primary bg-primary text-primary-foreground shadow-sm',
                           isCurrent &&
-                            'border-primary bg-background text-primary ring-primary/20 shadow-lg ring-4',
+                            'border-primary bg-background text-primary ring-primary/20 shadow-sm ring-4',
                           isPending && 'border-border bg-muted/30 text-muted-foreground'
                         )}
                       >
@@ -191,7 +191,7 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
                       <div className="flex-1 px-2 lg:px-3">
                         <div className="bg-border/50 relative h-0.5 w-full overflow-hidden rounded-full">
                           <motion.div
-                            className="from-primary via-primary to-accent absolute inset-y-0 left-0 rounded-full bg-gradient-to-r"
+                            className="from-primary via-primary to-accent absolute inset-y-0 left-0 rounded-full bg-linear-to-r"
                             initial={{ width: '0%' }}
                             animate={{
                               width: isCompleted ? '100%' : '0%',

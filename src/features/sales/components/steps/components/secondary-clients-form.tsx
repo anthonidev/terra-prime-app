@@ -95,8 +95,8 @@ export function SecondaryClientsForm({
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                <Users className="text-accent h-5 w-5" />
+              <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                <Users className="text-primary h-5 w-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
@@ -132,7 +132,7 @@ export function SecondaryClientsForm({
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 pt-0">
                 {Array.from({ length: secondaryClientsCount }).map((_, index) => (
                   <motion.div
                     key={index}
@@ -140,13 +140,13 @@ export function SecondaryClientsForm({
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.2, delay: index * 0.05 }}
-                    className="border-accent/20 bg-accent/5 space-y-4 rounded-lg border-2 p-4"
+                    className="bg-muted/30 space-y-4 rounded-lg p-4"
                   >
                     {/* Header */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="bg-accent/20 flex h-8 w-8 items-center justify-center rounded-md">
-                          <User className="text-accent h-4 w-4" />
+                        <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-md">
+                          <User className="text-primary h-4 w-4" />
                         </div>
                         <h4 className="text-sm font-semibold">Cliente Secundario #{index + 1}</h4>
                       </div>
@@ -168,7 +168,7 @@ export function SecondaryClientsForm({
                           htmlFor={`secondaryClients.${index}.documentType`}
                           className="flex items-center gap-2 text-sm font-medium"
                         >
-                          <IdCard className="text-accent h-4 w-4" />
+                          <IdCard className="text-primary h-4 w-4" />
                           Tipo de Documento
                           <span className="text-destructive">*</span>
                         </Label>
@@ -206,7 +206,7 @@ export function SecondaryClientsForm({
                               htmlFor={fieldName}
                               className="flex items-center gap-2 text-sm font-medium"
                             >
-                              <Icon className="text-accent h-4 w-4" />
+                              <Icon className="text-primary h-4 w-4" />
                               {field.label}
                               {field.required && <span className="text-destructive">*</span>}
                             </Label>

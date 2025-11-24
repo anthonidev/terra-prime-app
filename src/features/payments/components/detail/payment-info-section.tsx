@@ -2,9 +2,18 @@
 
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Calendar, CreditCard, Landmark, FileText, User, CheckCircle, XCircle } from 'lucide-react';
+import {
+  Calendar,
+  CreditCard,
+  Landmark,
+  FileText,
+  CheckCircle2,
+  XCircle,
+  Settings,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { UserInfo } from '@/shared/components/user-info';
 import type { PaymentDetail } from '../../types';
 
 interface PaymentInfoSectionProps {
@@ -13,51 +22,57 @@ interface PaymentInfoSectionProps {
 
 export function PaymentInfoSection({ payment }: PaymentInfoSectionProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <FileText className="h-5 w-5" />
+    <Card className="h-full border-none shadow-sm">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+          <FileText className="text-primary h-5 w-5" />
           Información del Pago
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         {/* ID and Config */}
-        <div className="grid gap-4 md:grid-cols-2">
-          <div>
-            <p className="text-muted-foreground text-sm font-medium">ID de Pago</p>
-            <p className="text-base font-semibold">#{payment.id}</p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-1">
+            <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+              ID de Pago
+            </p>
+            <p className="font-mono text-base font-medium">#{payment.id}</p>
           </div>
-          <div>
-            <p className="text-muted-foreground text-sm font-medium">Configuración</p>
-            <p className="text-base">{payment.paymentConfig}</p>
+          <div className="space-y-1">
+            <p className="text-muted-foreground flex items-center gap-1 text-xs font-medium tracking-wider uppercase">
+              <Settings className="h-3 w-3" />
+              Configuración
+            </p>
+            <p className="text-base font-medium">{payment.paymentConfig}</p>
           </div>
         </div>
 
         <Separator />
 
         {/* Dates */}
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="flex items-start gap-2">
-            <Calendar className="text-muted-foreground mt-1 h-4 w-4" />
-            <div>
-              <p className="text-muted-foreground text-sm font-medium">Fecha de Creación</p>
-              <p className="text-base">
-                {format(new Date(payment.createdAt), "dd 'de' MMMM, yyyy 'a las' HH:mm", {
-                  locale: es,
-                })}
-              </p>
-            </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-1">
+            <p className="text-muted-foreground flex items-center gap-1 text-xs font-medium tracking-wider uppercase">
+              <Calendar className="h-3 w-3" />
+              Fecha de Creación
+            </p>
+            <p className="text-sm font-medium">
+              {format(new Date(payment.createdAt), "dd 'de' MMMM, yyyy", { locale: es })}
+            </p>
+            <p className="text-muted-foreground text-xs">
+              {format(new Date(payment.createdAt), 'HH:mm a', { locale: es })}
+            </p>
           </div>
 
           {payment.dateOperation && (
-            <div className="flex items-start gap-2">
-              <Calendar className="text-muted-foreground mt-1 h-4 w-4" />
-              <div>
-                <p className="text-muted-foreground text-sm font-medium">Fecha de Operación</p>
-                <p className="text-base">
-                  {format(new Date(payment.dateOperation), "dd 'de' MMMM, yyyy", { locale: es })}
-                </p>
-              </div>
+            <div className="space-y-1">
+              <p className="text-muted-foreground flex items-center gap-1 text-xs font-medium tracking-wider uppercase">
+                <Calendar className="h-3 w-3" />
+                Fecha de Operación
+              </p>
+              <p className="text-sm font-medium">
+                {format(new Date(payment.dateOperation), "dd 'de' MMMM, yyyy", { locale: es })}
+              </p>
             </div>
           )}
         </div>
@@ -65,88 +80,107 @@ export function PaymentInfoSection({ payment }: PaymentInfoSectionProps) {
         <Separator />
 
         {/* Transaction Details */}
-        <div className="grid gap-4 md:grid-cols-2">
-          {payment.codeOperation && (
-            <div className="flex items-start gap-2">
-              <CreditCard className="text-muted-foreground mt-1 h-4 w-4" />
-              <div>
-                <p className="text-muted-foreground text-sm font-medium">Código de Operación</p>
-                <p className="font-mono text-base">{payment.codeOperation}</p>
+        <div className="space-y-4">
+          <h3 className="text-muted-foreground text-sm font-medium tracking-wider uppercase">
+            Detalles de Transacción
+          </h3>
+          <div className="bg-muted/30 border-border/50 grid gap-4 rounded-lg border p-4 sm:grid-cols-2">
+            {payment.codeOperation ? (
+              <div className="space-y-1">
+                <div className="text-muted-foreground flex items-center gap-1.5">
+                  <CreditCard className="h-3.5 w-3.5" />
+                  <span className="text-xs font-medium">Código de Operación</span>
+                </div>
+                <p className="pl-5 font-mono text-sm font-medium">{payment.codeOperation}</p>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="space-y-1">
+                <div className="text-muted-foreground flex items-center gap-1.5">
+                  <CreditCard className="h-3.5 w-3.5" />
+                  <span className="text-xs font-medium">Código de Operación</span>
+                </div>
+                <p className="text-muted-foreground pl-5 text-sm">-</p>
+              </div>
+            )}
 
-          {payment.banckName && (
-            <div className="flex items-start gap-2">
-              <Landmark className="text-muted-foreground mt-1 h-4 w-4" />
-              <div>
-                <p className="text-muted-foreground text-sm font-medium">Banco</p>
-                <p className="text-base">{payment.banckName}</p>
+            {payment.banckName ? (
+              <div className="space-y-1">
+                <div className="text-muted-foreground flex items-center gap-1.5">
+                  <Landmark className="h-3.5 w-3.5" />
+                  <span className="text-xs font-medium">Banco</span>
+                </div>
+                <p className="pl-5 text-sm font-medium">{payment.banckName}</p>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="space-y-1">
+                <div className="text-muted-foreground flex items-center gap-1.5">
+                  <Landmark className="h-3.5 w-3.5" />
+                  <span className="text-xs font-medium">Banco</span>
+                </div>
+                <p className="text-muted-foreground pl-5 text-sm">-</p>
+              </div>
+            )}
 
-          {payment.numberTicket && (
-            <div className="flex items-start gap-2">
-              <FileText className="text-muted-foreground mt-1 h-4 w-4" />
-              <div>
-                <p className="text-muted-foreground text-sm font-medium">Número de Boleta</p>
-                <p className="text-base">{payment.numberTicket}</p>
+            {payment.numberTicket && (
+              <div className="space-y-1 sm:col-span-2">
+                <div className="text-muted-foreground flex items-center gap-1.5">
+                  <FileText className="h-3.5 w-3.5" />
+                  <span className="text-xs font-medium">Número de Boleta</span>
+                </div>
+                <p className="pl-5 text-sm font-medium">{payment.numberTicket}</p>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <Separator />
 
         {/* Registered By */}
-        <div className="flex items-start gap-2">
-          <User className="text-muted-foreground mt-1 h-4 w-4" />
-          <div>
-            <p className="text-muted-foreground text-sm font-medium">Registrado por</p>
-            <p className="text-base font-medium">
-              {payment.user.firstName} {payment.user.lastName}
-            </p>
-            <p className="text-muted-foreground text-sm">{payment.user.email}</p>
-          </div>
+        <div>
+          <h3 className="text-muted-foreground mb-3 text-sm font-medium tracking-wider uppercase">
+            Registrado por
+          </h3>
+          <UserInfo
+            name={`${payment.user.firstName} ${payment.user.lastName}`}
+            email={payment.user.email}
+          />
         </div>
 
         {/* Review Information */}
         {payment.reviewedAt && (
           <>
             <Separator />
-            <div className="space-y-3">
-              <div className="flex items-start gap-2">
+            <div className="space-y-4">
+              <h3 className="text-muted-foreground flex items-center gap-2 text-sm font-medium tracking-wider uppercase">
                 {payment.status === 'APPROVED' ? (
-                  <CheckCircle className="mt-1 h-4 w-4 text-green-600" />
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
                 ) : (
-                  <XCircle className="text-destructive mt-1 h-4 w-4" />
+                  <XCircle className="text-destructive h-4 w-4" />
                 )}
-                <div>
-                  <p className="text-muted-foreground text-sm font-medium">
-                    {payment.status === 'APPROVED' ? 'Aprobado' : 'Revisado'}
-                  </p>
-                  <p className="text-base">
-                    {format(new Date(payment.reviewedAt), "dd 'de' MMMM, yyyy 'a las' HH:mm", {
-                      locale: es,
-                    })}
-                  </p>
-                </div>
-              </div>
+                {payment.status === 'APPROVED' ? 'Aprobado por' : 'Revisado por'}
+              </h3>
 
               {payment.reviewBy && (
-                <div className="flex items-start gap-2">
-                  <User className="text-muted-foreground mt-1 h-4 w-4" />
-                  <div>
-                    <p className="text-muted-foreground text-sm font-medium">Revisado por</p>
-                    <p className="text-base">{payment.reviewBy.email}</p>
-                  </div>
-                </div>
+                <UserInfo
+                  name={payment.reviewBy.email} // Assuming email is the best identifier available here
+                  email={payment.reviewBy.email}
+                />
               )}
 
+              <div className="pl-1">
+                <p className="text-muted-foreground mb-1 text-xs">Fecha de revisión</p>
+                <p className="text-sm font-medium">
+                  {format(new Date(payment.reviewedAt), "dd 'de' MMMM, yyyy 'a las' HH:mm", {
+                    locale: es,
+                  })}
+                </p>
+              </div>
+
               {payment.reason && (
-                <div className="bg-muted rounded-md p-3">
-                  <p className="text-muted-foreground mb-1 text-sm font-medium">Motivo</p>
+                <div className="bg-muted/50 border-border/50 rounded-md border p-3">
+                  <p className="text-muted-foreground mb-1 text-xs font-medium">
+                    Motivo / Observación
+                  </p>
                   <p className="text-sm">{payment.reason}</p>
                 </div>
               )}

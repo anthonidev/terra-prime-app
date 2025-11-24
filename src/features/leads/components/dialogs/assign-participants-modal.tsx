@@ -1,14 +1,13 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
@@ -16,7 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { FormDialog } from '@/shared/components/form-dialog';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { User } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -70,13 +71,7 @@ export function AssignParticipantsModal({
   const { data: participants, isLoading: isLoadingParticipants } = useParticipants();
   const assignParticipants = useAssignParticipants(leadId);
 
-  const {
-    handleSubmit,
-    formState: {},
-    reset,
-    setValue,
-    watch,
-  } = useForm<AssignParticipantsFormData>({
+  const form = useForm<AssignParticipantsFormData>({
     resolver: zodResolver(assignParticipantsSchema),
   });
 
@@ -98,20 +93,22 @@ export function AssignParticipantsModal({
 
   // Load current participants when visit changes
   useEffect(() => {
-    if (visit) {
-      setValue('linerParticipantId', visit.linerParticipant?.id || undefined);
-      setValue('telemarketingSupervisorId', visit.telemarketingSupervisor?.id || undefined);
-      setValue('telemarketingConfirmerId', visit.telemarketingConfirmer?.id || undefined);
-      setValue('telemarketerId', visit.telemarketer?.id || undefined);
-      setValue('fieldManagerId', visit.fieldManager?.id || undefined);
-      setValue('fieldSupervisorId', visit.fieldSupervisor?.id || undefined);
-      setValue('fieldSellerId', visit.fieldSeller?.id || undefined);
-      setValue('salesManagerId', visit.salesManager?.id || undefined);
-      setValue('salesGeneralManagerId', visit.salesGeneralManager?.id || undefined);
-      setValue('postSaleId', visit.postSale?.id || undefined);
-      setValue('closerId', visit.closer?.id || undefined);
+    if (visit && isOpen) {
+      form.reset({
+        linerParticipantId: visit.linerParticipant?.id || undefined,
+        telemarketingSupervisorId: visit.telemarketingSupervisor?.id || undefined,
+        telemarketingConfirmerId: visit.telemarketingConfirmer?.id || undefined,
+        telemarketerId: visit.telemarketer?.id || undefined,
+        fieldManagerId: visit.fieldManager?.id || undefined,
+        fieldSupervisorId: visit.fieldSupervisor?.id || undefined,
+        fieldSellerId: visit.fieldSeller?.id || undefined,
+        salesManagerId: visit.salesManager?.id || undefined,
+        salesGeneralManagerId: visit.salesGeneralManager?.id || undefined,
+        postSaleId: visit.postSale?.id || undefined,
+        closerId: visit.closer?.id || undefined,
+      });
     }
-  }, [visit, setValue]);
+  }, [visit, isOpen, form]);
 
   const onSubmit = async (data: AssignParticipantsFormData) => {
     if (!visit) return;
@@ -131,11 +128,6 @@ export function AssignParticipantsModal({
     onClose();
   };
 
-  const handleClose = () => {
-    reset();
-    onClose();
-  };
-
   const renderParticipantSelect = (
     type: ParticipantType,
     fieldName: keyof AssignParticipantsFormData,
@@ -145,113 +137,121 @@ export function AssignParticipantsModal({
     const hasParticipants = participantsForType.length > 0;
 
     return (
-      <div key={type} className="space-y-2">
-        <Label htmlFor={fieldName}>{label}</Label>
-        <Select
-          value={watch(fieldName) || undefined}
-          onValueChange={(value) => setValue(fieldName, value === 'NONE' ? '' : value)}
-          disabled={!hasParticipants || isLoadingParticipants}
-        >
-          <SelectTrigger id={fieldName}>
-            <SelectValue
-              placeholder={
-                isLoadingParticipants
-                  ? 'Cargando...'
-                  : hasParticipants
-                    ? 'Seleccionar participante'
-                    : 'No hay participantes'
-              }
-            />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="NONE">Sin asignar</SelectItem>
-            {participantsForType.map((participant) => (
-              <SelectItem key={participant.id} value={participant.id}>
-                {participant.firstName} {participant.lastName} - {participant.document}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <FormField
+        key={type}
+        control={form.control}
+        name={fieldName}
+        render={({ field }) => (
+          <FormItem className="space-y-1.5">
+            <FormLabel className="text-foreground flex items-center gap-1.5 text-sm font-medium">
+              <User className="h-3.5 w-3.5" />
+              {label}
+            </FormLabel>
+            <Select
+              value={field.value || undefined}
+              onValueChange={(value) => field.onChange(value === 'NONE' ? '' : value)}
+              disabled={!hasParticipants || isLoadingParticipants}
+            >
+              <FormControl>
+                <SelectTrigger className="focus:ring-primary/30 h-9 transition-all">
+                  <SelectValue
+                    placeholder={
+                      isLoadingParticipants
+                        ? 'Cargando...'
+                        : hasParticipants
+                          ? 'Seleccionar participante'
+                          : 'No hay participantes'
+                    }
+                  />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="NONE">Sin asignar</SelectItem>
+                {participantsForType.map((participant) => (
+                  <SelectItem key={participant.id} value={participant.id}>
+                    {participant.firstName} {participant.lastName} - {participant.document}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     );
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Asignar Participantes a la Visita</DialogTitle>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            {renderParticipantSelect(
-              ParticipantType.LINER,
-              'linerParticipantId',
-              participantLabels[ParticipantType.LINER]
-            )}
-            {renderParticipantSelect(
-              ParticipantType.TELEMARKETING_SUPERVISOR,
-              'telemarketingSupervisorId',
-              participantLabels[ParticipantType.TELEMARKETING_SUPERVISOR]
-            )}
-            {renderParticipantSelect(
-              ParticipantType.TELEMARKETING_CONFIRMER,
-              'telemarketingConfirmerId',
-              participantLabels[ParticipantType.TELEMARKETING_CONFIRMER]
-            )}
-            {renderParticipantSelect(
-              ParticipantType.TELEMARKETER,
-              'telemarketerId',
-              participantLabels[ParticipantType.TELEMARKETER]
-            )}
-            {renderParticipantSelect(
-              ParticipantType.FIELD_MANAGER,
-              'fieldManagerId',
-              participantLabels[ParticipantType.FIELD_MANAGER]
-            )}
-            {renderParticipantSelect(
-              ParticipantType.FIELD_SUPERVISOR,
-              'fieldSupervisorId',
-              participantLabels[ParticipantType.FIELD_SUPERVISOR]
-            )}
-            {renderParticipantSelect(
-              ParticipantType.FIELD_SELLER,
-              'fieldSellerId',
-              participantLabels[ParticipantType.FIELD_SELLER]
-            )}
-            {renderParticipantSelect(
-              ParticipantType.SALES_MANAGER,
-              'salesManagerId',
-              participantLabels[ParticipantType.SALES_MANAGER]
-            )}
-            {renderParticipantSelect(
-              ParticipantType.SALES_GENERAL_MANAGER,
-              'salesGeneralManagerId',
-              participantLabels[ParticipantType.SALES_GENERAL_MANAGER]
-            )}
-            {renderParticipantSelect(
-              ParticipantType.POST_SALE,
-              'postSaleId',
-              participantLabels[ParticipantType.POST_SALE]
-            )}
-            {renderParticipantSelect(
-              ParticipantType.CLOSER,
-              'closerId',
-              participantLabels[ParticipantType.CLOSER]
-            )}
-          </div>
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={handleClose}>
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={assignParticipants.isPending}>
-              {assignParticipants.isPending ? 'Asignando...' : 'Asignar Participantes'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <FormDialog
+      open={isOpen}
+      onOpenChange={(open) => !open && onClose()}
+      title="Asignar Participantes"
+      description="Asigna los participantes correspondientes a esta visita"
+      isEditing={true}
+      isPending={assignParticipants.isPending}
+      onSubmit={form.handleSubmit(onSubmit)}
+      submitLabel="Asignar Participantes"
+      maxWidth="xl"
+    >
+      <Form {...form}>
+        <div className="grid gap-4 md:grid-cols-2">
+          {renderParticipantSelect(
+            ParticipantType.LINER,
+            'linerParticipantId',
+            participantLabels[ParticipantType.LINER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.TELEMARKETING_SUPERVISOR,
+            'telemarketingSupervisorId',
+            participantLabels[ParticipantType.TELEMARKETING_SUPERVISOR]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.TELEMARKETING_CONFIRMER,
+            'telemarketingConfirmerId',
+            participantLabels[ParticipantType.TELEMARKETING_CONFIRMER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.TELEMARKETER,
+            'telemarketerId',
+            participantLabels[ParticipantType.TELEMARKETER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.FIELD_MANAGER,
+            'fieldManagerId',
+            participantLabels[ParticipantType.FIELD_MANAGER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.FIELD_SUPERVISOR,
+            'fieldSupervisorId',
+            participantLabels[ParticipantType.FIELD_SUPERVISOR]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.FIELD_SELLER,
+            'fieldSellerId',
+            participantLabels[ParticipantType.FIELD_SELLER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.SALES_MANAGER,
+            'salesManagerId',
+            participantLabels[ParticipantType.SALES_MANAGER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.SALES_GENERAL_MANAGER,
+            'salesGeneralManagerId',
+            participantLabels[ParticipantType.SALES_GENERAL_MANAGER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.POST_SALE,
+            'postSaleId',
+            participantLabels[ParticipantType.POST_SALE]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.CLOSER,
+            'closerId',
+            participantLabels[ParticipantType.CLOSER]
+          )}
+        </div>
+      </Form>
+    </FormDialog>
   );
 }

@@ -4,6 +4,7 @@ import { Key, Plus, AlertCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageHeader } from '@/shared/components/common/page-header';
 
 import { useActivePin } from '../hooks/use-active-pin';
 import { useCreatePin } from '../hooks/use-create-pin';
@@ -24,19 +25,10 @@ export function PinContainer() {
 
   if (isError) {
     return (
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-            <Key className="text-primary h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Gestión de PIN</h1>
-            <p className="text-muted-foreground text-sm">PIN de administrador</p>
-          </div>
-        </div>
+      <div className="space-y-6">
+        <PageHeader title="Gestión de PIN" description="PIN de administrador" icon={Key} />
 
-        <Card>
+        <Card className="border-none shadow-sm">
           <CardContent className="p-8">
             <div className="flex flex-col items-center justify-center gap-3 text-center">
               <div className="bg-destructive/10 flex h-12 w-12 items-center justify-center rounded-full">
@@ -56,21 +48,16 @@ export function PinContainer() {
   const hasActivePin = data?.pin !== null && data?.pin !== undefined;
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-          <Key className="text-primary h-5 w-5" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Gestión de PIN</h1>
-          <p className="text-muted-foreground text-sm">
-            {hasActivePin && data.expiresAt
-              ? 'PIN de administrador activo'
-              : 'Genera el PIN de administrador'}
-          </p>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Gestión de PIN"
+        description={
+          hasActivePin && data.expiresAt
+            ? 'PIN de administrador activo'
+            : 'Genera el PIN de administrador'
+        }
+        icon={Key}
+      />
 
       {/* Content */}
       {hasActivePin && data.expiresAt ? (
@@ -81,7 +68,7 @@ export function PinContainer() {
           isRegenerating={isCreating}
         />
       ) : (
-        <Card className="max-w-2xl">
+        <Card className="max-w-2xl border-none shadow-sm">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
               <div className="bg-muted flex h-8 w-8 items-center justify-center rounded-lg">
@@ -93,10 +80,10 @@ export function PinContainer() {
               Genera un PIN para habilitar las operaciones administrativas
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="bg-muted rounded-lg border p-3">
+          <CardContent className="space-y-4">
+            <div className="bg-muted/50 rounded-lg border border-dashed p-4">
               <h4 className="mb-1.5 text-sm font-medium">¿Qué es el PIN de administrador?</h4>
-              <p className="text-muted-foreground text-xs">
+              <p className="text-muted-foreground text-xs leading-relaxed">
                 El PIN de administrador es un código de seguridad temporal que permite realizar
                 operaciones administrativas sensibles. El PIN tiene una fecha de expiración y debe
                 ser regenerado periódicamente por seguridad.

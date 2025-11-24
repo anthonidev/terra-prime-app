@@ -57,7 +57,7 @@ export function ProfilePhotoSection({ user }: ProfilePhotoSectionProps) {
   const displayPhoto = previewUrl || user.photo;
 
   return (
-    <Card className="h-full border shadow-md backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+    <Card className="bg-card h-full border shadow-md transition-all duration-300 hover:shadow-lg">
       <CardContent className="flex flex-col items-center gap-6 p-6">
         {/* Avatar Section */}
         <div className="relative flex flex-col items-center gap-4">
@@ -99,7 +99,7 @@ export function ProfilePhotoSection({ user }: ProfilePhotoSectionProps) {
 
               {/* Loading Overlay */}
               {isPending && (
-                <div className="bg-background/80 absolute inset-0 flex items-center justify-center backdrop-blur-md">
+                <div className="bg-background/95 absolute inset-0 flex items-center justify-center">
                   <div className="flex flex-col items-center gap-2">
                     <Loader2 className="text-primary h-10 w-10 animate-spin" />
                     <span className="text-muted-foreground text-xs font-medium">Subiendo...</span>

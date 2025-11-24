@@ -123,7 +123,7 @@ export function FinancedPaymentFields({
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {fields.map((field, index) => {
               const Icon = field.icon;
               const error = form.formState.errors[field.id as keyof Step3FinancedFormData];
@@ -154,9 +154,27 @@ export function FinancedPaymentFields({
                       })}
                       className={cn(
                         'pl-9 transition-all',
-                        error && 'border-destructive',
+                        error && 'border-destructive focus-visible:ring-destructive',
                         isLocked && 'bg-muted cursor-not-allowed'
                       )}
+                      onKeyDown={(e) => {
+                        if (field.type === 'number') {
+                          if (
+                            !/[0-9]/.test(e.key) &&
+                            ![
+                              'Backspace',
+                              'Delete',
+                              'Tab',
+                              'Enter',
+                              'ArrowLeft',
+                              'ArrowRight',
+                              '.',
+                            ].includes(e.key)
+                          ) {
+                            e.preventDefault();
+                          }
+                        }
+                      }}
                     />
                     <Icon className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
                   </div>
@@ -164,7 +182,7 @@ export function FinancedPaymentFields({
                     <motion.p
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="text-destructive flex items-center gap-1 text-xs"
+                      className="text-destructive text-xs"
                     >
                       {error.message as string}
                     </motion.p>

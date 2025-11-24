@@ -65,7 +65,7 @@ export function ModulesGrid() {
 
   if (isError) {
     return (
-      <Card className="border-destructive/20 bg-destructive/5 backdrop-blur-sm">
+      <Card className="border-destructive/20 bg-destructive/5">
         <CardContent className="p-8 text-center">
           <div className="bg-destructive/10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
             <AlertCircle className="text-destructive h-6 w-6" />

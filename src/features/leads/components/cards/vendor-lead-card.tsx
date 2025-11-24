@@ -2,20 +2,22 @@
 
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Phone, Calendar, User } from 'lucide-react';
+import { Phone, Calendar, User, Eye } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 import type { VendorLead } from '../../types';
 
 interface VendorLeadCardProps {
   lead: VendorLead;
+  onViewDetail: (lead: VendorLead) => void;
 }
 
-export function VendorLeadCard({ lead }: VendorLeadCardProps) {
+export function VendorLeadCard({ lead, onViewDetail }: VendorLeadCardProps) {
   return (
-    <Card>
+    <Card className="border-none shadow-sm">
       <CardContent className="p-4">
         <div className="space-y-3">
           {/* Header: Nombre + Edad */}
@@ -25,7 +27,7 @@ export function VendorLeadCard({ lead }: VendorLeadCardProps) {
                 {lead.firstName} {lead.lastName}
               </h3>
               <div className="mt-1 flex items-center gap-1.5">
-                <Badge variant="outline" className="font-mono text-xs">
+                <Badge variant="outline" className="font-mono text-xs font-normal">
                   {lead.documentType}
                 </Badge>
                 <span className="text-muted-foreground text-xs">{lead.document}</span>
@@ -43,9 +45,9 @@ export function VendorLeadCard({ lead }: VendorLeadCardProps) {
               <Phone className="h-3 w-3" />
               <span>{lead.phone}</span>
             </div>
-            {lead.phone2 && (
+            {lead.email && (
               <div className="text-muted-foreground flex items-center gap-1.5 pl-5">
-                <span>{lead.phone2}</span>
+                <span className="truncate">{lead.email}</span>
               </div>
             )}
           </div>
@@ -55,7 +57,7 @@ export function VendorLeadCard({ lead }: VendorLeadCardProps) {
 
           {/* Fuente + Fecha */}
           <div className="flex items-center justify-between gap-2">
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className="bg-background text-xs font-normal">
               {lead.source.name}
             </Badge>
             <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
@@ -63,6 +65,11 @@ export function VendorLeadCard({ lead }: VendorLeadCardProps) {
               <span>{format(new Date(lead.createdAt), 'dd MMM yyyy', { locale: es })}</span>
             </div>
           </div>
+
+          <Button onClick={() => onViewDetail(lead)} variant="outline" size="sm" className="w-full">
+            <Eye className="mr-2 h-3.5 w-3.5" />
+            Ver Detalle
+          </Button>
         </div>
       </CardContent>
     </Card>

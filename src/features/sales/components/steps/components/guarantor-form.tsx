@@ -119,7 +119,7 @@ export function GuarantorForm({ form, showGuarantor, onAdd, onRemove }: Guaranto
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 pt-0">
                 <div className="flex justify-end">
                   <Button
                     type="button"

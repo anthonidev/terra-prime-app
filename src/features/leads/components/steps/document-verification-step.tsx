@@ -35,63 +35,79 @@ export function DocumentVerificationStep({
   onSearch,
 }: DocumentVerificationStepProps) {
   return (
-    <Card>
+    <Card className="border-none shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <div className="bg-primary/20 flex h-8 w-8 items-center justify-center rounded">
+          <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-lg">
             <CreditCard className="text-primary h-4 w-4" />
           </div>
           <CardTitle className="text-base">Verificación de Documento</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="documentType" className="text-xs font-medium">
-              Tipo de Documento
-            </Label>
-            <Select value={documentType} onValueChange={onDocumentTypeChange}>
-              <SelectTrigger id="documentType" className="h-9 text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {DOCUMENT_TYPES.map((type) => (
-                  <SelectItem key={type.value} value={type.value}>
-                    {type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-[200px_1fr]">
+            <div className="space-y-2">
+              <Label htmlFor="documentType" className="text-sm font-medium">
+                Tipo de Documento
+              </Label>
+              <Select value={documentType} onValueChange={onDocumentTypeChange}>
+                <SelectTrigger id="documentType" className="h-12">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {DOCUMENT_TYPES.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="document" className="text-xs font-medium">
-              Número de Documento
-            </Label>
-            <Input
-              id="document"
-              value={document}
-              onChange={(e) => onDocumentChange(e.target.value)}
-              placeholder="Ingrese el número de documento"
-              className="h-9 text-sm"
-            />
+            <div className="space-y-2">
+              <Label htmlFor="document" className="text-sm font-medium">
+                Número de Documento
+              </Label>
+              <div className="relative">
+                <Input
+                  id="document"
+                  value={document}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value)) {
+                      onDocumentChange(value);
+                    }
+                  }}
+                  placeholder="Ingrese el número de documento"
+                  className="h-12 text-lg tracking-wide"
+                  maxLength={documentType === 'DNI' ? 8 : 12}
+                />
+                {document && (
+                  <div className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2 text-xs">
+                    {document.length} dígitos
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="flex justify-end pt-2">
             <Button
-              size="sm"
+              size="lg"
               onClick={onSearch}
               disabled={!document || !documentType || isSearching}
+              className="w-full md:w-auto"
             >
               {isSearching ? (
                 <>
-                  <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Verificando...
                 </>
               ) : (
                 <>
-                  <Search className="mr-2 h-3.5 w-3.5" />
-                  Verificar
+                  <Search className="mr-2 h-4 w-4" />
+                  Verificar Documento
                 </>
               )}
             </Button>

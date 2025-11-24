@@ -1,17 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Key, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { CheckCircle, AlertCircle } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { FormDialog } from '@/shared/components/form-dialog';
 import { useValidateAdminToken } from '../../hooks/use-validate-admin-token';
 
 interface RequestEditModalProps {
@@ -69,77 +61,44 @@ export function RequestEditModal({ open, onOpenChange, onSuccess }: RequestEditM
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Key className="text-primary h-5 w-5" />
-            Solicitar Edición
-          </DialogTitle>
-          <DialogDescription>
-            Ingresa el PIN de administrador de 5 dígitos para habilitar la edición de los montos
-            totales.
-          </DialogDescription>
-        </DialogHeader>
+    <FormDialog
+      open={open}
+      onOpenChange={handleClose}
+      title="Solicitar Edición"
+      description="Ingresa el PIN de administrador de 5 dígitos para habilitar la edición de los montos totales."
+      onSubmit={(e) => {
+        e?.preventDefault();
+        handleSubmit();
+      }}
+      submitLabel="Validar PIN"
+      isPending={isPending}
+      maxWidth="sm"
+    >
+      <div className="flex flex-col items-center space-y-4 py-4">
+        <InputOTP maxLength={5} value={pin} onChange={handleChange} disabled={isPending}>
+          <InputOTPGroup>
+            <InputOTPSlot index={0} />
+            <InputOTPSlot index={1} />
+            <InputOTPSlot index={2} />
+            <InputOTPSlot index={3} />
+            <InputOTPSlot index={4} />
+          </InputOTPGroup>
+        </InputOTP>
 
-        <div className="space-y-4 py-6">
-          <div className="flex flex-col items-center space-y-4">
-            <InputOTP maxLength={5} value={pin} onChange={handleChange} disabled={isPending}>
-              <InputOTPGroup>
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
-                <InputOTPSlot index={3} />
-                <InputOTPSlot index={4} />
-              </InputOTPGroup>
-            </InputOTP>
-
-            {error && (
-              <div className="text-destructive flex items-center gap-2 text-sm">
-                <AlertCircle className="h-4 w-4" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            {!error && pin.length === 5 && !isPending && (
-              <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                <CheckCircle className="text-primary h-4 w-4" />
-                <span>PIN completo. Presiona Validar para continuar.</span>
-              </div>
-            )}
+        {error && (
+          <div className="text-destructive flex items-center gap-2 text-sm">
+            <AlertCircle className="h-4 w-4" />
+            <span>{error}</span>
           </div>
-        </div>
+        )}
 
-        <DialogFooter className="flex-col gap-2 sm:flex-row">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={handleClose}
-            disabled={isPending}
-            className="w-full sm:w-auto"
-          >
-            Cancelar
-          </Button>
-          <Button
-            type="button"
-            onClick={handleSubmit}
-            disabled={isPending || pin.length !== 5}
-            className="w-full sm:w-auto"
-          >
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Validando...
-              </>
-            ) : (
-              <>
-                <Key className="mr-2 h-4 w-4" />
-                Validar PIN
-              </>
-            )}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        {!error && pin.length === 5 && !isPending && (
+          <div className="text-muted-foreground flex items-center gap-2 text-sm">
+            <CheckCircle className="text-primary h-4 w-4" />
+            <span>PIN completo. Presiona Validar para continuar.</span>
+          </div>
+        )}
+      </div>
+    </FormDialog>
   );
 }

@@ -23,37 +23,43 @@ export function AvailableProjectCard({ project }: AvailableProjectCardProps) {
 
   return (
     <Link href={`/proyectos/lotes-disponibles/${project.id}`} className="block h-full">
-      <Card className="group h-full cursor-pointer transition-all hover:scale-[1.01] hover:shadow-lg">
-        <CardHeader className="pb-3">
+      <Card className="group h-full cursor-pointer border-none shadow-sm transition-all hover:scale-[1.01] hover:shadow-md">
+        <CardHeader className="p-4 pb-2">
           <div className="flex items-start justify-between gap-3">
-            {/* Logo/Avatar */}
-            <Avatar className="h-12 w-12 rounded-lg">
-              <AvatarImage src={project.logo || undefined} alt={project.name} />
-              <AvatarFallback className="bg-primary/10 text-primary rounded-lg text-sm font-semibold">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
+            <div className="flex items-center gap-3">
+              {/* Logo/Avatar */}
+              <Avatar className="h-10 w-10 rounded-lg">
+                <AvatarImage src={project.logo || undefined} alt={project.name} />
+                <AvatarFallback className="bg-primary/10 text-primary rounded-lg text-xs font-semibold">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
 
-            {/* Moneda */}
-            <Badge variant="outline" className="font-mono text-xs">
-              {project.currency}
-            </Badge>
-          </div>
-
-          {/* Nombre del proyecto */}
-          <div className="pt-2">
-            <h3 className="group-hover:text-primary line-clamp-1 text-base font-bold transition-colors">
-              {project.name}
-            </h3>
-            <p className="text-muted-foreground mt-0.5 text-xs">Código: {project.projectCode}</p>
+              {/* Nombre del proyecto */}
+              <div>
+                <h3 className="group-hover:text-primary line-clamp-1 text-sm font-bold tracking-tight transition-colors">
+                  {project.name}
+                </h3>
+                <div className="flex items-center gap-2 pt-1">
+                  <Badge
+                    variant="outline"
+                    className="bg-background h-5 px-1.5 font-mono text-[10px] font-medium"
+                  >
+                    {project.currency}
+                  </Badge>
+                </div>
+              </div>
+            </div>
           </div>
         </CardHeader>
 
-        <CardContent className="pt-0">
-          <div className="text-muted-foreground group-hover:text-primary flex items-center justify-center gap-2 text-sm transition-colors">
-            <Building2 className="h-3.5 w-3.5" />
-            <span>Ver lotes disponibles</span>
-            <ChevronRight className="ml-auto h-3.5 w-3.5" />
+        <CardContent className="p-4 pt-0">
+          <div className="bg-muted/30 text-muted-foreground group-hover:text-primary group-hover:bg-primary/5 mt-2 flex items-center justify-between rounded-md px-3 py-1.5 text-xs font-medium transition-all">
+            <div className="flex items-center gap-2">
+              <Building2 className="h-3 w-3" />
+              <span>Ver lotes</span>
+            </div>
+            <ChevronRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
           </div>
         </CardContent>
       </Card>

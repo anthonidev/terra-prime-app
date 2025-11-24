@@ -58,7 +58,7 @@ export function ChangePasswordForm() {
   };
 
   return (
-    <Card className="bg-card/50 border shadow-sm backdrop-blur-sm">
+    <Card className="bg-card border shadow-sm">
       <CardHeader className="px-6 pt-4 pb-2">
         <div className="flex items-center gap-3">
           <div className="bg-destructive/10 flex h-10 w-10 items-center justify-center rounded-xl">
@@ -120,7 +120,7 @@ export function ChangePasswordForm() {
                       <div className="relative">
                         <Input
                           type={showNewPassword ? 'text' : 'password'}
-                          className="bg-background/50 border-input/50 focus:bg-background h-11 pr-10 text-base transition-all"
+                          className="bg-background border-input focus:bg-background h-11 pr-10 text-base transition-all"
                           placeholder="••••••••"
                           {...field}
                         />
@@ -154,7 +154,7 @@ export function ChangePasswordForm() {
                       <div className="relative">
                         <Input
                           type={showConfirmPassword ? 'text' : 'password'}
-                          className="bg-background/50 border-input/50 focus:bg-background h-11 pr-10 text-base transition-all"
+                          className="bg-background border-input focus:bg-background h-11 pr-10 text-base transition-all"
                           placeholder="••••••••"
                           {...field}
                         />

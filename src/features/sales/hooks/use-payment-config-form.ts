@@ -132,7 +132,8 @@ export function usePaymentConfigForm({
     if (
       !totalAmount ||
       initialAmount === undefined ||
-      !interestRate ||
+      interestRate === undefined ||
+      interestRate === null ||
       !quantitySaleCoutes ||
       !firstPaymentDate
     ) {

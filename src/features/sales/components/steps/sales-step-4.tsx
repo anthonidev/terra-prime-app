@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -40,8 +41,49 @@ export function SalesStep4({ data, onNext, onBack }: SalesStep4Props) {
     onSubmit: onNext,
   });
 
+  // Refs for auto-scroll
+  const topRef = useRef<HTMLDivElement>(null);
+  const addressRef = useRef<HTMLDivElement>(null);
+  const guarantorRef = useRef<HTMLDivElement>(null);
+  const secondaryClientsRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to top on mount
+  useEffect(() => {
+    setTimeout(() => {
+      topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+  }, []);
+
+  // Auto-scroll when lead is selected (address input appears)
+  useEffect(() => {
+    if (selectedLeadId && addressRef.current) {
+      setTimeout(() => {
+        addressRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    }
+  }, [selectedLeadId]);
+
+  // Auto-scroll when guarantor section is added
+  useEffect(() => {
+    if (showGuarantor && guarantorRef.current) {
+      setTimeout(() => {
+        guarantorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    }
+  }, [showGuarantor]);
+
+  // Auto-scroll when secondary clients section is added
+  useEffect(() => {
+    if (showSecondaryClients && secondaryClientsRef.current) {
+      setTimeout(() => {
+        secondaryClientsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    }
+  }, [showSecondaryClients]);
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <div ref={topRef} />
       {/* Lead Selector */}
       <LeadSelector
         selectedLeadId={selectedLeadId}
@@ -55,24 +97,30 @@ export function SalesStep4({ data, onNext, onBack }: SalesStep4Props) {
       />
 
       {/* Client Address Input */}
-      <ClientAddressInput form={form} show={!!selectedLeadId} />
+      <div ref={addressRef}>
+        <ClientAddressInput form={form} show={!!selectedLeadId} />
+      </div>
 
       {/* Guarantor Form */}
-      <GuarantorForm
-        form={form}
-        showGuarantor={showGuarantor}
-        onAdd={handleAddGuarantor}
-        onRemove={handleRemoveGuarantor}
-      />
+      <div ref={guarantorRef}>
+        <GuarantorForm
+          form={form}
+          showGuarantor={showGuarantor}
+          onAdd={handleAddGuarantor}
+          onRemove={handleRemoveGuarantor}
+        />
+      </div>
 
       {/* Secondary Clients Form */}
-      <SecondaryClientsForm
-        form={form}
-        showSecondaryClients={showSecondaryClients}
-        secondaryClientsCount={secondaryClientsCount}
-        onAdd={handleAddSecondaryClient}
-        onRemove={handleRemoveSecondaryClient}
-      />
+      <div ref={secondaryClientsRef}>
+        <SecondaryClientsForm
+          form={form}
+          showSecondaryClients={showSecondaryClients}
+          secondaryClientsCount={secondaryClientsCount}
+          onAdd={handleAddSecondaryClient}
+          onRemove={handleRemoveSecondaryClient}
+        />
+      </div>
 
       {/* Navigation */}
       <motion.div

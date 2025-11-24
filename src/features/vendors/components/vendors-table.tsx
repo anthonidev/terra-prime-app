@@ -7,11 +7,10 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { DataTable } from '@/shared/components/data-table/data-table';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
+import { UserInfo } from '@/shared/components/user-info';
 
 import { VendorCard } from './vendor-card';
 import type { Vendor } from '../types';
@@ -26,21 +25,12 @@ const columns: ColumnDef<Vendor>[] = [
     header: 'Vendedor',
     cell: ({ row }) => {
       const vendor = row.original;
-      const initials = `${vendor.firstName[0]}${vendor.lastName[0]}`.toUpperCase();
-
       return (
-        <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={vendor.photo} alt={`${vendor.firstName} ${vendor.lastName}`} />
-            <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
-          <div>
-            <div className="text-xs font-bold">
-              {vendor.firstName} {vendor.lastName}
-            </div>
-            <div className="text-muted-foreground truncate text-xs">{vendor.email}</div>
-          </div>
-        </div>
+        <UserInfo
+          name={`${vendor.firstName} ${vendor.lastName}`}
+          email={vendor.email}
+          photo={vendor.photo}
+        />
       );
     },
   },
@@ -48,7 +38,7 @@ const columns: ColumnDef<Vendor>[] = [
     accessorKey: 'document',
     header: 'Documento',
     cell: ({ row }) => (
-      <Badge variant="outline" className="font-mono text-xs">
+      <Badge variant="outline" className="bg-background font-mono text-xs font-normal">
         {row.original.document}
       </Badge>
     ),
@@ -87,13 +77,13 @@ export function VendorsTable({ vendors }: VendorsTableProps) {
   return (
     <div className="space-y-4">
       {/* Búsqueda */}
-      <div className="relative">
+      <div className="relative max-w-sm">
         <Search className="text-muted-foreground absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
         <Input
           placeholder="Buscar por nombre, email o documento..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="h-9 pl-9 text-sm"
+          className="focus-visible:ring-primary/30 h-9 pl-9 text-sm transition-all"
         />
       </div>
 
@@ -105,9 +95,7 @@ export function VendorsTable({ vendors }: VendorsTableProps) {
           ))}
         </div>
       ) : (
-        <Card>
-          <DataTable columns={columns} data={filteredVendors} />
-        </Card>
+        <DataTable columns={columns} data={filteredVendors} />
       )}
 
       {/* Contador */}

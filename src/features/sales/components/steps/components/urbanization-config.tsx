@@ -25,11 +25,11 @@ export function UrbanizationConfig({ form, urbanizationPrice, currency }: Urbani
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.2 }}
     >
-      <Card className="border-accent/30 bg-accent/5">
+      <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="bg-accent/20 flex h-10 w-10 items-center justify-center rounded-lg">
-              <Home className="text-accent h-5 w-5" />
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <Home className="text-primary h-5 w-5" />
             </div>
             <div>
               <CardTitle className="flex items-center gap-2">
@@ -41,7 +41,7 @@ export function UrbanizationConfig({ form, urbanizationPrice, currency }: Urbani
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           {/* Monto de Habilitación Urbana (readonly) */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -53,7 +53,7 @@ export function UrbanizationConfig({ form, urbanizationPrice, currency }: Urbani
               htmlFor="totalAmountUrbanDevelopment"
               className="flex items-center gap-2 text-sm font-medium"
             >
-              <Home className="text-accent h-4 w-4" />
+              <Home className="text-primary h-4 w-4" />
               Monto de Habilitación Urbana
             </Label>
             <Input
@@ -62,7 +62,7 @@ export function UrbanizationConfig({ form, urbanizationPrice, currency }: Urbani
               value={formatCurrency(urbanizationPrice, currencyType)}
               readOnly
               disabled
-              className="bg-muted text-accent cursor-not-allowed font-semibold"
+              className="bg-muted text-foreground cursor-not-allowed font-semibold"
             />
             <p className="text-muted-foreground text-xs">
               Monto de habilitación urbana (no editable)
@@ -74,16 +74,16 @@ export function UrbanizationConfig({ form, urbanizationPrice, currency }: Urbani
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1 }}
-            className="bg-accent/10 border-accent/20 flex items-start gap-2 rounded-lg border p-3"
+            className="bg-accent/5 border-accent/20 flex items-start gap-3 rounded-lg border p-4"
           >
             <Info className="text-accent mt-0.5 h-4 w-4 shrink-0" />
-            <p className="text-muted-foreground text-xs leading-relaxed">
+            <p className="text-muted-foreground text-sm leading-relaxed">
               Configure los términos de pago para la habilitación urbana. Este monto será pagado en
               cuotas separadas del pago del lote.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* Cantidad de Cuotas HU */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -95,7 +95,7 @@ export function UrbanizationConfig({ form, urbanizationPrice, currency }: Urbani
                 htmlFor="quantityHuCuotes"
                 className="flex items-center gap-2 text-sm font-medium"
               >
-                <Hash className="text-accent h-4 w-4" />
+                <Hash className="text-primary h-4 w-4" />
                 Cantidad de Cuotas HU
               </Label>
               <div className="relative">
@@ -106,8 +106,19 @@ export function UrbanizationConfig({ form, urbanizationPrice, currency }: Urbani
                   {...form.register('quantityHuCuotes', { valueAsNumber: true })}
                   className={cn(
                     'pl-9 transition-all',
-                    form.formState.errors.quantityHuCuotes && 'border-destructive'
+                    form.formState.errors.quantityHuCuotes &&
+                      'border-destructive focus-visible:ring-destructive'
                   )}
+                  onKeyDown={(e) => {
+                    if (
+                      !/[0-9]/.test(e.key) &&
+                      !['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'].includes(
+                        e.key
+                      )
+                    ) {
+                      e.preventDefault();
+                    }
+                  }}
                 />
                 <Hash className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
               </div>
@@ -115,7 +126,7 @@ export function UrbanizationConfig({ form, urbanizationPrice, currency }: Urbani
                 <motion.p
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-destructive flex items-center gap-1 text-xs"
+                  className="text-destructive text-xs"
                 >
                   {form.formState.errors.quantityHuCuotes.message as string}
                 </motion.p>
@@ -136,7 +147,7 @@ export function UrbanizationConfig({ form, urbanizationPrice, currency }: Urbani
                 htmlFor="firstPaymentDateHu"
                 className="flex items-center gap-2 text-sm font-medium"
               >
-                <Calendar className="text-accent h-4 w-4" />
+                <Calendar className="text-primary h-4 w-4" />
                 Fecha Primera Cuota HU
               </Label>
               <div className="relative">
@@ -146,7 +157,8 @@ export function UrbanizationConfig({ form, urbanizationPrice, currency }: Urbani
                   {...form.register('firstPaymentDateHu')}
                   className={cn(
                     'pl-9 transition-all',
-                    form.formState.errors.firstPaymentDateHu && 'border-destructive'
+                    form.formState.errors.firstPaymentDateHu &&
+                      'border-destructive focus-visible:ring-destructive'
                   )}
                 />
                 <Calendar className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
@@ -155,7 +167,7 @@ export function UrbanizationConfig({ form, urbanizationPrice, currency }: Urbani
                 <motion.p
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-destructive flex items-center gap-1 text-xs"
+                  className="text-destructive text-xs"
                 >
                   {form.formState.errors.firstPaymentDateHu.message as string}
                 </motion.p>

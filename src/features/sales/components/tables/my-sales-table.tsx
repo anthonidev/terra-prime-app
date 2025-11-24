@@ -3,7 +3,7 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Eye } from 'lucide-react';
+import { Calendar, DollarSign, Eye, MapPin, Tag, User } from 'lucide-react';
 import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
@@ -31,15 +31,29 @@ const statusConfig: Record<
 const columns: ColumnDef<MySale>[] = [
   {
     accessorKey: 'createdAt',
-    header: 'Fecha',
+    header: ({}) => {
+      return (
+        <div className="flex items-center gap-2">
+          <Calendar className="text-muted-foreground h-4 w-4" />
+          <span>Fecha</span>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       const date = new Date(row.getValue('createdAt'));
-      return format(date, 'dd MMM yyyy', { locale: es });
+      return <span className="font-medium">{format(date, 'dd MMM yyyy', { locale: es })}</span>;
     },
   },
   {
     accessorKey: 'client',
-    header: 'Cliente',
+    header: ({}) => {
+      return (
+        <div className="flex items-center gap-2">
+          <User className="text-muted-foreground h-4 w-4" />
+          <span>Cliente</span>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       const client = row.original.client;
       return (
@@ -47,20 +61,27 @@ const columns: ColumnDef<MySale>[] = [
           <span className="font-medium">
             {client.firstName} {client.lastName}
           </span>
-          <span className="text-muted-foreground text-sm">{client.phone}</span>
+          <span className="text-muted-foreground text-xs">{client.phone}</span>
         </div>
       );
     },
   },
   {
     accessorKey: 'lot',
-    header: 'Lote',
+    header: ({}) => {
+      return (
+        <div className="flex items-center gap-2">
+          <MapPin className="text-muted-foreground h-4 w-4" />
+          <span>Lote</span>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       const lot = row.original.lot;
       return (
         <div className="flex flex-col">
           <span className="font-medium">{lot.name}</span>
-          <span className="text-muted-foreground text-sm">
+          <span className="text-muted-foreground text-xs">
             {lot.project} - {lot.stage}
           </span>
         </div>
@@ -69,22 +90,38 @@ const columns: ColumnDef<MySale>[] = [
   },
   {
     accessorKey: 'type',
-    header: 'Tipo',
+    header: ({}) => {
+      return (
+        <div className="flex items-center gap-2">
+          <Tag className="text-muted-foreground h-4 w-4" />
+          <span>Tipo</span>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       const type = row.getValue('type') as string;
       return (
-        <span className="capitalize">{type === 'DIRECT_PAYMENT' ? 'Contado' : 'Financiado'}</span>
+        <Badge variant="secondary" className="font-normal">
+          {type === 'DIRECT_PAYMENT' ? 'Contado' : 'Financiado'}
+        </Badge>
       );
     },
   },
   {
     accessorKey: 'totalAmount',
-    header: 'Monto Total',
+    header: ({}) => {
+      return (
+        <div className="flex items-center gap-2">
+          <DollarSign className="text-muted-foreground h-4 w-4" />
+          <span>Monto</span>
+        </div>
+      );
+    },
     cell: ({ row }) => {
       const amount = row.getValue('totalAmount') as number;
       const currency = row.original.currency;
       return (
-        <span className="font-medium">
+        <span className="font-semibold text-green-600">
           {currency === 'USD' ? '$' : 'S/'} {amount.toLocaleString('es-PE')}
         </span>
       );
@@ -105,10 +142,10 @@ const columns: ColumnDef<MySale>[] = [
     cell: ({ row }) => {
       const saleId = row.original.id;
       return (
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="ghost" size="sm" asChild className="h-8 w-8 p-0">
           <Link href={`/ventas/detalle/${saleId}`}>
-            <Eye className="mr-2 h-4 w-4" />
-            Ver Detalle
+            <Eye className="h-4 w-4" />
+            <span className="sr-only">Ver Detalle</span>
           </Link>
         </Button>
       );

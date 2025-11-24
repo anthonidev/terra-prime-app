@@ -50,7 +50,7 @@ export function SelectedLotSummary({
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.4, type: 'spring', stiffness: 200, damping: 20 }}
     >
-      <Card className="border-primary/50 bg-primary/5 border-2 shadow-lg">
+      <Card className="bg-primary/5">
         <CardHeader className="pb-4">
           <div className="flex items-center gap-3">
             <motion.div

@@ -52,9 +52,9 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
   };
 
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end">
+    <Card className="bg-card border shadow-sm">
+      <CardContent className="p-5">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center">
           {/* Búsqueda */}
           <div className="flex-1">
             <div className="relative">
@@ -73,42 +73,45 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
                     }
                   }
                 }}
-                className="pl-9"
+                className="bg-background border-input focus-visible:ring-primary/20 h-10 pl-9 transition-all"
                 aria-label="Buscar usuarios"
               />
             </div>
           </div>
 
-          {/* Filtro por estado */}
-          <Select
-            value={
-              filters.isActive === undefined ? 'all' : filters.isActive ? 'active' : 'inactive'
-            }
-            onValueChange={handleStatusChange}
-          >
-            <SelectTrigger className="w-full md:w-[180px]">
-              <Filter className="mr-2 h-4 w-4" />
-              <SelectValue placeholder="Estado" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="active">Activos</SelectItem>
-              <SelectItem value="inactive">Inactivos</SelectItem>
-            </SelectContent>
-          </Select>
+          {/* Filtros Group */}
+          <div className="flex flex-col gap-3 sm:flex-row">
+            {/* Filtro por estado */}
+            <Select
+              value={
+                filters.isActive === undefined ? 'all' : filters.isActive ? 'active' : 'inactive'
+              }
+              onValueChange={handleStatusChange}
+            >
+              <SelectTrigger className="bg-background border-input focus:ring-primary/20 h-10 w-full transition-all md:w-[180px]">
+                <div className="flex items-center gap-2">
+                  <Filter className="text-muted-foreground h-4 w-4" />
+                  <SelectValue placeholder="Estado" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="active">Activos</SelectItem>
+                <SelectItem value="inactive">Inactivos</SelectItem>
+              </SelectContent>
+            </Select>
 
-          {/* Orden */}
-          <Select value={filters.order || 'DESC'} onValueChange={handleOrderChange}>
-            <SelectTrigger className="w-full md:w-[180px]">
-              <SelectValue placeholder="Orden" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="DESC">Más recientes</SelectItem>
-              <SelectItem value="ASC">Más antiguos</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Botón eliminado: búsqueda automática al escribir */}
+            {/* Orden */}
+            <Select value={filters.order || 'DESC'} onValueChange={handleOrderChange}>
+              <SelectTrigger className="bg-background border-input focus:ring-primary/20 h-10 w-full transition-all md:w-[180px]">
+                <SelectValue placeholder="Orden" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="DESC">Más recientes</SelectItem>
+                <SelectItem value="ASC">Más antiguos</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </CardContent>
     </Card>

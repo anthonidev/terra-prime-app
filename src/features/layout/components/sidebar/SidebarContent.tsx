@@ -1,8 +1,11 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useAuth } from '@/features/auth/hooks/use-auth';
+import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, LogOut, User } from 'lucide-react';
+import { ChevronLeft, ChevronRight, LayoutDashboard, LogOut, User } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { MenuItem } from '../../types/menu.types';
 import SidebarLink from './SidebarLink';
 
@@ -20,8 +23,11 @@ export const SidebarContent = ({
   menuItems = [],
 }: Props) => {
   const { user, logout } = useAuth();
+  const pathname = usePathname();
 
   if (!user) return null;
+
+  const isDashboardActive = pathname === '/';
 
   return (
     <motion.div
@@ -92,27 +98,29 @@ export const SidebarContent = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <motion.div
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: 'spring', damping: 15 }}
-                    className="flex aspect-square w-12 items-center justify-center rounded-full border-2 border-white/20 bg-gradient-to-br shadow-lg"
-                    style={{
-                      background: `linear-gradient(135deg, var(--nav-item-active), var(--chart-3))`,
-                    }}
-                  >
-                    {user.photo ? (
-                      <Image
-                        src={user.photo}
-                        alt="Foto de perfil"
-                        width={64}
-                        height={64}
-                        className="h-full w-full rounded-full object-cover"
-                      />
-                    ) : (
-                      <User size={22} className="text-white" />
-                    )}
-                  </motion.div>
+                  <Link href="/perfil">
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: 'spring', damping: 15 }}
+                      className="flex aspect-square w-12 items-center justify-center rounded-full border-2 border-white/20 bg-gradient-to-br shadow-lg"
+                      style={{
+                        background: `linear-gradient(135deg, var(--nav-item-active), var(--chart-3))`,
+                      }}
+                    >
+                      {user.photo ? (
+                        <Image
+                          src={user.photo}
+                          alt="Foto de perfil"
+                          width={64}
+                          height={64}
+                          className="h-full w-full rounded-full object-cover"
+                        />
+                      ) : (
+                        <User size={22} className="text-white" />
+                      )}
+                    </motion.div>
+                  </Link>
                 </TooltipTrigger>
                 <TooltipContent
                   side="right"
@@ -132,27 +140,29 @@ export const SidebarContent = ({
               </Tooltip>
             </TooltipProvider>
           ) : (
-            <motion.div
-              whileHover={{ scale: 1.05, rotate: 2 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: 'spring', damping: 15 }}
-              className="flex aspect-square w-12 cursor-pointer items-center justify-center rounded-full border-2 border-white/20 bg-gradient-to-br shadow-lg"
-              style={{
-                background: `linear-gradient(135deg, var(--nav-item-active), var(--chart-3))`,
-              }}
-            >
-              {user.photo ? (
-                <Image
-                  src={user.photo}
-                  alt="Foto de perfil"
-                  width={64}
-                  height={64}
-                  className="h-full w-full rounded-full object-cover"
-                />
-              ) : (
-                <User size={22} className="text-white" />
-              )}
-            </motion.div>
+            <Link href="/perfil">
+              <motion.div
+                whileHover={{ scale: 1.05, rotate: 2 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: 'spring', damping: 15 }}
+                className="flex aspect-square w-12 cursor-pointer items-center justify-center rounded-full border-2 border-white/20 bg-gradient-to-br shadow-lg"
+                style={{
+                  background: `linear-gradient(135deg, var(--nav-item-active), var(--chart-3))`,
+                }}
+              >
+                {user.photo ? (
+                  <Image
+                    src={user.photo}
+                    alt="Foto de perfil"
+                    width={64}
+                    height={64}
+                    className="h-full w-full rounded-full object-cover"
+                  />
+                ) : (
+                  <User size={22} className="text-white" />
+                )}
+              </motion.div>
+            </Link>
           )}
 
           <motion.div
@@ -184,6 +194,87 @@ export const SidebarContent = ({
 
       <nav className="flex-1 overflow-x-hidden overflow-y-auto py-4">
         <div className="space-y-2 px-3">
+          {/* Dashboard Button */}
+          <div className="relative w-full">
+            {isCollapsed ? (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href="/"
+                      className={cn(
+                        'group relative flex w-full justify-center p-3 transition-all',
+                        'hover:bg-nav-item-hover'
+                      )}
+                      style={
+                        isDashboardActive
+                          ? {
+                              backgroundColor: 'var(--nav-item-selected)',
+                              color: 'var(--nav-item-selected-foreground)',
+                              borderLeft: '3px solid var(--nav-item-active)',
+                            }
+                          : {}
+                      }
+                    >
+                      <LayoutDashboard
+                        size={20}
+                        className="transition-colors duration-200"
+                        style={{
+                          color: isDashboardActive
+                            ? 'var(--nav-item-selected-foreground)'
+                            : 'var(--nav-item-foreground)',
+                        }}
+                      />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="right"
+                    className="bg-layout-sidebar border-sidebar-border text-layout-sidebar-foreground shadow-lg"
+                  >
+                    <p className="font-medium">Dashboard</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : (
+              <Link
+                href="/"
+                className={cn(
+                  'group relative flex w-full items-center gap-3 p-3 transition-all',
+                  'hover:bg-nav-item-hover'
+                )}
+                style={
+                  isDashboardActive
+                    ? {
+                        backgroundColor: 'var(--nav-item-selected)',
+                        color: 'var(--nav-item-selected-foreground)',
+                        borderLeft: '3px solid var(--nav-item-active)',
+                      }
+                    : {}
+                }
+              >
+                <LayoutDashboard
+                  size={20}
+                  className="transition-colors duration-200"
+                  style={{
+                    color: isDashboardActive
+                      ? 'var(--nav-item-selected-foreground)'
+                      : 'var(--nav-item-foreground)',
+                  }}
+                />
+                <span
+                  className="text-base font-medium whitespace-nowrap transition-colors duration-200"
+                  style={{
+                    color: isDashboardActive
+                      ? 'var(--nav-item-selected-foreground)'
+                      : 'var(--nav-item-foreground)',
+                  }}
+                >
+                  Dashboard
+                </span>
+              </Link>
+            )}
+          </div>
+
           {menuItems.map((item) => (
             <SidebarLink key={item.id} item={item} isCollapsed={isCollapsed} />
           ))}

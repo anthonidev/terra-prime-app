@@ -2,12 +2,14 @@
 
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Building2, User, Users } from 'lucide-react';
+import { Building2, Calendar, CreditCard, DollarSign, MapPin, User, Users } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import type { SaleDetail } from '../../types';
+import { Badge } from '@/components/ui/badge';
+import { UserInfo } from '@/shared/components/user-info';
 import { formatCurrency } from '@/shared/utils/currency-formatter';
+import type { SaleDetail } from '../../types';
 
 interface SaleDetailInfoProps {
   sale: SaleDetail;
@@ -19,106 +21,136 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
       {/* Información del Lote */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Building2 className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-lg">
+              <Building2 className="text-primary h-4 w-4" />
+            </div>
             Información del Lote
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <p className="text-muted-foreground text-sm">Proyecto</p>
-            <p className="font-medium">{sale.lot.project}</p>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-muted-foreground text-sm">Etapa</p>
-              <p className="font-medium">{sale.lot.stage}</p>
+        <CardContent className="space-y-6">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1">
+              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                Proyecto
+              </p>
+              <p className="font-semibold">{sale.lot.project}</p>
             </div>
-            <div>
-              <p className="text-muted-foreground text-sm">Manzana</p>
-              <p className="font-medium">{sale.lot.block}</p>
+            <div className="space-y-1">
+              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                Ubicación
+              </p>
+              <div className="flex items-center gap-1.5">
+                <MapPin className="text-muted-foreground h-3.5 w-3.5" />
+                <span className="font-medium">
+                  {sale.lot.stage} - {sale.lot.block} - {sale.lot.name}
+                </span>
+              </div>
             </div>
           </div>
-          <div>
-            <p className="text-muted-foreground text-sm">Lote</p>
-            <p className="font-medium">{sale.lot.name}</p>
-          </div>
+
           <Separator />
-          <div>
-            <p className="text-muted-foreground text-sm">Precio del Lote</p>
-            <p className="text-lg font-medium">
-              {formatCurrency(sale.lot.lotPrice, sale.currency)}
-            </p>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1">
+              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                Precio del Lote
+              </p>
+              <div className="flex items-center gap-1.5">
+                <DollarSign className="text-muted-foreground h-3.5 w-3.5" />
+                <span className="font-medium">
+                  {formatCurrency(sale.lot.lotPrice, sale.currency)}
+                </span>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                Monto Total Venta
+              </p>
+              <p className="text-primary text-lg font-bold">
+                {formatCurrency(sale.totalAmount, sale.currency)}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-muted-foreground text-sm">Monto Total de la Venta</p>
-            <p className="text-lg font-medium">{formatCurrency(sale.totalAmount, sale.currency)}</p>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-muted-foreground text-sm">Tipo de Venta</p>
-              <p className="font-medium">
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1">
+              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                Tipo de Venta
+              </p>
+              <Badge variant="secondary" className="font-normal">
+                <CreditCard className="mr-1 h-3 w-3" />
                 {sale.type === 'DIRECT_PAYMENT' ? 'Contado' : 'Financiado'}
-              </p>
+              </Badge>
             </div>
-            <div>
-              <p className="text-muted-foreground text-sm">Fecha de Contrato</p>
-              <p className="font-medium">
-                {sale.contractDate
-                  ? format(new Date(sale.contractDate), 'dd MMM yyyy', { locale: es })
-                  : 'N/A'}
+            <div className="space-y-1">
+              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                Fecha de Contrato
               </p>
+              <div className="flex items-center gap-1.5">
+                <Calendar className="text-muted-foreground h-3.5 w-3.5" />
+                <span className="font-medium">
+                  {sale.contractDate
+                    ? format(new Date(sale.contractDate), 'dd MMM yyyy', { locale: es })
+                    : 'N/A'}
+                </span>
+              </div>
             </div>
           </div>
+
           {sale.reservationAmount && (
-            <div>
-              <p className="text-muted-foreground text-sm">Monto de Reserva</p>
-              <p className="font-medium">
-                {sale.currency === 'USD' ? '$' : 'S/'}{' '}
-                {sale.reservationAmount.toLocaleString('es-PE')}
-              </p>
+            <div className="bg-muted/30 rounded-lg border p-3">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground text-sm font-medium">Monto de Reserva</span>
+                <span className="font-semibold">
+                  {sale.currency === 'USD' ? '$' : 'S/'}{' '}
+                  {sale.reservationAmount.toLocaleString('es-PE')}
+                </span>
+              </div>
             </div>
           )}
         </CardContent>
       </Card>
 
-      {/* Información del Cliente y Garante */}
+      {/* Información del Cliente */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-lg">
+              <User className="text-primary h-4 w-4" />
+            </div>
             Información del Cliente
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <p className="text-muted-foreground text-sm">Nombre Completo</p>
-            <p className="font-medium">
-              {sale.client.firstName} {sale.client.lastName}
+        <CardContent className="space-y-6">
+          <UserInfo
+            name={`${sale.client.firstName} ${sale.client.lastName}`}
+            phone={sale.client.phone}
+            // document={sale.client.documentNumber} // Assuming documentNumber exists on client
+            className="bg-muted/30 rounded-lg border p-3"
+          />
+
+          <div className="space-y-1">
+            <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+              Dirección
             </p>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-muted-foreground text-sm">Teléfono</p>
-              <p className="font-medium">{sale.client.phone}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm">Dirección</p>
-              <p className="font-medium">{sale.client.address}</p>
+            <div className="flex items-start gap-2">
+              <MapPin className="text-muted-foreground mt-0.5 h-3.5 w-3.5 shrink-0" />
+              <p className="text-sm font-medium">{sale.client.address}</p>
             </div>
           </div>
 
           {sale.guarantor && (sale.guarantor.firstName || sale.guarantor.lastName) && (
             <>
               <Separator />
-              <div>
-                <p className="text-muted-foreground text-sm font-semibold">Garante</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground text-sm">Nombre Completo</p>
-                <p className="font-medium">
-                  {sale.guarantor.firstName} {sale.guarantor.lastName}
-                </p>
+              <div className="space-y-3">
+                <p className="text-sm font-semibold">Garante</p>
+                <UserInfo
+                  name={`${sale.guarantor.firstName} ${sale.guarantor.lastName}`}
+                  // phone={sale.guarantor.phone}
+                  //  document={sale.guarantor.documentNumber}
+                  className="bg-muted/30 rounded-lg border p-3"
+                />
               </div>
             </>
           )}
@@ -126,125 +158,142 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
           {sale.secondaryClients && sale.secondaryClients.length > 0 && (
             <>
               <Separator />
-              <div>
-                <p className="text-muted-foreground text-sm font-semibold">Clientes Secundarios</p>
-              </div>
-              {sale.secondaryClients.map((client, index) => (
-                <div key={index} className="space-y-2">
-                  <div>
-                    <p className="text-muted-foreground text-sm">Cliente Secundario {index + 1}</p>
-                    <p className="font-medium">
-                      {client.firstName} {client.lastName}
-                    </p>
-                    <p className="text-muted-foreground text-sm">{client.phone}</p>
-                  </div>
-                  {index < sale.secondaryClients.length - 1 && <Separator />}
+              <div className="space-y-3">
+                <p className="text-sm font-semibold">Clientes Secundarios</p>
+                <div className="space-y-2">
+                  {sale.secondaryClients.map((client, index) => (
+                    <UserInfo
+                      key={index}
+                      name={`${client.firstName} ${client.lastName}`}
+                      phone={client.phone}
+                      //  document={client.documentNumber}
+                      className="bg-muted/30 rounded-lg border p-3"
+                    />
+                  ))}
                 </div>
-              ))}
+              </div>
             </>
           )}
         </CardContent>
       </Card>
 
-      {/* Información de Participantes */}
+      {/* Participantes de la Venta */}
       <Card className="md:col-span-2">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-lg">
+              <Users className="text-primary h-4 w-4" />
+            </div>
             Participantes de la Venta
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* Vendor */}
             {sale.vendor && (sale.vendor.firstName || sale.vendor.lastName) && (
-              <div>
-                <p className="text-muted-foreground mb-2 text-sm font-semibold">Vendedor</p>
-                <p className="font-medium">
-                  {sale.vendor.firstName} {sale.vendor.lastName}
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                  Vendedor
                 </p>
-                <p className="text-muted-foreground text-sm">{sale.vendor.document}</p>
+                <UserInfo
+                  name={`${sale.vendor.firstName} ${sale.vendor.lastName}`}
+                  document={sale.vendor.document}
+                  className="bg-muted/30 rounded-lg border p-3"
+                />
               </div>
             )}
 
             {/* Liner */}
             {sale.liner && (sale.liner.firstName || sale.liner.lastName) && (
-              <div>
-                <p className="text-muted-foreground mb-2 text-sm font-semibold">Liner</p>
-                <p className="font-medium">
-                  {sale.liner.firstName} {sale.liner.lastName}
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                  Liner
                 </p>
+                <UserInfo
+                  name={`${sale.liner.firstName} ${sale.liner.lastName}`}
+                  className="bg-muted/30 rounded-lg border p-3"
+                />
               </div>
             )}
 
             {/* Telemarketing Supervisor */}
             {sale.telemarketingSupervisor &&
               (sale.telemarketingSupervisor.firstName || sale.telemarketingSupervisor.lastName) && (
-                <div>
-                  <p className="text-muted-foreground mb-2 text-sm font-semibold">
+                <div className="space-y-2">
+                  <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
                     Supervisor Telemarketing
                   </p>
-                  <p className="font-medium">
-                    {sale.telemarketingSupervisor.firstName} {sale.telemarketingSupervisor.lastName}
-                  </p>
+                  <UserInfo
+                    name={`${sale.telemarketingSupervisor.firstName} ${sale.telemarketingSupervisor.lastName}`}
+                    className="bg-muted/30 rounded-lg border p-3"
+                  />
                 </div>
               )}
 
             {/* Telemarketing Confirmer */}
             {sale.telemarketingConfirmer &&
               (sale.telemarketingConfirmer.firstName || sale.telemarketingConfirmer.lastName) && (
-                <div>
-                  <p className="text-muted-foreground mb-2 text-sm font-semibold">
+                <div className="space-y-2">
+                  <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
                     Confirmador Telemarketing
                   </p>
-                  <p className="font-medium">
-                    {sale.telemarketingConfirmer.firstName} {sale.telemarketingConfirmer.lastName}
-                  </p>
+                  <UserInfo
+                    name={`${sale.telemarketingConfirmer.firstName} ${sale.telemarketingConfirmer.lastName}`}
+                    className="bg-muted/30 rounded-lg border p-3"
+                  />
                 </div>
               )}
 
             {/* Telemarketer */}
             {sale.telemarketer && (sale.telemarketer.firstName || sale.telemarketer.lastName) && (
-              <div>
-                <p className="text-muted-foreground mb-2 text-sm font-semibold">Telemarketer</p>
-                <p className="font-medium">
-                  {sale.telemarketer.firstName} {sale.telemarketer.lastName}
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                  Telemarketer
                 </p>
+                <UserInfo
+                  name={`${sale.telemarketer.firstName} ${sale.telemarketer.lastName}`}
+                  className="bg-muted/30 rounded-lg border p-3"
+                />
               </div>
             )}
 
             {/* Field Manager */}
             {sale.fieldManager && (sale.fieldManager.firstName || sale.fieldManager.lastName) && (
-              <div>
-                <p className="text-muted-foreground mb-2 text-sm font-semibold">Gerente de Campo</p>
-                <p className="font-medium">
-                  {sale.fieldManager.firstName} {sale.fieldManager.lastName}
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                  Gerente de Campo
                 </p>
+                <UserInfo
+                  name={`${sale.fieldManager.firstName} ${sale.fieldManager.lastName}`}
+                  className="bg-muted/30 rounded-lg border p-3"
+                />
               </div>
             )}
 
             {/* Field Supervisor */}
             {sale.fieldSupervisor &&
               (sale.fieldSupervisor.firstName || sale.fieldSupervisor.lastName) && (
-                <div>
-                  <p className="text-muted-foreground mb-2 text-sm font-semibold">
+                <div className="space-y-2">
+                  <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
                     Supervisor de Campo
                   </p>
-                  <p className="font-medium">
-                    {sale.fieldSupervisor.firstName} {sale.fieldSupervisor.lastName}
-                  </p>
+                  <UserInfo
+                    name={`${sale.fieldSupervisor.firstName} ${sale.fieldSupervisor.lastName}`}
+                    className="bg-muted/30 rounded-lg border p-3"
+                  />
                 </div>
               )}
 
             {/* Field Seller */}
             {sale.fieldSeller && (sale.fieldSeller.firstName || sale.fieldSeller.lastName) && (
-              <div>
-                <p className="text-muted-foreground mb-2 text-sm font-semibold">
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
                   Vendedor de Campo
                 </p>
-                <p className="font-medium">
-                  {sale.fieldSeller.firstName} {sale.fieldSeller.lastName}
-                </p>
+                <UserInfo
+                  name={`${sale.fieldSeller.firstName} ${sale.fieldSeller.lastName}`}
+                  className="bg-muted/30 rounded-lg border p-3"
+                />
               </div>
             )}
           </div>

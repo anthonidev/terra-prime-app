@@ -29,7 +29,7 @@ export function ModuleCard({ module, parentName, index }: ModuleCardProps) {
       className="h-full"
     >
       <Link href={targetUrl} className="group block h-full">
-        <Card className="bg-card/50 hover:bg-card hover:border-primary/20 group relative h-full overflow-hidden border backdrop-blur-sm transition-all duration-300 hover:shadow-xl">
+        <Card className="bg-card hover:bg-card hover:border-primary/20 group relative h-full overflow-hidden border transition-all duration-300 hover:shadow-xl">
           <CardContent className="flex h-full flex-col p-4">
             {/* Header with Icon */}
             <div className="mb-4 flex items-start justify-between">

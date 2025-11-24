@@ -27,13 +27,6 @@ const statusVariants: Record<LotStatus, 'default' | 'secondary' | 'outline'> = {
   Inactivo: 'outline',
 };
 
-const statusLabels: Record<LotStatus, string> = {
-  Activo: 'Activo',
-  Separado: 'Separado',
-  Vendido: 'Vendido',
-  Inactivo: 'Inactivo',
-};
-
 export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) {
   const columns: ColumnDef<Lot>[] = [
     {
@@ -97,8 +90,8 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
       accessorKey: 'status',
       header: 'Estado',
       cell: ({ row }) => (
-        <Badge variant={statusVariants[row.original.status]}>
-          {statusLabels[row.original.status]}
+        <Badge variant={statusVariants[row.original.status]} className="w-fit text-xs">
+          {row.original.status}
         </Badge>
       ),
     },

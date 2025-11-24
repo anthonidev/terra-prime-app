@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, User } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 import { useProfile } from '../hooks/use-profile';
@@ -8,6 +8,7 @@ import { ProfilePhotoSection } from './profile-photo-section';
 import { ProfileForm } from './profile-form';
 import { ChangePasswordForm } from './change-password-form';
 import { ProfileSkeleton } from './profile-skeleton';
+import { PageHeader } from '@/shared/components/common/page-header';
 
 export function ProfileContainer() {
   const { data, isLoading, isError } = useProfile();
@@ -43,12 +44,11 @@ export function ProfileContainer() {
   return (
     <div className="mx-auto max-w-5xl space-y-8">
       {/* Header */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-foreground text-3xl font-bold tracking-tight">Mi Perfil</h1>
-        <p className="text-muted-foreground text-base">
-          Gestiona tu información personal y configuración de cuenta
-        </p>
-      </div>
+      <PageHeader
+        title="Mi Perfil"
+        description="Gestiona tu información personal y configuración de cuenta"
+        icon={User}
+      />
 
       {/* First Row: Photo + Profile Info */}
       <div className="grid gap-8 md:grid-cols-12">

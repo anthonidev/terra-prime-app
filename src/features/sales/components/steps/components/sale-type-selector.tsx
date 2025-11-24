@@ -68,10 +68,8 @@ export function SaleTypeSelector({ saleType, onSaleTypeChange, error }: SaleType
                   onClick={() => onSaleTypeChange(option.type)}
                   className={cn(
                     'relative flex cursor-pointer rounded-lg border-2 p-5 transition-all',
-                    'hover:scale-[1.02] hover:shadow-md',
-                    isSelected
-                      ? 'border-primary bg-primary/5 shadow-md'
-                      : 'border-border hover:border-primary/50'
+                    'hover:border-primary/50 hover:bg-accent/5',
+                    isSelected ? 'border-primary bg-primary/5 shadow-sm' : 'border-muted'
                   )}
                 >
                   {/* Selected indicator */}

@@ -5,7 +5,6 @@ import { CheckCircle2, CalendarClock, Clock, TrendingUp, Banknote, Coins } from 
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@/shared/utils/currency-formatter';
-import { cn } from '@/shared/lib/utils';
 import { SaleType } from '../../../types';
 
 interface SaleTypeSummaryProps {
@@ -61,21 +60,16 @@ export function SaleTypeSummary({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.3 }}
     >
-      <Card
-        className={cn(
-          'border transition-all',
-          isReservation ? 'border-primary/30 bg-primary/5' : 'bg-muted/30 border-muted'
-        )}
-      >
-        <CardContent className="p-4">
-          <div className="mb-3 flex items-center gap-2">
-            <CheckCircle2 className="text-primary h-4 w-4" />
-            <h3 className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
-              Resumen de Configuración
-            </h3>
+      <Card>
+        <CardContent className="p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full">
+              <CheckCircle2 className="text-primary h-4 w-4" />
+            </div>
+            <h3 className="text-sm font-semibold">Resumen de Configuración</h3>
           </div>
 
-          <div className="space-y-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             <AnimatePresence mode="popLayout">
               {items.map((item, index) => {
                 const Icon = item.icon;
@@ -86,20 +80,18 @@ export function SaleTypeSummary({
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ delay: index * 0.05 }}
-                    className="bg-background/50 hover:bg-background flex items-center justify-between rounded-md px-2 py-1.5 transition-colors"
+                    className="bg-muted/30 flex items-center justify-between rounded-lg p-3"
                   >
-                    <div className="flex items-center gap-2">
-                      <div className="bg-primary/10 flex h-6 w-6 items-center justify-center rounded-md">
-                        <Icon className="text-primary h-3.5 w-3.5" />
-                      </div>
-                      <span className="text-muted-foreground text-xs">{item.label}:</span>
+                    <div className="flex items-center gap-3">
+                      <Icon className="text-muted-foreground h-4 w-4" />
+                      <span className="text-muted-foreground text-sm">{item.label}</span>
                     </div>
                     {item.badge ? (
-                      <Badge variant="secondary" className="h-5 text-xs font-semibold">
+                      <Badge variant="secondary" className="font-medium">
                         {item.value}
                       </Badge>
                     ) : (
-                      <span className="text-foreground text-xs font-semibold">{item.value}</span>
+                      <span className="font-medium">{item.value}</span>
                     )}
                   </motion.div>
                 );
@@ -113,15 +105,15 @@ export function SaleTypeSummary({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-accent/10 border-accent/20 mt-3 rounded-md border p-2.5"
+              className="bg-accent/5 border-accent/20 mt-4 rounded-lg border p-3"
             >
-              <p className="text-muted-foreground text-[10px] leading-relaxed">
-                <span className="text-foreground font-semibold">Nota:</span> El cliente debe pagar{' '}
-                <span className="text-accent font-semibold">
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                <span className="text-foreground font-medium">Nota:</span> El cliente debe pagar{' '}
+                <span className="text-foreground font-medium">
                   {formatCurrency(reservationAmount, currencyType)}
                 </span>{' '}
                 para reservar el lote por{' '}
-                <span className="text-accent font-semibold">{maximumHoldPeriod} días</span>. Este
+                <span className="text-foreground font-medium">{maximumHoldPeriod} días</span>. Este
                 monto será parte del pago total del lote.
               </p>
             </motion.div>

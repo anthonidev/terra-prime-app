@@ -57,7 +57,7 @@ export function LeadSelector({
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           {/* Lead Select */}
           <div className="space-y-2">
             <Label htmlFor="leadId" className="text-sm font-medium">
@@ -104,63 +104,73 @@ export function LeadSelector({
               transition={{ duration: 0.3 }}
               className="overflow-hidden"
             >
-              <div className="from-primary/5 border-primary/20 rounded-lg border bg-gradient-to-br to-transparent p-4">
-                <div className="mb-3 flex items-center gap-2">
+              <div className="bg-muted/30 space-y-4 rounded-lg p-4">
+                <div className="flex items-center gap-2 border-b pb-2">
                   <User className="text-primary h-4 w-4" />
                   <h4 className="text-sm font-semibold">Datos del Lead</h4>
                 </div>
 
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <motion.div
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="flex items-start gap-2"
+                    className="space-y-1"
                   >
-                    <User className="text-muted-foreground mt-0.5 h-4 w-4" />
-                    <div>
-                      <p className="text-muted-foreground text-xs">Nombre completo</p>
-                      <p className="text-sm font-semibold">
-                        {selectedLead.firstName} {selectedLead.lastName}
+                    <div className="flex items-center gap-2">
+                      <User className="text-muted-foreground h-3 w-3" />
+                      <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                        Nombre completo
                       </p>
                     </div>
+                    <p className="pl-5 text-sm font-semibold">
+                      {selectedLead.firstName} {selectedLead.lastName}
+                    </p>
                   </motion.div>
 
                   <motion.div
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.15 }}
-                    className="flex items-start gap-2"
+                    className="space-y-1"
                   >
-                    <FileText className="text-muted-foreground mt-0.5 h-4 w-4" />
-                    <div>
-                      <p className="text-muted-foreground text-xs">Documento</p>
-                      <p className="text-sm font-semibold">{selectedLead.document}</p>
+                    <div className="flex items-center gap-2">
+                      <FileText className="text-muted-foreground h-3 w-3" />
+                      <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                        Documento
+                      </p>
                     </div>
+                    <p className="pl-5 text-sm font-semibold">{selectedLead.document}</p>
                   </motion.div>
 
                   <motion.div
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="flex items-start gap-2"
+                    className="space-y-1"
                   >
-                    <Phone className="text-muted-foreground mt-0.5 h-4 w-4" />
-                    <div>
-                      <p className="text-muted-foreground text-xs">Teléfono</p>
-                      <p className="text-sm font-semibold">{selectedLead.phone}</p>
+                    <div className="flex items-center gap-2">
+                      <Phone className="text-muted-foreground h-3 w-3" />
+                      <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                        Teléfono
+                      </p>
                     </div>
+                    <p className="pl-5 text-sm font-semibold">{selectedLead.phone}</p>
                   </motion.div>
 
                   <motion.div
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.25 }}
-                    className="flex items-start gap-2"
+                    className="space-y-1"
                   >
-                    <Globe className="text-muted-foreground mt-0.5 h-4 w-4" />
-                    <div>
-                      <p className="text-muted-foreground text-xs">Fuente</p>
+                    <div className="flex items-center gap-2">
+                      <Globe className="text-muted-foreground h-3 w-3" />
+                      <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                        Fuente
+                      </p>
+                    </div>
+                    <div className="pl-5">
                       <Badge variant="secondary" className="text-xs">
                         {selectedLead.source?.name || 'N/A'}
                       </Badge>
@@ -173,7 +183,7 @@ export function LeadSelector({
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="border-primary/20 mt-3 flex items-center gap-2 border-t pt-3"
+                    className="flex items-center gap-2 border-t pt-3"
                   >
                     <Loader2 className="text-primary h-4 w-4 animate-spin" />
                     <p className="text-muted-foreground text-sm">
@@ -188,7 +198,7 @@ export function LeadSelector({
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="border-primary/20 mt-3 border-t pt-3"
+                    className="mt-3 border-t pt-3"
                   >
                     <div className="mb-2 flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-600" />

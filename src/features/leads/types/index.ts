@@ -298,10 +298,14 @@ export interface VendorLead {
   firstName: string;
   lastName: string;
   document: string;
-  documentType: string;
+  documentType: DocumentType;
   phone: string;
   phone2?: string;
+  email?: string;
   age: number;
+  placeOfResidence?: string;
+  interestProjects?: string[];
+  notes?: string;
   createdAt: string;
   source: {
     id: number;

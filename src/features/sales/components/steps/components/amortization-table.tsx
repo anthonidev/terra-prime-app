@@ -112,58 +112,59 @@ export function AmortizationTable({
               </div>
 
               {/* Summary */}
+              {/* Summary */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="from-primary/5 to-accent/5 border-primary/20 mt-4 rounded-lg border bg-gradient-to-br p-4"
+                className="bg-muted/30 mt-6 rounded-lg p-6"
               >
-                <div className="mb-3 flex items-center gap-2">
-                  <Coins className="text-primary h-4 w-4" />
-                  <h4 className="text-sm font-semibold">Resumen de Financiamiento</h4>
+                <div className="mb-4 flex items-center gap-2">
+                  <Coins className="text-primary h-5 w-5" />
+                  <h4 className="text-base font-semibold">Resumen de Financiamiento</h4>
                 </div>
 
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   {/* Total Lote */}
-                  <div className="bg-background/50 border-border rounded-md border p-3">
-                    <div className="mb-1 flex items-center gap-2">
-                      <Receipt className="text-primary h-3.5 w-3.5" />
-                      <p className="text-muted-foreground text-xs">Total Lote</p>
+                  <div className="bg-background rounded-lg border p-4 shadow-sm">
+                    <div className="mb-2 flex items-center gap-2">
+                      <Receipt className="text-primary h-4 w-4" />
+                      <p className="text-muted-foreground text-sm font-medium">Total Lote</p>
                     </div>
-                    <p className="text-foreground text-base font-bold">
+                    <p className="text-foreground text-2xl font-bold">
                       {formatCurrency(amortization.meta.lotTotalAmount, currencyType)}
                     </p>
-                    <p className="text-muted-foreground mt-0.5 text-[10px]">
+                    <p className="text-muted-foreground mt-1 text-xs">
                       {amortization.meta.lotInstallmentsCount} cuotas
                     </p>
                   </div>
 
                   {/* Total HU */}
                   {hasUrbanization && amortization.meta.huInstallmentsCount > 0 && (
-                    <div className="bg-background/50 border-border rounded-md border p-3">
-                      <div className="mb-1 flex items-center gap-2">
-                        <Home className="text-accent h-3.5 w-3.5" />
-                        <p className="text-muted-foreground text-xs">Total HU</p>
+                    <div className="bg-background rounded-lg border p-4 shadow-sm">
+                      <div className="mb-2 flex items-center gap-2">
+                        <Home className="text-primary h-4 w-4" />
+                        <p className="text-muted-foreground text-sm font-medium">Total HU</p>
                       </div>
-                      <p className="text-foreground text-base font-bold">
+                      <p className="text-foreground text-2xl font-bold">
                         {formatCurrency(amortization.meta.huTotalAmount, currencyType)}
                       </p>
-                      <p className="text-muted-foreground mt-0.5 text-[10px]">
+                      <p className="text-muted-foreground mt-1 text-xs">
                         {amortization.meta.huInstallmentsCount} cuotas
                       </p>
                     </div>
                   )}
 
                   {/* Total General */}
-                  <div className="bg-primary/10 border-primary/30 rounded-md border-2 p-3">
-                    <div className="mb-1 flex items-center gap-2">
-                      <Coins className="text-primary h-3.5 w-3.5" />
-                      <p className="text-primary text-xs font-semibold">Total General</p>
+                  <div className="bg-primary/5 border-primary/20 rounded-lg border p-4">
+                    <div className="mb-2 flex items-center gap-2">
+                      <Coins className="text-primary h-4 w-4" />
+                      <p className="text-primary text-sm font-bold">Total General</p>
                     </div>
-                    <p className="text-primary text-lg font-bold">
+                    <p className="text-primary text-2xl font-bold">
                       {formatCurrency(amortization.meta.totalAmount, currencyType)}
                     </p>
-                    <p className="text-muted-foreground mt-0.5 text-[10px]">
+                    <p className="text-primary/70 mt-1 text-xs font-medium">
                       {amortization.meta.totalInstallmentsCount} cuotas totales
                     </p>
                   </div>

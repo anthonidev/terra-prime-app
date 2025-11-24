@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Calculator, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -52,8 +53,40 @@ export function SalesStep3({
     onSubmit: onNext,
   });
 
+  // Refs for auto-scroll
+  const topRef = useRef<HTMLDivElement>(null);
+  const financedFieldsRef = useRef<HTMLDivElement>(null);
+  const urbanizationRef = useRef<HTMLDivElement>(null);
+  const amortizationRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to top on mount
+  useEffect(() => {
+    setTimeout(() => {
+      topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+  }, []);
+
+  // Auto-scroll when financed fields appear
+  useEffect(() => {
+    if (!isDirectPayment && financedFieldsRef.current) {
+      setTimeout(() => {
+        financedFieldsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    }
+  }, [isDirectPayment]);
+
+  // Auto-scroll when amortization table appears
+  useEffect(() => {
+    if (amortization && amortizationRef.current) {
+      setTimeout(() => {
+        amortizationRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    }
+  }, [amortization]);
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <div ref={topRef} />
       {/* Lot Payment Info */}
       <LotPaymentInfo
         selectedLot={selectedLot}
@@ -68,21 +101,25 @@ export function SalesStep3({
 
       {/* Financed Payment Fields */}
       {!isDirectPayment && (
-        <FinancedPaymentFields
-          form={financedForm}
-          lotPrice={lotPrice}
-          currency={selectedLot.projectCurrency}
-          isLocked={isLocked}
-        />
+        <div ref={financedFieldsRef}>
+          <FinancedPaymentFields
+            form={financedForm}
+            lotPrice={lotPrice}
+            currency={selectedLot.projectCurrency}
+            isLocked={isLocked}
+          />
+        </div>
       )}
 
       {/* Urbanization Configuration */}
-      {hasUrbanization && (
-        <UrbanizationConfig
-          form={isDirectPayment ? (directForm as any) : (financedForm as any)}
-          urbanizationPrice={urbanizationPrice}
-          currency={selectedLot.projectCurrency}
-        />
+      {hasUrbanization && urbanizationPrice > 0 && (
+        <div ref={urbanizationRef}>
+          <UrbanizationConfig
+            form={isDirectPayment ? (directForm as any) : (financedForm as any)}
+            urbanizationPrice={urbanizationPrice}
+            currency={selectedLot.projectCurrency}
+          />
+        </div>
       )}
 
       {/* Generate/Edit Amortization Button */}
@@ -134,12 +171,14 @@ export function SalesStep3({
 
       {/* Amortization Table */}
       {!isDirectPayment && (
-        <AmortizationTable
-          amortization={amortization}
-          isCalculating={isCalculating}
-          hasUrbanization={hasUrbanization}
-          currency={selectedLot.projectCurrency}
-        />
+        <div ref={amortizationRef}>
+          <AmortizationTable
+            amortization={amortization}
+            isCalculating={isCalculating}
+            hasUrbanization={hasUrbanization && urbanizationPrice > 0}
+            currency={selectedLot.projectCurrency}
+          />
+        </div>
       )}
 
       {/* Navigation */}

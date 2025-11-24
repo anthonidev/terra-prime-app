@@ -1,7 +1,9 @@
 'use client';
 
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Calendar, CreditCard } from 'lucide-react';
 import Link from 'next/link';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { PaymentDetail, StatusPayment } from '../../types';
@@ -35,25 +37,54 @@ export function PaymentDetailHeader({ payment }: PaymentDetailHeaderProps) {
   return (
     <div className="space-y-4">
       {/* Back Button */}
-      <Button variant="ghost" size="sm" asChild>
-        <Link href="/pagos">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Volver a pagos
-        </Link>
-      </Button>
+      <div>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-muted-foreground hover:text-foreground pl-0"
+          asChild
+        >
+          <Link href="/pagos">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Volver a pagos
+          </Link>
+        </Button>
+      </div>
 
       {/* Header Content */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight">Pago de {clientName}</h1>
-          <p className="text-primary text-xl font-semibold">
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-3">
+            <h1 className="text-foreground text-3xl font-bold tracking-tight">
+              Pago #{payment.id}
+            </h1>
+            <Badge variant={statusConf.variant} className="px-2.5 py-0.5 text-xs font-semibold">
+              {statusConf.label}
+            </Badge>
+          </div>
+          <p className="text-muted-foreground text-lg">{clientName}</p>
+          <div className="text-muted-foreground flex items-center gap-4 pt-1 text-sm">
+            <div className="flex items-center gap-1.5">
+              <Calendar className="h-4 w-4" />
+              <span>
+                {format(new Date(payment.createdAt), "dd 'de' MMMM, yyyy", { locale: es })}
+              </span>
+            </div>
+            {payment.codeOperation && (
+              <div className="flex items-center gap-1.5">
+                <CreditCard className="h-4 w-4" />
+                <span className="font-mono">{payment.codeOperation}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex flex-col items-end gap-1">
+          <p className="text-muted-foreground text-sm font-medium">Monto Total</p>
+          <p className="text-primary text-4xl font-bold tracking-tight">
             {symbol} {payment.amount.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
           </p>
         </div>
-
-        <Badge variant={statusConf.variant} className="w-fit px-4 py-2 text-base">
-          {statusConf.label}
-        </Badge>
       </div>
     </div>
   );

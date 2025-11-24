@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Terra Prime App',
+  title: 'SMART APP',
   description: 'Sistema de gestión inmobiliaria',
 };
 

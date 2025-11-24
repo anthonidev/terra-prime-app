@@ -27,18 +27,13 @@ export function ReservationConfig({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.2 }}
     >
-      <Card
-        className={cn(
-          'transition-all duration-300',
-          isReservation && 'border-primary/50 bg-primary/5'
-        )}
-      >
+      <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
             <div
               className={cn(
                 'flex h-10 w-10 items-center justify-center rounded-lg transition-colors',
-                isReservation ? 'bg-primary/20' : 'bg-muted'
+                isReservation ? 'bg-primary/10' : 'bg-muted'
               )}
             >
               <CalendarClock
@@ -58,7 +53,14 @@ export function ReservationConfig({
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Checkbox Toggle */}
-          <div className="border-border hover:border-primary/50 flex items-start space-x-3 rounded-lg border-2 border-dashed p-4 transition-all">
+          <div
+            className={cn(
+              'flex items-start space-x-3 rounded-lg border p-4 transition-all',
+              isReservation
+                ? 'border-primary/50 bg-primary/5'
+                : 'border-border hover:border-primary/30 hover:bg-accent/5'
+            )}
+          >
             <Checkbox
               id="isReservation"
               checked={isReservation}
@@ -98,7 +100,7 @@ export function ReservationConfig({
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
               >
-                <div className="bg-background/50 border-primary/20 grid grid-cols-1 gap-4 rounded-lg border p-4 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-6 pt-2 md:grid-cols-2">
                   {/* Reservation Amount */}
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -119,27 +121,43 @@ export function ReservationConfig({
                         id="reservationAmount"
                         type="number"
                         step="0.01"
-                        placeholder="Ej: 1000.00"
+                        placeholder="0.00"
                         {...form.register('reservationAmount', { valueAsNumber: true })}
                         className={cn(
-                          'pl-8 transition-all',
-                          form.formState.errors.reservationAmount && 'border-destructive'
+                          'pl-9 transition-all',
+                          form.formState.errors.reservationAmount &&
+                            'border-destructive focus-visible:ring-destructive'
                         )}
+                        onKeyDown={(e) => {
+                          if (
+                            !/[0-9]/.test(e.key) &&
+                            ![
+                              'Backspace',
+                              'Delete',
+                              'Tab',
+                              'Enter',
+                              'ArrowLeft',
+                              'ArrowRight',
+                              '.',
+                            ].includes(e.key)
+                          ) {
+                            e.preventDefault();
+                          }
+                        }}
                       />
-                      <Coins className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
+                      <div className="text-muted-foreground absolute top-0 left-0 flex h-full w-9 items-center justify-center border-r">
+                        <span className="text-sm">$</span>
+                      </div>
                     </div>
                     {form.formState.errors.reservationAmount && (
                       <motion.p
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-destructive flex items-center gap-1 text-xs"
+                        className="text-destructive text-xs"
                       >
                         {form.formState.errors.reservationAmount.message}
                       </motion.p>
                     )}
-                    <p className="text-muted-foreground text-xs">
-                      Monto que el cliente debe pagar para separar el lote
-                    </p>
                   </motion.div>
 
                   {/* Maximum Hold Period */}
@@ -161,27 +179,42 @@ export function ReservationConfig({
                       <Input
                         id="maximumHoldPeriod"
                         type="number"
-                        placeholder="Ej: 15"
+                        placeholder="15"
                         {...form.register('maximumHoldPeriod', { valueAsNumber: true })}
                         className={cn(
-                          'pl-8 transition-all',
-                          form.formState.errors.maximumHoldPeriod && 'border-destructive'
+                          'pl-9 transition-all',
+                          form.formState.errors.maximumHoldPeriod &&
+                            'border-destructive focus-visible:ring-destructive'
                         )}
+                        onKeyDown={(e) => {
+                          if (
+                            !/[0-9]/.test(e.key) &&
+                            ![
+                              'Backspace',
+                              'Delete',
+                              'Tab',
+                              'Enter',
+                              'ArrowLeft',
+                              'ArrowRight',
+                            ].includes(e.key)
+                          ) {
+                            e.preventDefault();
+                          }
+                        }}
                       />
-                      <Clock className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
+                      <div className="text-muted-foreground absolute top-0 left-0 flex h-full w-9 items-center justify-center border-r">
+                        <Clock className="h-4 w-4" />
+                      </div>
                     </div>
                     {form.formState.errors.maximumHoldPeriod && (
                       <motion.p
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-destructive flex items-center gap-1 text-xs"
+                        className="text-destructive text-xs"
                       >
                         {form.formState.errors.maximumHoldPeriod.message}
                       </motion.p>
                     )}
-                    <p className="text-muted-foreground text-xs">
-                      Días que el lote estará reservado antes de la venta final
-                    </p>
                   </motion.div>
                 </div>
               </motion.div>

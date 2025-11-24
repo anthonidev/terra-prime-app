@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/shared/components/data-table/data-table';
 import { DataTablePagination } from '@/shared/components/data-table/data-table-pagination';
+import { StatusBadge } from '@/shared/components/status-badge';
+import { UserInfo } from '@/shared/components/user-info';
 import { type ColumnDef } from '@tanstack/react-table';
 import { Pencil } from 'lucide-react';
 import { DOCUMENT_TYPE_LABELS, PARTICIPANT_TYPE_LABELS } from '../constants';
@@ -30,22 +32,12 @@ export function ParticipantsTable({
       cell: ({ row }) => {
         const participant = row.original;
         return (
-          <div>
-            <div className="text-xs font-bold">
-              {participant.firstName} {participant.lastName}
-            </div>
-            <div className="mt-0.5 flex items-center gap-1.5">
-              <Badge variant="outline" className="font-mono text-xs">
-                {DOCUMENT_TYPE_LABELS[participant.documentType]}
-              </Badge>
-              <span className="text-muted-foreground text-xs">{participant.document}</span>
-            </div>
-            {participant.email && (
-              <div className="text-muted-foreground mt-0.5 truncate text-xs">
-                {participant.email}
-              </div>
-            )}
-          </div>
+          <UserInfo
+            name={`${participant.firstName} ${participant.lastName}`}
+            email={participant.email || undefined}
+            document={participant.document}
+            documentType={DOCUMENT_TYPE_LABELS[participant.documentType]}
+          />
         );
       },
     },
@@ -56,28 +48,26 @@ export function ParticipantsTable({
     },
     {
       accessorKey: 'participantType',
-      header: 'Tipo / Estado',
+      header: 'Tipo',
       cell: ({ row }) => {
-        const participant = row.original;
         const type = row.getValue('participantType') as Participant['participantType'];
         return (
-          <div className="flex flex-col gap-1">
-            <Badge variant="outline" className="w-fit text-xs">
-              {PARTICIPANT_TYPE_LABELS[type]}
-            </Badge>
-            <Badge
-              variant={participant.isActive ? 'default' : 'destructive'}
-              className="w-fit text-xs"
-            >
-              {participant.isActive ? 'Activo' : 'Inactivo'}
-            </Badge>
-          </div>
+          <Badge variant="outline" className="w-fit text-xs">
+            {PARTICIPANT_TYPE_LABELS[type]}
+          </Badge>
         );
       },
     },
     {
+      accessorKey: 'status',
+      header: 'Estado',
+      cell: ({ row }) => {
+        const participant = row.original;
+        return <StatusBadge isActive={participant.isActive} />;
+      },
+    },
+    {
       id: 'actions',
-      header: 'Acciones',
       cell: ({ row }) => {
         const participant = row.original;
 
@@ -90,6 +80,7 @@ export function ParticipantsTable({
             title="Editar participante"
           >
             <Pencil className="h-3.5 w-3.5" />
+            <span className="sr-only">Editar</span>
           </Button>
         );
       },

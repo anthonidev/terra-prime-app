@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ApprovePaymentModal } from '../dialogs/approve-payment-modal';
@@ -17,28 +17,34 @@ export function PaymentActions({ paymentId }: PaymentActionsProps) {
 
   return (
     <>
-      <Card className="border-primary/20 bg-primary/5">
-        <CardHeader>
-          <CardTitle>Acciones de Revisión</CardTitle>
+      <Card className="border-l-primary border-l-4 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <AlertCircle className="text-primary h-5 w-5" />
+            Acciones de Revisión
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground mb-4 text-sm">
-            Este pago está pendiente de revisión. Puedes aprobarlo o rechazarlo.
-          </p>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Button onClick={() => setApproveModalOpen(true)} className="flex-1">
-              <CheckCircle className="mr-2 h-4 w-4" />
-              Aprobar Pago
-            </Button>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-muted-foreground text-sm">
+              Este pago está pendiente de revisión. Por favor, verifique los datos y comprobantes
+              antes de aprobar.
+            </p>
+            <div className="flex flex-col gap-3 sm:shrink-0 sm:flex-row">
+              <Button onClick={() => setApproveModalOpen(true)} className="min-w-[140px] shadow-sm">
+                <CheckCircle className="mr-2 h-4 w-4" />
+                Aprobar Pago
+              </Button>
 
-            <Button
-              variant="destructive"
-              onClick={() => setRejectModalOpen(true)}
-              className="flex-1"
-            >
-              <XCircle className="mr-2 h-4 w-4" />
-              Rechazar Pago
-            </Button>
+              <Button
+                variant="destructive"
+                onClick={() => setRejectModalOpen(true)}
+                className="min-w-[140px] shadow-sm"
+              >
+                <XCircle className="mr-2 h-4 w-4" />
+                Rechazar Pago
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

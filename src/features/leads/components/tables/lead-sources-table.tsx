@@ -1,11 +1,11 @@
 'use client';
 
-import { CheckCircle2, Edit, Target, XCircle } from 'lucide-react';
+import { Edit, Target } from 'lucide-react';
 import { type ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import { Badge } from '@/components/ui/badge';
+import { StatusBadge } from '@/shared/components/status-badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { DataTable } from '@/shared/components/data-table/data-table';
@@ -40,21 +40,7 @@ export function LeadSourcesTable({
     {
       accessorKey: 'isActive',
       header: 'Estado',
-      cell: ({ row }) => (
-        <Badge variant={row.original.isActive ? 'default' : 'secondary'} className="text-xs">
-          {row.original.isActive ? (
-            <>
-              <CheckCircle2 className="mr-1 h-3 w-3" />
-              Activo
-            </>
-          ) : (
-            <>
-              <XCircle className="mr-1 h-3 w-3" />
-              Inactivo
-            </>
-          )}
-        </Badge>
-      ),
+      cell: ({ row }) => <StatusBadge isActive={row.original.isActive} className="w-fit" />,
     },
     {
       accessorKey: 'createdAt',
@@ -76,7 +62,6 @@ export function LeadSourcesTable({
     },
     {
       id: 'actions',
-      header: 'Acciones',
       cell: ({ row }) => (
         <Button
           size="sm"
@@ -119,9 +104,7 @@ export function LeadSourcesTable({
           ))}
         </div>
       ) : (
-        <Card>
-          <DataTable columns={columns} data={leadSources} />
-        </Card>
+        <DataTable columns={columns} data={leadSources} />
       )}
 
       <DataTablePagination meta={meta} onPageChange={onPageChange} />
