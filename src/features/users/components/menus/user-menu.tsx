@@ -16,7 +16,9 @@ import { useRouter } from 'next/navigation';
 export function UserMenu() {
   const router = useRouter();
 
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
+
+  if (isLoading) return null;
   if (!user) return null;
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();

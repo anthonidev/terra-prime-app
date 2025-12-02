@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { Users, UserPlus } from 'lucide-react';
 import { PageHeader } from '@/shared/components/common/page-header';
 import { DataTablePagination } from '@/shared/components/data-table/data-table-pagination';
+import { Users } from 'lucide-react';
+import { useState } from 'react';
 import { useClients } from '../../hooks/use-clients';
 import { ClientsAdminFilters } from '../filters/clients-admin-filters';
 import { ClientsAdminTable } from '../tables/clients-admin-table';

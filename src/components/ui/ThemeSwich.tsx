@@ -15,11 +15,14 @@ const ThemeSwitch = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(timer);
+    setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return (
+      <div className="border-border bg-background flex h-10 w-[140px] items-center gap-2 rounded-lg border px-3 py-2" />
+    );
+  }
 
   const getThemeIcon = (currentTheme: string | undefined) => {
     switch (currentTheme) {

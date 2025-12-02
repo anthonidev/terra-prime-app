@@ -26,7 +26,8 @@
       "Bash(cp:*)",
       "Bash(rm:*)",
       "Bash(bun add:*)",
-      "Bash(bunx husky:*)"
+      "Bash(bunx husky:*)",
+      "Bash(netstat:*)"
     ],
     "deny": [],
     "ask": []

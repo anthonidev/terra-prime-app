@@ -86,6 +86,32 @@ export function UsersTable({ users, meta, onPageChange, onEditUser }: UsersTable
       },
     },
     {
+      accessorKey: 'updatedAt',
+      header: 'Actualizado',
+      cell: ({ row }) => {
+        const date = new Date(row.getValue('updatedAt'));
+        return (
+          <span className="text-muted-foreground text-xs">
+            {format(date, "d 'de' MMMM, yyyy", { locale: es })}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: 'lastLoginAt',
+      header: 'Último acceso',
+      cell: ({ row }) => {
+        const val = row.getValue('lastLoginAt');
+        if (!val) return <span className="text-muted-foreground text-xs">-</span>;
+        const date = new Date(val as string);
+        return (
+          <span className="text-muted-foreground text-xs">
+            {format(date, "d 'de' MMMM, yyyy HH:mm", { locale: es })}
+          </span>
+        );
+      },
+    },
+    {
       id: 'actions',
       cell: ({ row }) => {
         const user = row.original;
@@ -111,7 +137,16 @@ export function UsersTable({ users, meta, onPageChange, onEditUser }: UsersTable
     <div className="space-y-4">
       {/* Desktop: Tabla */}
       <div className="hidden md:block">
-        <DataTable columns={columns} data={users} />
+        <DataTable
+          columns={columns}
+          data={users}
+          enableColumnVisibility={true}
+          initialColumnVisibility={{
+            lastLoginAt: false,
+            updatedAt: false,
+          }}
+          storageKey="users-table-columns"
+        />
       </div>
 
       {/* Mobile: Cards */}
