@@ -14,6 +14,7 @@ export async function getUsers(params: UsersQueryParams = {}): Promise<Paginated
       order: params.order ?? 'ASC',
       ...(params.isActive !== undefined && { isActive: params.isActive }),
       ...(params.search && { search: params.search }),
+      ...(params.roleId && { roleId: params.roleId }),
     },
   });
   return response.data;

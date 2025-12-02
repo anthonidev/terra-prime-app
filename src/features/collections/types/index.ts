@@ -270,3 +270,22 @@ export interface GetSaleDetailResponse {
   };
   sale: SaleDetail;
 }
+
+export interface GetAssignedClientsParams {
+  page?: number;
+  limit?: number;
+  departamentoId?: number;
+  provinciaId?: number;
+  distritoId?: number;
+  search?: string;
+}
+
+export interface GetAssignedClientsResponse {
+  items: Client[];
+  meta: {
+    totalItems: number;
+    itemsPerPage: number;
+    totalPages: number;
+    currentPage: number;
+  };
+}

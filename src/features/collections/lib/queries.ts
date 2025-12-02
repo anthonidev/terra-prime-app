@@ -8,6 +8,8 @@ import type {
   ActiveCollector,
   GetClientSalesResponse,
   GetSaleDetailResponse,
+  GetAssignedClientsParams,
+  GetAssignedClientsResponse,
 } from '../types';
 
 export const getCollectorStatistics = async (
@@ -59,8 +61,16 @@ export const getClientSales = async (clientId: string): Promise<GetClientSalesRe
 };
 
 export const getSaleDetail = async (saleId: string): Promise<GetSaleDetailResponse> => {
-  const { data } = await apiClient.get<GetSaleDetailResponse>(
-    `/api/collections/clients/sales/${saleId}`
+  const { data } = await apiClient.get<GetSaleDetailResponse>(`/api/collections/sales/${saleId}`);
+  return data;
+};
+
+export const getAssignedClients = async (
+  params: GetAssignedClientsParams
+): Promise<GetAssignedClientsResponse> => {
+  const { data } = await apiClient.get<GetAssignedClientsResponse>(
+    '/api/collections/clients/list-by-user',
+    { params }
   );
   return data;
 };

@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/select';
 
 import type { UsersQueryParams } from '../../types';
+import { useRoles } from '../../hooks/use-roles';
 
 interface UsersFiltersProps {
   filters: UsersQueryParams;
@@ -21,6 +22,7 @@ interface UsersFiltersProps {
 }
 
 export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
+  const { data: roles } = useRoles();
   const [searchInput, setSearchInput] = useState(filters.search || '');
 
   useEffect(() => {
@@ -45,6 +47,14 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
     onFiltersChange({
       ...filters,
       order: value as 'ASC' | 'DESC',
+      page: 1,
+    });
+  };
+
+  const handleRoleChange = (value: string) => {
+    onFiltersChange({
+      ...filters,
+      roleId: value === 'all' ? undefined : Number(value),
       page: 1,
     });
   };
@@ -92,6 +102,23 @@ export function UsersFilters({ filters, onFiltersChange }: UsersFiltersProps) {
                 <SelectItem value="all">Todos</SelectItem>
                 <SelectItem value="active">Activos</SelectItem>
                 <SelectItem value="inactive">Inactivos</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={filters.roleId ? String(filters.roleId) : 'all'}
+              onValueChange={handleRoleChange}
+            >
+              <SelectTrigger className="bg-background border-input focus:ring-primary/20 h-10 w-full transition-all md:w-[180px]">
+                <SelectValue placeholder="Rol" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos los roles</SelectItem>
+                {roles?.map((role) => (
+                  <SelectItem key={role.id} value={String(role.id)}>
+                    {role.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 

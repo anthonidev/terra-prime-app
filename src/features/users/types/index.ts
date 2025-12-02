@@ -28,6 +28,7 @@ export interface UsersQueryParams {
   order?: 'ASC' | 'DESC';
   isActive?: boolean;
   search?: string;
+  roleId?: number;
 }
 
 export interface CreateUserInput {
