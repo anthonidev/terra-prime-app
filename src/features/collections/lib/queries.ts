@@ -61,7 +61,9 @@ export const getClientSales = async (clientId: string): Promise<GetClientSalesRe
 };
 
 export const getSaleDetail = async (saleId: string): Promise<GetSaleDetailResponse> => {
-  const { data } = await apiClient.get<GetSaleDetailResponse>(`/api/collections/sales/${saleId}`);
+  const { data } = await apiClient.get<GetSaleDetailResponse>(
+    `/api/collections/clients/sales/${saleId}`
+  );
   return data;
 };
 

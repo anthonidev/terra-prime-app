@@ -48,7 +48,7 @@ export function InstallmentsTable({ installments }: InstallmentsTableProps) {
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm font-medium">Cuota #{index + 1}</CardTitle>
-                    <Badge variant={status.variant}>{status.label}</Badge>
+                    {/* <Badge variant={status.variant}>{status.label}</Badge> */}
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
@@ -114,7 +114,7 @@ export function InstallmentsTable({ installments }: InstallmentsTableProps) {
           </TableHeader>
           <TableBody>
             {installments.map((installment, index) => {
-              const status = statusConfig[installment.status];
+              // const status = statusConfig[installment.status];
               return (
                 <TableRow key={installment.id}>
                   <TableCell className="font-medium">{index + 1}</TableCell>
@@ -129,9 +129,9 @@ export function InstallmentsTable({ installments }: InstallmentsTableProps) {
                     {formatCurrency(Number(installment.coutePending))}
                   </TableCell>
                   <TableCell>{formatCurrency(Number(installment.lateFeeAmountPending))}</TableCell>
-                  <TableCell>
-                    <Badge variant={status.variant}>{status.label}</Badge>
-                  </TableCell>
+                  {/* <TableCell>
+                    <Badge>{status.label}</Badge>
+                  </TableCell> */}
                   <TableCell className="text-right">
                     <Button
                       variant="ghost"
