@@ -9,15 +9,30 @@ import { AdminSalesCardView } from './admin-sales-card-view';
 import { SalesFilters } from './components/sales-filters';
 import { SalesErrorState } from './components/sales-error-state';
 import { SalesEmptyState } from './components/sales-empty-state';
+import { AdminSale } from '../../types';
 
 export function AdminSalesContainer() {
-  const { sales, totalItems, order, isLoading, isError, isEmpty, toggleOrder } =
-    useAdminSalesContainer();
+  const {
+    sales,
+    meta,
+    order,
+    status,
+    type,
+    projectId,
+    clientName,
+    isLoading,
+    isError,
+    isEmpty,
+    toggleOrder,
+    handlePageChange,
+    setStatus,
+    setType,
+    setProjectId,
+    setClientName,
+  } = useAdminSalesContainer();
 
-  // Loading state
-  if (isLoading) {
-    return <MySalesSkeleton />;
-  }
+  const showEmptyState = isEmpty && !isError && !status && !type && !projectId && !clientName;
+  const showContent = !isError && (!isEmpty || status || type || projectId || clientName);
 
   return (
     <div className="space-y-6">
@@ -36,34 +51,56 @@ export function AdminSalesContainer() {
       {/* Error State */}
       {isError && <SalesErrorState />}
 
-      {/* Empty State */}
-      {isEmpty && !isError && <SalesEmptyState />}
+      {/* Empty State (only show when no filters and initial load complete) */}
+      {showEmptyState && !isLoading && <SalesEmptyState />}
 
       {/* Content */}
-      {!isError && !isEmpty && (
+      {showContent && (
         <>
-          {/* Filters */}
-          <SalesFilters order={order} totalItems={totalItems} onToggleOrder={toggleOrder} />
+          {/* Filters - Always visible */}
+          <SalesFilters
+            order={order}
+            onToggleOrder={toggleOrder}
+            status={status}
+            onStatusChange={setStatus}
+            type={type}
+            onTypeChange={setType}
+            projectId={projectId}
+            onProjectChange={setProjectId}
+            clientName={clientName}
+            onClientNameChange={setClientName}
+          />
 
-          {/* Desktop Table View */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="hidden md:block"
-          >
-            <AdminSalesTable data={sales} />
-          </motion.div>
+          {/* Loading State - Only for table/cards */}
+          {isLoading ? (
+            <MySalesSkeleton />
+          ) : (
+            <>
+              {/* Desktop Table View */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+                className="hidden md:block"
+              >
+                <AdminSalesTable
+                  data={sales as unknown as AdminSale[]}
+                  meta={meta}
+                  onPageChange={handlePageChange}
+                />
+              </motion.div>
 
-          {/* Mobile Card View */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="md:hidden"
-          >
-            <AdminSalesCardView sales={sales} />
-          </motion.div>
+              {/* Mobile Card View */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+                className="md:hidden"
+              >
+                <AdminSalesCardView sales={sales as unknown as AdminSale[]} />
+              </motion.div>
+            </>
+          )}
         </>
       )}
     </div>

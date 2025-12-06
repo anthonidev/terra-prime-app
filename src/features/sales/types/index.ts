@@ -62,8 +62,8 @@ export enum DocumentType {
 }
 
 export enum SaleType {
-  DIRECT_PAYMENT = 'DIRECT_PAYMENT',
-  FINANCED = 'FINANCED',
+  DIRECT_PAYMENT = 'DIRECT_PAYMENT', // Contado
+  FINANCED = 'FINANCED', // Financiado
 }
 
 export enum CurrencyType {
@@ -322,21 +322,19 @@ export interface SalesFormData {
 // My Sales Response
 export interface MySale {
   id: string;
-  type: string;
-  totalAmount: number;
+  type: SaleType;
+  totalAmount: string; // The response shows it as "64000.00" string, changing from number to string/number based on API usage, keeping string to be safe based on JSON
   status: StatusSale;
   currency: CurrencyType;
   createdAt: string;
-  reservationAmount?: number;
-  reservationAmountPaid?: number;
-  totalToPay?: number;
-  totalAmountPaid?: number;
-  initialToPay?: number;
-  initialAmountPaid?: number;
-  maximumHoldPeriod?: number;
-  fromReservation?: boolean;
+  reservationAmount?: number | null;
+  reservationAmountPaid?: number | null;
+  reservationAmountPending?: number | null;
+  totalAmountPaid: number;
+  totalAmountPending?: number | null;
+  maximumHoldPeriod?: number | null;
+  fromReservation: boolean;
   client: {
-    address: string;
     firstName: string;
     lastName: string;
     phone: string;
@@ -345,19 +343,66 @@ export interface MySale {
   lot: {
     id: string;
     name: string;
-    lotPrice: number;
+    area: string;
     block: string;
     stage: string;
     project: string;
   };
   radicationPdfUrl: string | null;
   paymentAcordPdfUrl: string | null;
+  financing?: {
+    quantityCoutes: string;
+    interestRate: string;
+    initialAmount: string;
+    initialAmountPaid: number;
+    initialAmountPending: number;
+  } | null;
+  urbanDevelopment?: {
+    quantityCoutes: string;
+    initialAmount: string;
+    initialAmountPaid: number;
+    initialAmountPending: string;
+  } | null;
+}
+
+export interface AdminSale extends MySale {
+  liner: PersonInfo | null;
+  telemarketingSupervisor: PersonInfo | null;
+  telemarketingConfirmer: PersonInfo | null;
+  telemarketer: PersonInfo | null;
+  fieldManager: PersonInfo | null;
+  fieldSupervisor: PersonInfo | null;
+  fieldSeller: PersonInfo | null;
+  salesGeneralManager: PersonInfo | null;
+  salesManager: PersonInfo | null;
+  postSale: PersonInfo | null;
+  closer: PersonInfo | null;
+  vendor: VendorInfo;
+}
+
+export interface AdminSale extends MySale {
+  liner: PersonInfo | null;
+  telemarketingSupervisor: PersonInfo | null;
+  telemarketingConfirmer: PersonInfo | null;
+  telemarketer: PersonInfo | null;
+  fieldManager: PersonInfo | null;
+  fieldSupervisor: PersonInfo | null;
+  fieldSeller: PersonInfo | null;
+  salesGeneralManager: PersonInfo | null;
+  salesManager: PersonInfo | null;
+  postSale: PersonInfo | null;
+  closer: PersonInfo | null;
+  vendor: VendorInfo;
 }
 
 export interface MySalesQueryParams {
   page?: number;
   limit?: number;
   order?: 'ASC' | 'DESC';
+  status?: StatusSale;
+  type?: SaleType;
+  projectId?: string;
+  clientName?: string;
 }
 
 // Sale Detail Response
@@ -491,6 +536,10 @@ export interface AdminSalesQueryParams {
   page?: number;
   limit?: number;
   order?: 'ASC' | 'DESC';
+  status?: StatusSale;
+  type?: SaleType;
+  projectId?: string;
+  clientName?: string;
 }
 
 // Assign Participants Input

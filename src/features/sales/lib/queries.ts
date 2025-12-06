@@ -77,9 +77,11 @@ export async function getClientByDocument(
 }
 
 // Get my sales (vendor's sales)
+// Get my sales (vendor's sales)
 export async function getMySales(
   params: MySalesQueryParams = {}
 ): Promise<PaginatedResponse<MySale>> {
+  const { page, limit, order, status, type, projectId, clientName } = params;
   const response = await apiClient.get<{
     items: MySale[];
     meta: {
@@ -88,7 +90,17 @@ export async function getMySales(
       totalPages: number;
       currentPage: number;
     };
-  }>('/api/sales/all/list/vendor', { params });
+  }>('/api/sales/all/list/vendor', {
+    params: {
+      page,
+      limit,
+      order,
+      status,
+      type,
+      projectId,
+      clientName,
+    },
+  });
 
   return {
     items: response.data.items,

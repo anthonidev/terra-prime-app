@@ -29,15 +29,15 @@ export function UserInfo({
     .toUpperCase();
 
   return (
-    <div className={cn('flex items-center gap-3', className)}>
-      <Avatar className="h-9 w-9 border">
+    <div className={cn('flex items-center gap-2', className)}>
+      <Avatar className="h-7 w-7 border">
         <AvatarImage src={photo || undefined} alt={name} />
         <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
           {initials}
         </AvatarFallback>
       </Avatar>
       <div className="flex flex-col">
-        <span className="text-sm leading-none font-medium">{name}</span>
+        <span className="text-sm leading-none font-medium capitalize">{name.toLowerCase()}</span>
         {email && <span className="text-muted-foreground text-xs">{email}</span>}
         {(document || phone) && (
           <div className="text-muted-foreground mt-0.5 flex items-center gap-1.5 text-xs">

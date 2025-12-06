@@ -36,34 +36,16 @@ import {
   useRegeneratePaymentAccordPdf,
   useRegenerateRadicationPdf,
 } from '../../hooks/use-generate-pdfs';
-import type { MySale, StatusSale } from '../../types';
+import type { AdminSale } from '../../types';
 import { AssignParticipantsModal } from '../dialogs/assign-participants-modal';
 import { UserInfo } from '@/shared/components/user-info';
-
-// Status badge configurations
-const statusConfig: Record<
-  StatusSale,
-  { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }
-> = {
-  RESERVATION_PENDING: { label: 'Reserva Pendiente', variant: 'outline' },
-  RESERVATION_PENDING_APPROVAL: { label: 'Reserva Por Aprobar', variant: 'secondary' },
-  RESERVED: { label: 'Reservado', variant: 'default' },
-  PENDING: { label: 'Pendiente', variant: 'outline' },
-  PENDING_APPROVAL: { label: 'Por Aprobar', variant: 'secondary' },
-  APPROVED: { label: 'Aprobado', variant: 'default' },
-  IN_PAYMENT_PROCESS: { label: 'En Proceso de Pago', variant: 'secondary' },
-  COMPLETED: { label: 'Completado', variant: 'default' },
-  REJECTED: { label: 'Rechazado', variant: 'destructive' },
-  RESERVATION_IN_PAYMENT: { label: 'Reserva en Pago', variant: 'secondary' },
-  IN_PAYMENT: { label: 'En Pago', variant: 'secondary' },
-  WITHDRAWN: { label: 'Retirado', variant: 'destructive' },
-};
+import { statusConfig } from '../shared/status-config';
 
 interface AdminSalesCardViewProps {
-  sales: MySale[];
+  sales: AdminSale[];
 }
 
-function SaleCard({ sale, index }: { sale: MySale; index: number }) {
+function SaleCard({ sale, index }: { sale: AdminSale; index: number }) {
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const generateRadicationPdf = useGenerateRadicationPdf();
   const regenerateRadicationPdf = useRegenerateRadicationPdf();
@@ -157,7 +139,7 @@ function SaleCard({ sale, index }: { sale: MySale; index: number }) {
                   <p className="text-muted-foreground text-xs">Monto Total</p>
                   <p className="text-primary text-sm font-semibold">
                     {sale.currency === 'USD' ? '$' : 'S/'}{' '}
-                    {sale.totalAmount.toLocaleString('es-PE')}
+                    {parseFloat(sale.totalAmount.toString()).toLocaleString('es-PE')}
                   </p>
                 </div>
               </div>
@@ -181,7 +163,9 @@ function SaleCard({ sale, index }: { sale: MySale; index: number }) {
                   <p className="text-muted-foreground text-xs">Pendiente</p>
                   <p className="text-sm font-semibold text-orange-600">
                     {sale.currency === 'USD' ? '$' : 'S/'}{' '}
-                    {(sale.totalToPay || 0).toLocaleString('es-PE')}
+                    {(
+                      parseFloat(sale.totalAmount.toString()) - (sale.totalAmountPaid || 0)
+                    ).toLocaleString('es-PE')}
                   </p>
                 </div>
               </div>

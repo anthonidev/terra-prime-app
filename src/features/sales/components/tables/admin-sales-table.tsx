@@ -2,12 +2,9 @@
 
 import { useState } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { Eye, Users, FileText, FilePlus, MoreVertical, Download } from 'lucide-react';
+import { Eye, Users, FileText, FilePlus, MoreVertical } from 'lucide-react';
 import Link from 'next/link';
 
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -18,9 +15,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { DataTable } from '@/shared/components/data-table/data-table';
-import { UserInfo } from '@/shared/components/user-info';
-import { Calendar, DollarSign, MapPin } from 'lucide-react';
-import type { MySale, StatusSale } from '../../types';
+import { type PaginationMeta } from '@/shared/types/pagination';
+import { DataTablePagination } from '@/shared/components/data-table/data-table-pagination';
+import type { AdminSale } from '../../types';
 import { AssignParticipantsModal } from '../dialogs/assign-participants-modal';
 import {
   useGenerateRadicationPdf,
@@ -28,31 +25,26 @@ import {
   useGeneratePaymentAccordPdf,
   useRegeneratePaymentAccordPdf,
 } from '../../hooks/use-generate-pdfs';
-
-// Status badge configurations
-const statusConfig: Record<
-  StatusSale,
-  { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }
-> = {
-  RESERVATION_PENDING: { label: 'Reserva Pendiente', variant: 'outline' },
-  RESERVATION_PENDING_APPROVAL: { label: 'Reserva Por Aprobar', variant: 'secondary' },
-  RESERVED: { label: 'Reservado', variant: 'default' },
-  PENDING: { label: 'Pendiente', variant: 'outline' },
-  PENDING_APPROVAL: { label: 'Por Aprobar', variant: 'secondary' },
-  APPROVED: { label: 'Aprobado', variant: 'default' },
-  IN_PAYMENT_PROCESS: { label: 'En Proceso de Pago', variant: 'secondary' },
-  COMPLETED: { label: 'Completado', variant: 'default' },
-  REJECTED: { label: 'Rechazado', variant: 'destructive' },
-  RESERVATION_IN_PAYMENT: { label: 'Reserva en Pago', variant: 'secondary' },
-  IN_PAYMENT: { label: 'En Pago', variant: 'secondary' },
-  WITHDRAWN: { label: 'Retirado', variant: 'destructive' },
-};
+import {
+  createDateColumn,
+  createVendorColumn,
+  createClientColumn,
+  createLotColumn,
+  createTotalAmountColumn,
+  createTypeAndStatusColumn,
+  createCombinedInstallmentsColumn,
+  createCombinedInitialAmountColumn,
+  createReservationAmountColumn,
+  createReportsColumn,
+} from '../shared/column-definitions';
 
 interface AdminSalesTableProps {
-  data: MySale[];
+  data: AdminSale[];
+  meta: PaginationMeta;
+  onPageChange: (page: number) => void;
 }
 
-function ActionsCell({ sale }: { sale: MySale }) {
+function ActionsCell({ sale }: { sale: AdminSale }) {
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const generateRadicationPdf = useGenerateRadicationPdf();
   const regenerateRadicationPdf = useRegenerateRadicationPdf();
@@ -144,180 +136,44 @@ function ActionsCell({ sale }: { sale: MySale }) {
   );
 }
 
-const columns: ColumnDef<MySale>[] = [
-  {
-    accessorKey: 'createdAt',
-    header: ({}) => (
-      <div className="flex items-center gap-2">
-        <Calendar className="text-muted-foreground h-4 w-4" />
-        <span>Fecha</span>
-      </div>
-    ),
-    cell: ({ row }) => {
-      const date = new Date(row.getValue('createdAt'));
-      return <span className="font-medium">{format(date, 'dd MMM yyyy', { locale: es })}</span>;
-    },
-  },
-  {
-    accessorKey: 'client',
-    header: ({}) => (
-      <div className="flex items-center gap-2">
-        <Users className="text-muted-foreground h-4 w-4" />
-        <span>Cliente</span>
-      </div>
-    ),
-    cell: ({ row }) => {
-      const client = row.original.client;
-      return (
-        <UserInfo
-          name={`${client.firstName} ${client.lastName}`}
-          phone={client.phone}
-          className="p-0"
-        />
-      );
-    },
-  },
-  {
-    accessorKey: 'lot',
-    header: ({}) => (
-      <div className="flex items-center gap-2">
-        <MapPin className="text-muted-foreground h-4 w-4" />
-        <span>Lote</span>
-      </div>
-    ),
-    cell: ({ row }) => {
-      const lot = row.original.lot;
-      return (
-        <div className="flex flex-col">
-          <span className="font-medium">{lot.name}</span>
-          <span className="text-muted-foreground text-xs">
-            {lot.project} - {lot.stage}
-          </span>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: 'type',
-    header: ({}) => (
-      <div className="flex items-center gap-2">
-        <FileText className="text-muted-foreground h-4 w-4" />
-        <span>Tipo</span>
-      </div>
-    ),
-    cell: ({ row }) => {
-      const type = row.getValue('type') as string;
-      return (
-        <Badge variant="outline" className="font-normal">
-          {type === 'DIRECT_PAYMENT' ? 'Contado' : 'Financiado'}
-        </Badge>
-      );
-    },
-  },
-  {
-    accessorKey: 'totalAmount',
-    header: ({}) => (
-      <div className="flex items-center gap-2">
-        <DollarSign className="text-muted-foreground h-4 w-4" />
-        <span>Monto Total</span>
-      </div>
-    ),
-    cell: ({ row }) => {
-      const amount = row.getValue('totalAmount') as number;
-      const currency = row.original.currency;
-      return (
-        <span className="font-medium">
-          {currency === 'USD' ? '$' : 'S/'} {amount.toLocaleString('es-PE')}
-        </span>
-      );
-    },
-  },
-  {
-    accessorKey: 'totalAmountPaid',
-    header: ({}) => (
-      <div className="flex items-center gap-2">
-        <DollarSign className="text-muted-foreground h-4 w-4" />
-        <span>Pagado</span>
-      </div>
-    ),
-    cell: ({ row }) => {
-      const paid = (row.getValue('totalAmountPaid') as number) || 0;
-      const currency = row.original.currency;
-      return (
-        <span className="font-medium text-blue-600">
-          {currency === 'USD' ? '$' : 'S/'} {paid.toLocaleString('es-PE')}
-        </span>
-      );
-    },
-  },
-  {
-    accessorKey: 'totalToPay',
-    header: ({}) => (
-      <div className="flex items-center gap-2">
-        <DollarSign className="text-muted-foreground h-4 w-4" />
-        <span>Pendiente</span>
-      </div>
-    ),
-    cell: ({ row }) => {
-      const pending = (row.getValue('totalToPay') as number) || 0;
-      const currency = row.original.currency;
-      return (
-        <span className="font-medium text-orange-600">
-          {currency === 'USD' ? '$' : 'S/'} {pending.toLocaleString('es-PE')}
-        </span>
-      );
-    },
-  },
-  {
-    accessorKey: 'status',
-    header: 'Estado',
-    cell: ({ row }) => {
-      const status = row.getValue('status') as StatusSale;
-      const config = statusConfig[status];
-      return <Badge variant={config.variant}>{config.label}</Badge>;
-    },
-  },
-  {
-    id: 'reports',
-    header: 'Reportes',
-    cell: ({ row }) => {
-      const sale = row.original;
-      const hasRadication = !!sale.radicationPdfUrl;
-      const hasPaymentAccord = !!sale.paymentAcordPdfUrl;
+const columns: ColumnDef<AdminSale>[] = [
+  createDateColumn<AdminSale>(),
+  createVendorColumn(),
+  createClientColumn<AdminSale>(),
+  createLotColumn<AdminSale>(),
+  createTypeAndStatusColumn<AdminSale>(),
+  createTotalAmountColumn<AdminSale>(),
 
-      if (!hasRadication && !hasPaymentAccord) {
-        return <span className="text-muted-foreground text-xs">Sin reportes</span>;
-      }
+  // Financial Columns (Hidden by default)
+  createCombinedInstallmentsColumn<AdminSale>(),
+  createCombinedInitialAmountColumn<AdminSale>(),
+  createReservationAmountColumn<AdminSale>(),
 
-      return (
-        <div className="flex flex-col gap-1">
-          {hasRadication && (
-            <Button variant="ghost" size="sm" className="h-7 justify-start px-2" asChild>
-              <a href={sale.radicationPdfUrl!} target="_blank" rel="noopener noreferrer">
-                <Download className="mr-1 h-3 w-3" />
-                <span className="text-xs">Radicación</span>
-              </a>
-            </Button>
-          )}
-          {hasPaymentAccord && (
-            <Button variant="ghost" size="sm" className="h-7 justify-start px-2" asChild>
-              <a href={sale.paymentAcordPdfUrl!} target="_blank" rel="noopener noreferrer">
-                <Download className="mr-1 h-3 w-3" />
-                <span className="text-xs">Acuerdo de Pagos</span>
-              </a>
-            </Button>
-          )}
-        </div>
-      );
-    },
-  },
+  createReportsColumn<AdminSale>(),
   {
     id: 'actions',
     header: 'Acciones',
+    enableHiding: false,
     cell: ({ row }) => <ActionsCell sale={row.original} />,
   },
 ];
 
-export function AdminSalesTable({ data }: AdminSalesTableProps) {
-  return <DataTable columns={columns} data={data} />;
+export function AdminSalesTable({ data, meta, onPageChange }: AdminSalesTableProps) {
+  return (
+    <div className="space-y-4">
+      <DataTable
+        columns={columns}
+        data={data}
+        enableColumnVisibility={true}
+        initialColumnVisibility={{
+          combinedInstallments: false,
+          combinedInitialAmount: false,
+          reservationAmount: false,
+        }}
+        storageKey="admin-sales-table-columns-v3"
+      />
+
+      <DataTablePagination meta={meta} onPageChange={onPageChange} />
+    </div>
+  );
 }
