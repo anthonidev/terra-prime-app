@@ -2,7 +2,9 @@
 
 import { useState, useMemo } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { Plus, Send, X } from 'lucide-react';
+import { Plus, Send, X, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
@@ -12,17 +14,17 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { VoucherForm, type VoucherFormData } from '../containers/components/voucher-form';
-import { useRegisterPayment } from '../../hooks/use-register-payment';
-import type { CurrencyType, VoucherInput } from '../../types';
+import {
+  VoucherForm,
+  type VoucherFormData,
+} from '@/features/sales/components/containers/components/voucher-form';
+import { apiClient } from '@/shared/lib/api-client';
 
-interface RegisterPaymentModalProps {
+interface RegisterInstallmentPaymentModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  saleId: string;
-  pendingAmount: number;
-  currency: CurrencyType;
+  financingId: string;
+  currency?: string;
 }
 
 const initialVoucherData: VoucherFormData = {
@@ -33,17 +35,17 @@ const initialVoucherData: VoucherFormData = {
   file: null,
 };
 
-export function RegisterPaymentModal({
+export function RegisterInstallmentPaymentModal({
   open,
   onOpenChange,
-  saleId,
-  pendingAmount,
-  currency,
-}: RegisterPaymentModalProps) {
+  financingId,
+  currency = 'PEN',
+}: RegisterInstallmentPaymentModalProps) {
   const [vouchers, setVouchers] = useState<VoucherFormData[]>([{ ...initialVoucherData }]);
   const [errors, setErrors] = useState<Record<number, Record<string, string>>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
-  const { mutate, isPending } = useRegisterPayment(saleId);
   const currencySymbol = currency === 'USD' ? '$' : 'S/';
 
   // Calculate total amount from all vouchers
@@ -54,25 +56,18 @@ export function RegisterPaymentModal({
     }, 0);
   }, [vouchers]);
 
-  // Check if amount is valid
-  const amountError = useMemo(() => {
-    if (totalAmount === 0) return 'El monto total debe ser mayor a 0';
-    if (totalAmount > pendingAmount) return 'El monto total no puede ser mayor al pendiente';
-    return null;
-  }, [totalAmount, pendingAmount]);
-
   const handleAddVoucher = () => {
     setVouchers([...vouchers, { ...initialVoucherData }]);
   };
 
   const handleRemoveVoucher = (index: number) => {
-    if (vouchers.length === 1) return; // Keep at least one voucher
+    if (vouchers.length === 1) return;
     const newVouchers = vouchers.filter((_, i) => i !== index);
     setVouchers(newVouchers);
-    // Remove errors for this voucher
+
     const newErrors = { ...errors };
     delete newErrors[index];
-    // Reindex remaining errors
+
     const reindexedErrors: Record<number, Record<string, string>> = {};
     Object.keys(newErrors).forEach((key) => {
       const oldIndex = parseInt(key);
@@ -86,7 +81,7 @@ export function RegisterPaymentModal({
     const newVouchers = [...vouchers];
     newVouchers[index] = data;
     setVouchers(newVouchers);
-    // Clear errors for this voucher field when user types
+
     if (errors[index]) {
       const newErrors = { ...errors };
       delete newErrors[index];
@@ -117,6 +112,11 @@ export function RegisterPaymentModal({
         isValid = false;
       }
 
+      if (!voucher.bankName) {
+        voucherErrors.bankName = 'El banco es requerido';
+        isValid = false;
+      }
+
       if (!voucher.file) {
         voucherErrors.file = 'El comprobante es requerido';
         isValid = false;
@@ -131,50 +131,58 @@ export function RegisterPaymentModal({
     return isValid;
   };
 
-  const handleSubmit = () => {
-    // Validate all vouchers
+  const handleSubmit = async () => {
     if (!validateVouchers()) {
       return;
     }
 
-    // Check amount
-    if (amountError) {
+    if (totalAmount <= 0) {
+      toast.error('El monto total debe ser mayor a 0');
       return;
     }
 
-    // Prepare data for API
-    const files: File[] = [];
-    const payments: VoucherInput[] = [];
+    try {
+      setIsSubmitting(true);
+      const formData = new FormData();
 
-    vouchers.forEach((voucher, index) => {
-      if (voucher.file) {
-        files.push(voucher.file);
-        payments.push({
-          bankName: voucher.bankName || undefined,
-          transactionReference: voucher.transactionReference,
-          transactionDate: voucher.transactionDate,
-          amount: parseFloat(voucher.amount),
-          fileIndex: index,
-        });
-      }
-    });
+      // amountPaid is the sum of all vouchers
+      formData.append('amountPaid', totalAmount.toString());
 
-    // Submit
-    mutate(
-      { payments, files },
-      {
-        onSuccess: () => {
-          // Reset and close
-          setVouchers([{ ...initialVoucherData }]);
-          setErrors({});
-          onOpenChange(false);
-        },
-      }
-    );
+      vouchers.forEach((voucher, index) => {
+        formData.append(`payments[${index}][amount]`, voucher.amount);
+        formData.append(`payments[${index}][transactionDate]`, voucher.transactionDate);
+        formData.append(`payments[${index}][transactionReference]`, voucher.transactionReference);
+        formData.append(`payments[${index}][bankName]`, voucher.bankName);
+        formData.append(`payments[${index}][fileIndex]`, index.toString());
+
+        if (voucher.file) {
+          formData.append('files', voucher.file);
+        }
+      });
+
+      await apiClient.post(
+        `/api/collections/financing/installments/paid/${financingId}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      toast.success('Pago registrado exitosamente');
+      queryClient.invalidateQueries({ queryKey: ['sale-detail'] });
+      handleClose();
+    } catch (error) {
+      console.error(error);
+      toast.error('Error al registrar el pago');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {
-    if (!isPending) {
+    if (!isSubmitting) {
       setVouchers([{ ...initialVoucherData }]);
       setErrors({});
       onOpenChange(false);
@@ -185,38 +193,21 @@ export function RegisterPaymentModal({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="flex max-h-[90vh] flex-col sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Registrar Pago</DialogTitle>
+          <DialogTitle>Registrar Pago de Cuotas</DialogTitle>
           <DialogDescription>
-            Agrega los comprobantes de pago. Puedes registrar pagos parciales.
+            Registre un pago para el financiamiento. Puede ser un pago parcial o adelanto.
           </DialogDescription>
         </DialogHeader>
 
         {/* Amount Summary */}
-        <div className="grid grid-cols-2 gap-4 px-1 py-4">
-          <div className="bg-muted/50 rounded-lg border p-3">
-            <p className="text-muted-foreground mb-1 text-xs">Monto Pendiente</p>
-            <p className="text-lg font-bold">
-              {currencySymbol} {pendingAmount.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
-            </p>
-          </div>
-          <div
-            className={`rounded-lg border p-3 ${
-              amountError ? 'bg-destructive/10 border-destructive' : 'bg-primary/10 border-primary'
-            }`}
-          >
+        <div className="px-1 py-4">
+          <div className="bg-primary/10 border-primary rounded-lg border p-3">
             <p className="text-muted-foreground mb-1 text-xs">Monto a Registrar</p>
-            <p className={`text-lg font-bold ${amountError ? 'text-destructive' : 'text-primary'}`}>
+            <p className="text-primary text-lg font-bold">
               {currencySymbol} {totalAmount.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
             </p>
           </div>
         </div>
-
-        {/* Amount Error Alert */}
-        {amountError && (
-          <Alert variant="destructive">
-            <AlertDescription>{amountError}</AlertDescription>
-          </Alert>
-        )}
 
         {/* Vouchers List */}
         <div className="max-h-[50vh] flex-1 overflow-y-auto pr-2">
@@ -242,7 +233,7 @@ export function RegisterPaymentModal({
             type="button"
             variant="outline"
             onClick={handleAddVoucher}
-            disabled={isPending}
+            disabled={isSubmitting}
             className="w-full sm:w-auto"
           >
             <Plus className="mr-2 h-4 w-4" />
@@ -253,7 +244,7 @@ export function RegisterPaymentModal({
               type="button"
               variant="ghost"
               onClick={handleClose}
-              disabled={isPending}
+              disabled={isSubmitting}
               className="flex-1 sm:flex-none"
             >
               <X className="mr-2 h-4 w-4" />
@@ -262,11 +253,20 @@ export function RegisterPaymentModal({
             <Button
               type="button"
               onClick={handleSubmit}
-              disabled={isPending || !!amountError}
+              disabled={isSubmitting}
               className="flex-1 sm:flex-none"
             >
-              <Send className="mr-2 h-4 w-4" />
-              {isPending ? 'Registrando...' : 'Registrar Pago'}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Registrando...
+                </>
+              ) : (
+                <>
+                  <Send className="mr-2 h-4 w-4" />
+                  Registrar Pago
+                </>
+              )}
             </Button>
           </div>
         </DialogFooter>

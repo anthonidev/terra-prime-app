@@ -10,10 +10,10 @@ import { ClientsAdminTable } from '../tables/clients-admin-table';
 
 export function ClientsAdminContainer() {
   const [page, setPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit] = useState(20);
   const [filters, setFilters] = useState({});
 
-  const { data, isLoading, isError, isFetching } = useClients({
+  const { data, isLoading, isError } = useClients({
     page,
     limit,
     ...filters,
@@ -48,19 +48,10 @@ export function ClientsAdminContainer() {
             <div className="text-destructive">Error al cargar los clientes</div>
           </div>
         ) : (
-          <div
-            className={`relative transition-opacity duration-200 ${isFetching ? 'opacity-50' : ''}`}
-          >
-            {isFetching && (
-              <div className="absolute inset-0 z-10 flex items-center justify-center">
-                <div className="bg-background/80 rounded-full border px-4 py-2 shadow-sm">
-                  <span className="text-sm font-medium">Actualizando...</span>
-                </div>
-              </div>
-            )}
+          <>
             <ClientsAdminTable clients={data?.items || []} />
             {data?.meta && <DataTablePagination meta={data.meta} onPageChange={handlePageChange} />}
-          </div>
+          </>
         )}
       </div>
     </div>

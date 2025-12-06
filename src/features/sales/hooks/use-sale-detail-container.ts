@@ -36,13 +36,17 @@ export function useSaleDetailContainer(id: string) {
     const status = data.status as StatusSaleType;
     const saleType = data.type;
 
-    // RESERVATION_PENDING: max payment is reservation amount
-    if (status === StatusSale.RESERVATION_PENDING) {
+    // RESERVATION_PENDING or RESERVATION_IN_PAYMENT: max payment is reservation amount
+    if (status === StatusSale.RESERVATION_PENDING || status === StatusSale.RESERVATION_IN_PAYMENT) {
       return Math.max(0, (data.reservationAmount || 0) - totalPaid);
     }
 
-    // PENDING or RESERVED: depends on sale type
-    if (status === StatusSale.PENDING || status === StatusSale.RESERVED) {
+    // PENDING, RESERVED, or IN_PAYMENT: depends on sale type
+    if (
+      status === StatusSale.PENDING ||
+      status === StatusSale.RESERVED ||
+      status === StatusSale.IN_PAYMENT
+    ) {
       // Direct payment: max payment is total lot price
       if (saleType === SaleType.DIRECT_PAYMENT) {
         return Math.max(0, data.totalAmount - totalPaid);

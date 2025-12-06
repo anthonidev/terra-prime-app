@@ -24,8 +24,6 @@ interface ApprovePaymentModalProps {
 
 export function ApprovePaymentModal({ open, onOpenChange, paymentId }: ApprovePaymentModalProps) {
   const [formData, setFormData] = useState<ApprovePaymentInput>({
-    codeOperation: '',
-    banckName: '',
     dateOperation: '',
     numberTicket: '',
   });
@@ -44,10 +42,6 @@ export function ApprovePaymentModal({ open, onOpenChange, paymentId }: ApprovePa
   const validateForm = () => {
     const newErrors: Partial<Record<keyof ApprovePaymentInput, string>> = {};
 
-    if (!formData.banckName.trim()) {
-      newErrors.banckName = 'El nombre del banco es requerido';
-    }
-
     if (!formData.dateOperation) {
       newErrors.dateOperation = 'La fecha de operación es requerida';
     }
@@ -63,13 +57,8 @@ export function ApprovePaymentModal({ open, onOpenChange, paymentId }: ApprovePa
 
     // Clean up empty optional fields
     const submitData: ApprovePaymentInput = {
-      banckName: formData.banckName,
       dateOperation: formData.dateOperation,
     };
-
-    if (formData.codeOperation?.trim()) {
-      submitData.codeOperation = formData.codeOperation;
-    }
 
     if (formData.numberTicket?.trim()) {
       submitData.numberTicket = formData.numberTicket;
@@ -81,8 +70,6 @@ export function ApprovePaymentModal({ open, onOpenChange, paymentId }: ApprovePa
         onSuccess: () => {
           // Reset form and close modal
           setFormData({
-            codeOperation: '',
-            banckName: '',
             dateOperation: '',
             numberTicket: '',
           });
@@ -96,8 +83,6 @@ export function ApprovePaymentModal({ open, onOpenChange, paymentId }: ApprovePa
   const handleClose = () => {
     if (!isPending) {
       setFormData({
-        codeOperation: '',
-        banckName: '',
         dateOperation: '',
         numberTicket: '',
       });
@@ -120,36 +105,6 @@ export function ApprovePaymentModal({ open, onOpenChange, paymentId }: ApprovePa
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          {/* Código de Operación (Opcional) */}
-          <div className="space-y-2">
-            <Label htmlFor="codeOperation">
-              Código de Operación <span className="text-muted-foreground text-xs">(Opcional)</span>
-            </Label>
-            <Input
-              id="codeOperation"
-              value={formData.codeOperation}
-              onChange={(e) => handleChange('codeOperation', e.target.value)}
-              placeholder="Ingrese el código de operación"
-              disabled={isPending}
-            />
-          </div>
-
-          {/* Nombre del Banco (Requerido) */}
-          <div className="space-y-2">
-            <Label htmlFor="banckName">
-              Nombre del Banco <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="banckName"
-              value={formData.banckName}
-              onChange={(e) => handleChange('banckName', e.target.value)}
-              placeholder="Ej: BCP, Interbank, BBVA"
-              disabled={isPending}
-              className={errors.banckName ? 'border-destructive' : ''}
-            />
-            {errors.banckName && <p className="text-destructive text-xs">{errors.banckName}</p>}
-          </div>
-
           {/* Fecha de Operación (Requerido) */}
           <div className="space-y-2">
             <Label htmlFor="dateOperation">

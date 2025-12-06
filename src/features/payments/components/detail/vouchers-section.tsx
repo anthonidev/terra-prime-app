@@ -10,10 +10,17 @@ import {
   DollarSign,
   ExternalLink,
   FileText,
+  Hash,
   Image as ImageIcon,
   Landmark,
+  Pencil,
+  Check,
+  X,
 } from 'lucide-react';
-import type { PaymentDetail } from '../../types';
+import { Input } from '@/components/ui/input';
+import { useState } from 'react';
+import { useUpdateVoucherCodeOperation } from '../../hooks/use-payment-detail';
+import type { PaymentDetail, PaymentVoucher } from '../../types';
 
 interface VouchersSectionProps {
   payment: PaymentDetail;
@@ -21,6 +28,30 @@ interface VouchersSectionProps {
 
 export function VouchersSection({ payment }: VouchersSectionProps) {
   const vouchers = payment.vouchers || [];
+  const { mutate: updateCode, isPending } = useUpdateVoucherCodeOperation(payment.id.toString());
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState('');
+
+  const handleEdit = (voucher: PaymentVoucher) => {
+    setEditingId(voucher.id);
+    setEditValue(voucher.codeOperation || '');
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+    setEditValue('');
+  };
+
+  const handleSave = (id: number) => {
+    updateCode(
+      { id, codeOperation: editValue },
+      {
+        onSuccess: () => {
+          setEditingId(null);
+        },
+      }
+    );
+  };
 
   return (
     <Card className="border-none shadow-sm">
@@ -41,7 +72,7 @@ export function VouchersSection({ payment }: VouchersSectionProps) {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2">
-            {vouchers.map((voucher, index) => (
+            {vouchers.map((voucher) => (
               <div
                 key={voucher.id}
                 className="group bg-card text-card-foreground relative overflow-hidden rounded-xl border shadow-sm transition-all hover:shadow-md"
@@ -100,11 +131,63 @@ export function VouchersSection({ payment }: VouchersSectionProps) {
                         {voucher.bankName}
                       </p>
                     </div>
+
+                    <div className="col-span-2 space-y-1">
+                      <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
+                        <Hash className="h-3.5 w-3.5" />
+                        Código de Operación
+                      </p>
+                      {editingId === voucher.id ? (
+                        <div className="flex items-center gap-2">
+                          <Input
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            className="h-8 text-xs"
+                            placeholder="Ingrese código"
+                            autoFocus
+                          />
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-8 w-8 text-green-600 hover:bg-green-50 hover:text-green-700"
+                            onClick={() => handleSave(voucher.id)}
+                            disabled={isPending}
+                          >
+                            <Check className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-8 w-8 text-red-600 hover:bg-red-50 hover:text-red-700"
+                            onClick={handleCancel}
+                            disabled={isPending}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="font-medium">
+                            {voucher.codeOperation || (
+                              <span className="text-muted-foreground italic">Sin código</span>
+                            )}
+                          </p>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="text-muted-foreground hover:text-primary h-6 w-6"
+                            onClick={() => handleEdit(voucher)}
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
                 {/* Decorative gradient at bottom */}
-                <div className="from-primary/40 to-primary/10 absolute right-0 bottom-0 left-0 h-1 bg-gradient-to-r opacity-0 transition-opacity group-hover:opacity-100" />
+                <div className="from-primary/40 to-primary/10 absolute right-0 bottom-0 left-0 h-1 bg-linear-to-r opacity-0 transition-opacity group-hover:opacity-100" />
               </div>
             ))}
           </div>

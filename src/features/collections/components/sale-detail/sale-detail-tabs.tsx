@@ -12,6 +12,7 @@ interface SaleDetailTabsProps {
 
 export function SaleDetailTabs({ data }: SaleDetailTabsProps) {
   const { sale } = data;
+  if (!sale) return null;
   const hasUrbanDevelopment = !!sale.urbanDevelopment;
 
   return (
@@ -48,7 +49,11 @@ export function SaleDetailTabs({ data }: SaleDetailTabsProps) {
               </div>
             </div>
 
-            <InstallmentsTable installments={sale.financing.financingInstallments} />
+            <InstallmentsTable
+              installments={sale.financing.financingInstallments}
+              financingId={sale.financing.id}
+              currency={sale.currency}
+            />
           </CardContent>
         </Card>
       </TabsContent>
@@ -85,6 +90,8 @@ export function SaleDetailTabs({ data }: SaleDetailTabsProps) {
 
               <InstallmentsTable
                 installments={sale.urbanDevelopment.financing.financingInstallments}
+                financingId={sale.urbanDevelopment.financing.id}
+                currency={sale.currency}
               />
             </CardContent>
           </Card>

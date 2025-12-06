@@ -43,6 +43,8 @@ const statusConfig: Record<
   IN_PAYMENT_PROCESS: { label: 'En Proceso de Pago', variant: 'secondary' },
   COMPLETED: { label: 'Completado', variant: 'default' },
   REJECTED: { label: 'Rechazado', variant: 'destructive' },
+  RESERVATION_IN_PAYMENT: { label: 'Reserva en Pago', variant: 'secondary' },
+  IN_PAYMENT: { label: 'En Pago', variant: 'secondary' },
   WITHDRAWN: { label: 'Retirado', variant: 'destructive' },
 };
 
@@ -226,6 +228,42 @@ const columns: ColumnDef<MySale>[] = [
       return (
         <span className="font-medium">
           {currency === 'USD' ? '$' : 'S/'} {amount.toLocaleString('es-PE')}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: 'totalAmountPaid',
+    header: ({}) => (
+      <div className="flex items-center gap-2">
+        <DollarSign className="text-muted-foreground h-4 w-4" />
+        <span>Pagado</span>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const paid = (row.getValue('totalAmountPaid') as number) || 0;
+      const currency = row.original.currency;
+      return (
+        <span className="font-medium text-blue-600">
+          {currency === 'USD' ? '$' : 'S/'} {paid.toLocaleString('es-PE')}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: 'totalToPay',
+    header: ({}) => (
+      <div className="flex items-center gap-2">
+        <DollarSign className="text-muted-foreground h-4 w-4" />
+        <span>Pendiente</span>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const pending = (row.getValue('totalToPay') as number) || 0;
+      const currency = row.original.currency;
+      return (
+        <span className="font-medium text-orange-600">
+          {currency === 'USD' ? '$' : 'S/'} {pending.toLocaleString('es-PE')}
         </span>
       );
     },

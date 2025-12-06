@@ -4,9 +4,9 @@ import { useAuth } from '@/features/auth/hooks/use-auth';
 import { Sparkles } from 'lucide-react';
 
 export function WelcomeSection() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
 
-  if (!user) return null;
+  if (isLoading || !user) return null;
 
   const firstName = user.firstName + ' ' + user.lastName;
   const currentHour = new Date().getHours();

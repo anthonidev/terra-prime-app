@@ -61,26 +61,7 @@ export function SalePaymentsTable({ payments, currency }: SalePaymentsTableProps
         );
       },
     },
-    {
-      accessorKey: 'banckName',
-      header: 'Banco',
-      cell: ({ row }) => {
-        const bank = row.getValue('banckName') as string | null;
-        return bank || <span className="text-muted-foreground">-</span>;
-      },
-    },
-    {
-      accessorKey: 'codeOperation',
-      header: 'Código de Operación',
-      cell: ({ row }) => {
-        const code = row.getValue('codeOperation') as string | null;
-        return code ? (
-          <span className="font-mono text-sm">{code}</span>
-        ) : (
-          <span className="text-muted-foreground">-</span>
-        );
-      },
-    },
+
     {
       accessorKey: 'numberTicket',
       header: 'N° Boleta',

@@ -6,6 +6,13 @@ import { Trash2, Upload, Building2, Hash, Calendar, DollarSign, FileText } from 
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/shared/lib/utils';
 
 export interface VoucherFormData {
@@ -40,6 +47,20 @@ export function VoucherForm({
   errors,
 }: VoucherFormProps) {
   const [fileName, setFileName] = useState<string>(data.file?.name || '');
+  const [isOtherBank, setIsOtherBank] = useState(false);
+
+  // Predefined banks
+  const BANKS = ['BBVA', 'BCP', 'INTERBANK', 'Scotiabank', 'BN', 'OTROS'];
+
+  const handleBankChange = (value: string) => {
+    if (value === 'OTROS') {
+      setIsOtherBank(true);
+      handleChange('bankName', '');
+    } else {
+      setIsOtherBank(false);
+      handleChange('bankName', value);
+    }
+  };
 
   const handleChange = (field: keyof VoucherFormData, value: string | File | null) => {
     onChange(index, { ...data, [field]: value });
@@ -59,7 +80,7 @@ export function VoucherForm({
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="border-primary/20 from-primary/5 space-y-4 rounded-lg border-2 bg-gradient-to-br to-transparent p-4"
+      className="border-primary/20 from-primary/5 space-y-4 rounded-lg border-2 bg-linear-to-br to-transparent p-4"
     >
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -85,16 +106,36 @@ export function VoucherForm({
         <div className="space-y-2">
           <Label htmlFor={`bankName-${index}`} className="flex items-center gap-2 text-sm">
             <Building2 className="text-primary h-4 w-4" />
-            Banco (Opcional)
+            Banco
+            <span className="text-destructive">*</span>
           </Label>
-          <Input
-            id={`bankName-${index}`}
-            type="text"
-            placeholder="Nombre del banco"
-            value={data.bankName}
-            onChange={(e) => handleChange('bankName', e.target.value)}
-            className={cn(errors?.bankName && 'border-destructive')}
-          />
+          <div className="flex flex-col gap-2">
+            <Select
+              value={isOtherBank ? 'OTROS' : BANKS.includes(data.bankName) ? data.bankName : ''}
+              onValueChange={handleBankChange}
+            >
+              <SelectTrigger className={cn(errors?.bankName && 'border-destructive')}>
+                <SelectValue placeholder="Seleccionar banco" />
+              </SelectTrigger>
+              <SelectContent>
+                {BANKS.map((bank) => (
+                  <SelectItem key={bank} value={bank}>
+                    {bank}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {isOtherBank && (
+              <Input
+                type="text"
+                placeholder="Ingrese el nombre del banco"
+                value={data.bankName}
+                onChange={(e) => handleChange('bankName', e.target.value)}
+                className={cn(errors?.bankName && 'border-destructive')}
+              />
+            )}
+          </div>
           {errors?.bankName && <p className="text-destructive text-xs">{errors.bankName}</p>}
         </div>
 

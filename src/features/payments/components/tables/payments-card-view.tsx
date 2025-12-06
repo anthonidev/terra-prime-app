@@ -1,15 +1,15 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { Building2, DollarSign, Eye, CreditCard, Landmark, UserCog } from 'lucide-react';
-import Link from 'next/link';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { UserInfo } from '@/shared/components/user-info';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { motion } from 'framer-motion';
+import { Building2, CreditCard, DollarSign, Eye, UserCog } from 'lucide-react';
+import Link from 'next/link';
 import type { Payment, StatusPayment } from '../../types';
 
 // Status badge configurations
@@ -110,27 +110,6 @@ function PaymentCard({ payment, index }: { payment: Payment; index: number }) {
                 <div className="text-muted-foreground flex items-center gap-1.5">
                   <CreditCard className="h-3.5 w-3.5" />
                   <span className="text-xs font-medium">Código</span>
-                </div>
-                <p className="text-muted-foreground pl-5 text-sm">-</p>
-              </div>
-            )}
-
-            {/* Bank Name */}
-            {payment.banckName ? (
-              <div className="flex flex-col gap-1">
-                <div className="text-muted-foreground flex items-center gap-1.5">
-                  <Landmark className="h-3.5 w-3.5" />
-                  <span className="text-xs font-medium">Banco</span>
-                </div>
-                <p className="truncate pl-5 text-sm" title={payment.banckName}>
-                  {payment.banckName}
-                </p>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-1">
-                <div className="text-muted-foreground flex items-center gap-1.5">
-                  <Landmark className="h-3.5 w-3.5" />
-                  <span className="text-xs font-medium">Banco</span>
                 </div>
                 <p className="text-muted-foreground pl-5 text-sm">-</p>
               </div>

@@ -60,7 +60,7 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
-          <PaymentActions paymentId={paymentId} />
+          <PaymentActions paymentId={paymentId} payment={payment} />
         </motion.div>
       )}
 

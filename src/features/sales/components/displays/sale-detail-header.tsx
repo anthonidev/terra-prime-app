@@ -21,6 +21,8 @@ const statusConfig: Record<
   IN_PAYMENT_PROCESS: { label: 'En Proceso de Pago', variant: 'secondary' },
   COMPLETED: { label: 'Completado', variant: 'default' },
   REJECTED: { label: 'Rechazado', variant: 'destructive' },
+  RESERVATION_IN_PAYMENT: { label: 'Reserva en Pago', variant: 'secondary' },
+  IN_PAYMENT: { label: 'En Pago', variant: 'secondary' },
   WITHDRAWN: { label: 'Retirado', variant: 'destructive' },
 };
 

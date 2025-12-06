@@ -25,6 +25,8 @@ const statusConfig: Record<
   IN_PAYMENT_PROCESS: { label: 'En Proceso de Pago', variant: 'secondary' },
   COMPLETED: { label: 'Completado', variant: 'default' },
   REJECTED: { label: 'Rechazado', variant: 'destructive' },
+  RESERVATION_IN_PAYMENT: { label: 'Reserva en Pago', variant: 'secondary' },
+  IN_PAYMENT: { label: 'En Pago', variant: 'secondary' },
   WITHDRAWN: { label: 'Retirado', variant: 'destructive' },
 };
 
@@ -105,6 +107,30 @@ export function SalesCardView({ sales }: SalesCardViewProps) {
                     <p className="text-primary text-sm font-semibold">
                       {sale.currency === 'USD' ? '$' : 'S/'}{' '}
                       {sale.totalAmount.toLocaleString('es-PE')}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Paid Amount */}
+                <div className="flex items-start gap-2">
+                  <DollarSign className="mt-0.5 h-4 w-4 text-blue-600" />
+                  <div>
+                    <p className="text-muted-foreground text-xs">Pagado</p>
+                    <p className="text-sm font-semibold text-blue-600">
+                      {sale.currency === 'USD' ? '$' : 'S/'}{' '}
+                      {(sale.totalAmountPaid || 0).toLocaleString('es-PE')}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Pending Amount */}
+                <div className="flex items-start gap-2">
+                  <DollarSign className="mt-0.5 h-4 w-4 text-orange-600" />
+                  <div>
+                    <p className="text-muted-foreground text-xs">Pendiente</p>
+                    <p className="text-sm font-semibold text-orange-600">
+                      {sale.currency === 'USD' ? '$' : 'S/'}{' '}
+                      {(sale.totalToPay || 0).toLocaleString('es-PE')}
                     </p>
                   </div>
                 </div>

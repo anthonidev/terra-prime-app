@@ -6,6 +6,8 @@ import type {
   CompletePaymentResponse,
   RejectPaymentInput,
   RejectPaymentResponse,
+  UpdateVoucherCodeOperationInput,
+  UpdateVoucherCodeOperationResponse,
 } from '../types';
 
 export async function approvePayment(
@@ -29,5 +31,13 @@ export async function completePayment(
   data: CompletePaymentInput
 ): Promise<CompletePaymentResponse> {
   const response = await apiClient.patch(`/api/payments/complete-payment/${id}`, data);
+  return response.data;
+}
+
+export async function updateVoucherCodeOperation(
+  id: number,
+  data: UpdateVoucherCodeOperationInput
+): Promise<UpdateVoucherCodeOperationResponse> {
+  const response = await apiClient.patch(`/api/payments/details/${id}/code-operation`, data);
   return response.data;
 }

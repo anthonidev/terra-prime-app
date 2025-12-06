@@ -24,7 +24,6 @@ interface CompletePaymentModalProps {
 
 export function CompletePaymentModal({ open, onOpenChange, paymentId }: CompletePaymentModalProps) {
   const [formData, setFormData] = useState<CompletePaymentInput>({
-    codeOperation: '',
     numberTicket: '',
   });
 
@@ -36,18 +35,16 @@ export function CompletePaymentModal({ open, onOpenChange, paymentId }: Complete
 
   const handleSubmit = () => {
     // Clean up empty optional fields
-    const submitData: CompletePaymentInput = {};
-
-    if (formData.codeOperation?.trim()) {
-      submitData.codeOperation = formData.codeOperation;
-    }
+    const submitData: CompletePaymentInput = {
+      numberTicket: formData.numberTicket,
+    };
 
     if (formData.numberTicket?.trim()) {
       submitData.numberTicket = formData.numberTicket;
     }
 
     // Only submit if there's at least one value
-    if (Object.keys(submitData).length === 0) {
+    if (!submitData.numberTicket) {
       return;
     }
 
@@ -57,7 +54,6 @@ export function CompletePaymentModal({ open, onOpenChange, paymentId }: Complete
         onSuccess: () => {
           // Reset form and close modal
           setFormData({
-            codeOperation: '',
             numberTicket: '',
           });
           onOpenChange(false);
@@ -69,14 +65,13 @@ export function CompletePaymentModal({ open, onOpenChange, paymentId }: Complete
   const handleClose = () => {
     if (!isPending) {
       setFormData({
-        codeOperation: '',
         numberTicket: '',
       });
       onOpenChange(false);
     }
   };
 
-  const hasData = formData.codeOperation?.trim() || formData.numberTicket?.trim();
+  const hasData = !!formData.numberTicket?.trim();
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -92,24 +87,10 @@ export function CompletePaymentModal({ open, onOpenChange, paymentId }: Complete
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          {/* Código de Operación (Opcional) */}
-          <div className="space-y-2">
-            <Label htmlFor="codeOperation">
-              Código de Operación <span className="text-muted-foreground text-xs">(Opcional)</span>
-            </Label>
-            <Input
-              id="codeOperation"
-              value={formData.codeOperation}
-              onChange={(e) => handleChange('codeOperation', e.target.value)}
-              placeholder="Ingrese el código de operación"
-              disabled={isPending}
-            />
-          </div>
-
-          {/* Número de Ticket (Opcional) */}
+          {/* Número de Ticket (Requerido) */}
           <div className="space-y-2">
             <Label htmlFor="numberTicket">
-              Número de Ticket <span className="text-muted-foreground text-xs">(Opcional)</span>
+              Número de Ticket <span className="text-destructive">*</span>
             </Label>
             <Input
               id="numberTicket"

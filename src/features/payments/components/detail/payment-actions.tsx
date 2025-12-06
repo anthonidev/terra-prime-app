@@ -7,13 +7,27 @@ import { Button } from '@/components/ui/button';
 import { ApprovePaymentModal } from '../dialogs/approve-payment-modal';
 import { RejectPaymentModal } from '../dialogs/reject-payment-modal';
 
+import { toast } from 'sonner';
+import type { PaymentDetail } from '../../types';
+
 interface PaymentActionsProps {
   paymentId: string;
+  payment: PaymentDetail;
 }
 
-export function PaymentActions({ paymentId }: PaymentActionsProps) {
+export function PaymentActions({ paymentId, payment }: PaymentActionsProps) {
   const [approveModalOpen, setApproveModalOpen] = useState(false);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
+
+  const handleApproveClick = () => {
+    // Validate that all vouchers have codeOperation
+    const missingCode = payment.vouchers?.some((v) => !v.codeOperation);
+    if (missingCode) {
+      toast.error('No se puede aprobar. Todos los vouchers deben tener código de operación.');
+      return;
+    }
+    setApproveModalOpen(true);
+  };
 
   return (
     <>
@@ -31,7 +45,7 @@ export function PaymentActions({ paymentId }: PaymentActionsProps) {
               antes de aprobar.
             </p>
             <div className="flex flex-col gap-3 sm:shrink-0 sm:flex-row">
-              <Button onClick={() => setApproveModalOpen(true)} className="min-w-[140px] shadow-sm">
+              <Button onClick={handleApproveClick} className="min-w-[140px] shadow-sm">
                 <CheckCircle className="mr-2 h-4 w-4" />
                 Aprobar Pago
               </Button>

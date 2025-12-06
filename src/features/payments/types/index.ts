@@ -55,7 +55,6 @@ export interface Payment {
   reviewedAt?: string;
   reviewBy?: ReviewByBasic | null;
   codeOperation?: string;
-  banckName?: string;
   dateOperation?: string;
   numberTicket?: string;
   paymentConfig: string;
@@ -98,6 +97,8 @@ export interface PaymentVoucher {
   bankName: string;
   transactionReference: string;
   transactionDate: string;
+  codeOperation?: string;
+  isActive: boolean;
 }
 
 // Payment Detail
@@ -109,7 +110,6 @@ export interface PaymentDetail {
   reviewedAt?: string;
   reviewBy?: ReviewByBasic | null;
   codeOperation?: string;
-  banckName?: string;
   dateOperation?: string;
   numberTicket?: string;
   paymentConfig: string;
@@ -123,8 +123,6 @@ export interface PaymentDetail {
 
 // Mutation Inputs
 export interface ApprovePaymentInput {
-  codeOperation?: string;
-  banckName: string;
   dateOperation: string;
   numberTicket?: string;
 }
@@ -134,8 +132,11 @@ export interface RejectPaymentInput {
 }
 
 export interface CompletePaymentInput {
-  codeOperation?: string;
-  numberTicket?: string;
+  numberTicket: string;
+}
+
+export interface UpdateVoucherCodeOperationInput {
+  codeOperation: string;
 }
 
 // Mutation Responses
@@ -150,6 +151,11 @@ export interface RejectPaymentResponse {
 }
 
 export interface CompletePaymentResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface UpdateVoucherCodeOperationResponse {
   success: boolean;
   message: string;
 }

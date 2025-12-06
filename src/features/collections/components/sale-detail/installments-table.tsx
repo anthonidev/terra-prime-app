@@ -11,38 +11,44 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { formatCurrency } from '@/shared/lib/utils';
-import { StatusPayment, type Installment } from '../../types';
+import { type Installment } from '../../types';
 import { PaymentsModal } from './payments-modal';
+import { RegisterInstallmentPaymentModal } from '../dialogs/register-installment-payment-modal';
+import { useAuth } from '@/features/auth/hooks/use-auth';
 
 interface InstallmentsTableProps {
   installments: Installment[];
+  financingId?: string;
+  currency?: string;
 }
 
-const statusConfig: Record<
-  StatusPayment,
-  { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }
-> = {
-  [StatusPayment.PENDING]: { label: 'Pendiente', variant: 'outline' },
-  [StatusPayment.APPROVED]: { label: 'Aprobado', variant: 'default' },
-  [StatusPayment.COMPLETED]: { label: 'Completado', variant: 'default' },
-  [StatusPayment.REJECTED]: { label: 'Rechazado', variant: 'destructive' },
-  [StatusPayment.CANCELLED]: { label: 'Cancelado', variant: 'destructive' },
-};
-
-export function InstallmentsTable({ installments }: InstallmentsTableProps) {
+export function InstallmentsTable({ installments, financingId, currency }: InstallmentsTableProps) {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [selectedInstallment, setSelectedInstallment] = useState<Installment | null>(null);
+  const [isRegisterPaymentOpen, setIsRegisterPaymentOpen] = useState(false);
+  const { user } = useAuth();
+  const isCob = user?.role.code === 'COB';
+
+  const RegisterPaymentButton = () => {
+    if (!isCob || !financingId) return null;
+
+    return (
+      <div className="mb-4 flex justify-end">
+        <Button onClick={() => setIsRegisterPaymentOpen(true)}>Registrar Pago</Button>
+      </div>
+    );
+  };
 
   if (isMobile) {
     return (
       <>
+        <RegisterPaymentButton />
         <div className="space-y-4">
           {installments.map((installment, index) => {
-            const status = statusConfig[installment.status];
             return (
               <Card key={installment.id}>
                 <CardHeader className="pb-2">
@@ -98,6 +104,7 @@ export function InstallmentsTable({ installments }: InstallmentsTableProps) {
 
   return (
     <>
+      <RegisterPaymentButton />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -155,6 +162,15 @@ export function InstallmentsTable({ installments }: InstallmentsTableProps) {
           onOpenChange={(open) => !open && setSelectedInstallment(null)}
           payments={selectedInstallment.payments}
           installmentNumber={installments.indexOf(selectedInstallment) + 1}
+        />
+      )}
+
+      {financingId && (
+        <RegisterInstallmentPaymentModal
+          open={isRegisterPaymentOpen}
+          onOpenChange={setIsRegisterPaymentOpen}
+          financingId={financingId}
+          currency={currency}
         />
       )}
     </>

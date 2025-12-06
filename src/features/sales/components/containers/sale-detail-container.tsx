@@ -12,6 +12,8 @@ import { SaleDetailInfo } from '../displays/sale-detail-info';
 import { SalePaymentsTable } from '../tables/sale-payments-table';
 import { SaleDetailSkeleton } from '../skeletons/sale-detail-skeleton';
 import { PaymentSummaryHeader } from './components/payment-summary-header';
+import { PaymentBreakdownCard } from './components/payment-breakdown-card';
+import { FinancingInstallmentsView } from './components/financing-installments-view';
 import { PaymentCardsView } from './components/payment-cards-view';
 import { SaleDetailErrorState } from './components/sale-detail-error-state';
 import { RegisterPaymentModal } from '../dialogs/register-payment-modal';
@@ -52,8 +54,11 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
   const canPayByStatus = useMemo(() => {
     switch (status) {
       case StatusSale.RESERVATION_PENDING:
+      case StatusSale.RESERVATION_IN_PAYMENT:
       case StatusSale.RESERVED:
       case StatusSale.PENDING:
+      case StatusSale.IN_PAYMENT:
+      case StatusSale.IN_PAYMENT_PROCESS:
         return true;
       default:
         return false;
@@ -170,6 +175,12 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
           ) : undefined
         }
       />
+
+      {/* Payment Breakdown */}
+      <PaymentBreakdownCard sale={sale} />
+
+      {/* Financing Installments (COB Role) */}
+      <FinancingInstallmentsView saleId={id} />
 
       {/* Payments Table/Cards */}
       {hasPayments ? (

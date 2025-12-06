@@ -1,19 +1,11 @@
 'use client';
 
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import {
-  Calendar,
-  CreditCard,
-  Landmark,
-  FileText,
-  CheckCircle2,
-  XCircle,
-  Settings,
-} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { UserInfo } from '@/shared/components/user-info';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { Calendar, CheckCircle2, CreditCard, FileText, Settings, XCircle } from 'lucide-react';
 import type { PaymentDetail } from '../../types';
 
 interface PaymentInfoSectionProps {
@@ -98,24 +90,6 @@ export function PaymentInfoSection({ payment }: PaymentInfoSectionProps) {
                 <div className="text-muted-foreground flex items-center gap-1.5">
                   <CreditCard className="h-3.5 w-3.5" />
                   <span className="text-xs font-medium">Código de Operación</span>
-                </div>
-                <p className="text-muted-foreground pl-5 text-sm">-</p>
-              </div>
-            )}
-
-            {payment.banckName ? (
-              <div className="space-y-1">
-                <div className="text-muted-foreground flex items-center gap-1.5">
-                  <Landmark className="h-3.5 w-3.5" />
-                  <span className="text-xs font-medium">Banco</span>
-                </div>
-                <p className="pl-5 text-sm font-medium">{payment.banckName}</p>
-              </div>
-            ) : (
-              <div className="space-y-1">
-                <div className="text-muted-foreground flex items-center gap-1.5">
-                  <Landmark className="h-3.5 w-3.5" />
-                  <span className="text-xs font-medium">Banco</span>
                 </div>
                 <p className="text-muted-foreground pl-5 text-sm">-</p>
               </div>
