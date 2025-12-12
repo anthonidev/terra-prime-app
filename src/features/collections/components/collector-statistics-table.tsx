@@ -1,10 +1,10 @@
 'use client';
 
-import { ColumnDef } from '@tanstack/react-table';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { DataTable } from '@/shared/components/data-table/data-table';
 import { UserInfo } from '@/shared/components/user-info';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { ColumnDef } from '@tanstack/react-table';
 import type { CollectorStatistic } from '../types';
 
 interface CollectorStatisticsTableProps {

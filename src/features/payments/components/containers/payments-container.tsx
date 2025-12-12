@@ -14,7 +14,6 @@ export function PaymentsContainer() {
   const {
     payments,
     meta,
-    page,
     search,
     status,
     startDate,

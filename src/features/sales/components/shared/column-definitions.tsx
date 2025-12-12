@@ -1,7 +1,7 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Calendar, DollarSign, FileText, MapPin, Tag, User, Users, Download } from 'lucide-react';
+import { Calendar, FileText, Tag } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

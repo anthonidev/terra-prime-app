@@ -29,15 +29,6 @@ export function SaleDetailTabs({
   onPaymentSuccess,
 }: SaleDetailTabsProps) {
   const { sale, paymentsSummary } = data;
-  if (!sale) return null;
-  const hasUrbanDevelopment = !!sale.urbanDevelopment;
-
-  const tabsCount = hasUrbanDevelopment ? 3 : 2;
-
-  // Check if there's any pending payment
-  const hasPendingPayment = useMemo(() => {
-    return paymentsSummary.some((payment) => payment.status === 'PENDING');
-  }, [paymentsSummary]);
 
   // Payment filters state
   const [paymentStatus, setPaymentStatus] = useState<StatusPayment | 'ALL'>('ALL');
@@ -50,6 +41,11 @@ export function SaleDetailTabs({
   const [urbanInstallmentStatus, setUrbanInstallmentStatus] = useState<
     StatusFinancingInstallments | 'ALL'
   >('ALL');
+
+  // Check if there's any pending payment
+  const hasPendingPayment = useMemo(() => {
+    return paymentsSummary.some((payment) => payment.status === 'PENDING');
+  }, [paymentsSummary]);
 
   // Get unique concepts from payments
   const availableConcepts = useMemo(
@@ -82,6 +78,10 @@ export function SaleDetailTabs({
       (installment) => installment.status === urbanInstallmentStatus
     );
   }, [sale.urbanDevelopment, urbanInstallmentStatus]);
+
+  // Computed values for tabs
+  const hasUrbanDevelopment = Boolean(sale.urbanDevelopment);
+  const tabsCount = hasUrbanDevelopment ? 3 : 2;
 
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
