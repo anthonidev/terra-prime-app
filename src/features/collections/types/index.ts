@@ -161,6 +161,12 @@ export interface GetClientSalesResponse {
   items: SaleItem[];
 }
 
+export enum StatusFinancingInstallments {
+  PENDING = 'PENDING',
+  EXPIRED = 'EXPIRED',
+  PAID = 'PAID',
+}
+
 export enum StatusPayment {
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',
@@ -169,24 +175,174 @@ export enum StatusPayment {
   CANCELLED = 'CANCELLED',
 }
 
-export interface Payment {
+export interface PaymentSummary {
   id: number;
-  amount: string;
+  amount: number;
   status: StatusPayment;
+  createdAt: string;
+  reviewedAt: string | null;
+  banckName: string | null;
+  dateOperation: string | null;
   numberTicket: string | null;
-  rejectionReason: string | null;
+  paymentConfig: string;
+  reason: string | null;
+  metadata?: Record<string, any>;
+}
+
+// My Payments Types
+export interface MyPaymentUser {
+  id: string;
+  email: string;
+  document: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface MyPaymentClient {
+  address: string | null;
+  lead: {
+    firstName: string;
+    lastName: string;
+    document: string;
+  };
+}
+
+export interface MyPaymentLot {
+  name: string;
+  lotPrice: string;
+  block: string;
+  stage: string;
+  project: string;
+}
+
+export interface MyPaymentConfig {
+  code: import('@/features/payments/types').PaymentConfigCode;
+  name: string;
+  description: string;
+}
+
+export interface MyPayment {
+  id: number;
+  amount: number;
+  status: StatusPayment;
+  createdAt: string;
+  reviewedAt: string | null;
+  reviewBy: string | null;
+  dateOperation: string | null;
+  numberTicket: string | null;
+  paymentConfig: MyPaymentConfig;
+  reason: string | null;
+  user: MyPaymentUser;
+  currency: string;
+  client: MyPaymentClient;
+  lot: MyPaymentLot;
+}
+
+export interface GetMyPaymentsParams {
+  page?: number;
+  limit?: number;
+  order?: 'ASC' | 'DESC';
+  search?: string;
+  startDate?: string;
+  endDate?: string;
+  collectorId?: string;
+}
+
+export interface GetMyPaymentsResponse {
+  items: MyPayment[];
+  meta: {
+    totalItems: number;
+    itemsPerPage: number;
+    totalPages: number;
+    currentPage: number;
+  };
+}
+
+// Admin Payments Types
+export interface ReviewByBasic {
+  id: string;
+  email: string;
+}
+
+export interface AdminPayment {
+  id: number;
+  amount: number;
+  status: StatusPayment;
+  createdAt: string;
+  reviewedAt: string | null;
+  reviewBy: ReviewByBasic | null;
+  banckName: string | null;
+  dateOperation: string | null;
+  numberTicket: string | null;
+  paymentConfig: MyPaymentConfig;
+  reason: string | null;
+  user: MyPaymentUser;
+  currency: string;
+  client: MyPaymentClient;
+  lot: MyPaymentLot;
+}
+
+export interface GetAdminPaymentsParams {
+  page?: number;
+  limit?: number;
+  order?: 'ASC' | 'DESC';
+  status?: StatusPayment;
+  startDate?: string;
+  endDate?: string;
+  collectorId?: string;
+  search?: string;
+}
+
+export interface GetAdminPaymentsResponse {
+  items: AdminPayment[];
+  meta: {
+    totalItems: number;
+    itemsPerPage: number;
+    totalPages: number;
+    currentPage: number;
+  };
+}
+
+// Payment Detail Types
+export interface PaymentVoucher {
+  id: number;
+  url: string;
+  amount: number;
+  bankName: string;
+  transactionReference: string;
+  codeOperation: string | null;
+  transactionDate: string;
+  isActive: boolean;
+}
+
+export interface MyPaymentDetail {
+  id: number;
+  amount: number;
+  status: StatusPayment;
+  createdAt: string;
+  reviewedAt: string | null;
+  reviewBy: string | null;
+  banckName: string | null;
+  dateOperation: string | null;
+  numberTicket: string | null;
+  paymentConfig: MyPaymentConfig;
+  reason: string | null;
+  user: MyPaymentUser;
+  currency: string;
+  client: MyPaymentClient;
+  lot: MyPaymentLot;
+  vouchers: PaymentVoucher[];
 }
 
 export interface Installment {
   id: string;
   couteAmount: string;
-  coutePaid: number;
+  coutePaid: string;
   coutePending: string;
   expectedPaymentDate: string;
   lateFeeAmountPending: string;
-  lateFeeAmountPaid: number;
-  status: StatusPayment;
-  payments: Payment[];
+  lateFeeAmountPaid: string;
+  status: StatusFinancingInstallments;
 }
 
 export interface Financing {
@@ -241,8 +397,9 @@ export interface SaleDetail {
     id: number;
     amount: string;
     initialAmount: string;
-    status: StatusSale;
-    financing: Financing;
+    interestRate: string;
+    quantityCoutes: string;
+    financingInstallments: Installment[];
   };
   vendor: {
     document: string;
@@ -254,13 +411,13 @@ export interface SaleDetail {
 export interface GetSaleDetailResponse {
   client: {
     id: number;
-    address: string;
+    address: string | null;
     firstName: string;
     lastName: string;
-    phone: string;
+    phone: string | null;
     document: string;
     documentType: string;
-    age: number;
+    age: number | null;
     ubigeo: {
       departamento: string;
       provincia: string;
@@ -269,6 +426,7 @@ export interface GetSaleDetailResponse {
     reportPdfUrl: string | null;
   };
   sale: SaleDetail;
+  paymentsSummary: PaymentSummary[];
 }
 
 export interface GetAssignedClientsParams {

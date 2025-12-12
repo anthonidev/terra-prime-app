@@ -10,6 +10,11 @@ import type {
   GetSaleDetailResponse,
   GetAssignedClientsParams,
   GetAssignedClientsResponse,
+  GetMyPaymentsParams,
+  GetMyPaymentsResponse,
+  MyPaymentDetail,
+  GetAdminPaymentsParams,
+  GetAdminPaymentsResponse,
 } from '../types';
 
 export const getCollectorStatistics = async (
@@ -72,6 +77,32 @@ export const getAssignedClients = async (
 ): Promise<GetAssignedClientsResponse> => {
   const { data } = await apiClient.get<GetAssignedClientsResponse>(
     '/api/collections/clients/list-by-user',
+    { params }
+  );
+  return data;
+};
+
+export const getMyPayments = async (
+  params: GetMyPaymentsParams
+): Promise<GetMyPaymentsResponse> => {
+  const { data } = await apiClient.get<GetMyPaymentsResponse>('/api/collections/list/payments', {
+    params,
+  });
+  return data;
+};
+
+export const getMyPaymentDetail = async (paymentId: string): Promise<MyPaymentDetail> => {
+  const { data } = await apiClient.get<MyPaymentDetail>(
+    `/api/collections/payments/details/${paymentId}`
+  );
+  return data;
+};
+
+export const getAdminPayments = async (
+  params: GetAdminPaymentsParams
+): Promise<GetAdminPaymentsResponse> => {
+  const { data } = await apiClient.get<GetAdminPaymentsResponse>(
+    '/api/collections/list/all/payments',
     { params }
   );
   return data;

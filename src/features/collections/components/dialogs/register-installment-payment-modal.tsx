@@ -25,6 +25,7 @@ interface RegisterInstallmentPaymentModalProps {
   onOpenChange: (open: boolean) => void;
   financingId: string;
   currency?: string;
+  onSuccess?: () => void;
 }
 
 const initialVoucherData: VoucherFormData = {
@@ -40,6 +41,7 @@ export function RegisterInstallmentPaymentModal({
   onOpenChange,
   financingId,
   currency = 'PEN',
+  onSuccess,
 }: RegisterInstallmentPaymentModalProps) {
   const [vouchers, setVouchers] = useState<VoucherFormData[]>([{ ...initialVoucherData }]);
   const [errors, setErrors] = useState<Record<number, Record<string, string>>>({});
@@ -173,6 +175,7 @@ export function RegisterInstallmentPaymentModal({
       toast.success('Pago registrado exitosamente');
       queryClient.invalidateQueries({ queryKey: ['sale-detail'] });
       handleClose();
+      onSuccess?.();
     } catch (error) {
       console.error(error);
       toast.error('Error al registrar el pago');

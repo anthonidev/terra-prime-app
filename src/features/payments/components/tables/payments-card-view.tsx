@@ -8,21 +8,11 @@ import { UserInfo } from '@/shared/components/user-info';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
-import { Building2, CreditCard, DollarSign, Eye, UserCog } from 'lucide-react';
+import { Building2, CreditCard, DollarSign, Eye, UserCog, FileText } from 'lucide-react';
 import Link from 'next/link';
-import type { Payment, StatusPayment } from '../../types';
-
-// Status badge configurations
-const statusConfig: Record<
-  StatusPayment,
-  { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }
-> = {
-  PENDING: { label: 'Pendiente', variant: 'outline' },
-  APPROVED: { label: 'Aprobado', variant: 'default' },
-  COMPLETED: { label: 'Completado', variant: 'default' },
-  REJECTED: { label: 'Rechazado', variant: 'destructive' },
-  CANCELLED: { label: 'Cancelado', variant: 'destructive' },
-};
+import type { Payment } from '../../types';
+import { PaymentConfigBadge } from '../shared/payment-config-badge';
+import { statusConfig } from '../shared/status-config';
 
 interface PaymentsCardViewProps {
   payments: Payment[];
@@ -52,9 +42,6 @@ function PaymentCard({ payment, index }: { payment: Payment; index: number }) {
                   {symbol} {payment.amount.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
                 </p>
                 <div className="mt-1 flex items-center gap-1.5">
-                  <Badge variant="outline" className="h-5 px-1.5 font-mono text-[10px]">
-                    ID: {payment.id}
-                  </Badge>
                   <span className="text-muted-foreground text-xs">
                     {format(new Date(payment.createdAt), 'dd MMM yyyy', { locale: es })}
                   </span>
@@ -68,15 +55,20 @@ function PaymentCard({ payment, index }: { payment: Payment; index: number }) {
         </CardHeader>
 
         <CardContent className="space-y-4 pt-4">
+          {/* Payment Type */}
+          <div className="flex items-center gap-2">
+            <FileText className="text-muted-foreground h-4 w-4" />
+            <PaymentConfigBadge
+              code={payment.paymentConfig.code}
+              name={payment.paymentConfig.name}
+            />
+          </div>
+
+          <Separator />
+
           {/* Client Info */}
           {lead && (lead.firstName || lead.lastName) && (
-            <UserInfo
-              name={`${lead.firstName} ${lead.lastName}`}
-              document={lead.document}
-              // email={lead.email}
-              // avatarFallback={lead.firstName?.[0] || 'C'}
-              // size="sm"
-            />
+            <UserInfo name={`${lead.firstName} ${lead.lastName}`} document={lead.document} />
           )}
 
           <Separator />
@@ -88,7 +80,8 @@ function PaymentCard({ payment, index }: { payment: Payment; index: number }) {
                 <Building2 className="text-muted-foreground h-4 w-4" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium">{lot.name}</p>
+                <p className="text-sm font-medium">Lote {lot.name}</p>
+                {lot.stage && <p className="text-muted-foreground text-xs">{lot.stage}</p>}
                 {lot.project && <p className="text-muted-foreground text-xs">{lot.project}</p>}
               </div>
             </div>
@@ -96,20 +89,20 @@ function PaymentCard({ payment, index }: { payment: Payment; index: number }) {
 
           {/* Payment Details */}
           <div className="bg-muted/20 border-border/50 grid grid-cols-2 gap-3 rounded-lg border p-3">
-            {/* Code Operation */}
-            {payment.codeOperation ? (
+            {/* Ticket/Boleta */}
+            {payment.numberTicket ? (
               <div className="flex flex-col gap-1">
                 <div className="text-muted-foreground flex items-center gap-1.5">
                   <CreditCard className="h-3.5 w-3.5" />
-                  <span className="text-xs font-medium">Código</span>
+                  <span className="text-xs font-medium">Boleta</span>
                 </div>
-                <p className="pl-5 font-mono text-sm">{payment.codeOperation}</p>
+                <p className="pl-5 font-mono text-sm">{payment.numberTicket}</p>
               </div>
             ) : (
               <div className="flex flex-col gap-1">
                 <div className="text-muted-foreground flex items-center gap-1.5">
                   <CreditCard className="h-3.5 w-3.5" />
-                  <span className="text-xs font-medium">Código</span>
+                  <span className="text-xs font-medium">Boleta</span>
                 </div>
                 <p className="text-muted-foreground pl-5 text-sm">-</p>
               </div>

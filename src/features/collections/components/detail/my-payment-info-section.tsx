@@ -6,11 +6,11 @@ import { UserInfo } from '@/shared/components/user-info';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Calendar, CheckCircle2, CreditCard, FileText, Settings, XCircle } from 'lucide-react';
-import type { PaymentDetail } from '../../types';
-import { PaymentConfigBadge } from '../shared/payment-config-badge';
+import type { MyPaymentDetail } from '../../types';
+import { PaymentConfigBadge } from '@/features/payments/components/shared/payment-config-badge';
 
 interface PaymentInfoSectionProps {
-  payment: PaymentDetail;
+  payment: MyPaymentDetail;
 }
 
 export function PaymentInfoSection({ payment }: PaymentInfoSectionProps) {
@@ -135,15 +135,8 @@ export function PaymentInfoSection({ payment }: PaymentInfoSectionProps) {
                 ) : (
                   <XCircle className="text-destructive h-4 w-4" />
                 )}
-                {payment.status === 'APPROVED' ? 'Aprobado por' : 'Revisado por'}
+                {payment.status === 'APPROVED' ? 'Aprobado' : 'Revisado'}
               </h3>
-
-              {payment.reviewBy && (
-                <UserInfo
-                  name={payment.reviewBy.email} // Assuming email is the best identifier available here
-                  email={payment.reviewBy.email}
-                />
-              )}
 
               <div className="pl-1">
                 <p className="text-muted-foreground mb-1 text-xs">Fecha de revisión</p>

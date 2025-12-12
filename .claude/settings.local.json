@@ -27,7 +27,8 @@
       "Bash(rm:*)",
       "Bash(bun add:*)",
       "Bash(bunx husky:*)",
-      "Bash(netstat:*)"
+      "Bash(netstat:*)",
+      "Bash(timeout 10 tail:*)"
     ],
     "deny": [],
     "ask": []

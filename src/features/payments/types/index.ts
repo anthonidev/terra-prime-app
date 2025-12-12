@@ -46,18 +46,32 @@ export interface LotBasic {
   project?: string;
 }
 
+// Payment Config
+export enum PaymentConfigCode {
+  SALE_PAYMENT = 'SALE_PAYMENT',
+  FINANCING_PAYMENT = 'FINANCING_PAYMENT',
+  FINANCING_INSTALLMENTS_PAYMENT = 'FINANCING_INSTALLMENTS_PAYMENT',
+  RESERVATION_PAYMENT = 'RESERVATION_PAYMENT',
+}
+
+export interface PaymentConfig {
+  code: PaymentConfigCode;
+  name: string;
+  description: string;
+}
+
 // Payment Item
 export interface Payment {
   id: number;
   amount: number;
   status: StatusPayment;
   createdAt: string;
-  reviewedAt?: string;
+  reviewedAt?: string | null;
   reviewBy?: ReviewByBasic | null;
-  codeOperation?: string;
-  dateOperation?: string;
-  numberTicket?: string;
-  paymentConfig: string;
+  banckName?: string | null;
+  dateOperation?: string | null;
+  numberTicket?: string | null;
+  paymentConfig: PaymentConfig;
   reason?: string | null;
   user: UserBasic;
   currency?: CurrencyType;
@@ -107,12 +121,12 @@ export interface PaymentDetail {
   amount: number;
   status: StatusPayment;
   createdAt: string;
-  reviewedAt?: string;
+  reviewedAt?: string | null;
   reviewBy?: ReviewByBasic | null;
-  codeOperation?: string;
-  dateOperation?: string;
-  numberTicket?: string;
-  paymentConfig: string;
+  banckName?: string | null;
+  dateOperation?: string | null;
+  numberTicket?: string | null;
+  paymentConfig: PaymentConfig;
   reason?: string | null;
   user: UserBasic;
   currency?: CurrencyType;

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Eye } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -11,24 +10,39 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { formatCurrency } from '@/shared/lib/utils';
-import { type Installment } from '../../types';
-import { PaymentsModal } from './payments-modal';
+import { type Installment, StatusFinancingInstallments } from '../../types';
 import { RegisterInstallmentPaymentModal } from '../dialogs/register-installment-payment-modal';
 import { useAuth } from '@/features/auth/hooks/use-auth';
+
+const statusConfig: Record<
+  StatusFinancingInstallments,
+  { label: string; variant: 'default' | 'secondary' | 'destructive' }
+> = {
+  PENDING: { label: 'Pendiente', variant: 'secondary' },
+  EXPIRED: { label: 'Vencida', variant: 'destructive' },
+  PAID: { label: 'Pagada', variant: 'default' },
+};
 
 interface InstallmentsTableProps {
   installments: Installment[];
   financingId?: string;
   currency?: string;
+  hasPendingPayment?: boolean;
+  onSuccess?: () => void;
 }
 
-export function InstallmentsTable({ installments, financingId, currency }: InstallmentsTableProps) {
+export function InstallmentsTable({
+  installments,
+  financingId,
+  currency,
+  hasPendingPayment = false,
+  onSuccess,
+}: InstallmentsTableProps) {
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const [selectedInstallment, setSelectedInstallment] = useState<Installment | null>(null);
   const [isRegisterPaymentOpen, setIsRegisterPaymentOpen] = useState(false);
   const { user } = useAuth();
   const isCob = user?.role.code === 'COB';
@@ -37,8 +51,17 @@ export function InstallmentsTable({ installments, financingId, currency }: Insta
     if (!isCob || !financingId) return null;
 
     return (
-      <div className="mb-4 flex justify-end">
-        <Button onClick={() => setIsRegisterPaymentOpen(true)}>Registrar Pago</Button>
+      <div className="mb-4">
+        <div className="flex justify-end">
+          <Button onClick={() => setIsRegisterPaymentOpen(true)} disabled={hasPendingPayment}>
+            Registrar Pago
+          </Button>
+        </div>
+        {hasPendingPayment && (
+          <p className="text-muted-foreground mt-1 text-right text-xs">
+            Tiene un pago pendiente de aprobación
+          </p>
+        )}
       </div>
     );
   };
@@ -49,12 +72,13 @@ export function InstallmentsTable({ installments, financingId, currency }: Insta
         <RegisterPaymentButton />
         <div className="space-y-4">
           {installments.map((installment, index) => {
+            const status = statusConfig[installment.status];
             return (
               <Card key={installment.id}>
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm font-medium">Cuota #{index + 1}</CardTitle>
-                    {/* <Badge variant={status.variant}>{status.label}</Badge> */}
+                    <Badge variant={status.variant}>{status.label}</Badge>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
@@ -68,7 +92,9 @@ export function InstallmentsTable({ installments, financingId, currency }: Insta
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Pagado:</span>
-                    <span className="text-green-600">{formatCurrency(installment.coutePaid)}</span>
+                    <span className="text-green-600">
+                      {formatCurrency(Number(installment.coutePaid))}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Pendiente:</span>
@@ -76,26 +102,26 @@ export function InstallmentsTable({ installments, financingId, currency }: Insta
                       {formatCurrency(Number(installment.coutePending))}
                     </span>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="mt-2 w-full"
-                    onClick={() => setSelectedInstallment(installment)}
-                  >
-                    <Eye className="mr-2 h-4 w-4" />
-                    Ver Pagos ({installment.payments.length})
-                  </Button>
+                  {Number(installment.lateFeeAmountPending) > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Mora Pendiente:</span>
+                      <span className="text-orange-600">
+                        {formatCurrency(Number(installment.lateFeeAmountPending))}
+                      </span>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             );
           })}
         </div>
-        {selectedInstallment && (
-          <PaymentsModal
-            open={!!selectedInstallment}
-            onOpenChange={(open) => !open && setSelectedInstallment(null)}
-            payments={selectedInstallment.payments}
-            installmentNumber={installments.indexOf(selectedInstallment) + 1}
+        {financingId && (
+          <RegisterInstallmentPaymentModal
+            open={isRegisterPaymentOpen}
+            onOpenChange={setIsRegisterPaymentOpen}
+            financingId={financingId}
+            currency={currency}
+            onSuccess={onSuccess}
           />
         )}
       </>
@@ -116,12 +142,11 @@ export function InstallmentsTable({ installments, financingId, currency }: Insta
               <TableHead>Pendiente</TableHead>
               <TableHead>Mora Pend.</TableHead>
               <TableHead>Estado</TableHead>
-              <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {installments.map((installment, index) => {
-              // const status = statusConfig[installment.status];
+              const status = statusConfig[installment.status];
               return (
                 <TableRow key={installment.id}>
                   <TableCell className="font-medium">{index + 1}</TableCell>
@@ -130,24 +155,22 @@ export function InstallmentsTable({ installments, financingId, currency }: Insta
                   </TableCell>
                   <TableCell>{formatCurrency(Number(installment.couteAmount))}</TableCell>
                   <TableCell className="text-green-600">
-                    {formatCurrency(installment.coutePaid)}
+                    {formatCurrency(Number(installment.coutePaid))}
                   </TableCell>
                   <TableCell className="text-red-600">
                     {formatCurrency(Number(installment.coutePending))}
                   </TableCell>
-                  <TableCell>{formatCurrency(Number(installment.lateFeeAmountPending))}</TableCell>
-                  {/* <TableCell>
-                    <Badge>{status.label}</Badge>
-                  </TableCell> */}
-                  <TableCell className="text-right">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setSelectedInstallment(installment)}
-                    >
-                      <Eye className="mr-2 h-4 w-4" />
-                      Ver Pagos ({installment.payments.length})
-                    </Button>
+                  <TableCell>
+                    {Number(installment.lateFeeAmountPending) > 0 ? (
+                      <span className="text-orange-600">
+                        {formatCurrency(Number(installment.lateFeeAmountPending))}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">-</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={status.variant}>{status.label}</Badge>
                   </TableCell>
                 </TableRow>
               );
@@ -156,21 +179,13 @@ export function InstallmentsTable({ installments, financingId, currency }: Insta
         </Table>
       </div>
 
-      {selectedInstallment && (
-        <PaymentsModal
-          open={!!selectedInstallment}
-          onOpenChange={(open) => !open && setSelectedInstallment(null)}
-          payments={selectedInstallment.payments}
-          installmentNumber={installments.indexOf(selectedInstallment) + 1}
-        />
-      )}
-
       {financingId && (
         <RegisterInstallmentPaymentModal
           open={isRegisterPaymentOpen}
           onOpenChange={setIsRegisterPaymentOpen}
           financingId={financingId}
           currency={currency}
+          onSuccess={onSuccess}
         />
       )}
     </>

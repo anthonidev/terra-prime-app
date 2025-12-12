@@ -56,7 +56,7 @@ export function SaleDetailInfo({ data }: SaleDetailInfoProps) {
             name={`${client.firstName} ${client.lastName}`}
             document={client.document}
             documentType={client.documentType}
-            phone={client.phone}
+            phone={client.phone || undefined}
           />
           <div className="text-muted-foreground mt-2 flex items-start gap-1.5 text-xs">
             <MapPin className="mt-0.5 h-3.5 w-3.5" />
