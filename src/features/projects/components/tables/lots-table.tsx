@@ -16,6 +16,7 @@ import { formatCurrency } from '@/shared/utils/currency-formatter';
 interface LotsTableProps {
   lots: Lot[];
   meta: PaginationMeta;
+  currency: 'PEN' | 'USD';
   onEdit: (lot: Lot) => void;
   onPageChange: (page: number) => void;
 }
@@ -27,7 +28,7 @@ const statusVariants: Record<LotStatus, 'default' | 'secondary' | 'outline'> = {
   Inactivo: 'outline',
 };
 
-export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) {
+export function LotsTable({ lots, meta, currency, onEdit, onPageChange }: LotsTableProps) {
   const columns: ColumnDef<Lot>[] = [
     {
       accessorKey: 'name',
@@ -56,7 +57,6 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
       header: 'Precio Lote',
       cell: ({ row }) => {
         const lotPrice = parseFloat(row.original.lotPrice);
-        const currency = row.original.currency === 'USD' ? 'USD' : 'PEN';
         return <span className="font-mono text-sm">{formatCurrency(lotPrice, currency)}</span>;
       },
     },
@@ -65,7 +65,6 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
       header: 'Urbanización',
       cell: ({ row }) => {
         const urbanizationPrice = parseFloat(row.original.urbanizationPrice);
-        const currency = row.original.currency === 'USD' ? 'USD' : 'PEN';
         return (
           <span className="font-mono text-sm">{formatCurrency(urbanizationPrice, currency)}</span>
         );
@@ -78,7 +77,6 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
         const lotPrice = parseFloat(row.original.lotPrice);
         const urbanizationPrice = parseFloat(row.original.urbanizationPrice);
         const total = lotPrice + urbanizationPrice;
-        const currency = row.original.currency === 'USD' ? 'USD' : 'PEN';
         return (
           <span className="text-primary font-mono text-sm font-semibold">
             {formatCurrency(total, currency)}
@@ -124,7 +122,7 @@ export function LotsTable({ lots, meta, onEdit, onPageChange }: LotsTableProps) 
       {/* Mobile: Cards */}
       <div className="grid gap-4 md:hidden">
         {lots.map((lot) => (
-          <LotCard key={lot.id} lot={lot} onEdit={onEdit} />
+          <LotCard key={lot.id} lot={lot} currency={currency} onEdit={onEdit} />
         ))}
       </div>
 

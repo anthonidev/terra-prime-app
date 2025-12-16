@@ -106,6 +106,7 @@ export function ProjectLotsTab({
         <LotsTable
           lots={lotsData.items}
           meta={lotsData.meta}
+          currency={project.currency}
           onEdit={onEditLot}
           onPageChange={onPageChange}
         />

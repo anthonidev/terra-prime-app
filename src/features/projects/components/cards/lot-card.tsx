@@ -11,6 +11,7 @@ import { formatCurrency } from '@/shared/utils/currency-formatter';
 
 interface LotCardProps {
   lot: Lot;
+  currency: 'PEN' | 'USD';
   onEdit: (lot: Lot) => void;
 }
 
@@ -28,12 +29,11 @@ const statusLabels: Record<LotStatus, string> = {
   Inactivo: 'Inactivo',
 };
 
-export function LotCard({ lot, onEdit }: LotCardProps) {
+export function LotCard({ lot, currency, onEdit }: LotCardProps) {
   const area = parseFloat(lot.area);
   const lotPrice = parseFloat(lot.lotPrice);
   const urbanizationPrice = parseFloat(lot.urbanizationPrice);
   const totalPrice = lotPrice + urbanizationPrice;
-  const currency = lot.currency === 'USD' ? 'USD' : 'PEN';
 
   return (
     <Card className="group hover:border-primary/50 transition-all duration-300 hover:shadow-md">
