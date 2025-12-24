@@ -133,3 +133,11 @@ export async function getAllSales(
     meta: response.data.meta,
   };
 }
+
+// Export sale to Excel
+export async function exportSaleToExcel(saleId: string): Promise<Blob> {
+  const response = await apiClient.get(`/api/sales/${saleId}/export-excel-smart`, {
+    responseType: 'blob',
+  });
+  return response.data;
+}

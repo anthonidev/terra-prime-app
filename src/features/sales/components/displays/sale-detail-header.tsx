@@ -1,11 +1,12 @@
 'use client';
 
-import { FileDown, ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
+import { FileDown, ArrowLeft, FileSpreadsheet } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { StatusSale } from '../../types';
+import { useExportSaleExcel } from '../../hooks/use-export-sale-excel';
 
 // Status badge configurations
 const statusConfig: Record<
@@ -29,6 +30,8 @@ const statusConfig: Record<
 interface SaleDetailHeaderProps {
   clientName: string;
   status: StatusSale;
+  saleId: string;
+  isADM: boolean;
   radicationPdfUrl?: string | null;
   paymentAcordPdfUrl?: string | null;
 }
@@ -36,10 +39,14 @@ interface SaleDetailHeaderProps {
 export function SaleDetailHeader({
   clientName,
   status,
+  saleId,
+  isADM,
   radicationPdfUrl,
   paymentAcordPdfUrl,
 }: SaleDetailHeaderProps) {
+  const router = useRouter();
   const config = statusConfig[status];
+  const exportExcel = useExportSaleExcel();
 
   const handleDownload = (url: string, filename?: string) => {
     if (!url) return;
@@ -61,14 +68,16 @@ export function SaleDetailHeader({
     }
   };
 
+  const handleExportExcel = () => {
+    exportExcel.mutate(saleId);
+  };
+
   return (
     <div className="space-y-4">
       {/* Back button */}
-      <Button variant="ghost" size="sm" asChild>
-        <Link href="/ventas/mis-ventas">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Volver a Mis Ventas
-        </Link>
+      <Button variant="ghost" size="sm" onClick={() => router.back()}>
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Volver
       </Button>
 
       {/* Header info */}
@@ -84,6 +93,17 @@ export function SaleDetailHeader({
 
         {/* Download buttons */}
         <div className="flex flex-wrap gap-2">
+          {isADM && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportExcel}
+              disabled={exportExcel.isPending}
+            >
+              <FileSpreadsheet className="mr-2 h-4 w-4" />
+              {exportExcel.isPending ? 'Descargando...' : 'Descargar Venta'}
+            </Button>
+          )}
           {radicationPdfUrl && (
             <Button
               variant="outline"
@@ -91,7 +111,7 @@ export function SaleDetailHeader({
               onClick={() => handleDownload(radicationPdfUrl, 'radicacion.pdf')}
             >
               <FileDown className="mr-2 h-4 w-4" />
-              Radicación
+              Radicacion
             </Button>
           )}
           {paymentAcordPdfUrl && (

@@ -47,6 +47,9 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
   // Check if user is JVE (Sales Manager)
   const isJVE = user?.role.code === 'JVE';
 
+  // Check if user is ADM (Administrator)
+  const isADM = user?.role.code === 'ADM';
+
   // Check if user can register payment (must be VEN role)
   const canRegisterPayment = user?.role.code === 'VEN';
 
@@ -117,6 +120,8 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
         <SaleDetailHeader
           clientName={clientName}
           status={status!}
+          saleId={id}
+          isADM={isADM}
           radicationPdfUrl={sale.radicationPdfUrl}
           paymentAcordPdfUrl={sale.paymentAcordPdfUrl}
         />

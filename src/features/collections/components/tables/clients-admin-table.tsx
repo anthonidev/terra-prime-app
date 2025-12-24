@@ -8,8 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { DataTableWithSelection } from '@/shared/components/data-table/data-table-with-selection';
+import { DataTable } from '@/shared/components/data-table/data-table';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { UserInfo } from '@/shared/components/user-info';
+import { useAuth } from '@/features/auth/hooks/use-auth';
 import { AssignCollectorDialog } from '../dialogs/assign-collector-dialog';
 import type { Client } from '../../types';
 
@@ -18,9 +20,13 @@ interface ClientsAdminTableProps {
 }
 
 export function ClientsAdminTable({ clients }: ClientsAdminTableProps) {
+  const { user } = useAuth();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedClientIds, setSelectedClientIds] = useState<number[]>([]);
+
+  // Check if user is SCO (Supervisor de Cobranza)
+  const isSCO = user?.role?.code === 'SCO';
 
   const handleAssignMultiple = (selectedRows: Client[]) => {
     const ids = selectedRows.map((client) => client.id);
@@ -111,15 +117,17 @@ export function ClientsAdminTable({ clients }: ClientsAdminTableProps) {
         const hasCollector = !!client.collector;
         return (
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleAssignSingle(client)}
-              className="h-8"
-            >
-              <UserPlus className="mr-1.5 h-3.5 w-3.5" />
-              {hasCollector ? 'Reasignar' : 'Asignar'}
-            </Button>
+            {isSCO && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleAssignSingle(client)}
+                className="h-8"
+              >
+                <UserPlus className="mr-1.5 h-3.5 w-3.5" />
+                {hasCollector ? 'Reasignar' : 'Asignar'}
+              </Button>
+            )}
             <Button variant="ghost" size="sm" className="h-8" asChild>
               <Link href={`/cobranza/clientes/ventas/${client.id}`}>Ver Ventas</Link>
             </Button>
@@ -132,7 +140,7 @@ export function ClientsAdminTable({ clients }: ClientsAdminTableProps) {
   if (isMobile) {
     return (
       <>
-        {selectedClientIds.length > 0 && (
+        {isSCO && selectedClientIds.length > 0 && (
           <div className="mb-4">
             <Button onClick={handleMobileAssignSelected} className="w-full" size="sm">
               <UserPlus className="mr-2 h-3.5 w-3.5" />
@@ -146,9 +154,13 @@ export function ClientsAdminTable({ clients }: ClientsAdminTableProps) {
             <Card
               key={client.id}
               className={`transition-colors ${
-                selectedClientIds.includes(client.id) ? 'border-primary' : ''
+                isSCO && selectedClientIds.includes(client.id) ? 'border-primary' : ''
               }`}
-              onClick={() => handleMobileSelect(client.id, !selectedClientIds.includes(client.id))}
+              onClick={
+                isSCO
+                  ? () => handleMobileSelect(client.id, !selectedClientIds.includes(client.id))
+                  : undefined
+              }
             >
               <CardHeader className="pb-2">
                 <div className="flex items-start justify-between">
@@ -164,14 +176,16 @@ export function ClientsAdminTable({ clients }: ClientsAdminTableProps) {
                         <Eye className="h-4 w-4" />
                       </Link>
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => handleAssignSingle(client)}
-                    >
-                      <UserPlus className="h-4 w-4" />
-                    </Button>
+                    {isSCO && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => handleAssignSingle(client)}
+                      >
+                        <UserPlus className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               </CardHeader>
@@ -206,17 +220,24 @@ export function ClientsAdminTable({ clients }: ClientsAdminTableProps) {
           ))}
         </div>
 
-        <AssignCollectorDialog
-          open={isDialogOpen}
-          onOpenChange={(open) => {
-            setIsDialogOpen(open);
-            if (!open) setSelectedClientIds([]);
-          }}
-          clientIds={selectedClientIds}
-          onSuccess={() => setSelectedClientIds([])}
-        />
+        {isSCO && (
+          <AssignCollectorDialog
+            open={isDialogOpen}
+            onOpenChange={(open) => {
+              setIsDialogOpen(open);
+              if (!open) setSelectedClientIds([]);
+            }}
+            clientIds={selectedClientIds}
+            onSuccess={() => setSelectedClientIds([])}
+          />
+        )}
       </>
     );
+  }
+
+  // If not SCO, render table without selection
+  if (!isSCO) {
+    return <DataTable columns={columns} data={clients} />;
   }
 
   return (

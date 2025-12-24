@@ -40,17 +40,21 @@ import type { AdminSale } from '../../types';
 import { AssignParticipantsModal } from '../dialogs/assign-participants-modal';
 import { UserInfo } from '@/shared/components/user-info';
 import { statusConfig } from '../shared/status-config';
+import { useAuth } from '@/features/auth/hooks/use-auth';
 
 interface AdminSalesCardViewProps {
   sales: AdminSale[];
 }
 
 function SaleCard({ sale, index }: { sale: AdminSale; index: number }) {
+  const { user } = useAuth();
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const generateRadicationPdf = useGenerateRadicationPdf();
   const regenerateRadicationPdf = useRegenerateRadicationPdf();
   const generatePaymentAccordPdf = useGeneratePaymentAccordPdf();
   const regeneratePaymentAccordPdf = useRegeneratePaymentAccordPdf();
+
+  const isJVE = user?.role?.code === 'JVE';
 
   const handleGenerateRadication = () => {
     if (sale.radicationPdfUrl) {
@@ -216,57 +220,61 @@ function SaleCard({ sale, index }: { sale: AdminSale; index: number }) {
               </Link>
             </Button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" disabled={isLoading}>
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setIsAssignModalOpen(true)}>
-                  <Users className="mr-2 h-4 w-4" />
-                  Asignar Participantes
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleGenerateRadication}>
-                  {sale.radicationPdfUrl ? (
-                    <>
-                      <FilePlus className="mr-2 h-4 w-4" />
-                      Regenerar PDF Radicación
-                    </>
-                  ) : (
-                    <>
-                      <FileText className="mr-2 h-4 w-4" />
-                      Generar PDF Radicación
-                    </>
-                  )}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleGeneratePaymentAccord}>
-                  {sale.paymentAcordPdfUrl ? (
-                    <>
-                      <FilePlus className="mr-2 h-4 w-4" />
-                      Regenerar PDF Acuerdo de Pagos
-                    </>
-                  ) : (
-                    <>
-                      <FileText className="mr-2 h-4 w-4" />
-                      Generar PDF Acuerdo de Pagos
-                    </>
-                  )}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {isJVE && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" disabled={isLoading}>
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setIsAssignModalOpen(true)}>
+                    <Users className="mr-2 h-4 w-4" />
+                    Asignar Participantes
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleGenerateRadication}>
+                    {sale.radicationPdfUrl ? (
+                      <>
+                        <FilePlus className="mr-2 h-4 w-4" />
+                        Regenerar PDF Radicación
+                      </>
+                    ) : (
+                      <>
+                        <FileText className="mr-2 h-4 w-4" />
+                        Generar PDF Radicación
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleGeneratePaymentAccord}>
+                    {sale.paymentAcordPdfUrl ? (
+                      <>
+                        <FilePlus className="mr-2 h-4 w-4" />
+                        Regenerar PDF Acuerdo de Pagos
+                      </>
+                    ) : (
+                      <>
+                        <FileText className="mr-2 h-4 w-4" />
+                        Generar PDF Acuerdo de Pagos
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </CardFooter>
         </Card>
       </motion.div>
 
-      <AssignParticipantsModal
-        open={isAssignModalOpen}
-        onOpenChange={setIsAssignModalOpen}
-        saleId={sale.id}
-      />
+      {isJVE && (
+        <AssignParticipantsModal
+          open={isAssignModalOpen}
+          onOpenChange={setIsAssignModalOpen}
+          saleId={sale.id}
+        />
+      )}
     </>
   );
 }

@@ -31,7 +31,7 @@ export function ClientsAdminContainer() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Gestión de clientes"
+        title="Gestión de clientes con ventas financiadas"
         description="Lista de clientes asignados a cobradores"
         icon={Users}
       />
