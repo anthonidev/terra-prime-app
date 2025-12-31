@@ -12,6 +12,7 @@ import type {
   MySalesQueryParams,
   SaleDetail,
   AdminSalesQueryParams,
+  FinancingDetailResponse,
 } from '../types';
 
 // Get active projects
@@ -139,5 +140,16 @@ export async function exportSaleToExcel(saleId: string): Promise<Blob> {
   const response = await apiClient.get(`/api/sales/${saleId}/export-excel-smart`, {
     responseType: 'blob',
   });
+  return response.data;
+}
+
+// Get financing detail
+export async function getFinancingDetail(
+  saleId: string,
+  financingId: string
+): Promise<FinancingDetailResponse> {
+  const response = await apiClient.get<FinancingDetailResponse>(
+    `/api/sales/${saleId}/financing/${financingId}`
+  );
   return response.data;
 }

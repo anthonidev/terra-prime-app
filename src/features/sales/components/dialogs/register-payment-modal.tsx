@@ -30,6 +30,7 @@ const initialVoucherData: VoucherFormData = {
   transactionReference: '',
   transactionDate: '',
   amount: '',
+  codeOperation: '',
   file: null,
 };
 
@@ -106,6 +107,11 @@ export function RegisterPaymentModal({
         isValid = false;
       }
 
+      if (!voucher.codeOperation.trim()) {
+        voucherErrors.codeOperation = 'El código de operación es requerido';
+        isValid = false;
+      }
+
       if (!voucher.transactionDate) {
         voucherErrors.transactionDate = 'La fecha es requerida';
         isValid = false;
@@ -154,6 +160,7 @@ export function RegisterPaymentModal({
           transactionReference: voucher.transactionReference,
           transactionDate: voucher.transactionDate,
           amount: parseFloat(voucher.amount),
+          codeOperation: voucher.codeOperation,
           fileIndex: index,
         });
       }

@@ -2,19 +2,19 @@
 
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Clock, Trash2 } from 'lucide-react';
+import { Clock, Trash2, CreditCard } from 'lucide-react';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useSaleDetailContainer } from '../../hooks/use-sale-detail-container';
 import { useAuth } from '@/features/auth/hooks/use-auth';
 import { SaleDetailHeader } from '../displays/sale-detail-header';
 import { SaleDetailInfo } from '../displays/sale-detail-info';
-import { SalePaymentsTable } from '../tables/sale-payments-table';
 import { SaleDetailSkeleton } from '../skeletons/sale-detail-skeleton';
 import { PaymentSummaryHeader } from './components/payment-summary-header';
 import { PaymentBreakdownCard } from './components/payment-breakdown-card';
 import { FinancingInstallmentsView } from './components/financing-installments-view';
-import { PaymentCardsView } from './components/payment-cards-view';
+import { SaleDetailTabs } from './components/sale-detail-tabs';
 import { SaleDetailErrorState } from './components/sale-detail-error-state';
 import { RegisterPaymentModal } from '../dialogs/register-payment-modal';
 import { ExtendReservationModal } from '../dialogs/extend-reservation-modal';
@@ -29,6 +29,7 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isExtendReservationModalOpen, setIsExtendReservationModalOpen] = useState(false);
   const [isDeleteSaleModalOpen, setIsDeleteSaleModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('payments');
 
   const {
     sale,
@@ -99,6 +100,16 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
     return !hasActivePayments;
   }, [isJVE, sale]);
 
+  // Check if ADM can view financing detail
+  const canViewFinancing = useMemo(() => {
+    // Check if there's financing with lot data
+    const hasFinancing = sale?.financing?.lot?.id;
+    return isADM && hasFinancing;
+  }, [isADM, sale]);
+
+  // Get financing IDs for navigation
+  const lotFinancingId = sale?.financing?.lot?.id;
+
   // Loading state
   if (isLoading) {
     return <SaleDetailSkeleton />;
@@ -167,6 +178,29 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
         </motion.div>
       )}
 
+      {/* ADM Financing Actions */}
+      {canViewFinancing && lotFinancingId && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader>
+              <CardTitle>Administración de Financiamiento</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button asChild>
+                <Link href={`/ventas/detalle/${id}/financing/${lotFinancingId}`}>
+                  <CreditCard className="mr-2 h-4 w-4" />
+                  Ver Detalle de Financiamiento
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
       {/* Payment Summary Header */}
       <PaymentSummaryHeader
         totalAmount={sale.totalAmount}
@@ -187,44 +221,17 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
       {/* Financing Installments (COB Role) */}
       <FinancingInstallmentsView saleId={id} />
 
-      {/* Payments Table/Cards */}
-      {hasPayments ? (
-        <>
-          {/* Desktop Table View */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="hidden md:block"
-          >
-            <SalePaymentsTable payments={sale.paymentsSummary} currency={sale.currency} />
-          </motion.div>
-
-          {/* Mobile Card View */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="md:hidden"
-          >
-            <PaymentCardsView payments={sale.paymentsSummary} currency={sale.currency} />
-          </motion.div>
-        </>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-        >
-          <Card>
-            <CardContent className="pt-6">
-              <div className="bg-muted/30 flex h-32 items-center justify-center rounded-lg border">
-                <p className="text-muted-foreground">No hay pagos registrados</p>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
+      {/* Payments and Installments Tabs */}
+      <SaleDetailTabs
+        payments={sale.paymentsSummary}
+        financing={sale.financing}
+        currency={sale.currency}
+        hasPayments={!!hasPayments}
+        saleId={id}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        canRegisterInstallmentPayment={isADM}
+      />
 
       {/* Sale Information */}
       <motion.div

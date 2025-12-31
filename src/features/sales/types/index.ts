@@ -418,6 +418,7 @@ export interface PaymentSummary {
   numberTicket: string | null;
   paymentConfig: string;
   reason: string | null;
+  metadata: Record<string, unknown> | null;
 }
 
 export interface PersonInfo {
@@ -432,6 +433,59 @@ export interface VendorInfo extends PersonInfo {
 export interface ClientInfo extends PersonInfo {
   address: string;
   phone: string;
+}
+
+// Sale Detail Financing Installment (for lot and HU)
+export interface SaleDetailInstallment {
+  id: string;
+  numberCuote?: number;
+  couteAmount: string | number;
+  coutePending: string | number;
+  coutePaid: string | number;
+  expectedPaymentDate: string;
+  lateFeeAmount?: number;
+  lateFeeAmountPending: string | number;
+  lateFeeAmountPaid: string | number;
+  status: StatusFinancingInstallments;
+}
+
+// Sale Detail Lot Financing info
+export interface SaleDetailLotFinancing {
+  id: string;
+  initialAmount: string | number;
+  initialAmountPaid: number;
+  initialAmountPending: number | null;
+  initialToPay: number;
+  interestRate: string | number;
+  quantityCoutes: string | number;
+}
+
+// Sale Detail Urban Development Financing info
+export interface SaleDetailUrbanDevelopmentFinancing {
+  id: string;
+  amount: string | number;
+  initialAmount: string | number;
+  quantityCoutes: string | number;
+  interestRate: string | number;
+}
+
+// Sale Detail Financing Meta
+export interface SaleDetailFinancingMeta {
+  lotInstallmentsCount: number;
+  lotTotalAmount: number;
+  huInstallmentsCount: number;
+  huTotalAmount: number;
+  totalInstallmentsCount: number;
+  totalAmount: number;
+}
+
+// Sale Detail Financing structure
+export interface SaleDetailFinancing {
+  lot: SaleDetailLotFinancing;
+  lotInstallments: SaleDetailInstallment[];
+  urbanDevelopment?: SaleDetailUrbanDevelopmentFinancing;
+  huInstallments: SaleDetailInstallment[];
+  meta: SaleDetailFinancingMeta;
 }
 
 export interface SaleDetail {
@@ -475,26 +529,7 @@ export interface SaleDetail {
   vendor: VendorInfo;
   paymentsSummary: PaymentSummary[];
 
-  financing?: {
-    lot: {
-      id: string;
-      initialAmount: number;
-      interestRate: number;
-      quantityCoutes: number;
-    };
-    urbanDevelopment?: {
-      id: number;
-      amount: number;
-      initialAmount: number;
-      status: string;
-      financing?: {
-        id: string;
-        initialAmount: number;
-        interestRate: number;
-        quantityCoutes: number;
-      };
-    };
-  };
+  financing: SaleDetailFinancing | null;
 }
 
 // Register Payment Types
@@ -503,6 +538,7 @@ export interface VoucherInput {
   transactionReference: string;
   transactionDate: string;
   amount: number;
+  codeOperation: string;
   fileIndex: number;
 }
 
@@ -596,4 +632,105 @@ export interface DeleteSaleInput {
 export interface DeleteSaleResponse {
   success: boolean;
   message: string;
+}
+
+// ============ Financing Detail Types ============
+
+export enum StatusFinancingInstallments {
+  PENDING = 'PENDING',
+  EXPIRED = 'EXPIRED',
+  PAID = 'PAID',
+}
+
+export interface FinancingDetailInstallment {
+  id: string;
+  numberCuote: number;
+  couteAmount: number;
+  coutePending: number;
+  coutePaid: number;
+  expectedPaymentDate: string;
+  lateFeeAmount: number;
+  lateFeeAmountPending: number;
+  lateFeeAmountPaid: number;
+  status: StatusFinancingInstallments;
+}
+
+export interface FinancingDetailSale {
+  id: string;
+  status: StatusSale;
+  type: SaleType;
+  totalAmount: number;
+  totalAmountPaid: number;
+  reservationAmount: number;
+  contractDate: string;
+  client: {
+    id: number;
+    fullName: string;
+    document: string;
+    documentType: DocumentType | string;
+  };
+  lot: {
+    id: string;
+    name: string;
+    block: string;
+    stage: string;
+    project: string;
+  };
+}
+
+export interface FinancingDetail {
+  id: string;
+  financingType: string;
+  initialAmount: number;
+  initialAmountPaid: number;
+  initialAmountPending: number;
+  interestRate: number;
+  quantityCoutes: number;
+  totalCouteAmount: number;
+  totalPaid: number;
+  totalPending: number;
+  totalLateFee: number;
+  totalLateFeeePending: number;
+  totalLateFeePaid: number;
+  installments: FinancingDetailInstallment[];
+}
+
+export interface FinancingDetailResponse {
+  sale: FinancingDetailSale;
+  financing: FinancingDetail;
+}
+
+// ============ Amendment Types ============
+
+export enum AmendmentInstallmentStatus {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  EXPIRED = 'EXPIRED',
+}
+
+export interface AmendmentInstallment {
+  numberCuote: number;
+  dueDate: string;
+  amount: number;
+  status: AmendmentInstallmentStatus;
+}
+
+export interface CreateAmendmentInput {
+  additionalAmount: number;
+  observation?: string;
+  installments: AmendmentInstallment[];
+}
+
+export interface CreateAmendmentResponse {
+  success: boolean;
+  message: string;
+}
+
+// Local state for amendment editing
+export interface AmendmentInstallmentLocal {
+  id: string; // local id for editing
+  numberCuote: number;
+  dueDate: string;
+  amount: number;
+  status: AmendmentInstallmentStatus;
 }

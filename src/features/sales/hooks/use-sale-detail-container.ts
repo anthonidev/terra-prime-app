@@ -54,7 +54,11 @@ export function useSaleDetailContainer(id: string) {
 
       // Financed: max payment is initial amount
       if (saleType === SaleType.FINANCED) {
-        const initialAmount = data.financing?.lot.initialAmount || 0;
+        const initialAmountRaw = data.financing?.lot?.initialAmount;
+        const initialAmount =
+          typeof initialAmountRaw === 'string'
+            ? parseFloat(initialAmountRaw)
+            : initialAmountRaw || 0;
         return Math.max(0, initialAmount - totalPaid);
       }
     }

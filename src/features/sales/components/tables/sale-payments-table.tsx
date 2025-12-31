@@ -1,12 +1,17 @@
 'use client';
 
+import { useState } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { Info } from 'lucide-react';
+import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTable } from '@/shared/components/data-table/data-table';
+import { PaymentMetadataModal } from '../dialogs/payment-metadata-modal';
 import type { PaymentSummary, StatusPayment, CurrencyType } from '../../types';
 
 // Payment status badge configurations
@@ -26,11 +31,20 @@ interface SalePaymentsTableProps {
 }
 
 export function SalePaymentsTable({ payments, currency }: SalePaymentsTableProps) {
+  const [selectedPayment, setSelectedPayment] = useState<PaymentSummary | null>(null);
+
   const columns: ColumnDef<PaymentSummary>[] = [
     {
       accessorKey: 'id',
       header: 'ID',
-      cell: ({ row }) => <span className="font-mono">#{row.getValue('id')}</span>,
+      cell: ({ row }) => {
+        const id = row.getValue('id') as number;
+        return (
+          <Link href={`/pagos/detalle/${id}`} className="text-primary font-mono hover:underline">
+            #{id}
+          </Link>
+        );
+      },
     },
     {
       accessorKey: 'createdAt',
@@ -108,6 +122,29 @@ export function SalePaymentsTable({ payments, currency }: SalePaymentsTableProps
         return reason || <span className="text-muted-foreground">-</span>;
       },
     },
+    {
+      id: 'metadata',
+      header: 'Metadata',
+      cell: ({ row }) => {
+        const payment = row.original;
+        const hasMetadata = payment.metadata && Object.keys(payment.metadata).length > 0;
+
+        if (!hasMetadata) {
+          return <span className="text-muted-foreground">-</span>;
+        }
+
+        return (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSelectedPayment(payment)}
+            title="Ver metadata"
+          >
+            <Info className="h-4 w-4" />
+          </Button>
+        );
+      },
+    },
   ];
 
   const totalAmount = payments.reduce((sum, payment) => {
@@ -118,27 +155,36 @@ export function SalePaymentsTable({ payments, currency }: SalePaymentsTableProps
   }, 0);
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>Resumen de Pagos</CardTitle>
-          <div className="text-right">
-            <p className="text-muted-foreground text-sm">Total Pagado</p>
-            <p className="text-lg font-bold">
-              {currency === 'USD' ? '$' : 'S/'} {totalAmount.toLocaleString('es-PE')}
-            </p>
+    <>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Resumen de Pagos</CardTitle>
+            <div className="text-right">
+              <p className="text-muted-foreground text-sm">Total Pagado</p>
+              <p className="text-lg font-bold">
+                {currency === 'USD' ? '$' : 'S/'} {totalAmount.toLocaleString('es-PE')}
+              </p>
+            </div>
           </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {payments.length > 0 ? (
-          <DataTable columns={columns} data={payments} />
-        ) : (
-          <div className="bg-muted/30 flex h-32 items-center justify-center rounded-lg border">
-            <p className="text-muted-foreground">No hay pagos registrados</p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+        </CardHeader>
+        <CardContent>
+          {payments.length > 0 ? (
+            <DataTable columns={columns} data={payments} />
+          ) : (
+            <div className="bg-muted/30 flex h-32 items-center justify-center rounded-lg border">
+              <p className="text-muted-foreground">No hay pagos registrados</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <PaymentMetadataModal
+        open={!!selectedPayment}
+        onOpenChange={(open) => !open && setSelectedPayment(null)}
+        metadata={selectedPayment?.metadata ?? null}
+        paymentId={selectedPayment?.id ?? 0}
+      />
+    </>
   );
 }

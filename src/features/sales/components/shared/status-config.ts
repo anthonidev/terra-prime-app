@@ -1,4 +1,13 @@
-import type { StatusSale } from '../../types';
+import type { StatusSale, StatusFinancingInstallments } from '../../types';
+
+export const installmentStatusConfig: Record<
+  StatusFinancingInstallments,
+  { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }
+> = {
+  PENDING: { label: 'Pendiente', variant: 'outline' },
+  EXPIRED: { label: 'Vencida', variant: 'destructive' },
+  PAID: { label: 'Pagada', variant: 'default' },
+};
 
 export const statusConfig: Record<
   StatusSale,

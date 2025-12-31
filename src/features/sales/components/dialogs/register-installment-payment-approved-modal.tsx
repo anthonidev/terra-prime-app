@@ -14,17 +14,21 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   VoucherForm,
   type VoucherFormData,
 } from '@/features/sales/components/containers/components/voucher-form';
 import { apiClient } from '@/shared/lib/api-client';
 
-interface RegisterInstallmentPaymentModalProps {
+interface RegisterInstallmentPaymentApprovedModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   financingId: string;
+  saleId: string;
   currency?: string;
+  title?: string;
   onSuccess?: () => void;
 }
 
@@ -37,15 +41,22 @@ const initialVoucherData: VoucherFormData = {
   file: null,
 };
 
-export function RegisterInstallmentPaymentModal({
+export function RegisterInstallmentPaymentApprovedModal({
   open,
   onOpenChange,
   financingId,
+  saleId,
   currency = 'PEN',
+  title = 'Registrar Pago de Cuotas',
   onSuccess,
-}: RegisterInstallmentPaymentModalProps) {
+}: RegisterInstallmentPaymentApprovedModalProps) {
   const [vouchers, setVouchers] = useState<VoucherFormData[]>([{ ...initialVoucherData }]);
+  const [dateOperation, setDateOperation] = useState<string>(
+    new Date().toISOString().split('T')[0]
+  );
+  const [numberTicket, setNumberTicket] = useState<string>('');
   const [errors, setErrors] = useState<Record<number, Record<string, string>>>({});
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
 
@@ -90,6 +101,17 @@ export function RegisterInstallmentPaymentModal({
       delete newErrors[index];
       setErrors(newErrors);
     }
+  };
+
+  const validateForm = () => {
+    const newFormErrors: Record<string, string> = {};
+
+    if (!dateOperation) {
+      newFormErrors.dateOperation = 'La fecha de operación es requerida';
+    }
+
+    setFormErrors(newFormErrors);
+    return Object.keys(newFormErrors).length === 0;
   };
 
   const validateVouchers = () => {
@@ -140,7 +162,10 @@ export function RegisterInstallmentPaymentModal({
   };
 
   const handleSubmit = async () => {
-    if (!validateVouchers()) {
+    const isFormValid = validateForm();
+    const areVouchersValid = validateVouchers();
+
+    if (!isFormValid || !areVouchersValid) {
       return;
     }
 
@@ -153,9 +178,14 @@ export function RegisterInstallmentPaymentModal({
       setIsSubmitting(true);
       const formData = new FormData();
 
-      // amountPaid is the sum of all vouchers
+      // Main fields
       formData.append('amountPaid', totalAmount.toString());
+      formData.append('dateOperation', dateOperation);
+      if (numberTicket.trim()) {
+        formData.append('numberTicket', numberTicket.trim());
+      }
 
+      // Payments (vouchers)
       vouchers.forEach((voucher, index) => {
         formData.append(`payments[${index}][amount]`, voucher.amount);
         formData.append(`payments[${index}][transactionDate]`, voucher.transactionDate);
@@ -170,7 +200,7 @@ export function RegisterInstallmentPaymentModal({
       });
 
       await apiClient.post(
-        `/api/collections/financing/installments/paid/${financingId}`,
+        `/api/sales/financing/installments/paid-approved/${financingId}`,
         formData,
         {
           headers: {
@@ -180,7 +210,8 @@ export function RegisterInstallmentPaymentModal({
       );
 
       toast.success('Pago registrado exitosamente');
-      queryClient.invalidateQueries({ queryKey: ['sale-detail'] });
+      // Invalidate sale detail query to refresh data
+      queryClient.invalidateQueries({ queryKey: ['sale-detail', saleId] });
       handleClose();
       onSuccess?.();
     } catch (error) {
@@ -194,7 +225,10 @@ export function RegisterInstallmentPaymentModal({
   const handleClose = () => {
     if (!isSubmitting) {
       setVouchers([{ ...initialVoucherData }]);
+      setDateOperation(new Date().toISOString().split('T')[0]);
+      setNumberTicket('');
       setErrors({});
+      setFormErrors({});
       onOpenChange(false);
     }
   };
@@ -203,9 +237,9 @@ export function RegisterInstallmentPaymentModal({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="flex max-h-[90vh] flex-col sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Registrar Pago de Cuotas</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
-            Registre un pago para el financiamiento. Puede ser un pago parcial o adelanto.
+            Registre un pago para el financiamiento. Este pago será aprobado automáticamente.
           </DialogDescription>
         </DialogHeader>
 
@@ -219,8 +253,43 @@ export function RegisterInstallmentPaymentModal({
           </div>
         </div>
 
+        {/* Main Form Fields */}
+        <div className="grid gap-4 px-1 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="dateOperation">Fecha de Operación *</Label>
+            <Input
+              id="dateOperation"
+              type="date"
+              value={dateOperation}
+              onChange={(e) => {
+                setDateOperation(e.target.value);
+                if (formErrors.dateOperation) {
+                  setFormErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors.dateOperation;
+                    return newErrors;
+                  });
+                }
+              }}
+            />
+            {formErrors.dateOperation && (
+              <p className="text-destructive text-sm">{formErrors.dateOperation}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="numberTicket">N° de Boleta (Opcional)</Label>
+            <Input
+              id="numberTicket"
+              type="text"
+              placeholder="Ej: 001-0001234"
+              value={numberTicket}
+              onChange={(e) => setNumberTicket(e.target.value)}
+            />
+          </div>
+        </div>
+
         {/* Vouchers List */}
-        <div className="max-h-[50vh] flex-1 overflow-y-auto pr-2">
+        <div className="max-h-[40vh] flex-1 overflow-y-auto pr-2">
           <div className="space-y-4">
             <AnimatePresence>
               {vouchers.map((voucher, index) => (

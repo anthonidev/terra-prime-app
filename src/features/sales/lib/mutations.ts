@@ -15,6 +15,8 @@ import type {
   ExtendReservationResponse,
   DeleteSaleInput,
   DeleteSaleResponse,
+  CreateAmendmentInput,
+  CreateAmendmentResponse,
 } from '../types';
 
 // Calculate amortization schedule
@@ -135,5 +137,18 @@ export async function deleteSale(
   data: DeleteSaleInput
 ): Promise<DeleteSaleResponse> {
   const response = await apiClient.delete<DeleteSaleResponse>(`/api/sales/${saleId}`, { data });
+  return response.data;
+}
+
+// Create financing amendment
+export async function createAmendment(
+  saleId: string,
+  financingId: string,
+  data: CreateAmendmentInput
+): Promise<CreateAmendmentResponse> {
+  const response = await apiClient.post<CreateAmendmentResponse>(
+    `/api/sales/${saleId}/financing/${financingId}/amendment`,
+    data
+  );
   return response.data;
 }

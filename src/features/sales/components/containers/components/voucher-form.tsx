@@ -20,6 +20,7 @@ export interface VoucherFormData {
   transactionReference: string;
   transactionDate: string;
   amount: string;
+  codeOperation: string;
   file: File | null;
 }
 
@@ -34,6 +35,7 @@ interface VoucherFormProps {
     transactionReference?: string;
     transactionDate?: string;
     amount?: string;
+    codeOperation?: string;
     file?: string;
   };
 }
@@ -159,6 +161,26 @@ export function VoucherForm({
           />
           {errors?.transactionReference && (
             <p className="text-destructive text-xs">{errors.transactionReference}</p>
+          )}
+        </div>
+
+        {/* Code Operation */}
+        <div className="space-y-2">
+          <Label htmlFor={`codeOperation-${index}`} className="flex items-center gap-2 text-sm">
+            <Hash className="text-primary h-4 w-4" />
+            Código de Operación
+            <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            id={`codeOperation-${index}`}
+            type="text"
+            placeholder="Ej: OP123456"
+            value={data.codeOperation}
+            onChange={(e) => handleChange('codeOperation', e.target.value)}
+            className={cn(errors?.codeOperation && 'border-destructive')}
+          />
+          {errors?.codeOperation && (
+            <p className="text-destructive text-xs">{errors.codeOperation}</p>
           )}
         </div>
 
