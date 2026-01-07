@@ -339,6 +339,7 @@ export interface MySale {
     lastName: string;
     phone: string;
     reportPdfUrl: string | null;
+    document: string;
   };
   lot: {
     id: string;

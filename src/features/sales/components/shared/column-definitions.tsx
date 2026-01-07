@@ -21,6 +21,7 @@ type SaleCommonFields = {
     firstName: string;
     lastName: string;
     phone: string;
+    document: string;
   };
   lot: {
     name: string;
@@ -91,7 +92,13 @@ export function createClientColumn<T extends SaleCommonFields>(): ColumnDef<T> {
     header: 'Cliente',
     cell: ({ row }) => {
       const client = row.original.client;
-      return <UserInfo name={`${client.firstName} ${client.lastName}`} phone={client.phone} />;
+      return (
+        <UserInfo
+          name={`${client.firstName} ${client.lastName}`}
+          phone={client.phone}
+          document={client.document}
+        />
+      );
     },
   };
 }
