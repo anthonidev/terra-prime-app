@@ -126,7 +126,7 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
           <UserInfo
             name={`${sale.client.firstName} ${sale.client.lastName}`}
             phone={sale.client.phone}
-            // document={sale.client.documentNumber} // Assuming documentNumber exists on client
+            document={sale.client.document}
             className="bg-muted/30 rounded-lg border p-3"
           />
 

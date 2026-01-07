@@ -507,6 +507,7 @@ export interface SaleDetail {
   initialAmountPaid?: number;
   client: ClientInfo & {
     reportPdfUrl: string | null;
+    document?: string;
   };
   secondaryClients: ClientInfo[];
   lot: {
