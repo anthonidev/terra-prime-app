@@ -28,11 +28,12 @@
       "Bash(bun add:*)",
       "Bash(bunx husky:*)",
       "Bash(netstat:*)",
-      "Bash(timeout 10 tail:*)"
+      "Bash(timeout 10 tail:*)",
+      "Bash(bun run lint:*)"
     ],
     "deny": [],
     "ask": []
   },
-  "enabledMcpjsonServers": ["shadcn"],
-  "enableAllProjectMcpServers": true
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": ["shadcn"]
 }

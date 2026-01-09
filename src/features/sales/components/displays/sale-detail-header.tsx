@@ -36,6 +36,9 @@ interface SaleDetailHeaderProps {
   paymentAcordPdfUrl?: string | null;
 }
 
+// Default config for unknown statuses
+const defaultStatusConfig = { label: 'Desconocido', variant: 'outline' as const };
+
 export function SaleDetailHeader({
   clientName,
   status,
@@ -45,7 +48,7 @@ export function SaleDetailHeader({
   paymentAcordPdfUrl,
 }: SaleDetailHeaderProps) {
   const router = useRouter();
-  const config = statusConfig[status];
+  const config = statusConfig[status] || defaultStatusConfig;
   const exportExcel = useExportSaleExcel();
 
   const handleDownload = (url: string, filename?: string) => {

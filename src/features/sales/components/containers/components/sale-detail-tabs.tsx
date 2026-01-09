@@ -31,8 +31,8 @@ export function SaleDetailTabs({
   onTabChange,
   canRegisterInstallmentPayment = false,
 }: SaleDetailTabsProps) {
-  const hasHuInstallments = financing?.huInstallments && financing.huInstallments.length > 0;
-  const hasLotInstallments = financing?.lotInstallments && financing.lotInstallments.length > 0;
+  const hasHuInstallments = financing?.hu?.installments && financing.hu.installments.length > 0;
+  const hasLotInstallments = financing?.lot?.installments && financing.lot.installments.length > 0;
   const hasFinancing = hasLotInstallments || hasHuInstallments;
 
   // If no financing, just show payments without tabs
@@ -137,44 +137,28 @@ export function SaleDetailTabs({
 
         <TabsContent value="lot-installments" className="mt-4">
           <SaleInstallmentsTabContent
-            installments={financing?.lotInstallments || []}
+            installments={financing?.lot?.installments || []}
             currency={currency}
             title="Cuotas de Lote"
             financingId={financing?.lot?.id || null}
             saleId={saleId}
             onPaymentSuccess={handlePaymentSuccess}
             canRegisterPayment={canRegisterInstallmentPayment}
-            lotInfo={financing?.lot || null}
-            summaryMeta={
-              financing?.meta
-                ? {
-                    installmentsCount: financing.meta.lotInstallmentsCount,
-                    totalAmount: financing.meta.lotTotalAmount,
-                  }
-                : null
-            }
+            financingItem={financing?.lot || null}
           />
         </TabsContent>
 
         {hasHuInstallments && (
           <TabsContent value="hu-installments" className="mt-4">
             <SaleInstallmentsTabContent
-              installments={financing?.huInstallments || []}
+              installments={financing?.hu?.installments || []}
               currency={currency}
               title="Cuotas de Habilitación Urbana"
-              financingId={financing?.urbanDevelopment?.id || null}
+              financingId={financing?.hu?.id || null}
               saleId={saleId}
               onPaymentSuccess={handlePaymentSuccess}
               canRegisterPayment={canRegisterInstallmentPayment}
-              urbanDevelopmentInfo={financing?.urbanDevelopment || null}
-              summaryMeta={
-                financing?.meta
-                  ? {
-                      installmentsCount: financing.meta.huInstallmentsCount,
-                      totalAmount: financing.meta.huTotalAmount,
-                    }
-                  : null
-              }
+              financingItem={financing?.hu || null}
             />
           </TabsContent>
         )}

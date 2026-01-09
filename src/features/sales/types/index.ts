@@ -450,7 +450,25 @@ export interface SaleDetailInstallment {
   status: StatusFinancingInstallments;
 }
 
-// Sale Detail Lot Financing info
+// Sale Detail Financing Item (for lot and hu)
+export interface SaleDetailFinancingItem {
+  id: string;
+  financingType: string;
+  initialAmount: number;
+  initialAmountPaid: number;
+  initialAmountPending: number;
+  interestRate: number;
+  quantityCoutes: number;
+  totalCouteAmount: number;
+  totalPaid: number;
+  totalPending: number;
+  totalLateFee: number;
+  totalLateFeeePending: number;
+  totalLateFeePaid: number;
+  installments: SaleDetailInstallment[];
+}
+
+// Legacy types for backwards compatibility
 export interface SaleDetailLotFinancing {
   id: string;
   initialAmount: string | number;
@@ -480,13 +498,10 @@ export interface SaleDetailFinancingMeta {
   totalAmount: number;
 }
 
-// Sale Detail Financing structure
+// Sale Detail Financing structure (new API format)
 export interface SaleDetailFinancing {
-  lot: SaleDetailLotFinancing;
-  lotInstallments: SaleDetailInstallment[];
-  urbanDevelopment?: SaleDetailUrbanDevelopmentFinancing;
-  huInstallments: SaleDetailInstallment[];
-  meta: SaleDetailFinancingMeta;
+  lot: SaleDetailFinancingItem;
+  hu?: SaleDetailFinancingItem;
 }
 
 export interface SaleDetail {

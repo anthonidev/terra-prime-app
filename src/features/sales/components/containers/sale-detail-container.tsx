@@ -1,25 +1,24 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { Clock, Trash2, CreditCard } from 'lucide-react';
-import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useSaleDetailContainer } from '../../hooks/use-sale-detail-container';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/features/auth/hooks/use-auth';
+import { motion } from 'framer-motion';
+import { Building2, Clock, Landmark, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { useMemo, useState } from 'react';
+import { useSaleDetailContainer } from '../../hooks/use-sale-detail-container';
+import { StatusPayment, StatusSale } from '../../types';
+import { DeleteSaleModal } from '../dialogs/delete-sale-modal';
+import { ExtendReservationModal } from '../dialogs/extend-reservation-modal';
+import { RegisterPaymentModal } from '../dialogs/register-payment-modal';
 import { SaleDetailHeader } from '../displays/sale-detail-header';
 import { SaleDetailInfo } from '../displays/sale-detail-info';
+import { SaleInfoCard } from '../displays/sale-info-card';
 import { SaleDetailSkeleton } from '../skeletons/sale-detail-skeleton';
-import { PaymentSummaryHeader } from './components/payment-summary-header';
-import { PaymentBreakdownCard } from './components/payment-breakdown-card';
 import { FinancingInstallmentsView } from './components/financing-installments-view';
-import { SaleDetailTabs } from './components/sale-detail-tabs';
 import { SaleDetailErrorState } from './components/sale-detail-error-state';
-import { RegisterPaymentModal } from '../dialogs/register-payment-modal';
-import { ExtendReservationModal } from '../dialogs/extend-reservation-modal';
-import { DeleteSaleModal } from '../dialogs/delete-sale-modal';
-import { StatusSale, StatusPayment } from '../../types';
+import { SaleDetailTabs } from './components/sale-detail-tabs';
 
 interface SaleDetailContainerProps {
   id: string;
@@ -31,17 +30,8 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
   const [isDeleteSaleModalOpen, setIsDeleteSaleModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('payments');
 
-  const {
-    sale,
-    clientName,
-    totalPaid,
-    pendingAmount,
-    maxPayableAmount,
-    hasPayments,
-    status,
-    isLoading,
-    isError,
-  } = useSaleDetailContainer(id);
+  const { sale, clientName, maxPayableAmount, hasPayments, status, isLoading, isError } =
+    useSaleDetailContainer(id);
 
   const { user } = useAuth();
 
@@ -102,13 +92,15 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
 
   // Check if ADM can view financing detail
   const canViewFinancing = useMemo(() => {
-    // Check if there's financing with lot data
-    const hasFinancing = sale?.financing?.lot?.id;
-    return isADM && hasFinancing;
+    // Check if there's financing with lot or hu data
+    const hasLotFinancing = sale?.financing?.lot?.id;
+    const hasHuFinancing = sale?.financing?.hu?.id;
+    return isADM && (hasLotFinancing || hasHuFinancing);
   }, [isADM, sale]);
 
   // Get financing IDs for navigation
   const lotFinancingId = sale?.financing?.lot?.id;
+  const huFinancingId = sale?.financing?.hu?.id;
 
   // Loading state
   if (isLoading) {
@@ -136,6 +128,15 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
           radicationPdfUrl={sale.radicationPdfUrl}
           paymentAcordPdfUrl={sale.paymentAcordPdfUrl}
         />
+      </motion.div>
+
+      {/* Sale Information Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.05 }}
+      >
+        <SaleInfoCard sale={sale} />
       </motion.div>
 
       {/* JVE Actions */}
@@ -179,7 +180,7 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
       )}
 
       {/* ADM Financing Actions */}
-      {canViewFinancing && lotFinancingId && (
+      {canViewFinancing && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -190,19 +191,31 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
               <CardTitle>Administración de Financiamiento</CardTitle>
             </CardHeader>
             <CardContent>
-              <Button asChild>
-                <Link href={`/ventas/detalle/${id}/financing/${lotFinancingId}`}>
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Ver Detalle de Financiamiento
-                </Link>
-              </Button>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                {lotFinancingId && (
+                  <Button asChild variant="outline" className="flex-1">
+                    <Link href={`/ventas/detalle/${id}/financing/${lotFinancingId}`}>
+                      <Landmark className="mr-2 h-4 w-4" />
+                      Financiamiento de Lote
+                    </Link>
+                  </Button>
+                )}
+                {huFinancingId && (
+                  <Button asChild variant="outline" className="flex-1">
+                    <Link href={`/ventas/detalle/${id}/financing/${huFinancingId}`}>
+                      <Building2 className="mr-2 h-4 w-4" />
+                      Financiamiento de HU
+                    </Link>
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         </motion.div>
       )}
 
       {/* Payment Summary Header */}
-      <PaymentSummaryHeader
+      {/* <PaymentSummaryHeader
         totalAmount={sale.totalAmount}
         totalPaid={totalPaid}
         pendingAmount={pendingAmount}
@@ -213,10 +226,10 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
             <Button onClick={() => setIsPaymentModalOpen(true)}>Registrar Pago</Button>
           ) : undefined
         }
-      />
+      /> */}
 
       {/* Payment Breakdown */}
-      <PaymentBreakdownCard sale={sale} />
+      {/* <PaymentBreakdownCard sale={sale} /> */}
 
       {/* Financing Installments (COB Role) */}
       <FinancingInstallmentsView saleId={id} />

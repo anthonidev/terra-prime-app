@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { CreditCard } from 'lucide-react';
+import { CreditCard, Wallet, Percent, Calculator, AlertTriangle } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,8 +15,7 @@ import { formatCurrency } from '@/shared/utils/currency-formatter';
 import { RegisterInstallmentPaymentApprovedModal } from '../../dialogs/register-installment-payment-approved-modal';
 import type {
   SaleDetailInstallment,
-  SaleDetailLotFinancing,
-  SaleDetailUrbanDevelopmentFinancing,
+  SaleDetailFinancingItem,
   StatusFinancingInstallments,
   CurrencyType,
 } from '../../../types';
@@ -31,11 +30,6 @@ const installmentStatusConfig: Record<
   EXPIRED: { label: 'Vencida', variant: 'destructive' },
 };
 
-interface SummaryMeta {
-  installmentsCount: number;
-  totalAmount: number;
-}
-
 interface SaleInstallmentsTabContentProps {
   installments: SaleDetailInstallment[];
   currency: CurrencyType;
@@ -44,9 +38,7 @@ interface SaleInstallmentsTabContentProps {
   saleId: string;
   onPaymentSuccess?: () => void;
   canRegisterPayment?: boolean;
-  lotInfo?: SaleDetailLotFinancing | null;
-  urbanDevelopmentInfo?: SaleDetailUrbanDevelopmentFinancing | null;
-  summaryMeta?: SummaryMeta | null;
+  financingItem?: SaleDetailFinancingItem | null;
 }
 
 export function SaleInstallmentsTabContent({
@@ -57,9 +49,7 @@ export function SaleInstallmentsTabContent({
   saleId,
   onPaymentSuccess,
   canRegisterPayment = false,
-  lotInfo,
-  urbanDevelopmentInfo,
-  summaryMeta,
+  financingItem,
 }: SaleInstallmentsTabContentProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const currencySymbol = currency === 'USD' ? '$' : 'S/';
@@ -163,19 +153,15 @@ export function SaleInstallmentsTabContent({
     },
   ];
 
-  // Calculate progress
-  const totalAmount = summaryMeta?.totalAmount || calculatedTotals.totalAmount;
-  const totalPaid = calculatedTotals.totalPaid;
-  const totalPending = calculatedTotals.totalPending;
-  const totalLateFee = calculatedTotals.totalLateFee;
-  const progressPercentage = totalAmount > 0 ? (totalPaid / totalAmount) * 100 : 0;
+  // Use financing item data if available, otherwise use calculated totals
+  const totalCouteAmount = financingItem?.totalCouteAmount ?? calculatedTotals.totalAmount;
+  const totalPaid = financingItem?.totalPaid ?? calculatedTotals.totalPaid;
+  const totalPending = financingItem?.totalPending ?? calculatedTotals.totalPending;
+  const totalLateFee = financingItem?.totalLateFee ?? calculatedTotals.totalLateFee;
+  const progressPercentage = totalCouteAmount > 0 ? (totalPaid / totalCouteAmount) * 100 : 0;
 
   // Get quantity of installments
-  const quantityCoutes =
-    summaryMeta?.installmentsCount ||
-    (lotInfo ? parseInt(String(lotInfo.quantityCoutes)) : null) ||
-    (urbanDevelopmentInfo ? parseInt(String(urbanDevelopmentInfo.quantityCoutes)) : null) ||
-    installments.length;
+  const quantityCoutes = financingItem?.quantityCoutes ?? installments.length;
 
   const handlePaymentSuccess = () => {
     setIsPaymentModalOpen(false);
@@ -184,6 +170,122 @@ export function SaleInstallmentsTabContent({
 
   return (
     <>
+      {/* Resumen del Financiamiento */}
+      {financingItem && (
+        <Card className="mb-4">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calculator className="h-5 w-5" />
+              Resumen del Financiamiento
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Progress Bar */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Progreso de Pago</span>
+                <span className="font-medium">{progressPercentage.toFixed(1)}%</span>
+              </div>
+              <Progress value={progressPercentage} className="h-2" />
+              <div className="text-muted-foreground flex justify-between text-xs">
+                <span>Pagado: {formatCurrency(totalPaid, currency)}</span>
+                <span>Total: {formatCurrency(totalCouteAmount, currency)}</span>
+              </div>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {/* Financing Type */}
+              <div className="rounded-lg border p-4">
+                <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                  <Wallet className="h-4 w-4" />
+                  Tipo de Financiamiento
+                </div>
+                <p className="mt-1 text-lg font-semibold">{financingItem.financingType}</p>
+              </div>
+
+              {/* Interest Rate */}
+              <div className="rounded-lg border p-4">
+                <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                  <Percent className="h-4 w-4" />
+                  Tasa de Interés
+                </div>
+                <p className="mt-1 text-lg font-semibold">{financingItem.interestRate}%</p>
+              </div>
+
+              {/* Number of Installments */}
+              <div className="rounded-lg border p-4">
+                <div className="text-muted-foreground text-sm">Cantidad de Cuotas</div>
+                <p className="mt-1 text-lg font-semibold">{financingItem.quantityCoutes}</p>
+              </div>
+
+              {/* Total Coute Amount */}
+              <div className="rounded-lg border p-4">
+                <div className="text-muted-foreground text-sm">Monto Total de Cuotas</div>
+                <p className="mt-1 text-lg font-semibold">
+                  {formatCurrency(financingItem.totalCouteAmount, currency)}
+                </p>
+              </div>
+
+              {/* Initial Amount */}
+              {financingItem.initialAmount > 0 && (
+                <div className="rounded-lg border p-4">
+                  <div className="text-muted-foreground text-sm">Monto Inicial</div>
+                  <p className="mt-1 text-lg font-semibold">
+                    {formatCurrency(financingItem.initialAmount, currency)}
+                  </p>
+                  <div className="mt-1 flex gap-2 text-xs">
+                    <span className="text-green-600">
+                      Pagado: {formatCurrency(financingItem.initialAmountPaid, currency)}
+                    </span>
+                    <span className="text-muted-foreground">|</span>
+                    <span className="text-orange-600">
+                      Pendiente: {formatCurrency(financingItem.initialAmountPending, currency)}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Total Paid */}
+              <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-950">
+                <div className="text-sm text-green-700 dark:text-green-300">Total Pagado</div>
+                <p className="mt-1 text-lg font-semibold text-green-700 dark:text-green-300">
+                  {formatCurrency(financingItem.totalPaid, currency)}
+                </p>
+              </div>
+
+              {/* Total Pending */}
+              <div className="rounded-lg border border-orange-200 bg-orange-50 p-4 dark:border-orange-900 dark:bg-orange-950">
+                <div className="text-sm text-orange-700 dark:text-orange-300">Total Pendiente</div>
+                <p className="mt-1 text-lg font-semibold text-orange-700 dark:text-orange-300">
+                  {formatCurrency(financingItem.totalPending, currency)}
+                </p>
+              </div>
+
+              {/* Late Fees */}
+              {financingItem.totalLateFee > 0 && (
+                <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950">
+                  <div className="flex items-center gap-2 text-sm text-red-700 dark:text-red-300">
+                    <AlertTriangle className="h-4 w-4" />
+                    Moras Totales
+                  </div>
+                  <p className="mt-1 text-lg font-semibold text-red-700 dark:text-red-300">
+                    {formatCurrency(financingItem.totalLateFee, currency)}
+                  </p>
+                  <div className="mt-1 flex gap-2 text-xs">
+                    <span>Pagado: {formatCurrency(financingItem.totalLateFeePaid, currency)}</span>
+                    <span>|</span>
+                    <span>
+                      Pendiente: {formatCurrency(financingItem.totalLateFeeePending, currency)}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -200,15 +302,16 @@ export function SaleInstallmentsTabContent({
               <div className="text-right">
                 <p className="text-muted-foreground text-sm">Progreso de Pago</p>
                 <p className="text-lg font-bold">
-                  {formatCurrency(totalPaid, currency)} / {formatCurrency(totalAmount, currency)}
+                  {formatCurrency(totalPaid, currency)} /{' '}
+                  {formatCurrency(totalCouteAmount, currency)}
                 </p>
               </div>
             )}
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Summary Cards */}
-          {installments.length > 0 && (
+          {/* Summary Cards (only shown if no financingItem) */}
+          {!financingItem && installments.length > 0 && (
             <div className="space-y-4">
               {/* Progress Bar */}
               <div className="space-y-2">
