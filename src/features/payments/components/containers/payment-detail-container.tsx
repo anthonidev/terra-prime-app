@@ -1,29 +1,23 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/features/auth/hooks/use-auth';
+import { useInvoiceByPayment } from '@/features/invoices/hooks/use-invoice-by-payment';
+import type { Invoice } from '@/features/invoices/types';
+import { motion } from 'framer-motion';
+import { Edit, Eye, FileText, Send } from 'lucide-react';
+import { useState } from 'react';
 import { usePaymentDetail } from '../../hooks/use-payment-detail';
-import { PaymentDetailSkeleton } from '../skeletons/payment-detail-skeleton';
+import { StatusPayment } from '../../types';
+import { ClientLotSection } from '../detail/client-lot-section';
+import { PaymentActions } from '../detail/payment-actions';
 import { PaymentDetailError } from '../detail/payment-detail-error';
 import { PaymentDetailHeader } from '../detail/payment-detail-header';
 import { PaymentInfoSection } from '../detail/payment-info-section';
-import { ClientLotSection } from '../detail/client-lot-section';
 import { VouchersSection } from '../detail/vouchers-section';
-import { PaymentActions } from '../detail/payment-actions';
 import { CompletePaymentModal } from '../dialogs/complete-payment-modal';
-import { StatusPayment } from '../../types';
-
-// TODO: Habilitar cuando SUNAT esté listo para producción
-// import { FileText, Eye, Send } from 'lucide-react';
-// import { useInvoiceByPayment } from '@/features/invoices/hooks/use-invoice-by-payment';
-// import { SunatInvoiceModal } from '@/features/invoices/components/dialogs/sunat-invoice-modal';
-// import { InvoiceSuccessModal } from '@/features/invoices/components/dialogs/invoice-success-modal';
-// import { InvoiceDetailModal } from '@/features/invoices/components/dialogs/invoice-detail-modal';
-// import type { Invoice } from '@/features/invoices/types';
+import { PaymentDetailSkeleton } from '../skeletons/payment-detail-skeleton';
 
 interface PaymentDetailContainerProps {
   paymentId: string;
@@ -31,24 +25,20 @@ interface PaymentDetailContainerProps {
 
 export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProps) {
   const [completeModalOpen, setCompleteModalOpen] = useState(false);
-
-  // TODO: Habilitar cuando SUNAT esté listo para producción
-  // const [sunatModalOpen, setSunatModalOpen] = useState(false);
-  // const [successModalOpen, setSuccessModalOpen] = useState(false);
-  // const [invoiceDetailModalOpen, setInvoiceDetailModalOpen] = useState(false);
-  // const [createdInvoice, setCreatedInvoice] = useState<Invoice | null>(null);
+  const [sunatModalOpen, setSunatModalOpen] = useState(false);
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [invoiceDetailModalOpen, setInvoiceDetailModalOpen] = useState(false);
+  const [createdInvoice, setCreatedInvoice] = useState<Invoice | null>(null);
 
   const { data: payment, isLoading, isError } = usePaymentDetail(paymentId);
+  const { data: existingInvoice, isLoading: isLoadingInvoice } = useInvoiceByPayment(paymentId);
   const { user } = useAuth();
 
-  // TODO: Habilitar cuando SUNAT esté listo para producción
-  // const { data: existingInvoice, isLoading: isLoadingInvoice } = useInvoiceByPayment(paymentId);
-
   // Handle successful invoice creation
-  // const handleInvoiceSuccess = (invoice: Invoice) => {
-  //   setCreatedInvoice(invoice);
-  //   setSuccessModalOpen(true);
-  // };
+  const handleInvoiceSuccess = (invoice: Invoice) => {
+    setCreatedInvoice(invoice);
+    setSuccessModalOpen(true);
+  };
 
   // Loading state
   if (isLoading) {
@@ -67,7 +57,7 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
   const canReview = hasAdminRole && payment.status === StatusPayment.PENDING;
 
   // Check if user can update approved payment (role code "FAC" or "ADM" and status APPROVED)
-  const canUpdate = hasAdminRole && payment.status === StatusPayment.APPROVED;
+  const canUpdate = hasAdminRole && payment.status !== StatusPayment.PENDING;
 
   return (
     <div className="space-y-6">
@@ -115,9 +105,8 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
         </motion.div>
       )}
 
-      {/* TODO: Habilitar cuando SUNAT esté listo para producción */}
       {/* SUNAT Invoice Section */}
-      {/* <motion.div
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.15 }}
@@ -158,7 +147,7 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
             )}
           </CardContent>
         </Card>
-      </motion.div> */}
+      </motion.div>
 
       {/* Content Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
@@ -198,7 +187,6 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
         paymentId={paymentId}
       />
 
-      {/* TODO: Habilitar cuando SUNAT esté listo para producción */}
       {/* SUNAT Invoice Modal */}
       {/* <SunatInvoiceModal
         open={sunatModalOpen}
