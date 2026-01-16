@@ -14,12 +14,9 @@ import {
   Image as ImageIcon,
   Landmark,
   Pencil,
-  Check,
-  X,
 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { useState } from 'react';
-import { useUpdateVoucherCodeOperation } from '../../hooks/use-payment-detail';
+import { EditVoucherModal } from '../dialogs/edit-voucher-modal';
 import type { PaymentDetail, PaymentVoucher } from '../../types';
 
 interface VouchersSectionProps {
@@ -28,29 +25,12 @@ interface VouchersSectionProps {
 
 export function VouchersSection({ payment }: VouchersSectionProps) {
   const vouchers = payment.vouchers || [];
-  const { mutate: updateCode, isPending } = useUpdateVoucherCodeOperation(payment.id.toString());
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editValue, setEditValue] = useState('');
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedVoucher, setSelectedVoucher] = useState<PaymentVoucher | null>(null);
 
   const handleEdit = (voucher: PaymentVoucher) => {
-    setEditingId(voucher.id);
-    setEditValue(voucher.codeOperation || '');
-  };
-
-  const handleCancel = () => {
-    setEditingId(null);
-    setEditValue('');
-  };
-
-  const handleSave = (id: number) => {
-    updateCode(
-      { id, codeOperation: editValue },
-      {
-        onSuccess: () => {
-          setEditingId(null);
-        },
-      }
-    );
+    setSelectedVoucher(voucher);
+    setEditModalOpen(true);
   };
 
   return (
@@ -137,51 +117,21 @@ export function VouchersSection({ payment }: VouchersSectionProps) {
                         <Hash className="h-3.5 w-3.5" />
                         Código de Operación
                       </p>
-                      {editingId === voucher.id ? (
-                        <div className="flex items-center gap-2">
-                          <Input
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
-                            className="h-8 text-xs"
-                            placeholder="Ingrese código"
-                            autoFocus
-                          />
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-8 w-8 text-green-600 hover:bg-green-50 hover:text-green-700"
-                            onClick={() => handleSave(voucher.id)}
-                            disabled={isPending}
-                          >
-                            <Check className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-8 w-8 text-red-600 hover:bg-red-50 hover:text-red-700"
-                            onClick={handleCancel}
-                            disabled={isPending}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="font-medium">
-                            {voucher.codeOperation || (
-                              <span className="text-muted-foreground italic">Sin código</span>
-                            )}
-                          </p>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="text-muted-foreground hover:text-primary h-6 w-6"
-                            onClick={() => handleEdit(voucher)}
-                          >
-                            <Pencil className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      )}
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="font-medium">
+                          {voucher.codeOperation || (
+                            <span className="text-muted-foreground italic">Sin código</span>
+                          )}
+                        </p>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="text-muted-foreground hover:text-primary h-6 w-6"
+                          onClick={() => handleEdit(voucher)}
+                        >
+                          <Pencil className="h-3 w-3" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -193,6 +143,15 @@ export function VouchersSection({ payment }: VouchersSectionProps) {
           </div>
         )}
       </CardContent>
+
+      {/* Edit Voucher Modal */}
+      <EditVoucherModal
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        voucher={selectedVoucher}
+        paymentId={payment.id.toString()}
+        paymentStatus={payment.status}
+      />
     </Card>
   );
 }

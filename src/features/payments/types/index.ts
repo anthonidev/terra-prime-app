@@ -34,7 +34,9 @@ export interface LeadBasic {
 }
 
 export interface ClientBasic {
-  address?: string;
+  address?: string | null;
+  documentType?: 'DNI' | 'RUC' | 'CE' | null;
+  email?: string | null;
   lead?: LeadBasic;
 }
 
@@ -151,6 +153,18 @@ export interface CompletePaymentInput {
 
 export interface UpdateVoucherCodeOperationInput {
   codeOperation: string;
+}
+
+export interface UpdateVoucherInput {
+  bankName?: string;
+  transactionReference?: string;
+  transactionDate?: string;
+  codeOperation?: string;
+}
+
+export interface UpdateVoucherResponse {
+  success: boolean;
+  message: string;
 }
 
 // Mutation Responses

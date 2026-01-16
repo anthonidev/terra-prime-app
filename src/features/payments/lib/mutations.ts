@@ -8,6 +8,8 @@ import type {
   RejectPaymentResponse,
   UpdateVoucherCodeOperationInput,
   UpdateVoucherCodeOperationResponse,
+  UpdateVoucherInput,
+  UpdateVoucherResponse,
 } from '../types';
 
 export async function approvePayment(
@@ -39,5 +41,13 @@ export async function updateVoucherCodeOperation(
   data: UpdateVoucherCodeOperationInput
 ): Promise<UpdateVoucherCodeOperationResponse> {
   const response = await apiClient.patch(`/api/payments/details/${id}/code-operation`, data);
+  return response.data;
+}
+
+export async function updateVoucher(
+  id: number,
+  data: UpdateVoucherInput
+): Promise<UpdateVoucherResponse> {
+  const response = await apiClient.patch(`/api/payments/details/${id}`, data);
   return response.data;
 }

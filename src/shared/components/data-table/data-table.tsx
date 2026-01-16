@@ -114,7 +114,7 @@ export function DataTable<TData, TValue>({
         </div>
       )}
       <div className="bg-card rounded-lg border shadow-sm">
-        <Table>
+        <Table className="min-w-max">
           <TableHeader className="bg-muted/30">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent">

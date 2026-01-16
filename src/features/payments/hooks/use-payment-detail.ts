@@ -2,7 +2,8 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getPaymentDetail } from '../lib/queries';
-import { updateVoucherCodeOperation } from '../lib/mutations';
+import { updateVoucherCodeOperation, updateVoucher } from '../lib/mutations';
+import type { UpdateVoucherInput } from '../types';
 import { toast } from 'sonner';
 
 export function usePaymentDetail(id: string) {
@@ -25,6 +26,22 @@ export function useUpdateVoucherCodeOperation(paymentId: string) {
     },
     onError: (error) => {
       toast.error('Error al actualizar el código de operación');
+      console.error(error);
+    },
+  });
+}
+
+export function useUpdateVoucher(paymentId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: UpdateVoucherInput }) => updateVoucher(id, data),
+    onSuccess: () => {
+      toast.success('Comprobante actualizado correctamente');
+      queryClient.invalidateQueries({ queryKey: ['payment', paymentId] });
+    },
+    onError: (error) => {
+      toast.error('Error al actualizar el comprobante');
       console.error(error);
     },
   });
