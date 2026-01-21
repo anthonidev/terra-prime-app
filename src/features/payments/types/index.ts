@@ -151,6 +151,10 @@ export interface CompletePaymentInput {
   numberTicket: string;
 }
 
+export interface CancelPaymentInput {
+  cancellationReason: string;
+}
+
 export interface UpdateVoucherCodeOperationInput {
   codeOperation: string;
 }
@@ -179,6 +183,11 @@ export interface RejectPaymentResponse {
 }
 
 export interface CompletePaymentResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface CancelPaymentResponse {
   success: boolean;
   message: string;
 }

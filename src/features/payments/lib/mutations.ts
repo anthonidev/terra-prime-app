@@ -2,6 +2,8 @@ import { apiClient } from '@/shared/lib/api-client';
 import type {
   ApprovePaymentInput,
   ApprovePaymentResponse,
+  CancelPaymentInput,
+  CancelPaymentResponse,
   CompletePaymentInput,
   CompletePaymentResponse,
   RejectPaymentInput,
@@ -49,5 +51,13 @@ export async function updateVoucher(
   data: UpdateVoucherInput
 ): Promise<UpdateVoucherResponse> {
   const response = await apiClient.patch(`/api/payments/details/${id}`, data);
+  return response.data;
+}
+
+export async function cancelPayment(
+  id: string,
+  data: CancelPaymentInput
+): Promise<CancelPaymentResponse> {
+  const response = await apiClient.post(`/api/payments/cancel-installment/${id}`, data);
   return response.data;
 }
