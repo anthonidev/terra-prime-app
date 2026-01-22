@@ -17,6 +17,17 @@ interface PaymentMetadataModalProps {
   paymentId: number;
 }
 
+function shouldHideKey(key: string): boolean {
+  const normalized = key.trim().toLowerCase();
+
+  if (normalized === 'installments backup') return true;
+  if (normalized === 'installments_backup') return true;
+  if (normalized === 'installments-backup') return true;
+  if (normalized === 'installmentsbackup') return true;
+
+  return formatKey(key).trim().toLowerCase() === 'installments backup';
+}
+
 function formatValue(value: unknown): string {
   if (value === null || value === undefined) {
     return '-';
@@ -47,7 +58,7 @@ export function PaymentMetadataModal({
   metadata,
   paymentId,
 }: PaymentMetadataModalProps) {
-  const entries = metadata ? Object.entries(metadata) : [];
+  const entries = metadata ? Object.entries(metadata).filter(([key]) => !shouldHideKey(key)) : [];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

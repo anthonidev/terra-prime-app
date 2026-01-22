@@ -99,6 +99,7 @@ export enum StatusPayment {
   APPROVED = 'APPROVED',
   COMPLETED = 'COMPLETED',
   REJECTED = 'REJECTED',
+  CANCELLED = 'CANCELLED',
 }
 
 // Project Lot Response

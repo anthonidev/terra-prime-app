@@ -28,6 +28,7 @@ const paymentStatusConfig: Record<
   APPROVED: { label: 'Aprobado', variant: 'default' },
   COMPLETED: { label: 'Completado', variant: 'secondary' },
   REJECTED: { label: 'Rechazado', variant: 'destructive' },
+  CANCELLED: { label: 'Cancelado', variant: 'destructive' },
 };
 
 interface PaymentCardsViewProps {

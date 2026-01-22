@@ -3,8 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Edit, FileText, Eye, Send, XCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useAuth } from '@/features/auth/hooks/use-auth';
 import { usePaymentDetail } from '../../hooks/use-payment-detail';
 import { useInvoiceByPayment } from '@/features/invoices/hooks/use-invoice-by-payment';
@@ -58,6 +57,9 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
   // Check if user has FAC or ADM role
   const hasAdminRole = user?.role?.code === 'FAC' || user?.role?.code === 'ADM';
 
+  // Check if payment is cancelled
+  const isCancelled = payment.status === StatusPayment.CANCELLED;
+
   // Check if user can approve/reject (role code "FAC" or "ADM" and status PENDING)
   const canReview = hasAdminRole && payment.status === StatusPayment.PENDING;
 
@@ -68,6 +70,9 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
   const canCancel =
     hasAdminRole &&
     (payment.status === StatusPayment.APPROVED || payment.status === StatusPayment.COMPLETED);
+
+  // Check if any action button should be shown
+  const showActionsBar = hasAdminRole && (canUpdate || canCancel || !isCancelled);
 
   return (
     <div className="space-y-6">
@@ -91,98 +96,125 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
         </motion.div>
       )}
 
-      {/* Update Payment (if approved) */}
-      {canUpdate && (
+      {/* Actions Bar - Icon buttons with labels */}
+      {showActionsBar && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
-          <Card className="border-primary/20 bg-primary/5">
-            <CardHeader>
-              <CardTitle>Actualizar Pago</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4 text-sm">
-                Este pago ha sido aprobado. Puedes actualizar información adicional.
-              </p>
-              <Button onClick={() => setCompleteModalOpen(true)}>
-                <Edit className="mr-2 h-4 w-4" />
-                Actualizar Pago
-              </Button>
-            </CardContent>
-          </Card>
+          <TooltipProvider>
+            <div className="flex flex-wrap gap-3">
+              {/* Update Payment Button */}
+              {canUpdate && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setCompleteModalOpen(true)}
+                      className="group bg-card hover:border-primary hover:bg-primary/5 flex h-24 w-28 flex-col items-center justify-center gap-2 rounded-xl border p-3 shadow-sm transition-all hover:shadow-md"
+                    >
+                      <div className="bg-primary/10 group-hover:bg-primary/20 flex h-10 w-10 items-center justify-center rounded-lg transition-colors">
+                        <Edit className="text-primary h-5 w-5" />
+                      </div>
+                      <span className="text-muted-foreground group-hover:text-foreground text-xs font-medium">
+                        Actualizar
+                      </span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Actualizar información del pago</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+
+              {/* Cancel Payment Button */}
+              {canCancel && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setCancelModalOpen(true)}
+                      className="group bg-card hover:border-destructive hover:bg-destructive/5 flex h-24 w-28 flex-col items-center justify-center gap-2 rounded-xl border p-3 shadow-sm transition-all hover:shadow-md"
+                    >
+                      <div className="bg-destructive/10 group-hover:bg-destructive/20 flex h-10 w-10 items-center justify-center rounded-lg transition-colors">
+                        <XCircle className="text-destructive h-5 w-5" />
+                      </div>
+                      <span className="text-muted-foreground group-hover:text-foreground text-xs font-medium">
+                        Cancelar
+                      </span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>El saldo volverá a como estaba antes del pago</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+
+              {/* SUNAT Invoice Button */}
+              {isLoadingInvoice ? (
+                <div className="bg-card flex h-24 w-28 flex-col items-center justify-center gap-2 rounded-xl border p-3 opacity-50">
+                  <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-lg">
+                    <FileText className="text-muted-foreground h-5 w-5" />
+                  </div>
+                  <span className="text-muted-foreground text-xs font-medium">Cargando...</span>
+                </div>
+              ) : existingInvoice && existingInvoice.pdfUrl ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setInvoiceDetailModalOpen(true)}
+                      className="group bg-card flex h-24 w-28 flex-col items-center justify-center gap-2 rounded-xl border p-3 shadow-sm transition-all hover:border-green-500 hover:bg-green-500/5 hover:shadow-md"
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10 transition-colors group-hover:bg-green-500/20">
+                        <Eye className="h-5 w-5 text-green-600" />
+                      </div>
+                      <span className="text-muted-foreground group-hover:text-foreground text-xs font-medium">
+                        Comprobante
+                      </span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{existingInvoice.fullNumber}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => !isCancelled && setSunatModalOpen(true)}
+                      disabled={isCancelled}
+                      className={`group bg-card flex h-24 w-28 flex-col items-center justify-center gap-2 rounded-xl border p-3 shadow-sm transition-all ${
+                        isCancelled
+                          ? 'cursor-not-allowed opacity-50'
+                          : 'hover:border-blue-500 hover:bg-blue-500/5 hover:shadow-md'
+                      }`}
+                    >
+                      <div
+                        className={`flex h-10 w-10 items-center justify-center rounded-lg transition-colors ${
+                          isCancelled ? 'bg-muted' : 'bg-blue-500/10 group-hover:bg-blue-500/20'
+                        }`}
+                      >
+                        <Send
+                          className={`h-5 w-5 ${isCancelled ? 'text-muted-foreground' : 'text-blue-600'}`}
+                        />
+                      </div>
+                      <span className="text-muted-foreground group-hover:text-foreground text-xs font-medium">
+                        SUNAT
+                      </span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {isCancelled ? (
+                      <p>No disponible para pagos cancelados</p>
+                    ) : (
+                      <p>Generar comprobante electrónico</p>
+                    )}
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </div>
+          </TooltipProvider>
         </motion.div>
       )}
-
-      {/* Cancel Payment (if approved or completed) */}
-      {canCancel && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.15 }}
-        >
-          <Card className="border-destructive/20 bg-destructive/5">
-            <CardHeader>
-              <CardTitle className="text-destructive">Cancelar Pago</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4 text-sm">
-                Al cancelar este pago, el saldo de la deuda volverá a como estaba antes de registrar
-                el pago.
-              </p>
-              <Button variant="destructive" onClick={() => setCancelModalOpen(true)}>
-                <XCircle className="mr-2 h-4 w-4" />
-                Cancelar Pago
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {/* SUNAT Invoice Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.15 }}
-      >
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5" />
-              Comprobante Electrónico
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isLoadingInvoice ? (
-              <p className="text-muted-foreground text-sm">
-                Cargando información del comprobante...
-              </p>
-            ) : existingInvoice && existingInvoice.pdfUrl ? (
-              <div className="space-y-3">
-                <p className="text-muted-foreground text-sm">
-                  Este pago ya tiene un comprobante generado:{' '}
-                  <span className="text-foreground font-medium">{existingInvoice.fullNumber}</span>
-                </p>
-                <Button onClick={() => setInvoiceDetailModalOpen(true)}>
-                  <Eye className="mr-2 h-4 w-4" />
-                  Ver Detalles
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <p className="text-muted-foreground text-sm">
-                  Genera un comprobante electrónico (Factura o Boleta) para este pago.
-                </p>
-                <Button onClick={() => setSunatModalOpen(true)}>
-                  <Send className="mr-2 h-4 w-4" />
-                  Enviar a SUNAT
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </motion.div>
 
       {/* Content Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
