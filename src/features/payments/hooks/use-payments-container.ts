@@ -10,8 +10,8 @@ export function usePaymentsContainer() {
   const [status, setStatus] = useState<StatusPayment | undefined>(undefined);
   const [startDate, setStartDate] = useState<string | undefined>(undefined);
   const [endDate, setEndDate] = useState<string | undefined>(undefined);
-  const [orderBy, setOrderBy] = useState<OrderBy>('createdAt');
-  const [order, setOrder] = useState<Order>('DESC');
+  const [orderBy, setOrderBy] = useState<OrderBy>('numberTicket');
+  const [order, setOrder] = useState<Order>('ASC');
 
   const params: PaymentsQueryParams = useMemo(
     () => ({

@@ -77,12 +77,12 @@ export function PaymentsFilters({
     onStatusChange(undefined);
     onStartDateChange(undefined);
     onEndDateChange(undefined);
-    onOrderByChange('createdAt');
-    onOrderChange('DESC');
+    onOrderByChange('numberTicket');
+    onOrderChange('ASC');
   };
 
   const hasActiveFilters =
-    search || status || startDate || endDate || orderBy !== 'createdAt' || order !== 'DESC';
+    search || status || startDate || endDate || orderBy !== 'numberTicket' || order !== 'ASC';
 
   return (
     <Card className="border-none shadow-sm">
