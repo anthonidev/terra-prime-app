@@ -18,6 +18,8 @@ export function PaymentsContainer() {
     status,
     startDate,
     endDate,
+    orderBy,
+    order,
     isLoading,
     isError,
     isEmpty,
@@ -26,6 +28,8 @@ export function PaymentsContainer() {
     setStatus,
     setStartDate,
     setEndDate,
+    setOrderBy,
+    setOrder,
   } = usePaymentsContainer();
 
   const showEmptyState = isEmpty && !isError && !search && !status && !startDate && !endDate;
@@ -65,10 +69,14 @@ export function PaymentsContainer() {
               status={status}
               startDate={startDate}
               endDate={endDate}
+              orderBy={orderBy}
+              order={order}
               onSearchChange={setSearch}
               onStatusChange={setStatus}
               onStartDateChange={setStartDate}
               onEndDateChange={setEndDate}
+              onOrderByChange={setOrderBy}
+              onOrderChange={setOrder}
               totalItems={meta?.totalItems ?? 0}
             />
           </motion.div>

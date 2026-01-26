@@ -95,6 +95,10 @@ export interface PaymentsResponse {
   meta: PaginationMeta;
 }
 
+// Order Types
+export type OrderBy = 'createdAt' | 'numberTicket';
+export type Order = 'ASC' | 'DESC';
+
 // Query Params
 export interface PaymentsQueryParams {
   page?: number;
@@ -103,6 +107,8 @@ export interface PaymentsQueryParams {
   endDate?: string;
   search?: string;
   status?: StatusPayment;
+  orderBy?: OrderBy;
+  order?: Order;
 }
 
 // Payment Voucher

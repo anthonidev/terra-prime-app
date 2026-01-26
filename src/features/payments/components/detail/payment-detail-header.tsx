@@ -1,7 +1,7 @@
 'use client';
 
 import { ArrowLeft, Calendar, FileText } from 'lucide-react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,7 @@ interface PaymentDetailHeaderProps {
 }
 
 export function PaymentDetailHeader({ payment }: PaymentDetailHeaderProps) {
+  const router = useRouter();
   const client = payment.client;
   const lead = client?.lead;
   const clientName =
@@ -32,12 +33,10 @@ export function PaymentDetailHeader({ payment }: PaymentDetailHeaderProps) {
           variant="ghost"
           size="sm"
           className="text-muted-foreground hover:text-foreground pl-0"
-          asChild
+          onClick={() => router.back()}
         >
-          <Link href="/pagos">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver a pagos
-          </Link>
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Volver
         </Button>
       </div>
 

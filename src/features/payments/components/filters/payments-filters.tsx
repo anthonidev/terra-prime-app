@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Filter, Calendar, CheckCircle2 } from 'lucide-react';
+import { Search, Filter, Calendar, CheckCircle2, ArrowUpDown } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { StatusPayment } from '../../types';
+import { StatusPayment, OrderBy, Order } from '../../types';
 import { Separator } from '@/components/ui/separator';
 
 interface PaymentsFiltersProps {
@@ -19,10 +19,14 @@ interface PaymentsFiltersProps {
   status: StatusPayment | undefined;
   startDate: string | undefined;
   endDate: string | undefined;
+  orderBy: OrderBy;
+  order: Order;
   onSearchChange: (value: string) => void;
   onStatusChange: (value: StatusPayment | undefined) => void;
   onStartDateChange: (value: string | undefined) => void;
   onEndDateChange: (value: string | undefined) => void;
+  onOrderByChange: (value: OrderBy) => void;
+  onOrderChange: (value: Order) => void;
   totalItems?: number;
 }
 
@@ -35,15 +39,29 @@ const statusOptions = [
   { value: StatusPayment.CANCELLED, label: 'Cancelado' },
 ];
 
+const orderByOptions = [
+  { value: 'createdAt', label: 'Fecha de creación' },
+  { value: 'numberTicket', label: 'N° Boleta' },
+];
+
+const orderOptions = [
+  { value: 'DESC', label: 'Descendente' },
+  { value: 'ASC', label: 'Ascendente' },
+];
+
 export function PaymentsFilters({
   search,
   status,
   startDate,
   endDate,
+  orderBy,
+  order,
   onSearchChange,
   onStatusChange,
   onStartDateChange,
   onEndDateChange,
+  onOrderByChange,
+  onOrderChange,
   totalItems = 0,
 }: PaymentsFiltersProps) {
   const handleStatusChange = (value: string) => {
@@ -59,9 +77,12 @@ export function PaymentsFilters({
     onStatusChange(undefined);
     onStartDateChange(undefined);
     onEndDateChange(undefined);
+    onOrderByChange('createdAt');
+    onOrderChange('DESC');
   };
 
-  const hasActiveFilters = search || status || startDate || endDate;
+  const hasActiveFilters =
+    search || status || startDate || endDate || orderBy !== 'createdAt' || order !== 'DESC';
 
   return (
     <Card className="border-none shadow-sm">
@@ -101,7 +122,7 @@ export function PaymentsFilters({
         <Separator className="bg-border/50" />
 
         {/* Filters Grid */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {/* Status Filter */}
           <div className="space-y-1.5">
             <label className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
@@ -148,6 +169,46 @@ export function PaymentsFilters({
               onChange={(e) => onEndDateChange(e.target.value || undefined)}
               className="bg-background border-input/60 h-9"
             />
+          </div>
+
+          {/* Order By Filter */}
+          <div className="space-y-1.5">
+            <label className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+              <ArrowUpDown className="h-3.5 w-3.5" />
+              Ordenar por
+            </label>
+            <Select value={orderBy} onValueChange={(value) => onOrderByChange(value as OrderBy)}>
+              <SelectTrigger className="bg-background border-input/60 h-9">
+                <SelectValue placeholder="Ordenar por" />
+              </SelectTrigger>
+              <SelectContent>
+                {orderByOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Order Direction Filter */}
+          <div className="space-y-1.5">
+            <label className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+              <ArrowUpDown className="h-3.5 w-3.5" />
+              Dirección
+            </label>
+            <Select value={order} onValueChange={(value) => onOrderChange(value as Order)}>
+              <SelectTrigger className="bg-background border-input/60 h-9">
+                <SelectValue placeholder="Dirección" />
+              </SelectTrigger>
+              <SelectContent>
+                {orderOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </CardContent>
