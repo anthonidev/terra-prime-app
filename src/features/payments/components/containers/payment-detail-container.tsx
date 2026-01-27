@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Edit, FileText, Eye, Send, XCircle } from 'lucide-react';
+import { Edit, FileText, Eye, Send, XCircle, FilePlus2, FileMinus2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useAuth } from '@/features/auth/hooks/use-auth';
 import { usePaymentDetail } from '../../hooks/use-payment-detail';
@@ -19,8 +19,11 @@ import { CancelPaymentModal } from '../dialogs/cancel-payment-modal';
 import { SunatInvoiceModal } from '@/features/invoices/components/dialogs/sunat-invoice-modal';
 import { InvoiceSuccessModal } from '@/features/invoices/components/dialogs/invoice-success-modal';
 import { InvoiceDetailModal } from '@/features/invoices/components/dialogs/invoice-detail-modal';
+import { CreateDebitNoteModal } from '@/features/invoices/components/dialogs/create-debit-note-modal';
+import { CreateCreditNoteModal } from '@/features/invoices/components/dialogs/create-credit-note-modal';
+import { NoteSuccessModal } from '@/features/invoices/components/dialogs/note-success-modal';
 import { StatusPayment } from '../../types';
-import type { Invoice } from '@/features/invoices/types';
+import { InvoiceStatus, type Invoice } from '@/features/invoices/types';
 
 interface PaymentDetailContainerProps {
   paymentId: string;
@@ -32,7 +35,11 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
   const [sunatModalOpen, setSunatModalOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [invoiceDetailModalOpen, setInvoiceDetailModalOpen] = useState(false);
+  const [debitNoteModalOpen, setDebitNoteModalOpen] = useState(false);
+  const [creditNoteModalOpen, setCreditNoteModalOpen] = useState(false);
+  const [noteSuccessModalOpen, setNoteSuccessModalOpen] = useState(false);
   const [createdInvoice, setCreatedInvoice] = useState<Invoice | null>(null);
+  const [createdNote, setCreatedNote] = useState<Invoice | null>(null);
 
   const { data: payment, isLoading, isError } = usePaymentDetail(paymentId);
   const { data: existingInvoice, isLoading: isLoadingInvoice } = useInvoiceByPayment(paymentId);
@@ -42,6 +49,12 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
   const handleInvoiceSuccess = (invoice: Invoice) => {
     setCreatedInvoice(invoice);
     setSuccessModalOpen(true);
+  };
+
+  // Handle successful note creation
+  const handleNoteSuccess = (invoice: Invoice) => {
+    setCreatedNote(invoice);
+    setNoteSuccessModalOpen(true);
   };
 
   // Loading state
@@ -73,6 +86,12 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
 
   // Check if any action button should be shown
   const showActionsBar = hasAdminRole && (canUpdate || canCancel || !isCancelled);
+
+  // Check if invoice exists for debit/credit notes
+  const hasInvoice = existingInvoice && existingInvoice.pdfUrl;
+
+  // Check if can create notes (invoice exists and is not rejected)
+  const canCreateNotes = hasInvoice && existingInvoice.status !== InvoiceStatus.REJECTED;
 
   return (
     <div className="space-y-6">
@@ -211,6 +230,50 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
                   </TooltipContent>
                 </Tooltip>
               )}
+
+              {/* Debit Note Button - Only show if invoice exists and is not rejected */}
+              {canCreateNotes && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setDebitNoteModalOpen(true)}
+                      className="group bg-card flex h-24 w-28 flex-col items-center justify-center gap-2 rounded-xl border p-3 shadow-sm transition-all hover:border-orange-500 hover:bg-orange-500/5 hover:shadow-md"
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500/10 transition-colors group-hover:bg-orange-500/20">
+                        <FilePlus2 className="h-5 w-5 text-orange-600" />
+                      </div>
+                      <span className="text-muted-foreground group-hover:text-foreground text-xs font-medium">
+                        Nota Débito
+                      </span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Crear nota de débito</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+
+              {/* Credit Note Button - Only show if invoice exists and is not rejected */}
+              {canCreateNotes && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setCreditNoteModalOpen(true)}
+                      className="group bg-card flex h-24 w-28 flex-col items-center justify-center gap-2 rounded-xl border p-3 shadow-sm transition-all hover:border-purple-500 hover:bg-purple-500/5 hover:shadow-md"
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/10 transition-colors group-hover:bg-purple-500/20">
+                        <FileMinus2 className="h-5 w-5 text-purple-600" />
+                      </div>
+                      <span className="text-muted-foreground group-hover:text-foreground text-xs font-medium">
+                        Nota Crédito
+                      </span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Crear nota de crédito</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </div>
           </TooltipProvider>
         </motion.div>
@@ -281,6 +344,35 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
         open={invoiceDetailModalOpen}
         onOpenChange={setInvoiceDetailModalOpen}
         invoice={existingInvoice ?? null}
+      />
+
+      {/* Create Debit Note Modal */}
+      {existingInvoice && (
+        <CreateDebitNoteModal
+          open={debitNoteModalOpen}
+          onOpenChange={setDebitNoteModalOpen}
+          relatedInvoice={existingInvoice}
+          paymentId={paymentId}
+          onSuccess={handleNoteSuccess}
+        />
+      )}
+
+      {/* Create Credit Note Modal */}
+      {existingInvoice && (
+        <CreateCreditNoteModal
+          open={creditNoteModalOpen}
+          onOpenChange={setCreditNoteModalOpen}
+          relatedInvoice={existingInvoice}
+          paymentId={paymentId}
+          onSuccess={handleNoteSuccess}
+        />
+      )}
+
+      {/* Note Success Modal */}
+      <NoteSuccessModal
+        open={noteSuccessModalOpen}
+        onOpenChange={setNoteSuccessModalOpen}
+        invoice={createdNote}
       />
     </div>
   );

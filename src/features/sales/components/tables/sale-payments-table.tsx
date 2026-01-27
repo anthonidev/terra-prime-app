@@ -10,6 +10,8 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import { DataTable } from '@/shared/components/data-table/data-table';
 import { PaymentMetadataModal } from '../dialogs/payment-metadata-modal';
 import type { PaymentSummary, StatusPayment, CurrencyType } from '../../types';
@@ -56,16 +58,29 @@ interface SalePaymentsTableProps {
 export function SalePaymentsTable({ payments, currency }: SalePaymentsTableProps) {
   const [selectedPayment, setSelectedPayment] = useState<PaymentSummary | null>(null);
   const [ticketSortOrder, setTicketSortOrder] = useState<SortOrder>('asc');
+  const [showCancelled, setShowCancelled] = useState(false);
 
-  // Sort payments by ticket number
-  const sortedPayments = useMemo(() => {
-    if (!ticketSortOrder) return payments;
+  // Filter and sort payments
+  const filteredAndSortedPayments = useMemo(() => {
+    // First filter out cancelled if needed
+    let filtered = payments;
+    if (!showCancelled) {
+      filtered = payments.filter((payment) => payment.status !== 'CANCELLED');
+    }
 
-    return [...payments].sort((a, b) => {
+    // Then sort by ticket number
+    if (!ticketSortOrder) return filtered;
+
+    return [...filtered].sort((a, b) => {
       const comparison = compareTicketNumbers(a.numberTicket, b.numberTicket);
       return ticketSortOrder === 'asc' ? comparison : -comparison;
     });
-  }, [payments, ticketSortOrder]);
+  }, [payments, ticketSortOrder, showCancelled]);
+
+  // Count cancelled payments
+  const cancelledCount = useMemo(() => {
+    return payments.filter((payment) => payment.status === 'CANCELLED').length;
+  }, [payments]);
 
   // Toggle sort order: asc -> desc -> null -> asc
   const toggleTicketSort = () => {
@@ -204,6 +219,22 @@ export function SalePaymentsTable({ payments, currency }: SalePaymentsTableProps
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>Resumen de Pagos</CardTitle>
             <div className="flex items-center gap-4">
+              {/* Show Cancelled Filter */}
+              {cancelledCount > 0 && (
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="showCancelled"
+                    checked={showCancelled}
+                    onCheckedChange={(checked) => setShowCancelled(checked === true)}
+                  />
+                  <Label
+                    htmlFor="showCancelled"
+                    className="text-muted-foreground cursor-pointer text-sm font-normal"
+                  >
+                    Mostrar cancelados ({cancelledCount})
+                  </Label>
+                </div>
+              )}
               {/* Sort by Ticket Number */}
               <Button variant="outline" size="sm" onClick={toggleTicketSort} className="h-9 gap-2">
                 {ticketSortOrder === 'asc' ? (
@@ -231,8 +262,8 @@ export function SalePaymentsTable({ payments, currency }: SalePaymentsTableProps
           </div>
         </CardHeader>
         <CardContent>
-          {sortedPayments.length > 0 ? (
-            <DataTable columns={columns} data={sortedPayments} />
+          {filteredAndSortedPayments.length > 0 ? (
+            <DataTable columns={columns} data={filteredAndSortedPayments} />
           ) : (
             <div className="bg-muted/30 flex h-32 items-center justify-center rounded-lg border">
               <p className="text-muted-foreground">No hay pagos registrados</p>

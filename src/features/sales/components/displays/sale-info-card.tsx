@@ -55,9 +55,9 @@ export function SaleInfoCard({ sale }: SaleInfoCardProps) {
               <Building2 className="h-4 w-4" />
               Lote
             </div>
-            <p className="font-medium">Lote {sale.lot.name}</p>
+            <p className="font-medium">Lote {sale.lot?.name}</p>
             <p className="text-muted-foreground text-sm">
-              {sale.lot.project} - {sale.lot.stage} - Mz. {sale.lot.block}
+              {sale.lot?.project} - {sale.lot?.stage} - Mz. {sale.lot?.block}
             </p>
           </div>
 

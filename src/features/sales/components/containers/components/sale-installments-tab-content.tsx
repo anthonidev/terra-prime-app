@@ -13,6 +13,7 @@ import { DataTable } from '@/shared/components/data-table/data-table';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency } from '@/shared/utils/currency-formatter';
 import { RegisterInstallmentPaymentApprovedModal } from '../../dialogs/register-installment-payment-approved-modal';
+import { RegisterLateFeePaymentModal } from '../../dialogs/register-late-fee-payment-modal';
 import type {
   SaleDetailInstallment,
   SaleDetailFinancingItem,
@@ -52,7 +53,12 @@ export function SaleInstallmentsTabContent({
   financingItem,
 }: SaleInstallmentsTabContentProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isLateFeeModalOpen, setIsLateFeeModalOpen] = useState(false);
   const currencySymbol = currency === 'USD' ? '$' : 'S/';
+
+  // Check if there's pending late fee
+  const pendingLateFee = financingItem?.totalLateFeeePending ?? 0;
+  const hasLateFee = pendingLateFee > 0;
 
   // Helper to parse numeric values that might be strings
   const parseNumeric = (value: string | number | null | undefined): number => {
@@ -289,13 +295,25 @@ export function SaleInstallmentsTabContent({
       <Card>
         <CardHeader>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-2">
               <CardTitle>{title}</CardTitle>
               {canRegisterPayment && financingId && (
-                <Button size="sm" onClick={() => setIsPaymentModalOpen(true)}>
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Registrar Pago
-                </Button>
+                <>
+                  <Button size="sm" onClick={() => setIsPaymentModalOpen(true)}>
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Registrar Pago
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={hasLateFee ? 'destructive' : 'outline'}
+                    onClick={() => setIsLateFeeModalOpen(true)}
+                    disabled={!hasLateFee}
+                    className={!hasLateFee ? 'cursor-not-allowed opacity-50' : ''}
+                  >
+                    <AlertTriangle className="mr-2 h-4 w-4" />
+                    Registrar Pago de Mora
+                  </Button>
+                </>
               )}
             </div>
             {installments.length > 0 && (
@@ -369,6 +387,20 @@ export function SaleInstallmentsTabContent({
           saleId={saleId}
           currency={currency}
           title={`Registrar Pago - ${title}`}
+          onSuccess={handlePaymentSuccess}
+        />
+      )}
+
+      {/* Late Fee Payment Modal */}
+      {financingId && (
+        <RegisterLateFeePaymentModal
+          open={isLateFeeModalOpen}
+          onOpenChange={setIsLateFeeModalOpen}
+          financingId={financingId}
+          saleId={saleId}
+          currency={currency}
+          title={`Registrar Pago de Mora - ${title}`}
+          pendingLateFee={pendingLateFee}
           onSuccess={handlePaymentSuccess}
         />
       )}
