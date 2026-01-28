@@ -16,6 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
   VoucherForm,
   type VoucherFormData,
@@ -55,6 +56,7 @@ export function RegisterInstallmentPaymentApprovedModal({
     new Date().toISOString().split('T')[0]
   );
   const [numberTicket, setNumberTicket] = useState<string>('');
+  const [observation, setObservation] = useState<string>('');
   const [errors, setErrors] = useState<Record<number, Record<string, string>>>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -184,6 +186,9 @@ export function RegisterInstallmentPaymentApprovedModal({
       if (numberTicket.trim()) {
         formData.append('numberTicket', numberTicket.trim());
       }
+      if (observation.trim()) {
+        formData.append('observation', observation.trim());
+      }
 
       // Payments (vouchers)
       vouchers.forEach((voucher, index) => {
@@ -227,6 +232,7 @@ export function RegisterInstallmentPaymentApprovedModal({
       setVouchers([{ ...initialVoucherData }]);
       setDateOperation(new Date().toISOString().split('T')[0]);
       setNumberTicket('');
+      setObservation('');
       setErrors({});
       setFormErrors({});
       onOpenChange(false);
@@ -284,6 +290,20 @@ export function RegisterInstallmentPaymentApprovedModal({
               placeholder="Ej: 001-0001234"
               value={numberTicket}
               onChange={(e) => setNumberTicket(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* Observation Field */}
+        <div className="px-1">
+          <div className="space-y-2">
+            <Label htmlFor="observation">Observación (Opcional)</Label>
+            <Textarea
+              id="observation"
+              placeholder="Ingrese una observación..."
+              value={observation}
+              onChange={(e) => setObservation(e.target.value)}
+              rows={2}
             />
           </div>
         </div>

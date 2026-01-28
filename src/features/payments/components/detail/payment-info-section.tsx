@@ -5,7 +5,15 @@ import { Separator } from '@/components/ui/separator';
 import { UserInfo } from '@/shared/components/user-info';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Calendar, CheckCircle2, CreditCard, FileText, Settings, XCircle } from 'lucide-react';
+import {
+  Calendar,
+  CheckCircle2,
+  CreditCard,
+  FileText,
+  MessageSquare,
+  Settings,
+  XCircle,
+} from 'lucide-react';
 import type { PaymentDetail } from '../../types';
 import { PaymentConfigBadge } from '../shared/payment-config-badge';
 
@@ -99,15 +107,13 @@ export function PaymentInfoSection({ payment }: PaymentInfoSectionProps) {
               </div>
             )}
 
-            {payment.banckName && (
-              <div className="space-y-1">
-                <div className="text-muted-foreground flex items-center gap-1.5">
-                  <FileText className="h-3.5 w-3.5" />
-                  <span className="text-xs font-medium">Banco</span>
-                </div>
-                <p className="pl-5 text-sm font-medium">{payment.banckName}</p>
+            <div className="col-span-2 space-y-1">
+              <div className="text-muted-foreground flex items-center gap-1.5">
+                <MessageSquare className="h-3.5 w-3.5" />
+                <span className="text-xs font-medium">Observación</span>
               </div>
-            )}
+              <p className="pl-5 text-sm">{payment?.observation}</p>
+            </div>
           </div>
         </div>
 

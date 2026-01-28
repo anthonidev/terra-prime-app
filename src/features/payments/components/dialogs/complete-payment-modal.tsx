@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Edit, Loader2 } from 'lucide-react';
 import {
   Dialog,
@@ -13,6 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { useCompletePayment } from '../../hooks/use-complete-payment';
 import type { CompletePaymentInput } from '../../types';
 
@@ -20,12 +21,35 @@ interface CompletePaymentModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   paymentId: string;
+  initialData?: {
+    numberTicket?: string | null;
+    observation?: string | null;
+    dateOperation?: string | null;
+  };
 }
 
-export function CompletePaymentModal({ open, onOpenChange, paymentId }: CompletePaymentModalProps) {
+export function CompletePaymentModal({
+  open,
+  onOpenChange,
+  paymentId,
+  initialData,
+}: CompletePaymentModalProps) {
   const [formData, setFormData] = useState<CompletePaymentInput>({
     numberTicket: '',
+    observation: '',
+    dateOperation: '',
   });
+
+  // Initialize form with existing payment data when modal opens
+  useEffect(() => {
+    if (open && initialData) {
+      setFormData({
+        numberTicket: initialData.numberTicket || '',
+        observation: initialData.observation || '',
+        dateOperation: initialData.dateOperation ? initialData.dateOperation.split('T')[0] : '',
+      });
+    }
+  }, [open, initialData]);
 
   const { mutate, isPending } = useCompletePayment();
 
@@ -39,12 +63,16 @@ export function CompletePaymentModal({ open, onOpenChange, paymentId }: Complete
       numberTicket: formData.numberTicket,
     };
 
-    if (formData.numberTicket?.trim()) {
-      submitData.numberTicket = formData.numberTicket;
+    if (formData.observation?.trim()) {
+      submitData.observation = formData.observation;
     }
 
-    // Only submit if there's at least one value
-    if (!submitData.numberTicket) {
+    if (formData.dateOperation?.trim()) {
+      submitData.dateOperation = formData.dateOperation;
+    }
+
+    // Only submit if there's at least the required field
+    if (!submitData.numberTicket?.trim()) {
       return;
     }
 
@@ -55,6 +83,8 @@ export function CompletePaymentModal({ open, onOpenChange, paymentId }: Complete
           // Reset form and close modal
           setFormData({
             numberTicket: '',
+            observation: '',
+            dateOperation: '',
           });
           onOpenChange(false);
         },
@@ -66,6 +96,8 @@ export function CompletePaymentModal({ open, onOpenChange, paymentId }: Complete
     if (!isPending) {
       setFormData({
         numberTicket: '',
+        observation: '',
+        dateOperation: '',
       });
       onOpenChange(false);
     }
@@ -101,9 +133,34 @@ export function CompletePaymentModal({ open, onOpenChange, paymentId }: Complete
             />
           </div>
 
+          {/* Fecha de Operación (Opcional) */}
+          <div className="space-y-2">
+            <Label htmlFor="dateOperation">Fecha de Operación</Label>
+            <Input
+              id="dateOperation"
+              type="date"
+              value={formData.dateOperation}
+              onChange={(e) => handleChange('dateOperation', e.target.value)}
+              disabled={isPending}
+            />
+          </div>
+
+          {/* Observación (Opcional) */}
+          <div className="space-y-2">
+            <Label htmlFor="observation">Observación</Label>
+            <Textarea
+              id="observation"
+              value={formData.observation}
+              onChange={(e) => handleChange('observation', e.target.value)}
+              placeholder="Ingrese una observación (opcional)"
+              disabled={isPending}
+              rows={3}
+            />
+          </div>
+
           {!hasData && (
             <p className="text-muted-foreground text-xs">
-              * Al menos uno de los campos debe tener un valor para actualizar el pago.
+              * El número de ticket es requerido para actualizar el pago.
             </p>
           )}
         </div>

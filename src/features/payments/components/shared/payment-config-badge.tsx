@@ -1,15 +1,19 @@
 import { Badge } from '@/components/ui/badge';
 import { PaymentConfigCode } from '../../types';
 
+type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
+
 interface PaymentConfigBadgeProps {
   code: PaymentConfigCode;
   name: string;
 }
 
-const configStyles: Record<
-  PaymentConfigCode,
-  { variant: 'default' | 'secondary' | 'outline'; className: string }
-> = {
+interface ConfigStyleItem {
+  variant: BadgeVariant;
+  className: string;
+}
+
+const configStyles = {
   SALE_PAYMENT: {
     variant: 'default',
     className: 'bg-green-100 text-green-800 hover:bg-green-100',
@@ -26,7 +30,7 @@ const configStyles: Record<
     variant: 'outline',
     className: 'bg-amber-100 text-amber-800 hover:bg-amber-100',
   },
-};
+} as const satisfies Record<PaymentConfigCode, ConfigStyleItem>;
 
 // Display names for payment types (shorter versions)
 const displayNames: Record<PaymentConfigCode, string> = {

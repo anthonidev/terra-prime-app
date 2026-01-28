@@ -13,6 +13,7 @@ import {
   Hash,
   Image as ImageIcon,
   Landmark,
+  MessageSquare,
   Pencil,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -133,6 +134,16 @@ export function VouchersSection({ payment }: VouchersSectionProps) {
                         </Button>
                       </div>
                     </div>
+
+                    {voucher.observation && (
+                      <div className="col-span-2 space-y-1">
+                        <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
+                          <MessageSquare className="h-3.5 w-3.5" />
+                          Observación
+                        </p>
+                        <p className="text-sm">{voucher.observation}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 

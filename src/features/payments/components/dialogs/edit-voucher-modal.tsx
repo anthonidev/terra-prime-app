@@ -23,6 +23,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { useUpdateVoucher } from '../../hooks/use-payment-detail';
 import type { PaymentVoucher, UpdateVoucherInput, StatusPayment } from '../../types';
 
@@ -46,6 +47,7 @@ export function EditVoucherModal({
     transactionReference: '',
     transactionDate: '',
     codeOperation: '',
+    observation: '',
   });
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
@@ -70,6 +72,7 @@ export function EditVoucherModal({
         transactionReference: voucher.transactionReference || '',
         transactionDate: formatDateForInput(voucher.transactionDate),
         codeOperation: voucher.codeOperation || '',
+        observation: voucher.observation || '',
       });
     }
   }, [voucher, open]);
@@ -96,6 +99,9 @@ export function EditVoucherModal({
     }
     if (formData.codeOperation !== (voucher.codeOperation || '')) {
       updateData.codeOperation = formData.codeOperation;
+    }
+    if (formData.observation !== (voucher.observation || '')) {
+      updateData.observation = formData.observation;
     }
 
     // Only submit if there are changes
@@ -132,6 +138,7 @@ export function EditVoucherModal({
         transactionReference: '',
         transactionDate: '',
         codeOperation: '',
+        observation: '',
       });
       onOpenChange(false);
     }
@@ -148,7 +155,8 @@ export function EditVoucherModal({
     (formData.bankName !== voucher.bankName ||
       formData.transactionReference !== voucher.transactionReference ||
       formData.transactionDate !== formatDateForInput(voucher.transactionDate) ||
-      formData.codeOperation !== (voucher.codeOperation || ''));
+      formData.codeOperation !== (voucher.codeOperation || '') ||
+      formData.observation !== (voucher.observation || ''));
 
   return (
     <>
@@ -210,6 +218,19 @@ export function EditVoucherModal({
                 onChange={(e) => handleChange('codeOperation', e.target.value)}
                 placeholder="Código de operación"
                 disabled={isPending}
+              />
+            </div>
+
+            {/* Observación */}
+            <div className="space-y-2">
+              <Label htmlFor="observation">Observación</Label>
+              <Textarea
+                id="observation"
+                value={formData.observation}
+                onChange={(e) => handleChange('observation', e.target.value)}
+                placeholder="Ingrese una observación (opcional)"
+                disabled={isPending}
+                rows={3}
               />
             </div>
           </div>

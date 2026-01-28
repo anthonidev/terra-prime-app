@@ -120,6 +120,7 @@ export interface PaymentVoucher {
   transactionReference: string;
   transactionDate: string;
   codeOperation?: string;
+  observation?: string;
   isActive: boolean;
 }
 
@@ -134,6 +135,7 @@ export interface PaymentDetail {
   banckName?: string | null;
   dateOperation?: string | null;
   numberTicket?: string | null;
+  observation?: string | null;
   paymentConfig: PaymentConfig;
   reason?: string | null;
   user: UserBasic;
@@ -155,6 +157,8 @@ export interface RejectPaymentInput {
 
 export interface CompletePaymentInput {
   numberTicket: string;
+  observation?: string;
+  dateOperation?: string;
 }
 
 export interface CancelPaymentInput {
@@ -170,6 +174,7 @@ export interface UpdateVoucherInput {
   transactionReference?: string;
   transactionDate?: string;
   codeOperation?: string;
+  observation?: string;
 }
 
 export interface UpdateVoucherResponse {

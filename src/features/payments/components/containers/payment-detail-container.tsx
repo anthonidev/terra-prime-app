@@ -76,8 +76,10 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
   // Check if user can approve/reject (role code "FAC" or "ADM" and status PENDING)
   const canReview = hasAdminRole && payment.status === StatusPayment.PENDING;
 
-  // Check if user can update approved payment (role code "FAC" or "ADM" and status APPROVED)
-  const canUpdate = hasAdminRole && payment.status === StatusPayment.APPROVED;
+  // Check if user can update approved payment (role code "FAC" or "ADM" and status APPROVED or COMPLETED)
+  const canUpdate =
+    hasAdminRole &&
+    (payment.status === StatusPayment.APPROVED || payment.status === StatusPayment.COMPLETED);
 
   // Check if user can cancel payment (role code "FAC" or "ADM" and status APPROVED or COMPLETED)
   const canCancel =
@@ -315,6 +317,11 @@ export function PaymentDetailContainer({ paymentId }: PaymentDetailContainerProp
         open={completeModalOpen}
         onOpenChange={setCompleteModalOpen}
         paymentId={paymentId}
+        initialData={{
+          numberTicket: payment.numberTicket,
+          observation: payment.observation,
+          dateOperation: payment.dateOperation,
+        }}
       />
 
       {/* Cancel Payment Modal */}

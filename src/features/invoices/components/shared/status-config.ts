@@ -2,12 +2,12 @@ import { InvoiceStatus } from '../../types';
 
 type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
 
-interface StatusConfig {
+interface StatusConfigItem {
   label: string;
   variant: BadgeVariant;
 }
 
-export const invoiceStatusConfig: Record<InvoiceStatus, StatusConfig> = {
+export const invoiceStatusConfig = {
   [InvoiceStatus.DRAFT]: {
     label: 'Borrador',
     variant: 'outline',
@@ -32,4 +32,4 @@ export const invoiceStatusConfig: Record<InvoiceStatus, StatusConfig> = {
     label: 'Anulado',
     variant: 'destructive',
   },
-};
+} as const satisfies Record<InvoiceStatus, StatusConfigItem>;
