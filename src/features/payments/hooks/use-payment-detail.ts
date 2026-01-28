@@ -10,7 +10,7 @@ export function usePaymentDetail(id: string) {
   return useQuery({
     queryKey: ['payment', id],
     queryFn: () => getPaymentDetail(id),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 60 * 1000, // 1 minute
   });
 }
 

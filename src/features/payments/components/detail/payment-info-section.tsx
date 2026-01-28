@@ -88,31 +88,29 @@ export function PaymentInfoSection({ payment }: PaymentInfoSectionProps) {
           <h3 className="text-muted-foreground text-sm font-medium tracking-wider uppercase">
             Detalles de Transacción
           </h3>
-          <div className="bg-muted/30 border-border/50 grid gap-4 rounded-lg border p-4 sm:grid-cols-2">
-            {payment.numberTicket ? (
-              <div className="space-y-1">
-                <div className="text-muted-foreground flex items-center gap-1.5">
-                  <CreditCard className="h-3.5 w-3.5" />
-                  <span className="text-xs font-medium">Número de Boleta</span>
-                </div>
+          <div className="bg-muted/30 border-border/50 grid gap-4 rounded-lg border p-4 sm:grid-cols-1">
+            <div className="space-y-1">
+              <div className="text-muted-foreground flex items-center gap-1.5">
+                <CreditCard className="h-3.5 w-3.5" />
+                <span className="text-xs font-medium">Número de Boleta</span>
+              </div>
+              {payment.numberTicket ? (
                 <p className="pl-5 font-mono text-sm font-medium">{payment.numberTicket}</p>
-              </div>
-            ) : (
-              <div className="space-y-1">
-                <div className="text-muted-foreground flex items-center gap-1.5">
-                  <CreditCard className="h-3.5 w-3.5" />
-                  <span className="text-xs font-medium">Número de Boleta</span>
-                </div>
+              ) : (
                 <p className="text-muted-foreground pl-5 text-sm">-</p>
-              </div>
-            )}
+              )}
+            </div>
 
-            <div className="col-span-2 space-y-1">
+            <div className="space-y-1">
               <div className="text-muted-foreground flex items-center gap-1.5">
                 <MessageSquare className="h-3.5 w-3.5" />
                 <span className="text-xs font-medium">Observación</span>
               </div>
-              <p className="pl-5 text-sm">{payment?.observation}</p>
+              {payment.observation ? (
+                <p className="pl-5 text-sm">{payment.observation}</p>
+              ) : (
+                <p className="text-muted-foreground pl-5 text-sm">-</p>
+              )}
             </div>
           </div>
         </div>
