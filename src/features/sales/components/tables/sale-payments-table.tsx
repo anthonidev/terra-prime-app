@@ -2,8 +2,6 @@
 
 import { useState, useMemo } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { Info, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import Link from 'next/link';
 
@@ -15,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { DataTable } from '@/shared/components/data-table/data-table';
 import { PaymentMetadataModal } from '../dialogs/payment-metadata-modal';
 import type { PaymentSummary, StatusPayment, CurrencyType } from '../../types';
+import { formatDateOnly, formatDateTime } from '@/shared/utils/date-formatter';
 
 type SortOrder = 'asc' | 'desc' | null;
 
@@ -108,8 +107,8 @@ export function SalePaymentsTable({ payments, currency }: SalePaymentsTableProps
       accessorKey: 'createdAt',
       header: 'Fecha de Creación',
       cell: ({ row }) => {
-        const date = new Date(row.getValue('createdAt'));
-        return format(date, 'dd MMM yyyy HH:mm', { locale: es });
+        const date = row.getValue('createdAt') as string;
+        return formatDateTime(date, 'dd MMM yyyy HH:mm');
       },
     },
     {
@@ -118,7 +117,7 @@ export function SalePaymentsTable({ payments, currency }: SalePaymentsTableProps
       cell: ({ row }) => {
         const date = row.getValue('dateOperation') as string | null;
         if (!date) return <span className="text-muted-foreground">-</span>;
-        return format(new Date(date), 'dd MMM yyyy', { locale: es });
+        return formatDateOnly(date, 'dd MMM yyyy');
       },
     },
     {
@@ -169,7 +168,7 @@ export function SalePaymentsTable({ payments, currency }: SalePaymentsTableProps
       cell: ({ row }) => {
         const date = row.getValue('reviewedAt') as string | null;
         if (!date) return <span className="text-muted-foreground">-</span>;
-        return format(new Date(date), 'dd MMM yyyy HH:mm', { locale: es });
+        return formatDateTime(date, 'dd MMM yyyy HH:mm');
       },
     },
     {

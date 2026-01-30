@@ -1,7 +1,6 @@
 'use client';
 
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { formatDateOnly } from '@/shared/utils/date-formatter';
 import { Building2, Calendar, CreditCard, DollarSign, MapPin, User, Users } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -90,9 +89,7 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
               <div className="flex items-center gap-1.5">
                 <Calendar className="text-muted-foreground h-3.5 w-3.5" />
                 <span className="font-medium">
-                  {sale.contractDate
-                    ? format(new Date(sale.contractDate), 'dd MMM yyyy', { locale: es })
-                    : 'N/A'}
+                  {sale.contractDate ? formatDateOnly(sale.contractDate, 'dd MMM yyyy') : 'N/A'}
                 </span>
               </div>
             </div>

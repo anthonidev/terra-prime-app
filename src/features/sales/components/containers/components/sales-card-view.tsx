@@ -1,8 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { formatDateTime } from '@/shared/utils/date-formatter';
 import {
   Calendar,
   User,
@@ -182,7 +181,7 @@ export function SalesCardView({ sales }: SalesCardViewProps) {
                 <div className="flex items-center gap-2 pt-1">
                   <Calendar className="text-muted-foreground h-4 w-4" />
                   <p className="text-muted-foreground text-xs">
-                    {format(new Date(sale.createdAt), "dd 'de' MMMM, yyyy", { locale: es })}
+                    {formatDateTime(sale.createdAt, "dd 'de' MMMM, yyyy")}
                   </p>
                 </div>
               </CardContent>

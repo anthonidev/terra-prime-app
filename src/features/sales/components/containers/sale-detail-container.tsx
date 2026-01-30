@@ -107,8 +107,8 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
     return <SaleDetailSkeleton />;
   }
 
-  // Error state
-  if (isError || !sale) {
+  // Error state - also check if essential data is missing (can happen during navigation back)
+  if (isError || !sale || !sale.lot || !sale.client) {
     return <SaleDetailErrorState />;
   }
 

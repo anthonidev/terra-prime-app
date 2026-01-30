@@ -3,8 +3,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import {
   Calendar,
   DollarSign,
@@ -19,6 +17,7 @@ import {
 import { useState } from 'react';
 import { EditVoucherModal } from '../dialogs/edit-voucher-modal';
 import type { PaymentDetail, PaymentVoucher } from '../../types';
+import { formatDateOnly } from '@/shared/utils/date-formatter';
 
 interface VouchersSectionProps {
   payment: PaymentDetail;
@@ -99,7 +98,7 @@ export function VouchersSection({ payment }: VouchersSectionProps) {
                         Fecha
                       </p>
                       <p className="font-medium">
-                        {format(new Date(voucher.transactionDate), 'dd MMM yyyy', { locale: es })}
+                        {formatDateOnly(voucher.transactionDate, 'dd MMM yyyy')}
                       </p>
                     </div>
 

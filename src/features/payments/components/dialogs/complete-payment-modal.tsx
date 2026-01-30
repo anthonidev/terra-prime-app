@@ -16,6 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useCompletePayment } from '../../hooks/use-complete-payment';
 import type { CompletePaymentInput } from '../../types';
+import { formatIsoToDateInputValue } from '@/shared/utils/date-formatter';
 
 interface CompletePaymentModalProps {
   open: boolean;
@@ -46,7 +47,7 @@ export function CompletePaymentModal({
       setFormData({
         numberTicket: initialData.numberTicket || '',
         observation: initialData.observation || '',
-        dateOperation: initialData.dateOperation ? initialData.dateOperation.split('T')[0] : '',
+        dateOperation: formatIsoToDateInputValue(initialData.dateOperation),
       });
     }
   }, [open, initialData]);

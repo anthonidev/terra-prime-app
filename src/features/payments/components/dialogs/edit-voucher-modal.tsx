@@ -26,6 +26,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useUpdateVoucher } from '../../hooks/use-payment-detail';
 import type { PaymentVoucher, UpdateVoucherInput, StatusPayment } from '../../types';
+import { formatIsoToDateInputValue } from '@/shared/utils/date-formatter';
 
 interface EditVoucherModalProps {
   open: boolean;
@@ -53,24 +54,13 @@ export function EditVoucherModal({
 
   const { mutate, isPending } = useUpdateVoucher(paymentId);
 
-  // Helper to convert ISO date to input format (YYYY-MM-DD)
-  const formatDateForInput = (isoDate: string | undefined): string => {
-    if (!isoDate) return '';
-    try {
-      const date = new Date(isoDate);
-      return date.toISOString().split('T')[0];
-    } catch {
-      return '';
-    }
-  };
-
   // Initialize form with voucher data
   useEffect(() => {
     if (voucher && open) {
       setFormData({
         bankName: voucher.bankName || '',
         transactionReference: voucher.transactionReference || '',
-        transactionDate: formatDateForInput(voucher.transactionDate),
+        transactionDate: formatIsoToDateInputValue(voucher.transactionDate),
         codeOperation: voucher.codeOperation || '',
         observation: voucher.observation || '',
       });
@@ -86,7 +76,7 @@ export function EditVoucherModal({
 
     // Build update data with only changed fields
     const updateData: UpdateVoucherInput = {};
-    const originalDate = formatDateForInput(voucher.transactionDate);
+    const originalDate = formatIsoToDateInputValue(voucher.transactionDate);
 
     if (formData.bankName !== voucher.bankName) {
       updateData.bankName = formData.bankName;
@@ -154,7 +144,7 @@ export function EditVoucherModal({
     voucher &&
     (formData.bankName !== voucher.bankName ||
       formData.transactionReference !== voucher.transactionReference ||
-      formData.transactionDate !== formatDateForInput(voucher.transactionDate) ||
+      formData.transactionDate !== formatIsoToDateInputValue(voucher.transactionDate) ||
       formData.codeOperation !== (voucher.codeOperation || '') ||
       formData.observation !== (voucher.observation || ''));
 

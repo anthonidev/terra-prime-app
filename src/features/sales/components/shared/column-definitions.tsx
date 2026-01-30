@@ -1,12 +1,11 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { Calendar, FileText, Tag } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserInfo } from '@/shared/components/user-info';
+import { formatDateTime } from '@/shared/utils/date-formatter';
 
 import type { AdminSale, MySale, StatusSale } from '../../types';
 import { AmountBreakdown } from './amount-breakdown';
@@ -45,16 +44,16 @@ export function createDateColumn<T extends SaleCommonFields>(): ColumnDef<T> {
     enableHiding: false,
     header: 'Fecha',
     cell: ({ row }) => {
-      const date = new Date(row.getValue('createdAt'));
+      const date = row.getValue('createdAt') as string;
       return (
         <div className="flex items-center gap-2">
           <Calendar className="text-muted-foreground h-4 w-4" />
           <div className="flex flex-col gap-0.5">
             <span className="text-sm leading-none font-semibold">
-              {format(date, 'dd MMM', { locale: es })}
+              {formatDateTime(date, 'dd MMM')}
             </span>
             <span className="text-muted-foreground text-[11px] leading-none">
-              {format(date, 'yyyy', { locale: es })}
+              {formatDateTime(date, 'yyyy')}
             </span>
           </div>
         </div>

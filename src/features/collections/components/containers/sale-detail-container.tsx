@@ -28,7 +28,8 @@ export function SaleDetailContainer() {
     );
   }
 
-  if (isError || !data) {
+  // Error state - also check if essential nested data is missing (can happen during navigation back)
+  if (isError || !data || !data.sale?.lot || !data.client?.ubigeo) {
     return (
       <div className="flex h-64 items-center justify-center">
         <div className="text-destructive">Error al cargar la información</div>

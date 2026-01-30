@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { formatCurrency } from '@/shared/lib/utils';
+import { getTodayDateInputValue } from '@/shared/utils/date-formatter';
 
 const addInstallmentsSchema = z.object({
   quantity: z.number().min(1, 'Mínimo 1 cuota').max(120, 'Máximo 120 cuotas'),
@@ -51,7 +52,7 @@ export function AddInstallmentsModal({
     defaultValues: {
       quantity: 12,
       totalAmount: suggestedAmount > 0 ? suggestedAmount : 0,
-      startDate: new Date().toISOString().split('T')[0],
+      startDate: getTodayDateInputValue(),
     },
   });
 
@@ -61,7 +62,7 @@ export function AddInstallmentsModal({
       reset({
         quantity: 12,
         totalAmount: suggestedAmount > 0 ? suggestedAmount : 0,
-        startDate: new Date().toISOString().split('T')[0],
+        startDate: getTodayDateInputValue(),
       });
     }
   }, [open, suggestedAmount, reset]);

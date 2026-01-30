@@ -2,8 +2,7 @@
 
 import { ArrowLeft, Calendar, FileText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { formatDateTime } from '@/shared/utils/date-formatter';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { PaymentDetail } from '../../types';
@@ -55,9 +54,7 @@ export function PaymentDetailHeader({ payment }: PaymentDetailHeaderProps) {
           <div className="text-muted-foreground flex items-center gap-4 pt-1 text-sm">
             <div className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
-              <span>
-                {format(new Date(payment.createdAt), "dd 'de' MMMM, yyyy", { locale: es })}
-              </span>
+              <span>{formatDateTime(payment.createdAt, "dd 'de' MMMM, yyyy")}</span>
             </div>
             {payment.numberTicket && (
               <div className="flex items-center gap-1.5">

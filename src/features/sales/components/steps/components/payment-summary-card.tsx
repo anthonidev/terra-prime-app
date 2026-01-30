@@ -1,11 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { Calculator, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency } from '@/shared/utils/currency-formatter';
+import { formatDateOnly } from '@/shared/utils/date-formatter';
 import type { Step3Data } from '../../../types';
 
 interface PaymentSummaryCardProps {
@@ -44,9 +43,7 @@ export function PaymentSummaryCard({
     },
     {
       label: 'Primera Cuota',
-      value: step3.firstPaymentDate
-        ? format(new Date(step3.firstPaymentDate), 'dd/MM/yyyy', { locale: es })
-        : 'N/A',
+      value: step3.firstPaymentDate ? formatDateOnly(step3.firstPaymentDate, 'dd/MM/yyyy') : 'N/A',
       show: isFinanced,
     },
     {

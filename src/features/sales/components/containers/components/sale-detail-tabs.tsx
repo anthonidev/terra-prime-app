@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { SalePaymentsTable } from '../../tables/sale-payments-table';
 import { PaymentCardsView } from './payment-cards-view';
 import { SaleInstallmentsTabContent } from './sale-installments-tab-content';
+import { PaymentSummaryByConfig } from '../../displays/payment-summary-by-config';
 import type { PaymentSummary, SaleDetailFinancing, CurrencyType } from '../../../types';
 
 interface SaleDetailTabsProps {
@@ -38,9 +39,12 @@ export function SaleDetailTabs({
   // If no financing, just show payments without tabs
   if (!hasFinancing) {
     return (
-      <>
-        {hasPayments ? (
+      <div className="space-y-4">
+        {hasPayments && payments.length > 0 ? (
           <>
+            {/* Payment Summary Cards by Config */}
+            <PaymentSummaryByConfig payments={payments} currency={currency} />
+
             {/* Desktop Table View */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -76,7 +80,7 @@ export function SaleDetailTabs({
             </Card>
           </motion.div>
         )}
-      </>
+      </div>
     );
   }
 
@@ -111,9 +115,12 @@ export function SaleDetailTabs({
           )}
         </TabsList>
 
-        <TabsContent value="payments" className="mt-4">
-          {hasPayments ? (
+        <TabsContent value="payments" className="mt-4 space-y-4">
+          {hasPayments && payments.length > 0 ? (
             <>
+              {/* Payment Summary Cards by Config */}
+              <PaymentSummaryByConfig payments={payments} currency={currency} />
+
               {/* Desktop Table View */}
               <div className="hidden md:block">
                 <SalePaymentsTable payments={payments} currency={currency} />

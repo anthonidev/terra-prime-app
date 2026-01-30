@@ -1,8 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import {
   Calendar,
   DollarSign,
@@ -18,6 +16,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import type { PaymentSummary, StatusPayment, CurrencyType } from '../../../types';
+import { formatDateOnly, formatDateTime } from '@/shared/utils/date-formatter';
 
 // Payment status badge configurations
 const paymentStatusConfig: Record<
@@ -82,7 +81,7 @@ export function PaymentCardsView({ payments, currency }: PaymentCardsViewProps) 
 
             <CardContent className="space-y-3 pb-3">
               {/* Amount */}
-              <div className="from-primary/5 border-primary/20 flex items-start gap-2 rounded-lg border bg-gradient-to-br to-transparent p-3">
+              <div className="from-primary/5 border-primary/20 flex items-start gap-2 rounded-lg border bg-linear-to-br to-transparent p-3">
                 <DollarSign className="text-primary mt-0.5 h-4 w-4" />
                 <div className="flex-1">
                   <p className="text-muted-foreground text-xs">Monto</p>
@@ -99,7 +98,7 @@ export function PaymentCardsView({ payments, currency }: PaymentCardsViewProps) 
                   <div>
                     <p className="text-muted-foreground text-xs">Creación</p>
                     <p className="text-sm font-medium">
-                      {format(new Date(payment.createdAt), 'dd MMM yyyy', { locale: es })}
+                      {formatDateTime(payment.createdAt, 'dd MMM yyyy')}
                     </p>
                   </div>
                 </div>
@@ -110,7 +109,7 @@ export function PaymentCardsView({ payments, currency }: PaymentCardsViewProps) 
                     <div>
                       <p className="text-muted-foreground text-xs">Operación</p>
                       <p className="text-sm font-medium">
-                        {format(new Date(payment.dateOperation), 'dd MMM yyyy', { locale: es })}
+                        {formatDateOnly(payment.dateOperation, 'dd MMM yyyy')}
                       </p>
                     </div>
                   </div>
@@ -165,9 +164,7 @@ export function PaymentCardsView({ payments, currency }: PaymentCardsViewProps) 
                       <div className="flex-1">
                         <p className="text-muted-foreground text-xs">Fecha de Revisión</p>
                         <p className="text-sm font-medium">
-                          {format(new Date(payment.reviewedAt), 'dd MMM yyyy HH:mm', {
-                            locale: es,
-                          })}
+                          {formatDateTime(payment.reviewedAt, 'dd MMM yyyy HH:mm')}
                         </p>
                       </div>
                     </div>

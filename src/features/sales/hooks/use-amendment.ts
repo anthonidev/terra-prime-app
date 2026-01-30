@@ -12,6 +12,11 @@ import type {
   AmendmentInstallmentStatus,
   CreateAmendmentInput,
 } from '../types';
+import {
+  getTodayDateInputValue,
+  parseDateInputValue,
+  formatDateToInputValue,
+} from '@/shared/utils/date-formatter';
 
 // Configure Decimal.js for financial calculations
 Decimal.set({ precision: 20, rounding: Decimal.ROUND_HALF_UP });
@@ -96,7 +101,7 @@ export function useAmendment({ saleId, financingId, financing }: UseAmendmentPro
 
   // Start amendment mode - creates initial paid installment
   const startAmendmentMode = useCallback(() => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getTodayDateInputValue();
     const initialInstallment: AmendmentInstallmentLocal = {
       id: generateId(),
       numberCuote: 1,
@@ -135,7 +140,7 @@ export function useAmendment({ saleId, financingId, financing }: UseAmendmentPro
         installments.length > 0 ? Math.max(...installments.map((i) => i.numberCuote)) : 0;
 
       const newInstallments: AmendmentInstallmentLocal[] = [];
-      const baseDate = new Date(startDate);
+      const baseDate = parseDateInputValue(startDate) ?? new Date(startDate);
 
       for (let i = 0; i < quantity; i++) {
         const dueDate = new Date(baseDate);
@@ -149,7 +154,7 @@ export function useAmendment({ saleId, financingId, financing }: UseAmendmentPro
         newInstallments.push({
           id: generateId(),
           numberCuote: currentMaxNumber + i + 1,
-          dueDate: dueDate.toISOString().split('T')[0],
+          dueDate: formatDateToInputValue(dueDate),
           amount,
           status: 'PENDING' as AmendmentInstallmentStatus,
         });

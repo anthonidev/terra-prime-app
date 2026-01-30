@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { formatDateOnly } from '@/shared/utils/date-formatter';
 import { Plus, Pencil, Trash2, Save, X, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -207,9 +206,7 @@ export function AmendmentInstallmentsTable({
                       <TableCell className="font-mono font-medium">
                         #{installment.numberCuote}
                       </TableCell>
-                      <TableCell>
-                        {format(new Date(installment.dueDate), 'dd MMM yyyy', { locale: es })}
-                      </TableCell>
+                      <TableCell>{formatDateOnly(installment.dueDate, 'dd MMM yyyy')}</TableCell>
                       <TableCell className="text-right font-medium">
                         {formatCurrency(installment.amount)}
                       </TableCell>

@@ -60,8 +60,8 @@ export function FinancingDetailContainer({ saleId, financingId }: FinancingDetai
     return <FinancingDetailSkeleton />;
   }
 
-  // Error state
-  if (isError || !data) {
+  // Error state - also check if essential nested data is missing (can happen during navigation back)
+  if (isError || !data || !data.sale?.client || !data.sale?.lot) {
     return (
       <div className="space-y-4">
         <Button variant="ghost" onClick={handleGoBack}>

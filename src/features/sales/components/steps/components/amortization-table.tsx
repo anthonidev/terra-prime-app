@@ -1,8 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { formatDateOnly } from '@/shared/utils/date-formatter';
 import { Table as TableIcon, Receipt, Home, Coins } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -101,9 +100,7 @@ export function AmortizationTable({
                           {formatCurrency(installment.totalInstallmentAmount, currencyType)}
                         </TableCell>
                         <TableCell className="text-muted-foreground">
-                          {format(new Date(installment.expectedPaymentDate), 'dd/MM/yyyy', {
-                            locale: es,
-                          })}
+                          {formatDateOnly(installment.expectedPaymentDate, 'dd/MM/yyyy')}
                         </TableCell>
                       </motion.tr>
                     ))}

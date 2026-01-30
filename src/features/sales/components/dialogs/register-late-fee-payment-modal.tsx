@@ -22,6 +22,7 @@ import {
   type VoucherFormData,
 } from '@/features/sales/components/containers/components/voucher-form';
 import { apiClient } from '@/shared/lib/api-client';
+import { getTodayDateInputValue } from '@/shared/utils/date-formatter';
 
 interface RegisterLateFeePaymentModalProps {
   open: boolean;
@@ -54,9 +55,7 @@ export function RegisterLateFeePaymentModal({
   onSuccess,
 }: RegisterLateFeePaymentModalProps) {
   const [vouchers, setVouchers] = useState<VoucherFormData[]>([{ ...initialVoucherData }]);
-  const [dateOperation, setDateOperation] = useState<string>(
-    new Date().toISOString().split('T')[0]
-  );
+  const [dateOperation, setDateOperation] = useState<string>(getTodayDateInputValue());
   const [numberTicket, setNumberTicket] = useState<string>('');
   const [observation, setObservation] = useState<string>('');
   const [errors, setErrors] = useState<Record<number, Record<string, string>>>({});
@@ -232,7 +231,7 @@ export function RegisterLateFeePaymentModal({
   const handleClose = () => {
     if (!isSubmitting) {
       setVouchers([{ ...initialVoucherData }]);
-      setDateOperation(new Date().toISOString().split('T')[0]);
+      setDateOperation(getTodayDateInputValue());
       setNumberTicket('');
       setObservation('');
       setErrors({});

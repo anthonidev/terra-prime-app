@@ -8,6 +8,7 @@ import { es } from 'date-fns/locale';
 import { Calendar, CheckCircle2, CreditCard, FileText, Settings, XCircle } from 'lucide-react';
 import type { MyPaymentDetail } from '../../types';
 import { PaymentConfigBadge } from '@/features/payments/components/shared/payment-config-badge';
+import { formatDateOnly } from '@/shared/utils/date-formatter';
 
 interface PaymentInfoSectionProps {
   payment: MyPaymentDetail;
@@ -66,9 +67,7 @@ export function PaymentInfoSection({ payment }: PaymentInfoSectionProps) {
                 <Calendar className="h-3 w-3" />
                 Fecha de Operación
               </p>
-              <p className="text-sm font-medium">
-                {format(new Date(payment.dateOperation), "dd 'de' MMMM, yyyy", { locale: es })}
-              </p>
+              <p className="text-sm font-medium">{formatDateOnly(payment.dateOperation)}</p>
             </div>
           )}
         </div>

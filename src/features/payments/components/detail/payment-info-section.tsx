@@ -3,8 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { UserInfo } from '@/shared/components/user-info';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import {
   Calendar,
   CheckCircle2,
@@ -16,6 +14,7 @@ import {
 } from 'lucide-react';
 import type { PaymentDetail } from '../../types';
 import { PaymentConfigBadge } from '../shared/payment-config-badge';
+import { formatDateOnly, formatDateTime } from '@/shared/utils/date-formatter';
 
 interface PaymentInfoSectionProps {
   payment: PaymentDetail;
@@ -61,10 +60,10 @@ export function PaymentInfoSection({ payment }: PaymentInfoSectionProps) {
               Fecha de Creación
             </p>
             <p className="text-sm font-medium">
-              {format(new Date(payment.createdAt), "dd 'de' MMMM, yyyy", { locale: es })}
+              {formatDateTime(payment.createdAt, "dd 'de' MMMM, yyyy")}
             </p>
             <p className="text-muted-foreground text-xs">
-              {format(new Date(payment.createdAt), 'HH:mm a', { locale: es })}
+              {formatDateTime(payment.createdAt, 'HH:mm a')}
             </p>
           </div>
 
@@ -74,9 +73,7 @@ export function PaymentInfoSection({ payment }: PaymentInfoSectionProps) {
                 <Calendar className="h-3 w-3" />
                 Fecha de Operación
               </p>
-              <p className="text-sm font-medium">
-                {format(new Date(payment.dateOperation), "dd 'de' MMMM, yyyy", { locale: es })}
-              </p>
+              <p className="text-sm font-medium">{formatDateOnly(payment.dateOperation)}</p>
             </div>
           )}
         </div>
@@ -152,9 +149,7 @@ export function PaymentInfoSection({ payment }: PaymentInfoSectionProps) {
               <div className="pl-1">
                 <p className="text-muted-foreground mb-1 text-xs">Fecha de revisión</p>
                 <p className="text-sm font-medium">
-                  {format(new Date(payment.reviewedAt), "dd 'de' MMMM, yyyy 'a las' HH:mm", {
-                    locale: es,
-                  })}
+                  {formatDateTime(payment.reviewedAt, "dd 'de' MMMM, yyyy 'a las' HH:mm")}
                 </p>
               </div>
 

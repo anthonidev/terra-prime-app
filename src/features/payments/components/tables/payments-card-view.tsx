@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { UserInfo } from '@/shared/components/user-info';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { formatDateTime } from '@/shared/utils/date-formatter';
 import { motion } from 'framer-motion';
 import { Building2, CreditCard, DollarSign, Eye, UserCog, FileText } from 'lucide-react';
 import Link from 'next/link';
@@ -43,7 +42,7 @@ function PaymentCard({ payment, index }: { payment: Payment; index: number }) {
                 </p>
                 <div className="mt-1 flex items-center gap-1.5">
                   <span className="text-muted-foreground text-xs">
-                    {format(new Date(payment.createdAt), 'dd MMM yyyy', { locale: es })}
+                    {formatDateTime(payment.createdAt, 'dd MMM yyyy')}
                   </span>
                 </div>
               </div>

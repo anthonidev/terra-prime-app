@@ -1,8 +1,7 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
 import { UserInfo } from '@/shared/components/user-info';
+import { formatDateTime } from '@/shared/utils/date-formatter';
 import type { Payment, StatusPayment } from '../../types';
 import { PaymentConfigBadge } from './payment-config-badge';
 import { statusConfig } from './status-config';
@@ -12,9 +11,9 @@ export function createDateColumn<T extends Payment>(): ColumnDef<T> {
     accessorKey: 'createdAt',
     header: 'Fecha',
     cell: ({ row }) => {
-      const date = new Date(row.getValue('createdAt'));
-      const day = format(date, 'dd MMM', { locale: es });
-      const year = format(date, 'yyyy', { locale: es });
+      const date = row.getValue('createdAt') as string;
+      const day = formatDateTime(date, 'dd MMM');
+      const year = formatDateTime(date, 'yyyy');
 
       return (
         <div className="flex flex-col">
