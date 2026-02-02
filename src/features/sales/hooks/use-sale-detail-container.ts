@@ -6,7 +6,7 @@ import { StatusSale, SaleType } from '../types';
 import type { StatusSale as StatusSaleType } from '../types';
 
 export function useSaleDetailContainer(id: string) {
-  const { data, isLoading, isError } = useSaleDetail(id);
+  const { data, isLoading, isError, isFetching, isPending } = useSaleDetail(id);
 
   // Computed values
   const clientName = useMemo(() => {
@@ -81,6 +81,8 @@ export function useSaleDetailContainer(id: string) {
 
     // State
     isLoading,
+    isFetching,
+    isPending,
     isError,
   };
 }

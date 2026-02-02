@@ -51,19 +51,6 @@ export function SaleDetailErrorState() {
                   intenta nuevamente.
                 </p>
               </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <Button className="mt-6" asChild>
-                  <Link href="/ventas/mis-ventas">
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Volver a la Lista
-                  </Link>
-                </Button>
-              </motion.div>
             </div>
           </CardContent>
         </Card>

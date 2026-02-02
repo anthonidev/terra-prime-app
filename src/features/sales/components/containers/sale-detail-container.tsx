@@ -30,8 +30,16 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
   const [isDeleteSaleModalOpen, setIsDeleteSaleModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('payments');
 
-  const { sale, clientName, maxPayableAmount, hasPayments, status, isLoading, isError } =
-    useSaleDetailContainer(id);
+  const {
+    sale,
+    clientName,
+    maxPayableAmount,
+    hasPayments,
+    status,
+    isFetching,
+    isPending,
+    isError,
+  } = useSaleDetailContainer(id);
 
   const { user } = useAuth();
 
@@ -102,13 +110,14 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
   const lotFinancingId = sale?.financing?.lot?.id;
   const huFinancingId = sale?.financing?.hu?.id;
 
-  // Loading state
-  if (isLoading) {
+  // Loading state - show skeleton if no data available, fetching, or data is invalid while fetching
+  if (isPending || (isFetching && (!sale || !sale.lot || !sale.client))) {
     return <SaleDetailSkeleton />;
   }
 
-  // Error state - also check if essential data is missing (can happen during navigation back)
-  if (isError || !sale || !sale.lot || !sale.client) {
+  // Error state - show error only if there's an actual error and NOT fetching
+  // This prevents showing error during auto-retry after detecting corrupted cache
+  if (!isFetching && (isError || !sale || !sale.lot || !sale.client)) {
     return <SaleDetailErrorState />;
   }
 
@@ -125,20 +134,21 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
           status={status!}
           saleId={id}
           isADM={isADM}
-          radicationPdfUrl={sale.radicationPdfUrl}
-          paymentAcordPdfUrl={sale.paymentAcordPdfUrl}
+          radicationPdfUrl={sale?.radicationPdfUrl}
+          paymentAcordPdfUrl={sale?.paymentAcordPdfUrl}
         />
       </motion.div>
 
       {/* Sale Information Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.05 }}
-      >
-        <SaleInfoCard sale={sale} />
-      </motion.div>
-
+      {sale && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.05 }}
+        >
+          <SaleInfoCard sale={sale} />
+        </motion.div>
+      )}
       {/* JVE Actions */}
       {(canExtendReservation || canDeleteSale) && (
         <motion.div
@@ -235,28 +245,32 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
       <FinancingInstallmentsView saleId={id} />
 
       {/* Payments and Installments Tabs */}
-      <SaleDetailTabs
-        payments={sale.paymentsSummary}
-        financing={sale.financing}
-        currency={sale.currency}
-        hasPayments={!!hasPayments}
-        saleId={id}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        canRegisterInstallmentPayment={isADM}
-      />
+      {sale && (
+        <SaleDetailTabs
+          payments={sale.paymentsSummary}
+          financing={sale.financing}
+          currency={sale.currency}
+          hasPayments={!!hasPayments}
+          saleId={id}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          canRegisterInstallmentPayment={isADM}
+        />
+      )}
 
       {/* Sale Information */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.2 }}
-      >
-        <SaleDetailInfo sale={sale} />
-      </motion.div>
+      {sale && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+        >
+          <SaleDetailInfo sale={sale} />
+        </motion.div>
+      )}
 
       {/* Register Payment Modal */}
-      {showRegisterPayment && (
+      {showRegisterPayment && sale && (
         <RegisterPaymentModal
           open={isPaymentModalOpen}
           onOpenChange={setIsPaymentModalOpen}
