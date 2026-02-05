@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/features/auth/hooks/use-auth';
 import { motion } from 'framer-motion';
-import { Building2, Clock, Landmark, Trash2 } from 'lucide-react';
+import { Building2, Clock, CreditCard, Landmark, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useSaleDetailContainer } from '../../hooks/use-sale-detail-container';
@@ -219,6 +219,27 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
                   </Button>
                 )}
               </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* VEN Register Payment Action */}
+      {showRegisterPayment && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
+          <Card className="border-green-500/20 bg-green-500/5">
+            <CardHeader>
+              <CardTitle>Registro de Pagos</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={() => setIsPaymentModalOpen(true)} className="w-full sm:w-auto">
+                <CreditCard className="mr-2 h-4 w-4" />
+                Registrar Pago
+              </Button>
             </CardContent>
           </Card>
         </motion.div>

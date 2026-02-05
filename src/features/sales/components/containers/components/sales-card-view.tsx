@@ -11,6 +11,7 @@ import {
   Eye,
   Package,
   FileText,
+  CreditCard,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -40,9 +41,17 @@ const statusConfig: Record<
 
 interface SalesCardViewProps {
   sales: MySale[];
+  onRegisterPayment?: (sale: MySale) => void;
+  canRegisterPaymentByStatus?: (status: StatusSale) => boolean;
+  calculatePendingAmount?: (sale: MySale) => number;
 }
 
-export function SalesCardView({ sales }: SalesCardViewProps) {
+export function SalesCardView({
+  sales,
+  onRegisterPayment,
+  canRegisterPaymentByStatus,
+  calculatePendingAmount,
+}: SalesCardViewProps) {
   return (
     <div className="grid gap-4">
       {sales.map((sale, index) => {
@@ -51,6 +60,13 @@ export function SalesCardView({ sales }: SalesCardViewProps) {
         const pending = parseFloat(sale.totalAmount) - paid;
 
         const hasReports = sale.radicationPdfUrl || sale.paymentAcordPdfUrl;
+
+        const canRegisterPayment =
+          onRegisterPayment &&
+          canRegisterPaymentByStatus &&
+          calculatePendingAmount &&
+          canRegisterPaymentByStatus(sale.status) &&
+          calculatePendingAmount(sale) > 0;
 
         return (
           <motion.div
@@ -186,8 +202,24 @@ export function SalesCardView({ sales }: SalesCardViewProps) {
                 </div>
               </CardContent>
 
-              <CardFooter className="pt-3">
-                <Button variant="default" size="sm" className="w-full" asChild>
+              <CardFooter className="flex gap-2 pt-3">
+                {canRegisterPayment && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => onRegisterPayment(sale)}
+                  >
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Registrar Pago
+                  </Button>
+                )}
+                <Button
+                  variant="default"
+                  size="sm"
+                  className={canRegisterPayment ? 'flex-1' : 'w-full'}
+                  asChild
+                >
                   <Link href={`/ventas/detalle/${sale.id}`}>
                     <Eye className="mr-2 h-4 w-4" />
                     Ver Detalle

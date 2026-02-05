@@ -1,8 +1,9 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { registerPayment } from '../lib/mutations';
+import { AxiosError } from 'axios';
 import { toast } from 'sonner';
+import { registerPayment } from '../lib/mutations';
 
 export function useRegisterPayment(saleId: string) {
   const queryClient = useQueryClient();
@@ -14,8 +15,15 @@ export function useRegisterPayment(saleId: string) {
       queryClient.invalidateQueries({ queryKey: ['sale-detail', saleId] });
       toast.success('Pago registrado exitosamente');
     },
-    onError: (error) => {
-      toast.error('Error al registrar el pago');
+    onError: (error: Error) => {
+      let message = 'Error al registrar el pago';
+
+      if (error instanceof AxiosError && error.response?.data) {
+        const data = error.response.data as { message?: string };
+        message = data.message || message;
+      }
+
+      toast.error(message);
       console.error('Error registering payment:', error);
     },
   });

@@ -5,6 +5,7 @@ import { AnimatePresence } from 'framer-motion';
 import { Plus, Send, X, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import {
   Dialog,
   DialogContent,
@@ -196,7 +197,7 @@ export function RegisterLateFeePaymentModal({
         formData.append(`payments[${index}][amount]`, voucher.amount);
         formData.append(`payments[${index}][transactionDate]`, voucher.transactionDate);
         formData.append(`payments[${index}][transactionReference]`, voucher.transactionReference);
-        formData.append(`payments[${index}][bankName]`, voucher.bankName);
+        formData.append(`payments[${index}][bankName]`, voucher.bankName || '');
         formData.append(`payments[${index}][codeOperation]`, voucher.codeOperation);
         formData.append(`payments[${index}][fileIndex]`, index.toString());
 
@@ -222,7 +223,12 @@ export function RegisterLateFeePaymentModal({
       onSuccess?.();
     } catch (error) {
       console.error(error);
-      toast.error('Error al registrar el pago de mora');
+      let message = 'Error al registrar el pago de mora';
+      if (error instanceof AxiosError && error.response?.data) {
+        const data = error.response.data as { message?: string };
+        message = data.message || message;
+      }
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
