@@ -17,6 +17,7 @@ import type {
   DeleteSaleResponse,
   CreateAmendmentInput,
   CreateAmendmentResponse,
+  SaleFile,
 } from '../types';
 
 // Calculate amortization schedule
@@ -138,6 +139,26 @@ export async function deleteSale(
 ): Promise<DeleteSaleResponse> {
   const response = await apiClient.delete<DeleteSaleResponse>(`/api/sales/${saleId}`, { data });
   return response.data;
+}
+
+// Upload sale file
+export async function uploadSaleFile(
+  saleId: string,
+  file: File,
+  description: string
+): Promise<SaleFile> {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('description', description);
+  const response = await apiClient.post<SaleFile>(`/api/sale-files/${saleId}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return response.data;
+}
+
+// Delete sale file
+export async function deleteSaleFile(fileId: string): Promise<void> {
+  await apiClient.delete(`/api/sale-files/${fileId}`);
 }
 
 // Create financing amendment

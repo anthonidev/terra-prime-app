@@ -67,6 +67,7 @@ interface AdditionalInfoStepProps {
   cantidadTarjetasDebito: string;
   cantidadHijos: string;
   ocupacion: string;
+  ingresoPromedioFamiliar: string;
 
   // Navigation
   onNext: () => void;
@@ -102,6 +103,7 @@ export function AdditionalInfoStep({
   cantidadTarjetasDebito,
   cantidadHijos,
   ocupacion,
+  ingresoPromedioFamiliar,
   onNext,
   onBack,
 }: AdditionalInfoStepProps) {
@@ -387,6 +389,22 @@ export function AdditionalInfoStep({
                       onChange={(e) => onFieldChange('cantidadHijos', e.target.value)}
                       placeholder="0"
                       min="0"
+                      className="h-10"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="ingresoPromedioFamiliar" className="flex items-center gap-2">
+                      Ingreso Promedio Familiar
+                    </Label>
+                    <Input
+                      id="ingresoPromedioFamiliar"
+                      type="number"
+                      value={ingresoPromedioFamiliar}
+                      onChange={(e) => onFieldChange('ingresoPromedioFamiliar', e.target.value)}
+                      placeholder="0.00"
+                      min="0"
+                      step="0.01"
                       className="h-10"
                     />
                   </div>

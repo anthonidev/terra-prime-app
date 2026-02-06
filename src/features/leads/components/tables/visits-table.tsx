@@ -159,7 +159,8 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
                       visit.salesManager ||
                       visit.salesGeneralManager ||
                       visit.postSale ||
-                      visit.closer
+                      visit.closer ||
+                      visit.generalDirector
                     );
 
                     return (

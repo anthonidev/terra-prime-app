@@ -28,7 +28,7 @@ interface FormDialogProps {
   children: ReactNode;
   submitLabel?: string;
   cancelLabel?: string;
-  maxWidth?: 'sm' | 'md' | 'lg' | 'xl';
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   form?: UseFormReturn<any>;
   icon?: LucideIcon;
   className?: string;
@@ -39,6 +39,7 @@ const maxWidthClasses = {
   md: 'sm:max-w-[500px]',
   lg: 'sm:max-w-[600px]',
   xl: 'sm:max-w-[700px]',
+  '2xl': 'sm:max-w-[850px]',
 };
 
 export function FormDialog({
@@ -70,6 +71,7 @@ export function FormDialog({
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     if (onSubmit) {
       onSubmit(e);
     }

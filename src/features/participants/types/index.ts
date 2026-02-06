@@ -14,6 +14,7 @@ export enum ParticipantType {
   SALES_GENERAL_MANAGER = 'SALES_GENERAL_MANAGER',
   POST_SALE = 'POST_SALE',
   CLOSER = 'CLOSER',
+  GENERAL_DIRECTOR = 'GENERAL_DIRECTOR',
 }
 
 export enum DocumentType {

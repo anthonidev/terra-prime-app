@@ -34,7 +34,15 @@ export function useSaleTypeForm({ initialData, onSubmit }: UseSaleTypeFormProps)
 
   const handleReservationToggle = (checked: boolean) => {
     form.setValue('isReservation', checked);
-    if (!checked) {
+    if (checked) {
+      // Set default values when checked
+      if (!form.getValues('reservationAmount')) {
+        form.setValue('reservationAmount', 100);
+      }
+      if (!form.getValues('maximumHoldPeriod')) {
+        form.setValue('maximumHoldPeriod', 15);
+      }
+    } else {
       // Clear reservation fields when unchecked
       form.setValue('reservationAmount', undefined);
       form.setValue('maximumHoldPeriod', undefined);

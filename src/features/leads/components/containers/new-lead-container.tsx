@@ -209,6 +209,7 @@ export function NewLeadContainer() {
           cantidadTarjetasDebito={formData.cantidadTarjetasDebito}
           cantidadHijos={formData.cantidadHijos}
           ocupacion={formData.ocupacion}
+          ingresoPromedioFamiliar={formData.ingresoPromedioFamiliar}
           onNext={() => setCurrentStep(4)}
           onBack={() => setCurrentStep(2)}
         />
@@ -241,6 +242,7 @@ export function NewLeadContainer() {
           cantidadTarjetasDebito={formData.cantidadTarjetasDebito}
           cantidadHijos={formData.cantidadHijos}
           ocupacion={formData.ocupacion}
+          ingresoPromedioFamiliar={formData.ingresoPromedioFamiliar}
           observations={formData.observations}
           onObservationsChange={(value) => updateFormData({ observations: value })}
           onSubmit={handleSubmit}

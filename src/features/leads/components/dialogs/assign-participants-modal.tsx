@@ -27,16 +27,17 @@ import { ParticipantType, type LeadVisit, type ParticipantResponseActive } from 
 
 const participantLabels: Record<ParticipantType, string> = {
   [ParticipantType.LINER]: 'Liner',
-  [ParticipantType.TELEMARKETING_SUPERVISOR]: 'Supervisor de Telemarketing',
-  [ParticipantType.TELEMARKETING_CONFIRMER]: 'Confirmador de Telemarketing',
+  [ParticipantType.TELEMARKETING_SUPERVISOR]: 'Sup. Telemarketing',
+  [ParticipantType.TELEMARKETING_CONFIRMER]: 'Conf. Telemarketing',
   [ParticipantType.TELEMARKETER]: 'Telemarketer',
-  [ParticipantType.FIELD_MANAGER]: 'Gerente de Campo',
-  [ParticipantType.FIELD_SUPERVISOR]: 'Supervisor de Campo',
+  [ParticipantType.FIELD_MANAGER]: 'Gte. de Campo',
+  [ParticipantType.FIELD_SUPERVISOR]: 'Sup. de Campo',
   [ParticipantType.FIELD_SELLER]: 'Vendedor de Campo',
-  [ParticipantType.SALES_MANAGER]: 'Gerente de Ventas',
-  [ParticipantType.SALES_GENERAL_MANAGER]: 'Gerente General de Ventas',
+  [ParticipantType.SALES_MANAGER]: 'Gte. de Ventas',
+  [ParticipantType.SALES_GENERAL_MANAGER]: 'Gte. Gral. de Ventas',
   [ParticipantType.POST_SALE]: 'Post Venta',
   [ParticipantType.CLOSER]: 'Closer',
+  [ParticipantType.GENERAL_DIRECTOR]: 'Director General',
 };
 
 const assignParticipantsSchema = z.object({
@@ -51,6 +52,7 @@ const assignParticipantsSchema = z.object({
   salesGeneralManagerId: z.string().optional(),
   postSaleId: z.string().optional(),
   closerId: z.string().optional(),
+  generalDirectorId: z.string().optional(),
 });
 
 type AssignParticipantsFormData = z.infer<typeof assignParticipantsSchema>;
@@ -106,6 +108,7 @@ export function AssignParticipantsModal({
         salesGeneralManagerId: visit.salesGeneralManager?.id || undefined,
         postSaleId: visit.postSale?.id || undefined,
         closerId: visit.closer?.id || undefined,
+        generalDirectorId: visit.generalDirector?.id || undefined,
       });
     }
   }, [visit, isOpen, form]);
@@ -142,10 +145,10 @@ export function AssignParticipantsModal({
         control={form.control}
         name={fieldName}
         render={({ field }) => (
-          <FormItem className="space-y-1.5">
-            <FormLabel className="text-foreground flex items-center gap-1.5 text-sm font-medium">
-              <User className="h-3.5 w-3.5" />
-              {label}
+          <FormItem className="space-y-1">
+            <FormLabel className="text-foreground flex items-center gap-1.5 text-xs font-medium">
+              <User className="h-3 w-3 shrink-0" />
+              <span className="truncate">{label}</span>
             </FormLabel>
             <Select
               value={field.value || undefined}
@@ -153,14 +156,15 @@ export function AssignParticipantsModal({
               disabled={!hasParticipants || isLoadingParticipants}
             >
               <FormControl>
-                <SelectTrigger className="focus:ring-primary/30 h-9 transition-all">
+                <SelectTrigger className="focus:ring-primary/30 h-8 w-full max-w-full min-w-0 overflow-hidden whitespace-normal transition-all [&>span:first-child]:truncate">
                   <SelectValue
+                    className="truncate"
                     placeholder={
                       isLoadingParticipants
                         ? 'Cargando...'
                         : hasParticipants
-                          ? 'Seleccionar participante'
-                          : 'No hay participantes'
+                          ? 'Seleccionar'
+                          : 'No disponible'
                     }
                   />
                 </SelectTrigger>
@@ -191,10 +195,15 @@ export function AssignParticipantsModal({
       isPending={assignParticipants.isPending}
       onSubmit={form.handleSubmit(onSubmit)}
       submitLabel="Asignar Participantes"
-      maxWidth="xl"
+      maxWidth="2xl"
     >
       <Form {...form}>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 md:grid-cols-3">
+          {renderParticipantSelect(
+            ParticipantType.GENERAL_DIRECTOR,
+            'generalDirectorId',
+            participantLabels[ParticipantType.GENERAL_DIRECTOR]
+          )}
           {renderParticipantSelect(
             ParticipantType.LINER,
             'linerParticipantId',

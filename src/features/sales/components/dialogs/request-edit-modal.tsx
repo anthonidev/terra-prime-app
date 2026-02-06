@@ -68,6 +68,7 @@ export function RequestEditModal({ open, onOpenChange, onSuccess }: RequestEditM
       description="Ingresa el PIN de administrador de 5 dígitos para habilitar la edición de los montos totales."
       onSubmit={(e) => {
         e?.preventDefault();
+        e?.stopPropagation();
         handleSubmit();
       }}
       submitLabel="Validar PIN"

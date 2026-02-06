@@ -148,6 +148,10 @@ export interface CombinedInstallment {
   totalInstallmentAmount: number;
 }
 
+export interface EditableInstallment extends CombinedInstallment {
+  id: string; // UUID local para identidad durante edición
+}
+
 export interface AmortizationMeta {
   lotInstallmentsCount: number;
   lotTotalAmount: number;
@@ -368,32 +372,18 @@ export interface MySale {
 }
 
 export interface AdminSale extends MySale {
-  liner: PersonInfo | null;
-  telemarketingSupervisor: PersonInfo | null;
-  telemarketingConfirmer: PersonInfo | null;
-  telemarketer: PersonInfo | null;
-  fieldManager: PersonInfo | null;
-  fieldSupervisor: PersonInfo | null;
-  fieldSeller: PersonInfo | null;
-  salesGeneralManager: PersonInfo | null;
-  salesManager: PersonInfo | null;
-  postSale: PersonInfo | null;
-  closer: PersonInfo | null;
-  vendor: VendorInfo;
-}
-
-export interface AdminSale extends MySale {
-  liner: PersonInfo | null;
-  telemarketingSupervisor: PersonInfo | null;
-  telemarketingConfirmer: PersonInfo | null;
-  telemarketer: PersonInfo | null;
-  fieldManager: PersonInfo | null;
-  fieldSupervisor: PersonInfo | null;
-  fieldSeller: PersonInfo | null;
-  salesGeneralManager: PersonInfo | null;
-  salesManager: PersonInfo | null;
-  postSale: PersonInfo | null;
-  closer: PersonInfo | null;
+  liner: ParticipantRef | null;
+  telemarketingSupervisor: ParticipantRef | null;
+  telemarketingConfirmer: ParticipantRef | null;
+  telemarketer: ParticipantRef | null;
+  fieldManager: ParticipantRef | null;
+  fieldSupervisor: ParticipantRef | null;
+  fieldSeller: ParticipantRef | null;
+  salesGeneralManager: ParticipantRef | null;
+  salesManager: ParticipantRef | null;
+  postSale: ParticipantRef | null;
+  closer: ParticipantRef | null;
+  generalDirector: ParticipantRef | null;
   vendor: VendorInfo;
 }
 
@@ -424,6 +414,12 @@ export interface PaymentSummary {
 }
 
 export interface PersonInfo {
+  firstName: string;
+  lastName: string;
+}
+
+export interface ParticipantRef {
+  id: string;
   firstName: string;
   lastName: string;
 }
@@ -609,6 +605,7 @@ export interface AssignSaleParticipantsInput {
   salesGeneralManagerId?: string;
   postSaleId?: string;
   closerId?: string;
+  generalDirectorId?: string;
 }
 
 // Assign Participants Response
@@ -742,6 +739,14 @@ export interface CreateAmendmentInput {
 export interface CreateAmendmentResponse {
   success: boolean;
   message: string;
+}
+
+// Sale File types
+export interface SaleFile {
+  id: string;
+  url: string;
+  description: string;
+  createdAt: string;
 }
 
 // Local state for amendment editing

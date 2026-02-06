@@ -175,6 +175,12 @@ export function LeadInfoSections({ lead }: LeadInfoSectionsProps) {
                     {lead.metadata.cantidadHijos !== undefined && (
                       <InfoItem label="Hijos" value={lead.metadata.cantidadHijos} />
                     )}
+                    {lead.metadata.ingresoPromedioFamiliar !== undefined && (
+                      <InfoItem
+                        label="Ingreso Familiar"
+                        value={lead.metadata.ingresoPromedioFamiliar}
+                      />
+                    )}
                     {lead.metadata.tieneTarjetasCredito !== undefined && (
                       <InfoItem
                         label="T. Crédito"

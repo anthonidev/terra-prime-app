@@ -13,6 +13,7 @@ import type {
   SaleDetail,
   AdminSalesQueryParams,
   FinancingDetailResponse,
+  SaleFile,
 } from '../types';
 
 // Get active projects
@@ -151,5 +152,11 @@ export async function getFinancingDetail(
   const response = await apiClient.get<FinancingDetailResponse>(
     `/api/sales/${saleId}/financing/${financingId}`
   );
+  return response.data;
+}
+
+// Get sale files
+export async function getSaleFiles(saleId: string): Promise<SaleFile[]> {
+  const response = await apiClient.get<SaleFile[]>(`/api/sale-files/sale/${saleId}`);
   return response.data;
 }

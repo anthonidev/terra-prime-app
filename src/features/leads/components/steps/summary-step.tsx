@@ -38,6 +38,7 @@ interface SummaryStepProps {
   cantidadTarjetasDebito: string;
   cantidadHijos: string;
   ocupacion: string;
+  ingresoPromedioFamiliar: string;
   observations: string;
   onObservationsChange: (value: string) => void;
   onSubmit: () => void;
@@ -71,6 +72,7 @@ export function SummaryStep({
   cantidadTarjetasDebito,
   cantidadHijos,
   ocupacion,
+  ingresoPromedioFamiliar,
   observations,
   onObservationsChange,
   onSubmit,
@@ -241,6 +243,7 @@ export function SummaryStep({
           {(estadoCivil ||
             ocupacion ||
             cantidadHijos ||
+            ingresoPromedioFamiliar ||
             tieneTarjetasCredito ||
             tieneTarjetasDebito) && (
             <Card className="border-none shadow-sm">
@@ -276,6 +279,14 @@ export function SummaryStep({
                         Hijos
                       </span>
                       <span className="font-medium">{cantidadHijos}</span>
+                    </div>
+                  )}
+                  {ingresoPromedioFamiliar && (
+                    <div className="space-y-1">
+                      <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                        Ingreso Promedio Familiar
+                      </span>
+                      <span className="font-medium">{ingresoPromedioFamiliar}</span>
                     </div>
                   )}
                   {tieneTarjetasCredito && (

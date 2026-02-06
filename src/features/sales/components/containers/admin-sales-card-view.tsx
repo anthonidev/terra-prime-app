@@ -271,7 +271,7 @@ function SaleCard({ sale, index }: { sale: AdminSale; index: number }) {
         <AssignParticipantsModal
           open={isAssignModalOpen}
           onOpenChange={setIsAssignModalOpen}
-          saleId={sale.id}
+          sale={sale}
         />
       )}
     </>

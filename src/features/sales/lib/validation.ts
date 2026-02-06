@@ -111,6 +111,7 @@ export const assignParticipantsSchema = z.object({
   salesGeneralManagerId: z.string().optional(),
   postSaleId: z.string().optional(),
   closerId: z.string().optional(),
+  generalDirectorId: z.string().optional(),
 });
 
 // Type inference

@@ -137,7 +137,7 @@ function ActionsCell({ sale }: { sale: AdminSale }) {
         <AssignParticipantsModal
           open={isAssignModalOpen}
           onOpenChange={setIsAssignModalOpen}
-          saleId={sale.id}
+          sale={sale}
         />
       )}
     </>

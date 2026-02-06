@@ -146,7 +146,7 @@ export function ReservationConfig({
                         }}
                       />
                       <div className="text-muted-foreground absolute top-0 left-0 flex h-full w-9 items-center justify-center border-r">
-                        <span className="text-sm">$</span>
+                        <Coins className="h-4 w-4" />
                       </div>
                     </div>
                     {form.formState.errors.reservationAmount && (

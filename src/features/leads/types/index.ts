@@ -54,6 +54,7 @@ export enum ParticipantType {
   SALES_GENERAL_MANAGER = 'SALES_GENERAL_MANAGER',
   POST_SALE = 'POST_SALE',
   CLOSER = 'CLOSER',
+  GENERAL_DIRECTOR = 'GENERAL_DIRECTOR',
 }
 
 export interface Participant {
@@ -96,6 +97,7 @@ export interface LeadVisit {
   salesGeneralManager: Participant | null;
   postSale: Participant | null;
   closer: Participant | null;
+  generalDirector: Participant | null;
 }
 
 export interface LeadMetadata {
@@ -106,6 +108,7 @@ export interface LeadMetadata {
   cantidadTarjetasDebito?: number;
   cantidadHijos?: number;
   ocupacion?: string;
+  ingresoPromedioFamiliar?: number;
 }
 
 export interface LeadVendor {
@@ -254,6 +257,7 @@ export interface AssignParticipantsInput {
   salesGeneralManagerId?: string;
   postSaleId?: string;
   closerId?: string;
+  generalDirectorId?: string;
 }
 
 export interface AssignParticipantsResponse {

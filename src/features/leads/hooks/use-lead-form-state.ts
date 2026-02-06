@@ -35,6 +35,7 @@ export interface LeadFormData {
   cantidadTarjetasDebito: string;
   cantidadHijos: string;
   ocupacion: string;
+  ingresoPromedioFamiliar: string;
 
   // Step 4
   observations: string;
@@ -65,6 +66,7 @@ const initialFormData: LeadFormData = {
   cantidadTarjetasDebito: '',
   cantidadHijos: '',
   ocupacion: '',
+  ingresoPromedioFamiliar: '',
   observations: '',
 };
 
@@ -102,6 +104,7 @@ export function useLeadFormState() {
       cantidadTarjetasDebito: lead.metadata?.cantidadTarjetasDebito?.toString() || '',
       cantidadHijos: lead.metadata?.cantidadHijos?.toString() || '',
       ocupacion: lead.metadata?.ocupacion || '',
+      ingresoPromedioFamiliar: lead.metadata?.ingresoPromedioFamiliar?.toString() || '',
       observations: '',
     });
   };
@@ -126,6 +129,9 @@ export function useLeadFormState() {
       metadata.cantidadHijos = parseInt(formData.cantidadHijos);
     }
     if (formData.ocupacion) metadata.ocupacion = formData.ocupacion;
+    if (formData.ingresoPromedioFamiliar) {
+      metadata.ingresoPromedioFamiliar = parseFloat(formData.ingresoPromedioFamiliar);
+    }
 
     return metadata;
   };

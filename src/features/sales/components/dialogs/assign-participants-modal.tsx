@@ -1,9 +1,18 @@
 'use client';
 
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Users, Phone, MapPin, Briefcase, UserCheck } from 'lucide-react';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { User } from 'lucide-react';
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
@@ -11,65 +20,151 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
 import { useActiveParticipants } from '@/features/participants/hooks/use-active-participants';
-import { ParticipantType } from '@/features/participants/types';
+import { ParticipantType, type Participant } from '@/features/participants/types';
 import { FormDialog } from '@/shared/components/form-dialog';
 import { useAssignParticipants } from '../../hooks/use-assign-participants';
 import { assignParticipantsSchema, type AssignParticipantsFormData } from '../../lib/validation';
+import type { AdminSale } from '../../types';
+
+const participantLabels: Record<ParticipantType, string> = {
+  [ParticipantType.LINER]: 'Liner',
+  [ParticipantType.TELEMARKETING_SUPERVISOR]: 'Sup. Telemarketing',
+  [ParticipantType.TELEMARKETING_CONFIRMER]: 'Conf. Telemarketing',
+  [ParticipantType.TELEMARKETER]: 'Telemarketer',
+  [ParticipantType.FIELD_MANAGER]: 'Gte. de Campo',
+  [ParticipantType.FIELD_SUPERVISOR]: 'Sup. de Campo',
+  [ParticipantType.FIELD_SELLER]: 'Vendedor de Campo',
+  [ParticipantType.SALES_MANAGER]: 'Gte. de Ventas',
+  [ParticipantType.SALES_GENERAL_MANAGER]: 'Gte. Gral. de Ventas',
+  [ParticipantType.POST_SALE]: 'Post Venta',
+  [ParticipantType.CLOSER]: 'Closer',
+  [ParticipantType.GENERAL_DIRECTOR]: 'Director General',
+};
 
 interface AssignParticipantsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  saleId: string;
+  sale: AdminSale;
 }
 
 export function AssignParticipantsModal({
   open,
   onOpenChange,
-  saleId,
+  sale,
 }: AssignParticipantsModalProps) {
   const { data: participants, isLoading: isLoadingParticipants } = useActiveParticipants();
   const { mutate, isPending } = useAssignParticipants();
 
   const form = useForm<AssignParticipantsFormData>({
     resolver: zodResolver(assignParticipantsSchema),
-    defaultValues: {
-      linerId: undefined,
-      telemarketingSupervisorId: undefined,
-      telemarketingConfirmerId: undefined,
-      telemarketerId: undefined,
-      fieldManagerId: undefined,
-      fieldSupervisorId: undefined,
-      fieldSellerId: undefined,
-      salesManagerId: undefined,
-      salesGeneralManagerId: undefined,
-      postSaleId: undefined,
-      closerId: undefined,
-    },
   });
 
-  const onSubmit = () => {
-    const data = form.getValues();
-    // Filter out undefined values
-    const cleanedData = Object.fromEntries(
-      Object.entries(data).filter(([, value]) => value !== undefined && value !== '')
+  // Group participants by type
+  const participantsByType = useMemo(() => {
+    if (!participants) return {} as Record<ParticipantType, Participant[]>;
+
+    return participants.reduce(
+      (acc, participant) => {
+        if (!acc[participant.participantType]) {
+          acc[participant.participantType] = [];
+        }
+        acc[participant.participantType].push(participant);
+        return acc;
+      },
+      {} as Record<ParticipantType, Participant[]>
     );
+  }, [participants]);
+
+  // Load current participants when sale/open changes
+  useEffect(() => {
+    if (sale && open) {
+      form.reset({
+        generalDirectorId: sale.generalDirector?.id || undefined,
+        linerId: sale.liner?.id || undefined,
+        telemarketingSupervisorId: sale.telemarketingSupervisor?.id || undefined,
+        telemarketingConfirmerId: sale.telemarketingConfirmer?.id || undefined,
+        telemarketerId: sale.telemarketer?.id || undefined,
+        fieldManagerId: sale.fieldManager?.id || undefined,
+        fieldSupervisorId: sale.fieldSupervisor?.id || undefined,
+        fieldSellerId: sale.fieldSeller?.id || undefined,
+        salesManagerId: sale.salesManager?.id || undefined,
+        salesGeneralManagerId: sale.salesGeneralManager?.id || undefined,
+        postSaleId: sale.postSale?.id || undefined,
+        closerId: sale.closer?.id || undefined,
+      });
+    }
+  }, [sale, open, form]);
+
+  const onSubmit = async (data: AssignParticipantsFormData) => {
+    // Convert all values, treating undefined/NONE as empty string for clearing assignments
+    const processedData = Object.entries(data).reduce((acc, [key, value]) => {
+      acc[key as keyof AssignParticipantsFormData] = value || '';
+      return acc;
+    }, {} as Partial<AssignParticipantsFormData>);
 
     mutate(
-      { saleId, data: cleanedData },
+      { saleId: sale.id, data: processedData },
       {
         onSuccess: () => {
-          form.reset();
           onOpenChange(false);
         },
       }
     );
   };
 
-  // Filter participants by type
-  const getParticipantsByType = (type: ParticipantType) => {
-    return participants?.filter((p) => p.participantType === type) || [];
+  const renderParticipantSelect = (
+    type: ParticipantType,
+    fieldName: keyof AssignParticipantsFormData,
+    label: string
+  ) => {
+    const participantsForType = participantsByType[type] || [];
+    const hasParticipants = participantsForType.length > 0;
+
+    return (
+      <FormField
+        key={type}
+        control={form.control}
+        name={fieldName}
+        render={({ field }) => (
+          <FormItem className="space-y-1">
+            <FormLabel className="text-foreground flex items-center gap-1.5 text-xs font-medium">
+              <User className="h-3 w-3 shrink-0" />
+              <span className="truncate">{label}</span>
+            </FormLabel>
+            <Select
+              value={field.value || undefined}
+              onValueChange={(value) => field.onChange(value === 'NONE' ? '' : value)}
+              disabled={!hasParticipants || isLoadingParticipants}
+            >
+              <FormControl>
+                <SelectTrigger className="focus:ring-primary/30 h-8 w-full max-w-full min-w-0 overflow-hidden whitespace-normal transition-all [&>span:first-child]:truncate">
+                  <SelectValue
+                    className="truncate"
+                    placeholder={
+                      isLoadingParticipants
+                        ? 'Cargando...'
+                        : hasParticipants
+                          ? 'Seleccionar'
+                          : 'No disponible'
+                    }
+                  />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="NONE">Sin asignar</SelectItem>
+                {participantsForType.map((participant) => (
+                  <SelectItem key={participant.id} value={participant.id}>
+                    {participant.firstName} {participant.lastName} - {participant.document}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
   };
 
   return (
@@ -77,369 +172,77 @@ export function AssignParticipantsModal({
       open={open}
       onOpenChange={onOpenChange}
       title="Asignar Participantes"
-      description="Selecciona los participantes que deseas asignar a esta venta."
-      icon={Users}
-      form={form}
-      onSubmit={onSubmit}
-      submitLabel="Asignar Participantes"
+      description="Asigna los participantes correspondientes a esta venta"
+      isEditing={true}
       isPending={isPending}
-      className="sm:max-w-3xl"
+      onSubmit={form.handleSubmit(onSubmit)}
+      submitLabel="Asignar Participantes"
+      maxWidth="2xl"
     >
-      <div className="space-y-6">
-        {/* Telemarketing Section */}
-        <div className="space-y-4">
-          <div className="text-primary flex items-center gap-2">
-            <Phone className="h-4 w-4" />
-            <h4 className="text-sm font-medium">Equipo de Telemarketing</h4>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="linerId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Liner</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isLoadingParticipants || isPending}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {getParticipantsByType(ParticipantType.LINER).map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.firstName} {p.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="telemarketerId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telemarketer</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isLoadingParticipants || isPending}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {getParticipantsByType(ParticipantType.TELEMARKETER).map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.firstName} {p.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="telemarketingSupervisorId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Supervisor</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isLoadingParticipants || isPending}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {getParticipantsByType(ParticipantType.TELEMARKETING_SUPERVISOR).map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.firstName} {p.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="telemarketingConfirmerId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirmador</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isLoadingParticipants || isPending}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {getParticipantsByType(ParticipantType.TELEMARKETING_CONFIRMER).map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.firstName} {p.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+      <Form {...form}>
+        <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 md:grid-cols-3">
+          {renderParticipantSelect(
+            ParticipantType.GENERAL_DIRECTOR,
+            'generalDirectorId',
+            participantLabels[ParticipantType.GENERAL_DIRECTOR]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.LINER,
+            'linerId',
+            participantLabels[ParticipantType.LINER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.TELEMARKETING_SUPERVISOR,
+            'telemarketingSupervisorId',
+            participantLabels[ParticipantType.TELEMARKETING_SUPERVISOR]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.TELEMARKETING_CONFIRMER,
+            'telemarketingConfirmerId',
+            participantLabels[ParticipantType.TELEMARKETING_CONFIRMER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.TELEMARKETER,
+            'telemarketerId',
+            participantLabels[ParticipantType.TELEMARKETER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.FIELD_MANAGER,
+            'fieldManagerId',
+            participantLabels[ParticipantType.FIELD_MANAGER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.FIELD_SUPERVISOR,
+            'fieldSupervisorId',
+            participantLabels[ParticipantType.FIELD_SUPERVISOR]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.FIELD_SELLER,
+            'fieldSellerId',
+            participantLabels[ParticipantType.FIELD_SELLER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.SALES_MANAGER,
+            'salesManagerId',
+            participantLabels[ParticipantType.SALES_MANAGER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.SALES_GENERAL_MANAGER,
+            'salesGeneralManagerId',
+            participantLabels[ParticipantType.SALES_GENERAL_MANAGER]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.POST_SALE,
+            'postSaleId',
+            participantLabels[ParticipantType.POST_SALE]
+          )}
+          {renderParticipantSelect(
+            ParticipantType.CLOSER,
+            'closerId',
+            participantLabels[ParticipantType.CLOSER]
+          )}
         </div>
-
-        <Separator />
-
-        {/* Field Section */}
-        <div className="space-y-4">
-          <div className="text-primary flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            <h4 className="text-sm font-medium">Equipo de Campo</h4>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="fieldSellerId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Vendedor</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isLoadingParticipants || isPending}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {getParticipantsByType(ParticipantType.FIELD_SELLER).map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.firstName} {p.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="fieldSupervisorId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Supervisor</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isLoadingParticipants || isPending}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {getParticipantsByType(ParticipantType.FIELD_SUPERVISOR).map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.firstName} {p.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="fieldManagerId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Gerente</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isLoadingParticipants || isPending}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {getParticipantsByType(ParticipantType.FIELD_MANAGER).map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.firstName} {p.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
-        <Separator />
-
-        {/* Management Section */}
-        <div className="space-y-4">
-          <div className="text-primary flex items-center gap-2">
-            <Briefcase className="h-4 w-4" />
-            <h4 className="text-sm font-medium">Gerencia y Cierre</h4>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="salesManagerId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Gerente de Ventas</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isLoadingParticipants || isPending}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {getParticipantsByType(ParticipantType.SALES_MANAGER).map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.firstName} {p.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="salesGeneralManagerId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Gerente General</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isLoadingParticipants || isPending}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {getParticipantsByType(ParticipantType.SALES_GENERAL_MANAGER).map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.firstName} {p.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="closerId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Closer</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isLoadingParticipants || isPending}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {getParticipantsByType(ParticipantType.CLOSER).map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.firstName} {p.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
-        <Separator />
-
-        {/* Post Sale Section */}
-        <div className="space-y-4">
-          <div className="text-primary flex items-center gap-2">
-            <UserCheck className="h-4 w-4" />
-            <h4 className="text-sm font-medium">Post Venta</h4>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="postSaleId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Encargado Post Venta</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isLoadingParticipants || isPending}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {getParticipantsByType(ParticipantType.POST_SALE).map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.firstName} {p.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-      </div>
+      </Form>
     </FormDialog>
   );
 }

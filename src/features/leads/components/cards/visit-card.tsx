@@ -56,7 +56,8 @@ export function VisitCard({
     visit.salesManager ||
     visit.salesGeneralManager ||
     visit.postSale ||
-    visit.closer
+    visit.closer ||
+    visit.generalDirector
   );
 
   return (

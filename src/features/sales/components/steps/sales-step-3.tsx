@@ -39,6 +39,7 @@ export function SalesStep3({
     urbanizationPrice,
     isLocked,
     isEditEnabled,
+    editableAmortization,
     handleGenerateAmortization,
     handleClearAmortization,
     handleSubmit,
@@ -77,12 +78,17 @@ export function SalesStep3({
 
   // Auto-scroll when amortization table appears
   useEffect(() => {
-    if (amortization && amortizationRef.current) {
+    if ((amortization || editableAmortization.initialized) && amortizationRef.current) {
       setTimeout(() => {
         amortizationRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }, 100);
     }
-  }, [amortization]);
+  }, [amortization, editableAmortization.initialized]);
+
+  const hasAmortization = amortization || editableAmortization.initialized;
+  const isAmortizationValid = editableAmortization.initialized
+    ? editableAmortization.isValid
+    : !!amortization;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -172,12 +178,38 @@ export function SalesStep3({
       {/* Amortization Table */}
       {!isDirectPayment && (
         <div ref={amortizationRef}>
-          <AmortizationTable
-            amortization={amortization}
-            isCalculating={isCalculating}
-            hasUrbanization={hasUrbanization && urbanizationPrice > 0}
-            currency={selectedLot.projectCurrency}
-          />
+          {editableAmortization.initialized ? (
+            <AmortizationTable
+              amortization={amortization}
+              isCalculating={isCalculating}
+              hasUrbanization={hasUrbanization && urbanizationPrice > 0}
+              currency={selectedLot.projectCurrency}
+              editable
+              editableInstallments={editableAmortization.installments}
+              canAddDelete={editableAmortization.canAddDelete}
+              meta={editableAmortization.meta}
+              isLotBalanceValid={editableAmortization.isLotBalanceValid}
+              isHuBalanceValid={editableAmortization.isHuBalanceValid}
+              lotBalanceDifference={editableAmortization.lotBalanceDifference}
+              huBalanceDifference={editableAmortization.huBalanceDifference}
+              expectedLotTotal={editableAmortization.expectedLotTotal}
+              expectedHuTotal={editableAmortization.expectedHuTotal}
+              onUpdateInstallment={editableAmortization.updateInstallment}
+              onDeleteInstallments={editableAmortization.deleteInstallments}
+              onAddInstallments={editableAmortization.addInstallments}
+              onBulkUpdateLotAmount={editableAmortization.bulkUpdateLotAmount}
+              onBulkUpdateHuAmount={editableAmortization.bulkUpdateHuAmount}
+              onBulkUpdateDates={editableAmortization.bulkUpdateDates}
+              onAdjustLastInstallment={editableAmortization.adjustLastInstallment}
+            />
+          ) : (
+            <AmortizationTable
+              amortization={amortization}
+              isCalculating={isCalculating}
+              hasUrbanization={hasUrbanization && urbanizationPrice > 0}
+              currency={selectedLot.projectCurrency}
+            />
+          )}
         </div>
       )}
 
@@ -194,7 +226,7 @@ export function SalesStep3({
         </Button>
         <Button
           type="submit"
-          disabled={!isDirectPayment && (isCalculating || !amortization)}
+          disabled={!isDirectPayment && (isCalculating || !hasAmortization || !isAmortizationValid)}
           size="lg"
           className="min-w-32"
         >

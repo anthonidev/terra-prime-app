@@ -12,6 +12,7 @@ export const PARTICIPANT_TYPE_LABELS: Record<ParticipantType, string> = {
   [ParticipantType.SALES_GENERAL_MANAGER]: 'Gerente General de Ventas',
   [ParticipantType.POST_SALE]: 'Post Venta',
   [ParticipantType.CLOSER]: 'Closer',
+  [ParticipantType.GENERAL_DIRECTOR]: 'Director General',
 };
 
 export const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
