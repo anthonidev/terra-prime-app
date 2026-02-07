@@ -2,8 +2,8 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 const BACKEND_URL = process.env.API_BACKENDL_URL || 'http://localhost:5000';
 
-// Allow up to 5 minutes for PDF generation (Vercel)
-export const maxDuration = 300;
+// Allow up to 1 minute for PDF generation (Vercel)
+export const maxDuration = 60;
 
 export async function POST(
   request: NextRequest,
@@ -20,7 +20,7 @@ export async function POST(
         ...(authHeader ? { Authorization: authHeader } : {}),
         'Content-Type': 'application/json',
       },
-      signal: AbortSignal.timeout(300_000), // 5 minutes
+      signal: AbortSignal.timeout(60_000), // 1 minute
     });
 
     const data = await response.json();
