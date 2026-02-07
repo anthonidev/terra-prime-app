@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { CreditCard, Wallet, Percent, Calculator, AlertTriangle } from 'lucide-react';
+import { CreditCard, Wallet, Percent, Calculator, AlertTriangle, DollarSign } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import { DataTable } from '@/shared/components/data-table/data-table';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency } from '@/shared/utils/currency-formatter';
 import { RegisterInstallmentPaymentApprovedModal } from '../../dialogs/register-installment-payment-approved-modal';
+import { RegisterInitialPaymentApprovedModal } from '../../dialogs/register-initial-payment-approved-modal';
 import { RegisterLateFeePaymentModal } from '../../dialogs/register-late-fee-payment-modal';
 import type {
   SaleDetailInstallment,
@@ -53,6 +54,7 @@ export function SaleInstallmentsTabContent({
   financingItem,
 }: SaleInstallmentsTabContentProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isInitialPaymentModalOpen, setIsInitialPaymentModalOpen] = useState(false);
   const [isLateFeeModalOpen, setIsLateFeeModalOpen] = useState(false);
   const currencySymbol = currency === 'USD' ? '$' : 'S/';
 
@@ -249,6 +251,16 @@ export function SaleInstallmentsTabContent({
                       Pendiente: {formatCurrency(financingItem.initialAmountPending, currency)}
                     </span>
                   </div>
+                  {canRegisterPayment && financingId && financingItem.initialAmountPending > 0 && (
+                    <Button
+                      size="sm"
+                      className="mt-2 w-full"
+                      onClick={() => setIsInitialPaymentModalOpen(true)}
+                    >
+                      <DollarSign className="mr-2 h-4 w-4" />
+                      Registrar Pago Inicial
+                    </Button>
+                  )}
                 </div>
               )}
 
@@ -401,6 +413,21 @@ export function SaleInstallmentsTabContent({
           currency={currency}
           title={`Registrar Pago de Mora - ${title}`}
           pendingLateFee={pendingLateFee}
+          onSuccess={handlePaymentSuccess}
+        />
+      )}
+
+      {/* Initial Payment Modal */}
+      {financingId && financingItem && (
+        <RegisterInitialPaymentApprovedModal
+          open={isInitialPaymentModalOpen}
+          onOpenChange={setIsInitialPaymentModalOpen}
+          financingId={financingId}
+          saleId={saleId}
+          currency={currency}
+          initialAmount={financingItem.initialAmount}
+          initialAmountPaid={financingItem.initialAmountPaid}
+          initialAmountPending={financingItem.initialAmountPending}
           onSuccess={handlePaymentSuccess}
         />
       )}
