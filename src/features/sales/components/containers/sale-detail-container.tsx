@@ -136,6 +136,10 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
           isADM={isADM}
           radicationPdfUrl={sale?.radicationPdfUrl}
           paymentAcordPdfUrl={sale?.paymentAcordPdfUrl}
+          currency={sale?.currency}
+          reservationAmount={sale?.reservationAmount}
+          reservationAmountPaid={sale?.reservationAmountPaid}
+          reservationAmountPending={sale?.reservationAmountPending}
         />
       </motion.div>
 

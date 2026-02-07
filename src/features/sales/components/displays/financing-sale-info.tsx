@@ -85,6 +85,15 @@ export function FinancingSaleInfo({ sale }: FinancingSaleInfoProps) {
             <div className="space-y-1">
               <div className="text-muted-foreground text-sm">Monto de Reserva</div>
               <p className="font-medium">{formatCurrency(sale.reservationAmount)}</p>
+              <div className="flex gap-2 text-xs">
+                <span className="text-green-600">
+                  Pagado: {formatCurrency(sale.reservationAmountPaid)}
+                </span>
+                <span className="text-muted-foreground">|</span>
+                <span className="text-orange-600">
+                  Pendiente: {formatCurrency(sale.reservationAmountPending)}
+                </span>
+              </div>
             </div>
           )}
 

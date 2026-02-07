@@ -1,12 +1,14 @@
 'use client';
 
-import { FileDown, ArrowLeft, FileSpreadsheet } from 'lucide-react';
+import { useState } from 'react';
+import { FileDown, ArrowLeft, FileSpreadsheet, Bookmark } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import type { StatusSale } from '../../types';
+import type { StatusSale, CurrencyType } from '../../types';
 import { useExportSaleExcel } from '../../hooks/use-export-sale-excel';
+import { RegisterReservationPaymentApprovedModal } from '../dialogs/register-reservation-payment-approved-modal';
 
 // Status badge configurations
 const statusConfig: Record<
@@ -34,6 +36,10 @@ interface SaleDetailHeaderProps {
   isADM: boolean;
   radicationPdfUrl?: string | null;
   paymentAcordPdfUrl?: string | null;
+  currency?: CurrencyType;
+  reservationAmount?: number;
+  reservationAmountPaid?: number;
+  reservationAmountPending?: number;
 }
 
 // Default config for unknown statuses
@@ -46,10 +52,17 @@ export function SaleDetailHeader({
   isADM,
   radicationPdfUrl,
   paymentAcordPdfUrl,
+  currency,
+  reservationAmount = 0,
+  reservationAmountPaid = 0,
+  reservationAmountPending = 0,
 }: SaleDetailHeaderProps) {
+  const [isReservationModalOpen, setIsReservationModalOpen] = useState(false);
   const router = useRouter();
   const config = statusConfig[status] || defaultStatusConfig;
   const exportExcel = useExportSaleExcel();
+
+  const canRegisterReservationPayment = isADM && reservationAmountPending > 0;
 
   const handleDownload = (url: string, filename?: string) => {
     if (!url) return;
@@ -94,8 +107,14 @@ export function SaleDetailHeader({
           </div>
         </div>
 
-        {/* Download buttons */}
+        {/* Action buttons */}
         <div className="flex flex-wrap gap-2">
+          {canRegisterReservationPayment && (
+            <Button size="sm" onClick={() => setIsReservationModalOpen(true)}>
+              <Bookmark className="mr-2 h-4 w-4" />
+              Pago Separación
+            </Button>
+          )}
           {isADM && (
             <Button
               variant="outline"
@@ -129,6 +148,19 @@ export function SaleDetailHeader({
           )}
         </div>
       </div>
+
+      {/* Register Reservation Payment Modal */}
+      {canRegisterReservationPayment && (
+        <RegisterReservationPaymentApprovedModal
+          open={isReservationModalOpen}
+          onOpenChange={setIsReservationModalOpen}
+          saleId={saleId}
+          currency={currency}
+          reservationAmount={reservationAmount}
+          reservationAmountPaid={reservationAmountPaid}
+          reservationAmountPending={reservationAmountPending}
+        />
+      )}
     </div>
   );
 }

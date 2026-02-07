@@ -85,10 +85,19 @@ export function SaleInfoCard({ sale }: SaleInfoCardProps) {
           </div>
 
           {/* Reservation Amount */}
-          {sale.reservationAmount && sale.reservationAmount > 0 && (
+          {sale.reservationAmount != null && sale.reservationAmount > 0 && (
             <div className="space-y-1">
               <div className="text-muted-foreground text-sm">Monto de Reserva</div>
               <p className="font-medium">{formatCurrency(sale.reservationAmount, sale.currency)}</p>
+              <div className="flex gap-2 text-xs">
+                <span className="text-green-600">
+                  Pagado: {formatCurrency(sale.reservationAmountPaid ?? 0, sale.currency)}
+                </span>
+                <span className="text-muted-foreground">|</span>
+                <span className="text-orange-600">
+                  Pendiente: {formatCurrency(sale.reservationAmountPending ?? 0, sale.currency)}
+                </span>
+              </div>
             </div>
           )}
 

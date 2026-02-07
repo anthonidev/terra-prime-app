@@ -511,6 +511,7 @@ export interface SaleDetail {
   createdAt: string;
   reservationAmount?: number;
   reservationAmountPaid?: number;
+  reservationAmountPending?: number;
   maximumHoldPeriod?: number;
   fromReservation?: boolean;
   totalToPay?: number;
@@ -677,6 +678,8 @@ export interface FinancingDetailSale {
   totalAmount: number;
   totalAmountPaid: number;
   reservationAmount: number;
+  reservationAmountPaid: number;
+  reservationAmountPending: number;
   contractDate: string;
   client: {
     id: number;

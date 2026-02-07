@@ -95,13 +95,20 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
             </div>
           </div>
 
-          {sale.reservationAmount && (
-            <div className="bg-muted/30 rounded-lg border p-3">
+          {sale.reservationAmount != null && sale.reservationAmount > 0 && (
+            <div className="bg-muted/30 space-y-2 rounded-lg border p-3">
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground text-sm font-medium">Monto de Reserva</span>
                 <span className="font-semibold">
-                  {sale.currency === 'USD' ? '$' : 'S/'}{' '}
-                  {sale.reservationAmount.toLocaleString('es-PE')}
+                  {formatCurrency(sale.reservationAmount, sale.currency)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-green-600">
+                  Pagado: {formatCurrency(sale.reservationAmountPaid ?? 0, sale.currency)}
+                </span>
+                <span className="text-orange-600">
+                  Pendiente: {formatCurrency(sale.reservationAmountPending ?? 0, sale.currency)}
                 </span>
               </div>
             </div>
