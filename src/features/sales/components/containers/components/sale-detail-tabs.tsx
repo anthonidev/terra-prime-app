@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { CreditCard, Landmark, Building2, FolderOpen } from 'lucide-react';
 
@@ -39,6 +40,25 @@ export function SaleDetailTabs({
   const hasLotInstallments = financing?.lot?.installments && financing.lot.installments.length > 0;
   const hasFinancing = hasLotInstallments || hasHuInstallments;
 
+  const [selectedConfigs, setSelectedConfigs] = useState<Set<string>>(new Set());
+
+  const toggleConfig = useCallback((config: string) => {
+    setSelectedConfigs((prev) => {
+      const next = new Set(prev);
+      if (next.has(config)) {
+        next.delete(config);
+      } else {
+        next.add(config);
+      }
+      return next;
+    });
+  }, []);
+
+  const filteredPayments = useMemo(() => {
+    if (selectedConfigs.size === 0) return payments;
+    return payments.filter((p) => selectedConfigs.has(p.paymentConfig));
+  }, [payments, selectedConfigs]);
+
   // If no financing, show payments + documents tabs
   if (!hasFinancing) {
     return (
@@ -62,12 +82,17 @@ export function SaleDetailTabs({
           <TabsContent value="payments" className="mt-4 space-y-4">
             {hasPayments && payments.length > 0 ? (
               <>
-                <PaymentSummaryByConfig payments={payments} currency={currency} />
+                <PaymentSummaryByConfig
+                  payments={payments}
+                  currency={currency}
+                  selectedConfigs={selectedConfigs}
+                  onToggleConfig={toggleConfig}
+                />
                 <div className="hidden md:block">
-                  <SalePaymentsTable payments={payments} currency={currency} />
+                  <SalePaymentsTable payments={filteredPayments} currency={currency} />
                 </div>
                 <div className="md:hidden">
-                  <PaymentCardsView payments={payments} currency={currency} />
+                  <PaymentCardsView payments={filteredPayments} currency={currency} />
                 </div>
               </>
             ) : (
@@ -130,16 +155,21 @@ export function SaleDetailTabs({
           {hasPayments && payments.length > 0 ? (
             <>
               {/* Payment Summary Cards by Config */}
-              <PaymentSummaryByConfig payments={payments} currency={currency} />
+              <PaymentSummaryByConfig
+                payments={payments}
+                currency={currency}
+                selectedConfigs={selectedConfigs}
+                onToggleConfig={toggleConfig}
+              />
 
               {/* Desktop Table View */}
               <div className="hidden md:block">
-                <SalePaymentsTable payments={payments} currency={currency} />
+                <SalePaymentsTable payments={filteredPayments} currency={currency} />
               </div>
 
               {/* Mobile Card View */}
               <div className="md:hidden">
-                <PaymentCardsView payments={payments} currency={currency} />
+                <PaymentCardsView payments={filteredPayments} currency={currency} />
               </div>
             </>
           ) : (

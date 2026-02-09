@@ -6,6 +6,8 @@ export const paymentConceptMap: Record<string, string> = {
   'Pago de cuotas de financiación de la venta': 'Pago de Cuota',
   'Pago de cuotas de financiación': 'Pago de Cuota',
   'Pago de reserva de la venta': 'Pago de reserva',
+  'Pago de mora': 'Pago de Mora',
+  'Pago de mora de la venta': 'Pago de Mora',
 };
 
 // Función para obtener el nombre corto del concepto

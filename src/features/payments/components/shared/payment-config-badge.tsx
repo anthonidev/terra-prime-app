@@ -30,6 +30,10 @@ const configStyles = {
     variant: 'outline',
     className: 'bg-amber-100 text-amber-800 hover:bg-amber-100',
   },
+  LATE_FEE_PAYMENT: {
+    variant: 'destructive',
+    className: 'bg-red-100 text-red-800 hover:bg-red-100',
+  },
 } as const satisfies Record<PaymentConfigCode, ConfigStyleItem>;
 
 // Display names for payment types (shorter versions)
@@ -38,6 +42,7 @@ const displayNames: Record<PaymentConfigCode, string> = {
   FINANCING_PAYMENT: 'Pago inicial',
   FINANCING_INSTALLMENTS_PAYMENT: 'Pago de Cuota',
   RESERVATION_PAYMENT: 'Pago de reserva',
+  LATE_FEE_PAYMENT: 'Pago de Mora',
 };
 
 export function PaymentConfigBadge({ code, name }: PaymentConfigBadgeProps) {
