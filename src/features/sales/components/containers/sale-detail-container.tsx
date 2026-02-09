@@ -280,6 +280,7 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
           activeTab={activeTab}
           onTabChange={setActiveTab}
           canRegisterInstallmentPayment={isADM}
+          isADM={isADM}
         />
       )}
 

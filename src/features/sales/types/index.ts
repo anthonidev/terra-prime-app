@@ -445,6 +445,18 @@ export interface SaleDetailInstallment {
   lateFeeAmountPending: string | number;
   lateFeeAmountPaid: string | number;
   status: StatusFinancingInstallments;
+  isParked: boolean;
+}
+
+// Update Installments Parking Status
+export interface UpdateParkingStatusInput {
+  installmentIds: string[];
+  isParked: boolean;
+}
+
+export interface UpdateParkingStatusResponse {
+  success: boolean;
+  message: string;
 }
 
 // Sale Detail Financing Item (for lot and hu)

@@ -21,6 +21,7 @@ interface SaleDetailTabsProps {
   activeTab?: string;
   onTabChange?: (tab: string) => void;
   canRegisterInstallmentPayment?: boolean;
+  isADM?: boolean;
 }
 
 export function SaleDetailTabs({
@@ -32,6 +33,7 @@ export function SaleDetailTabs({
   activeTab = 'payments',
   onTabChange,
   canRegisterInstallmentPayment = false,
+  isADM = false,
 }: SaleDetailTabsProps) {
   const hasHuInstallments = financing?.hu?.installments && financing.hu.installments.length > 0;
   const hasLotInstallments = financing?.lot?.installments && financing.lot.installments.length > 0;
@@ -161,6 +163,7 @@ export function SaleDetailTabs({
             onPaymentSuccess={handlePaymentSuccess}
             canRegisterPayment={canRegisterInstallmentPayment}
             financingItem={financing?.lot || null}
+            isADM={isADM}
           />
         </TabsContent>
 
@@ -175,6 +178,7 @@ export function SaleDetailTabs({
               onPaymentSuccess={handlePaymentSuccess}
               canRegisterPayment={canRegisterInstallmentPayment}
               financingItem={financing?.hu || null}
+              isADM={isADM}
             />
           </TabsContent>
         )}

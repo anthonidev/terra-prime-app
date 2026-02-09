@@ -18,6 +18,8 @@ import type {
   CreateAmendmentInput,
   CreateAmendmentResponse,
   SaleFile,
+  UpdateParkingStatusInput,
+  UpdateParkingStatusResponse,
 } from '../types';
 
 // Calculate amortization schedule
@@ -159,6 +161,17 @@ export async function uploadSaleFile(
 // Delete sale file
 export async function deleteSaleFile(fileId: string): Promise<void> {
   await apiClient.delete(`/api/sale-files/${fileId}`);
+}
+
+// Update installments parking status
+export async function updateInstallmentsParkingStatus(
+  data: UpdateParkingStatusInput
+): Promise<UpdateParkingStatusResponse> {
+  const response = await apiClient.patch<UpdateParkingStatusResponse>(
+    '/api/financing/installments/parking-status',
+    data
+  );
+  return response.data;
 }
 
 // Create financing amendment

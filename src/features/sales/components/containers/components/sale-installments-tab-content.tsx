@@ -1,20 +1,35 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { CreditCard, Wallet, Percent, Calculator, AlertTriangle, DollarSign } from 'lucide-react';
+import {
+  CreditCard,
+  Wallet,
+  Percent,
+  Calculator,
+  AlertTriangle,
+  DollarSign,
+  Car,
+  CircleOff,
+} from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { DataTable } from '@/shared/components/data-table/data-table';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency } from '@/shared/utils/currency-formatter';
 import { RegisterInstallmentPaymentApprovedModal } from '../../dialogs/register-installment-payment-approved-modal';
 import { RegisterInitialPaymentApprovedModal } from '../../dialogs/register-initial-payment-approved-modal';
 import { RegisterLateFeePaymentModal } from '../../dialogs/register-late-fee-payment-modal';
+import { RegisterSingleInstallmentPaymentModal } from '../../dialogs/register-single-installment-payment-modal';
+import { useUpdateParkingStatus } from '../../../hooks/use-update-parking-status';
 import type {
   SaleDetailInstallment,
   SaleDetailFinancingItem,
@@ -41,6 +56,7 @@ interface SaleInstallmentsTabContentProps {
   onPaymentSuccess?: () => void;
   canRegisterPayment?: boolean;
   financingItem?: SaleDetailFinancingItem | null;
+  isADM?: boolean;
 }
 
 export function SaleInstallmentsTabContent({
@@ -52,11 +68,22 @@ export function SaleInstallmentsTabContent({
   onPaymentSuccess,
   canRegisterPayment = false,
   financingItem,
+  isADM = false,
 }: SaleInstallmentsTabContentProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isInitialPaymentModalOpen, setIsInitialPaymentModalOpen] = useState(false);
   const [isLateFeeModalOpen, setIsLateFeeModalOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [singlePayment, setSinglePayment] = useState<{
+    installmentId: string;
+    pendingAmount: number;
+    mode: 'installment' | 'late-fee';
+  } | null>(null);
+  const [isSinglePaymentModalOpen, setIsSinglePaymentModalOpen] = useState(false);
   const currencySymbol = currency === 'USD' ? '$' : 'S/';
+
+  const { mutate: updateParkingStatus, isPending: isUpdatingParking } =
+    useUpdateParkingStatus(saleId);
 
   // Check if there's pending late fee
   const pendingLateFee = financingItem?.totalLateFeeePending ?? 0;
@@ -94,72 +121,233 @@ export function SaleInstallmentsTabContent({
     return `${currencySymbol} ${value.toLocaleString('es-PE')}`;
   };
 
-  const columns: ColumnDef<SaleDetailInstallment>[] = [
-    {
-      accessorKey: 'numberCuote',
-      header: 'N° Cuota',
-      cell: ({ row }) => {
-        const index = row.index + 1;
-        const installment = row.original;
-        return <span className="font-mono font-medium">#{installment.numberCuote ?? index}</span>;
-      },
+  // Selection handlers
+  const toggleSelectAll = useCallback(() => {
+    if (selectedIds.size === installments.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(installments.map((i) => i.id)));
+    }
+  }, [selectedIds.size, installments]);
+
+  const toggleSelectOne = useCallback((id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }, []);
+
+  const handleBulkParkingUpdate = useCallback(
+    (isParked: boolean) => {
+      updateParkingStatus(
+        { installmentIds: Array.from(selectedIds), isParked },
+        { onSuccess: () => setSelectedIds(new Set()) }
+      );
     },
-    {
-      accessorKey: 'expectedPaymentDate',
-      header: 'Fecha de Vencimiento',
-      cell: ({ row }) => {
-        const dateValue = row.getValue('expectedPaymentDate') as string | null;
-        if (!dateValue) return <span className="text-muted-foreground">-</span>;
-        const date = new Date(dateValue);
-        return format(date, 'dd MMM yyyy', { locale: es });
-      },
+    [selectedIds, updateParkingStatus]
+  );
+
+  const handleIndividualParkingToggle = useCallback(
+    (installmentId: string, isParked: boolean) => {
+      updateParkingStatus({ installmentIds: [installmentId], isParked });
     },
-    {
-      accessorKey: 'couteAmount',
-      header: 'Monto',
-      cell: ({ row }) => {
-        const amount = row.getValue('couteAmount') as number | string | null;
-        return <span className="font-medium">{formatAmount(amount)}</span>;
+    [updateParkingStatus]
+  );
+
+  const isAllSelected = installments.length > 0 && selectedIds.size === installments.length;
+  const isSomeSelected = selectedIds.size > 0 && selectedIds.size < installments.length;
+
+  const columns: ColumnDef<SaleDetailInstallment>[] = useMemo(() => {
+    const cols: ColumnDef<SaleDetailInstallment>[] = [];
+
+    // Checkbox column (ADM only)
+    if (isADM) {
+      cols.push({
+        id: 'select',
+        header: () => (
+          <Checkbox
+            checked={isAllSelected}
+            ref={(ref) => {
+              if (ref) {
+                (ref as unknown as HTMLInputElement).indeterminate = isSomeSelected;
+              }
+            }}
+            onCheckedChange={toggleSelectAll}
+            aria-label="Seleccionar todo"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedIds.has(row.original.id)}
+            onCheckedChange={() => toggleSelectOne(row.original.id)}
+            aria-label={`Seleccionar cuota ${row.original.numberCuote ?? row.index + 1}`}
+          />
+        ),
+        enableSorting: false,
+      });
+    }
+
+    cols.push(
+      {
+        accessorKey: 'numberCuote',
+        header: 'N°',
+        cell: ({ row }) => {
+          const index = row.index + 1;
+          const installment = row.original;
+          return (
+            <span className="font-mono font-medium tabular-nums">
+              #{installment.numberCuote ?? index}
+            </span>
+          );
+        },
       },
-    },
-    {
-      accessorKey: 'coutePaid',
-      header: 'Pagado',
-      cell: ({ row }) => {
-        const amount = row.getValue('coutePaid') as number | string | null;
-        return <span className="text-green-600">{formatAmount(amount)}</span>;
+      {
+        accessorKey: 'expectedPaymentDate',
+        header: 'Vencimiento',
+        cell: ({ row }) => {
+          const dateValue = row.getValue('expectedPaymentDate') as string | null;
+          if (!dateValue) return <span className="text-muted-foreground">-</span>;
+          const date = new Date(dateValue);
+          return format(date, 'dd MMM yyyy', { locale: es });
+        },
       },
-    },
-    {
-      accessorKey: 'coutePending',
-      header: 'Pendiente',
-      cell: ({ row }) => {
-        const amount = row.getValue('coutePending') as number | string | null;
-        const value = parseNumeric(amount);
-        return <span className={value > 0 ? 'text-amber-600' : ''}>{formatAmount(amount)}</span>;
+      {
+        accessorKey: 'couteAmount',
+        header: 'Monto',
+        cell: ({ row }) => {
+          const amount = row.getValue('couteAmount') as number | string | null;
+          return <span className="font-medium tabular-nums">{formatAmount(amount)}</span>;
+        },
       },
-    },
-    {
-      accessorKey: 'lateFeeAmountPending',
-      header: 'Mora',
-      cell: ({ row }) => {
-        const amount = row.getValue('lateFeeAmountPending') as number | string | null;
-        const value = parseNumeric(amount);
-        if (value === 0) return <span className="text-muted-foreground">-</span>;
-        return <span className="text-red-600">{formatAmount(amount)}</span>;
+      {
+        id: 'pago',
+        header: 'Pago',
+        cell: ({ row }) => {
+          const inst = row.original;
+          const paid = parseNumeric(inst.coutePaid);
+          const pending = parseNumeric(inst.coutePending);
+          const lateFee = parseNumeric(inst.lateFeeAmountPending);
+
+          return (
+            <div className="space-y-0.5 tabular-nums">
+              <div className="text-green-600">{formatAmount(paid)}</div>
+              {pending > 0 && (
+                <div className="text-xs text-amber-600">{formatAmount(pending)} pend.</div>
+              )}
+              {lateFee > 0 && (
+                <div className="flex items-center gap-1 text-xs text-red-600">
+                  <AlertTriangle className="h-3 w-3" />
+                  {formatAmount(lateFee)} mora
+                </div>
+              )}
+            </div>
+          );
+        },
       },
-    },
-    {
-      accessorKey: 'status',
-      header: 'Estado',
-      cell: ({ row }) => {
-        const status = row.getValue('status') as StatusFinancingInstallments;
-        const config = installmentStatusConfig[status];
-        if (!config) return <span className="text-muted-foreground">-</span>;
-        return <Badge variant={config.variant}>{config.label}</Badge>;
+      {
+        accessorKey: 'status',
+        header: 'Estado',
+        cell: ({ row }) => {
+          const status = row.getValue('status') as StatusFinancingInstallments;
+          const config = installmentStatusConfig[status];
+          if (!config) return <span className="text-muted-foreground">-</span>;
+          return <Badge variant={config.variant}>{config.label}</Badge>;
+        },
       },
-    },
-  ];
+      {
+        accessorKey: 'isParked',
+        header: 'Cochera',
+        cell: ({ row }) => {
+          if (isADM) {
+            return (
+              <Switch
+                checked={row.original.isParked}
+                onCheckedChange={(checked) =>
+                  handleIndividualParkingToggle(row.original.id, checked)
+                }
+                disabled={isUpdatingParking}
+                aria-label={row.original.isParked ? 'Quitar cochera' : 'Marcar como cochera'}
+              />
+            );
+          }
+          const isParked = row.original.isParked;
+          if (!isParked) return <span className="text-muted-foreground">-</span>;
+          return <Badge variant="secondary">Cochera</Badge>;
+        },
+      }
+    );
+
+    // Per-installment payment actions (ADM only)
+    if (isADM && canRegisterPayment) {
+      cols.push({
+        id: 'actions',
+        header: 'Acciones',
+        cell: ({ row }) => {
+          const inst = row.original;
+          const coutePending = parseNumeric(inst.coutePending);
+          const lateFeePending = parseNumeric(inst.lateFeeAmountPending);
+
+          return (
+            <div className="flex gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    disabled={coutePending <= 0}
+                    onClick={() => {
+                      setSinglePayment({
+                        installmentId: inst.id,
+                        pendingAmount: coutePending,
+                        mode: 'installment',
+                      });
+                      setIsSinglePaymentModalOpen(true);
+                    }}
+                    aria-label="Pagar Cuota"
+                  >
+                    <CreditCard className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Pagar Cuota</TooltipContent>
+              </Tooltip>
+              {lateFeePending > 0 && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-red-600"
+                      onClick={() => {
+                        setSinglePayment({
+                          installmentId: inst.id,
+                          pendingAmount: lateFeePending,
+                          mode: 'late-fee',
+                        });
+                        setIsSinglePaymentModalOpen(true);
+                      }}
+                      aria-label="Pagar Mora"
+                    >
+                      <AlertTriangle className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Pagar Mora</TooltipContent>
+                </Tooltip>
+              )}
+            </div>
+          );
+        },
+      });
+    }
+
+    return cols;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isADM, isAllSelected, isSomeSelected, selectedIds, isUpdatingParking, canRegisterPayment]);
 
   // Use financing item data if available, otherwise use calculated totals
   const totalCouteAmount = financingItem?.totalCouteAmount ?? calculatedTotals.totalAmount;
@@ -379,6 +567,43 @@ export function SaleInstallmentsTabContent({
             </div>
           )}
 
+          {/* Bulk Selection Action Bar (ADM only) */}
+          <AnimatePresence>
+            {isADM && selectedIds.size > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="bg-muted flex items-center justify-between rounded-lg border px-4 py-3"
+              >
+                <span className="text-sm font-medium">
+                  {selectedIds.size} cuota{selectedIds.size > 1 ? 's' : ''} seleccionada
+                  {selectedIds.size > 1 ? 's' : ''}
+                </span>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleBulkParkingUpdate(true)}
+                    disabled={isUpdatingParking}
+                  >
+                    <Car className="mr-2 h-4 w-4" />
+                    Marcar como cochera
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleBulkParkingUpdate(false)}
+                    disabled={isUpdatingParking}
+                  >
+                    <CircleOff className="mr-2 h-4 w-4" />
+                    Quitar cochera
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {/* Installments Table */}
           {installments.length > 0 ? (
             <DataTable columns={columns} data={installments} />
@@ -428,6 +653,23 @@ export function SaleInstallmentsTabContent({
           initialAmount={financingItem.initialAmount}
           initialAmountPaid={financingItem.initialAmountPaid}
           initialAmountPending={financingItem.initialAmountPending}
+          onSuccess={handlePaymentSuccess}
+        />
+      )}
+
+      {/* Single Installment Payment Modal */}
+      {singlePayment && (
+        <RegisterSingleInstallmentPaymentModal
+          open={isSinglePaymentModalOpen}
+          onOpenChange={(open) => {
+            setIsSinglePaymentModalOpen(open);
+            if (!open) setSinglePayment(null);
+          }}
+          installmentId={singlePayment.installmentId}
+          saleId={saleId}
+          currency={currency}
+          pendingAmount={singlePayment.pendingAmount}
+          mode={singlePayment.mode}
           onSuccess={handlePaymentSuccess}
         />
       )}
