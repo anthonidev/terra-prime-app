@@ -17,8 +17,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { formatCurrency } from '@/shared/lib/utils';
+import { formatCurrency } from '@/shared/utils/currency-formatter';
 import { getTodayDateInputValue } from '@/shared/utils/date-formatter';
+import type { CurrencyType } from '@/features/sales/types';
 
 const addInstallmentsSchema = z.object({
   quantity: z.number().min(1, 'Mínimo 1 cuota').max(120, 'Máximo 120 cuotas'),
@@ -33,6 +34,7 @@ interface AddInstallmentsModalProps {
   onOpenChange: (open: boolean) => void;
   onAdd: (quantity: number, totalAmount: number, startDate: string) => void;
   suggestedAmount: number;
+  currency: CurrencyType;
 }
 
 export function AddInstallmentsModal({
@@ -40,6 +42,7 @@ export function AddInstallmentsModal({
   onOpenChange,
   onAdd,
   suggestedAmount,
+  currency,
 }: AddInstallmentsModalProps) {
   const {
     register,
@@ -127,7 +130,7 @@ export function AddInstallmentsModal({
             )}
             {suggestedAmount > 0 && (
               <p className="text-muted-foreground text-xs">
-                Monto sugerido: {formatCurrency(suggestedAmount)}
+                Monto sugerido: {formatCurrency(suggestedAmount, currency)}
               </p>
             )}
           </div>
@@ -145,7 +148,7 @@ export function AddInstallmentsModal({
             <div className="bg-muted/50 rounded-lg border p-4">
               <p className="text-muted-foreground text-sm">Vista previa:</p>
               <p className="font-medium">
-                {quantity} cuotas de {formatCurrency(amountPerInstallment)} cada una
+                {quantity} cuotas de {formatCurrency(amountPerInstallment, currency)} cada una
               </p>
             </div>
           )}

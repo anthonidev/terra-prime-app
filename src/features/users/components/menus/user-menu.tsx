@@ -52,10 +52,7 @@ export function UserMenu() {
           <LayoutDashboard className="mr-2 h-4 w-4" />
           Dashboard
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => handleNavigation('/dashboard/cli-perfil')}
-          className="cursor-pointer"
-        >
+        <DropdownMenuItem onClick={() => handleNavigation('/perfil')} className="cursor-pointer">
           <User className="mr-2 h-4 w-4" />
           Perfil
         </DropdownMenuItem>

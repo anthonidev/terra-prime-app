@@ -1,15 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Building2, User, FileText, Calendar, DollarSign } from 'lucide-react';
-import { formatCurrency } from '@/shared/lib/utils';
+import { formatCurrency } from '@/shared/utils/currency-formatter';
 import { statusConfig } from '../shared/status-config';
-import type { FinancingDetailSale, StatusSale } from '../../types';
+import type { CurrencyType, FinancingDetailSale, StatusSale } from '../../types';
 
 interface FinancingSaleInfoProps {
   sale: FinancingDetailSale;
+  currency: CurrencyType;
 }
 
-export function FinancingSaleInfo({ sale }: FinancingSaleInfoProps) {
+export function FinancingSaleInfo({ sale, currency }: FinancingSaleInfoProps) {
   const statusInfo = statusConfig[sale.status as StatusSale];
 
   const formatDate = (dateString: string) => {
@@ -74,9 +75,9 @@ export function FinancingSaleInfo({ sale }: FinancingSaleInfoProps) {
               <DollarSign className="h-4 w-4" />
               Monto Total
             </div>
-            <p className="font-medium">{formatCurrency(sale.totalAmount)}</p>
+            <p className="font-medium">{formatCurrency(sale.totalAmount, currency)}</p>
             <p className="text-muted-foreground text-sm">
-              Pagado: {formatCurrency(sale.totalAmountPaid)}
+              Pagado: {formatCurrency(sale.totalAmountPaid, currency)}
             </p>
           </div>
 
@@ -84,14 +85,14 @@ export function FinancingSaleInfo({ sale }: FinancingSaleInfoProps) {
           {sale.reservationAmount > 0 && (
             <div className="space-y-1">
               <div className="text-muted-foreground text-sm">Monto de Reserva</div>
-              <p className="font-medium">{formatCurrency(sale.reservationAmount)}</p>
+              <p className="font-medium">{formatCurrency(sale.reservationAmount, currency)}</p>
               <div className="flex gap-2 text-xs">
                 <span className="text-green-600">
-                  Pagado: {formatCurrency(sale.reservationAmountPaid)}
+                  Pagado: {formatCurrency(sale.reservationAmountPaid, currency)}
                 </span>
                 <span className="text-muted-foreground">|</span>
                 <span className="text-orange-600">
-                  Pendiente: {formatCurrency(sale.reservationAmountPending)}
+                  Pendiente: {formatCurrency(sale.reservationAmountPending, currency)}
                 </span>
               </div>
             </div>

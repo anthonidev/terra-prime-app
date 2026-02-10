@@ -17,11 +17,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { formatCurrency } from '@/shared/lib/utils';
+import { formatCurrency } from '@/shared/utils/currency-formatter';
 import { AddInstallmentsModal } from '../dialogs/add-installments-modal';
 import { EditInstallmentModal } from '../dialogs/edit-installment-modal';
 import { SaveAmendmentModal } from '../dialogs/save-amendment-modal';
-import type { AmendmentInstallmentLocal, AmendmentInstallmentStatus } from '../../types';
+import type {
+  AmendmentInstallmentLocal,
+  AmendmentInstallmentStatus,
+  CurrencyType,
+} from '../../types';
 
 const statusConfig: Record<
   AmendmentInstallmentStatus,
@@ -41,6 +45,7 @@ interface AmendmentInstallmentsTableProps {
   isBalanceValid: boolean;
   balanceDifference: number;
   isSaving: boolean;
+  currency: CurrencyType;
   onAddInstallments: (quantity: number, totalAmount: number, startDate: string) => void;
   onUpdateInstallment: (id: string, updates: Partial<AmendmentInstallmentLocal>) => void;
   onDeleteInstallment: (id: string) => void;
@@ -59,6 +64,7 @@ export function AmendmentInstallmentsTable({
   isBalanceValid,
   balanceDifference,
   isSaving,
+  currency,
   onAddInstallments,
   onUpdateInstallment,
   onDeleteInstallment,
@@ -145,16 +151,18 @@ export function AmendmentInstallmentsTable({
           <div className="rounded-lg border p-3">
             <p className="text-muted-foreground text-sm">Cuota Pagada</p>
             <p className="text-lg font-semibold text-green-600">
-              {formatCurrency(totalPaidAmount)}
+              {formatCurrency(totalPaidAmount, currency)}
             </p>
           </div>
           <div className="rounded-lg border p-3">
             <p className="text-muted-foreground text-sm">Total Esperado</p>
-            <p className="text-lg font-semibold">{formatCurrency(expectedTotal)}</p>
+            <p className="text-lg font-semibold">{formatCurrency(expectedTotal, currency)}</p>
           </div>
           <div className="rounded-lg border p-3">
             <p className="text-muted-foreground text-sm">Cuotas Pendientes</p>
-            <p className="text-lg font-semibold">{formatCurrency(pendingInstallmentsTotal)}</p>
+            <p className="text-lg font-semibold">
+              {formatCurrency(pendingInstallmentsTotal, currency)}
+            </p>
           </div>
           <div
             className={`rounded-lg border p-3 ${
@@ -177,7 +185,7 @@ export function AmendmentInstallmentsTable({
               <p
                 className={`text-lg font-semibold ${isBalanceValid ? 'text-green-600' : 'text-red-600'}`}
               >
-                {isBalanceValid ? 'Válido' : formatCurrency(balanceDifference)}
+                {isBalanceValid ? 'Válido' : formatCurrency(balanceDifference, currency)}
               </p>
             </div>
           </div>
@@ -208,7 +216,7 @@ export function AmendmentInstallmentsTable({
                       </TableCell>
                       <TableCell>{formatDateOnly(installment.dueDate, 'dd MMM yyyy')}</TableCell>
                       <TableCell className="text-right font-medium">
-                        {formatCurrency(installment.amount)}
+                        {formatCurrency(installment.amount, currency)}
                       </TableCell>
                       <TableCell>
                         <Badge variant={config.variant}>{config.label}</Badge>
@@ -252,8 +260,8 @@ export function AmendmentInstallmentsTable({
             <AlertCircle className="h-5 w-5 flex-shrink-0" />
             <p className="text-sm">
               {balanceDifference > 0
-                ? `El total de cuotas pendientes excede el monto esperado por ${formatCurrency(balanceDifference)}`
-                : `Faltan ${formatCurrency(Math.abs(balanceDifference))} para cubrir el monto esperado`}
+                ? `El total de cuotas pendientes excede el monto esperado por ${formatCurrency(balanceDifference, currency)}`
+                : `Faltan ${formatCurrency(Math.abs(balanceDifference), currency)} para cubrir el monto esperado`}
             </p>
           </div>
         )}
@@ -265,6 +273,7 @@ export function AmendmentInstallmentsTable({
         onOpenChange={setIsAddModalOpen}
         onAdd={onAddInstallments}
         suggestedAmount={balanceDifference < 0 ? Math.abs(balanceDifference) : 0}
+        currency={currency}
       />
 
       <EditInstallmentModal
@@ -282,6 +291,7 @@ export function AmendmentInstallmentsTable({
         installments={installments}
         additionalAmount={additionalAmount}
         totalPaidAmount={totalPaidAmount}
+        currency={currency}
       />
     </Card>
   );

@@ -698,6 +698,7 @@ export interface FinancingDetailSale {
   id: string;
   status: StatusSale;
   type: SaleType;
+  currency: CurrencyType;
   totalAmount: number;
   totalAmountPaid: number;
   reservationAmount: number;

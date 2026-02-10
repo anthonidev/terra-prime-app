@@ -14,8 +14,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { formatCurrency } from '@/shared/lib/utils';
-import type { AmendmentInstallmentLocal } from '../../types';
+import { formatCurrency } from '@/shared/utils/currency-formatter';
+import type { AmendmentInstallmentLocal, CurrencyType } from '../../types';
 
 interface SaveAmendmentModalProps {
   open: boolean;
@@ -25,6 +25,7 @@ interface SaveAmendmentModalProps {
   installments: AmendmentInstallmentLocal[];
   additionalAmount: number;
   totalPaidAmount: number;
+  currency: CurrencyType;
 }
 
 export function SaveAmendmentModal({
@@ -35,6 +36,7 @@ export function SaveAmendmentModal({
   installments,
   additionalAmount,
   totalPaidAmount,
+  currency,
 }: SaveAmendmentModalProps) {
   const [observation, setObservation] = useState('');
 
@@ -76,7 +78,7 @@ export function SaveAmendmentModal({
                 <span className="text-muted-foreground">Cuota inicial (pagada):</span>
               </div>
               <div className="text-right font-medium text-green-600">
-                {formatCurrency(totalPaidAmount)}
+                {formatCurrency(totalPaidAmount, currency)}
               </div>
 
               <div>
@@ -87,7 +89,7 @@ export function SaveAmendmentModal({
               <div>
                 <span className="text-muted-foreground">Total cuotas pendientes:</span>
               </div>
-              <div className="text-right font-medium">{formatCurrency(totalPending)}</div>
+              <div className="text-right font-medium">{formatCurrency(totalPending, currency)}</div>
 
               {additionalAmount !== 0 && (
                 <>
@@ -100,7 +102,7 @@ export function SaveAmendmentModal({
                     className={`text-right font-medium ${additionalAmount > 0 ? 'text-orange-600' : 'text-green-600'}`}
                   >
                     {additionalAmount > 0 ? '+' : ''}
-                    {formatCurrency(additionalAmount)}
+                    {formatCurrency(additionalAmount, currency)}
                   </div>
                 </>
               )}

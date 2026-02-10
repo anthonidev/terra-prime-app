@@ -81,6 +81,7 @@ export function FinancingDetailContainer({ saleId, financingId }: FinancingDetai
   }
 
   const { sale, financing } = data;
+  const currency = sale.currency;
 
   return (
     <div className="space-y-6">
@@ -122,7 +123,7 @@ export function FinancingDetailContainer({ saleId, financingId }: FinancingDetai
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
       >
-        <FinancingSaleInfo sale={sale} />
+        <FinancingSaleInfo sale={sale} currency={currency} />
       </motion.div>
 
       {/* Financing Summary (hidden in amendment mode) */}
@@ -132,7 +133,7 @@ export function FinancingDetailContainer({ saleId, financingId }: FinancingDetai
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
         >
-          <FinancingSummaryInfo financing={financing} />
+          <FinancingSummaryInfo financing={financing} currency={currency} />
         </motion.div>
       )}
 
@@ -152,6 +153,7 @@ export function FinancingDetailContainer({ saleId, financingId }: FinancingDetai
             isBalanceValid={amendment.isBalanceValid}
             balanceDifference={amendment.balanceDifference}
             isSaving={amendment.isSaving}
+            currency={currency}
             onAddInstallments={amendment.addInstallments}
             onUpdateInstallment={amendment.updateInstallment}
             onDeleteInstallment={amendment.deleteInstallment}
@@ -161,7 +163,7 @@ export function FinancingDetailContainer({ saleId, financingId }: FinancingDetai
             onCancel={amendment.cancelAmendmentMode}
           />
         ) : (
-          <InstallmentsTable installments={financing.installments} />
+          <InstallmentsTable installments={financing.installments} currency={currency} />
         )}
       </motion.div>
     </div>
