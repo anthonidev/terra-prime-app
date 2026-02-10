@@ -20,6 +20,8 @@ import type {
   SaleFile,
   UpdateParkingStatusInput,
   UpdateParkingStatusResponse,
+  AdjustLateFeeInput,
+  AdjustLateFeeResponse,
 } from '../types';
 
 // Calculate amortization schedule
@@ -169,6 +171,18 @@ export async function updateInstallmentsParkingStatus(
 ): Promise<UpdateParkingStatusResponse> {
   const response = await apiClient.patch<UpdateParkingStatusResponse>(
     '/api/financing/installments/parking-status',
+    data
+  );
+  return response.data;
+}
+
+// Adjust installment late fee
+export async function adjustInstallmentLateFee(
+  installmentId: string,
+  data: AdjustLateFeeInput
+): Promise<AdjustLateFeeResponse> {
+  const response = await apiClient.patch<AdjustLateFeeResponse>(
+    `/api/sales/financing/installment/${installmentId}/late-fee/adjust`,
     data
   );
   return response.data;

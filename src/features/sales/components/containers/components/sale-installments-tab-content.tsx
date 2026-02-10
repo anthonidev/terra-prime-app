@@ -13,6 +13,7 @@ import {
   DollarSign,
   Car,
   CircleOff,
+  Scale,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -29,6 +30,7 @@ import { RegisterInstallmentPaymentApprovedModal } from '../../dialogs/register-
 import { RegisterInitialPaymentApprovedModal } from '../../dialogs/register-initial-payment-approved-modal';
 import { RegisterLateFeePaymentModal } from '../../dialogs/register-late-fee-payment-modal';
 import { RegisterSingleInstallmentPaymentModal } from '../../dialogs/register-single-installment-payment-modal';
+import { AdjustLateFeeModal } from '../../dialogs/adjust-late-fee-modal';
 import { useUpdateParkingStatus } from '../../../hooks/use-update-parking-status';
 import type {
   SaleDetailInstallment,
@@ -80,6 +82,11 @@ export function SaleInstallmentsTabContent({
     mode: 'installment' | 'late-fee';
   } | null>(null);
   const [isSinglePaymentModalOpen, setIsSinglePaymentModalOpen] = useState(false);
+  const [adjustLateFeeData, setAdjustLateFeeData] = useState<{
+    installmentId: string;
+    currentLateFee: number;
+  } | null>(null);
+  const [isAdjustLateFeeModalOpen, setIsAdjustLateFeeModalOpen] = useState(false);
   const currencySymbol = currency === 'USD' ? '$' : 'S/';
 
   const { mutate: updateParkingStatus, isPending: isUpdatingParking } =
@@ -339,6 +346,26 @@ export function SaleInstallmentsTabContent({
                   <TooltipContent>Pagar Mora</TooltipContent>
                 </Tooltip>
               )}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => {
+                      setAdjustLateFeeData({
+                        installmentId: inst.id,
+                        currentLateFee: parseNumeric(inst.lateFeeAmountPending),
+                      });
+                      setIsAdjustLateFeeModalOpen(true);
+                    }}
+                    aria-label="Ajustar Mora"
+                  >
+                    <Scale className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Ajustar Mora</TooltipContent>
+              </Tooltip>
             </div>
           );
         },
@@ -671,6 +698,21 @@ export function SaleInstallmentsTabContent({
           pendingAmount={singlePayment.pendingAmount}
           mode={singlePayment.mode}
           onSuccess={handlePaymentSuccess}
+        />
+      )}
+
+      {/* Adjust Late Fee Modal */}
+      {adjustLateFeeData && (
+        <AdjustLateFeeModal
+          open={isAdjustLateFeeModalOpen}
+          onOpenChange={(open) => {
+            setIsAdjustLateFeeModalOpen(open);
+            if (!open) setAdjustLateFeeData(null);
+          }}
+          installmentId={adjustLateFeeData.installmentId}
+          saleId={saleId}
+          currentLateFee={adjustLateFeeData.currentLateFee}
+          currency={currency}
         />
       )}
     </>

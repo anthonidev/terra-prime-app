@@ -459,6 +459,17 @@ export interface UpdateParkingStatusResponse {
   message: string;
 }
 
+// Adjust Late Fee
+export interface AdjustLateFeeInput {
+  action: 'ADD' | 'REMOVE';
+  amount: number;
+}
+
+export interface AdjustLateFeeResponse {
+  success: boolean;
+  message: string;
+}
+
 // Sale Detail Financing Item (for lot and hu)
 export interface SaleDetailFinancingItem {
   id: string;
