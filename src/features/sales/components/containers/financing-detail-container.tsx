@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, CreditCard, FileEdit } from 'lucide-react';
+import { ArrowLeft, CreditCard, FileEdit, History } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,7 @@ import { FinancingSummaryInfo } from '../displays/financing-summary-info';
 import { InstallmentsTable } from '../tables/installments-table';
 import { AmendmentInstallmentsTable } from '../tables/amendment-installments-table';
 import { FinancingDetailSkeleton } from '../skeletons/financing-detail-skeleton';
+import { AmendmentHistoryModal } from '../dialogs/amendment-history-modal';
 
 interface FinancingDetailContainerProps {
   saleId: string;
@@ -25,6 +27,8 @@ export function FinancingDetailContainer({ saleId, financingId }: FinancingDetai
   const router = useRouter();
   const { user } = useAuth();
   const { data, isLoading, isError } = useFinancingDetail(saleId, financingId);
+
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   // Check if user is ADM (Administrator)
   const isADM = user?.role.code === 'ADM';
@@ -109,10 +113,18 @@ export function FinancingDetailContainer({ saleId, financingId }: FinancingDetai
           icon={CreditCard}
         >
           {isADM && !amendment.isAmendmentMode && (
-            <Button onClick={amendment.startAmendmentMode} variant="outline">
-              <FileEdit className="mr-2 h-4 w-4" />
-              Preparar Adenda
-            </Button>
+            <>
+              {financing.amendmentHistory && financing.amendmentHistory.length > 0 && (
+                <Button onClick={() => setHistoryOpen(true)} variant="outline">
+                  <History className="mr-2 h-4 w-4" />
+                  Historial de Adendas
+                </Button>
+              )}
+              <Button onClick={amendment.startAmendmentMode} variant="outline">
+                <FileEdit className="mr-2 h-4 w-4" />
+                Preparar Adenda
+              </Button>
+            </>
           )}
         </PageHeader>
       </motion.div>
@@ -166,6 +178,16 @@ export function FinancingDetailContainer({ saleId, financingId }: FinancingDetai
           <InstallmentsTable installments={financing.installments} currency={currency} />
         )}
       </motion.div>
+
+      {/* Amendment History Modal */}
+      {financing.amendmentHistory && financing.amendmentHistory.length > 0 && (
+        <AmendmentHistoryModal
+          open={historyOpen}
+          onOpenChange={setHistoryOpen}
+          amendments={financing.amendmentHistory}
+          currency={currency}
+        />
+      )}
     </div>
   );
 }

@@ -720,6 +720,20 @@ export interface FinancingDetailSale {
   };
 }
 
+export interface AmendmentHistoryItem {
+  id: string;
+  fileUrl: string;
+  totalCouteAmount: number;
+  totalPaid: number;
+  totalPending: number;
+  totalLateFee: number;
+  additionalAmount: number;
+  previousInstallmentsCount: number;
+  newInstallmentsCount: number;
+  observation: string;
+  createdAt: string;
+}
+
 export interface FinancingDetail {
   id: string;
   financingType: string;
@@ -735,6 +749,7 @@ export interface FinancingDetail {
   totalLateFeeePending: number;
   totalLateFeePaid: number;
   installments: FinancingDetailInstallment[];
+  amendmentHistory?: AmendmentHistoryItem[];
 }
 
 export interface FinancingDetailResponse {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatDateOnly } from '@/shared/utils/date-formatter';
 import { Plus, Pencil, Trash2, Save, X, AlertCircle, CheckCircle2 } from 'lucide-react';
 
@@ -78,6 +78,17 @@ export function AmendmentInstallmentsTable({
   const [editingInstallment, setEditingInstallment] = useState<AmendmentInstallmentLocal | null>(
     null
   );
+  const [additionalAmountInput, setAdditionalAmountInput] = useState(
+    additionalAmount === 0 ? '' : String(additionalAmount)
+  );
+
+  useEffect(() => {
+    const numericValue = parseFloat(additionalAmountInput);
+    if (!isNaN(numericValue) && numericValue !== additionalAmount) {
+      setAdditionalAmountInput(additionalAmount === 0 ? '' : String(additionalAmount));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [additionalAmount]);
 
   const pendingInstallments = installments.filter((i) => i.status === 'PENDING');
 
@@ -119,8 +130,21 @@ export function AmendmentInstallmentsTable({
                 id="additionalAmount"
                 type="number"
                 step="0.01"
-                value={additionalAmount}
-                onChange={(e) => onSetAdditionalAmount(parseFloat(e.target.value) || 0)}
+                value={additionalAmountInput}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  setAdditionalAmountInput(raw);
+                  const parsed = parseFloat(raw);
+                  if (!isNaN(parsed)) {
+                    onSetAdditionalAmount(parsed);
+                  }
+                }}
+                onBlur={() => {
+                  if (additionalAmountInput === '' || additionalAmountInput === '-') {
+                    setAdditionalAmountInput('');
+                    onSetAdditionalAmount(0);
+                  }
+                }}
                 placeholder="0.00"
               />
               <p className="text-muted-foreground text-xs">
