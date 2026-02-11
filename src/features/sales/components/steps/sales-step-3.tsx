@@ -15,6 +15,7 @@ interface SalesStep3Props {
   data?: Step3Data;
   saleType: SaleType;
   selectedLot: ProjectLotResponse;
+  projectCurrency: 'USD' | 'PEN';
   reservationAmount?: number;
   onNext: (data: Step3Data) => void;
   onBack: () => void;
@@ -24,10 +25,13 @@ export function SalesStep3({
   data,
   saleType,
   selectedLot,
+  projectCurrency,
   reservationAmount,
   onNext,
   onBack,
 }: SalesStep3Props) {
+  // Use projectCurrency as reliable source, fallback to lot's currency
+  const currency: 'USD' | 'PEN' = selectedLot.projectCurrency || projectCurrency;
   const {
     directForm,
     financedForm,
@@ -99,6 +103,7 @@ export function SalesStep3({
         lotPrice={lotPrice}
         urbanizationPrice={urbanizationPrice}
         hasUrbanization={hasUrbanization}
+        currency={currency}
         isEditEnabled={isEditEnabled}
         onEditEnabledChange={setIsEditEnabled}
         onLotPriceChange={setEditableLotPrice}
@@ -111,7 +116,7 @@ export function SalesStep3({
           <FinancedPaymentFields
             form={financedForm}
             lotPrice={lotPrice}
-            currency={selectedLot.projectCurrency}
+            currency={currency}
             isLocked={isLocked}
           />
         </div>
@@ -123,7 +128,7 @@ export function SalesStep3({
           <UrbanizationConfig
             form={isDirectPayment ? (directForm as any) : (financedForm as any)}
             urbanizationPrice={urbanizationPrice}
-            currency={selectedLot.projectCurrency}
+            currency={currency}
           />
         </div>
       )}
@@ -183,7 +188,7 @@ export function SalesStep3({
               amortization={amortization}
               isCalculating={isCalculating}
               hasUrbanization={hasUrbanization && urbanizationPrice > 0}
-              currency={selectedLot.projectCurrency}
+              currency={currency}
               editable
               editableInstallments={editableAmortization.installments}
               canAddDelete={editableAmortization.canAddDelete}
@@ -207,7 +212,7 @@ export function SalesStep3({
               amortization={amortization}
               isCalculating={isCalculating}
               hasUrbanization={hasUrbanization && urbanizationPrice > 0}
-              currency={selectedLot.projectCurrency}
+              currency={currency}
             />
           )}
         </div>

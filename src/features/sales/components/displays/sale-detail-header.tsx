@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FileDown, ArrowLeft, FileSpreadsheet, Bookmark } from 'lucide-react';
+import { FileDown, ArrowLeft, FileSpreadsheet, Bookmark, Settings2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import { Badge } from '@/components/ui/badge';
@@ -40,6 +40,7 @@ interface SaleDetailHeaderProps {
   reservationAmount?: number;
   reservationAmountPaid?: number;
   reservationAmountPending?: number;
+  onCustomizeView?: () => void;
 }
 
 // Default config for unknown statuses
@@ -56,6 +57,7 @@ export function SaleDetailHeader({
   reservationAmount = 0,
   reservationAmountPaid = 0,
   reservationAmountPending = 0,
+  onCustomizeView,
 }: SaleDetailHeaderProps) {
   const [isReservationModalOpen, setIsReservationModalOpen] = useState(false);
   const router = useRouter();
@@ -144,6 +146,16 @@ export function SaleDetailHeader({
             >
               <FileDown className="mr-2 h-4 w-4" />
               Acuerdo de Pago
+            </Button>
+          )}
+          {onCustomizeView && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onCustomizeView}
+              title="Personalizar Vista"
+            >
+              <Settings2 className="h-4 w-4" />
             </Button>
           )}
         </div>

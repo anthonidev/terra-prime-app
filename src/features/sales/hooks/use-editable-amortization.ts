@@ -34,10 +34,15 @@ export function useEditableAmortization({ interestRate }: UseEditableAmortizatio
   const expectedLotTotal = originalMeta?.lotTotalAmount ?? 0;
   const expectedHuTotal = originalMeta?.huTotalAmount ?? 0;
 
-  // Initialize from API response
+  // Initialize from API response (normalize null values from backend)
   const initializeFromAmortization = useCallback((data: AmortizationResponse) => {
     const editables: EditableInstallment[] = data.installments.map((inst) => ({
       ...inst,
+      lotInstallmentAmount: inst.lotInstallmentAmount ?? 0,
+      lotInstallmentNumber: inst.lotInstallmentNumber ?? 0,
+      huInstallmentAmount: inst.huInstallmentAmount ?? 0,
+      huInstallmentNumber: inst.huInstallmentNumber ?? 0,
+      totalInstallmentAmount: inst.totalInstallmentAmount ?? 0,
       id: generateId(),
     }));
     setInstallments(editables);
@@ -81,7 +86,9 @@ export function useEditableAmortization({ interestRate }: UseEditableAmortizatio
 
           // Recalculate total
           newInst.totalInstallmentAmount = toFixedNumber(
-            new Decimal(newInst.lotInstallmentAmount).plus(new Decimal(newInst.huInstallmentAmount))
+            new Decimal(newInst.lotInstallmentAmount ?? 0).plus(
+              new Decimal(newInst.huInstallmentAmount ?? 0)
+            )
           );
 
           return newInst;
@@ -98,7 +105,7 @@ export function useEditableAmortization({ interestRate }: UseEditableAmortizatio
       return filtered.map((inst, index) => ({
         ...inst,
         lotInstallmentNumber: index + 1,
-        huInstallmentNumber: inst.huInstallmentAmount > 0 ? index + 1 : 0,
+        huInstallmentNumber: (inst.huInstallmentAmount ?? 0) > 0 ? index + 1 : 0,
       }));
     });
   }, []);
@@ -173,7 +180,7 @@ export function useEditableAmortization({ interestRate }: UseEditableAmortizatio
         selectedIndex++;
 
         const newTotal = toFixedNumber(
-          new Decimal(lotAmt).plus(new Decimal(inst.huInstallmentAmount))
+          new Decimal(lotAmt).plus(new Decimal(inst.huInstallmentAmount ?? 0))
         );
         return { ...inst, lotInstallmentAmount: lotAmt, totalInstallmentAmount: newTotal };
       });
@@ -199,7 +206,7 @@ export function useEditableAmortization({ interestRate }: UseEditableAmortizatio
         selectedIndex++;
 
         const newTotal = toFixedNumber(
-          new Decimal(inst.lotInstallmentAmount).plus(new Decimal(huAmt))
+          new Decimal(inst.lotInstallmentAmount ?? 0).plus(new Decimal(huAmt))
         );
         return { ...inst, huInstallmentAmount: huAmt, totalInstallmentAmount: newTotal };
       });
@@ -227,15 +234,15 @@ export function useEditableAmortization({ interestRate }: UseEditableAmortizatio
   // Calculated meta (current state)
   const meta: AmortizationMeta = useMemo(() => {
     const lotTotal = installments.reduce(
-      (acc, inst) => acc.plus(new Decimal(inst.lotInstallmentAmount)),
+      (acc, inst) => acc.plus(new Decimal(inst.lotInstallmentAmount ?? 0)),
       new Decimal(0)
     );
     const huTotal = installments.reduce(
-      (acc, inst) => acc.plus(new Decimal(inst.huInstallmentAmount)),
+      (acc, inst) => acc.plus(new Decimal(inst.huInstallmentAmount ?? 0)),
       new Decimal(0)
     );
-    const lotCount = installments.filter((i) => i.lotInstallmentAmount > 0).length;
-    const huCount = installments.filter((i) => i.huInstallmentAmount > 0).length;
+    const lotCount = installments.filter((i) => (i.lotInstallmentAmount ?? 0) > 0).length;
+    const huCount = installments.filter((i) => (i.huInstallmentAmount ?? 0) > 0).length;
 
     return {
       lotInstallmentsCount: lotCount,
@@ -301,7 +308,7 @@ export function useEditableAmortization({ interestRate }: UseEditableAmortizatio
         let huRemaining = new Decimal(huBalanceDifference);
         if (huRemaining.greaterThan(0)) {
           for (let i = result.length - 1; i >= 0 && huRemaining.greaterThan(0); i--) {
-            const current = new Decimal(result[i].huInstallmentAmount);
+            const current = new Decimal(result[i].huInstallmentAmount ?? 0);
             if (current.greaterThanOrEqualTo(huRemaining)) {
               result[i].huInstallmentAmount = toFixedNumber(current.minus(huRemaining));
               huRemaining = new Decimal(0);
@@ -313,7 +320,7 @@ export function useEditableAmortization({ interestRate }: UseEditableAmortizatio
         } else if (huRemaining.lessThan(0)) {
           const last = result[result.length - 1];
           last.huInstallmentAmount = toFixedNumber(
-            new Decimal(last.huInstallmentAmount).minus(huRemaining)
+            new Decimal(last.huInstallmentAmount ?? 0).minus(huRemaining)
           );
         }
       }
@@ -322,7 +329,9 @@ export function useEditableAmortization({ interestRate }: UseEditableAmortizatio
       return result.map((inst) => ({
         ...inst,
         totalInstallmentAmount: toFixedNumber(
-          new Decimal(inst.lotInstallmentAmount).plus(new Decimal(inst.huInstallmentAmount))
+          new Decimal(inst.lotInstallmentAmount ?? 0).plus(
+            new Decimal(inst.huInstallmentAmount ?? 0)
+          )
         ),
       }));
     });

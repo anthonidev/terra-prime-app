@@ -6,8 +6,10 @@ import { useAuth } from '@/features/auth/hooks/use-auth';
 import { motion } from 'framer-motion';
 import { Building2, Clock, CreditCard, Landmark, Trash2 } from 'lucide-react';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { type ReactNode, useMemo, useState } from 'react';
 import { useSaleDetailContainer } from '../../hooks/use-sale-detail-container';
+import { useSaleDetailLayout } from '../../hooks/use-sale-detail-layout';
+import type { SaleDetailSectionId } from '../../lib/sale-detail-sections';
 import { StatusPayment, StatusSale } from '../../types';
 import { DeleteSaleModal } from '../dialogs/delete-sale-modal';
 import { ExtendReservationModal } from '../dialogs/extend-reservation-modal';
@@ -15,6 +17,7 @@ import { RegisterPaymentModal } from '../dialogs/register-payment-modal';
 import { SaleDetailHeader } from '../displays/sale-detail-header';
 import { SaleDetailInfo } from '../displays/sale-detail-info';
 import { SaleInfoCard } from '../displays/sale-info-card';
+import { ViewCustomizationSheet } from '../displays/view-customization-sheet';
 import { SaleDetailSkeleton } from '../skeletons/sale-detail-skeleton';
 import { FinancingInstallmentsView } from './components/financing-installments-view';
 import { SaleDetailErrorState } from './components/sale-detail-error-state';
@@ -28,6 +31,7 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isExtendReservationModalOpen, setIsExtendReservationModalOpen] = useState(false);
   const [isDeleteSaleModalOpen, setIsDeleteSaleModalOpen] = useState(false);
+  const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('payments');
 
   const {
@@ -110,6 +114,16 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
   const lotFinancingId = sale?.financing?.lot?.id;
   const huFinancingId = sale?.financing?.hu?.id;
 
+  // Layout customization
+  const {
+    sections,
+    sectionDefinitions,
+    reorderSections,
+    toggleVisibility,
+    resetToDefault,
+    isCustomized,
+  } = useSaleDetailLayout(user?.id ?? '', user?.role.code ?? '');
+
   // Loading state - show skeleton if no data available, fetching, or data is invalid while fetching
   if (isPending || (isFetching && (!sale || !sale.lot || !sale.client))) {
     return <SaleDetailSkeleton />;
@@ -121,9 +135,108 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
     return <SaleDetailErrorState />;
   }
 
+  // Map section IDs to their rendered content
+  const sectionRenderMap: Record<SaleDetailSectionId, ReactNode | null> = {
+    'sale-info-card': sale ? <SaleInfoCard sale={sale} /> : null,
+
+    'jve-actions':
+      canExtendReservation || canDeleteSale ? (
+        <Card className="border-destructive/20 bg-destructive/5">
+          <CardHeader>
+            <CardTitle>Acciones de Gestión</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              {canExtendReservation && (
+                <Button
+                  onClick={() => setIsExtendReservationModalOpen(true)}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  <Clock className="mr-2 h-4 w-4" />
+                  Extender Reserva
+                </Button>
+              )}
+
+              {canDeleteSale && (
+                <Button
+                  variant="destructive"
+                  onClick={() => setIsDeleteSaleModalOpen(true)}
+                  className="flex-1"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Eliminar Venta
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      ) : null,
+
+    'adm-financing': canViewFinancing ? (
+      <Card className="border-primary/20 bg-primary/5">
+        <CardHeader>
+          <CardTitle>Administración de Financiamiento</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            {lotFinancingId && (
+              <Button asChild variant="outline" className="flex-1">
+                <Link href={`/ventas/detalle/${id}/financing/${lotFinancingId}`}>
+                  <Landmark className="mr-2 h-4 w-4" />
+                  Financiamiento de Lote
+                </Link>
+              </Button>
+            )}
+            {huFinancingId && (
+              <Button asChild variant="outline" className="flex-1">
+                <Link href={`/ventas/detalle/${id}/financing/${huFinancingId}`}>
+                  <Building2 className="mr-2 h-4 w-4" />
+                  Financiamiento de HU
+                </Link>
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    ) : null,
+
+    'ven-register-payment': showRegisterPayment ? (
+      <Card className="border-green-500/20 bg-green-500/5">
+        <CardHeader>
+          <CardTitle>Registro de Pagos</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Button onClick={() => setIsPaymentModalOpen(true)} className="w-full sm:w-auto">
+            <CreditCard className="mr-2 h-4 w-4" />
+            Registrar Pago
+          </Button>
+        </CardContent>
+      </Card>
+    ) : null,
+
+    'cob-financing-installments': <FinancingInstallmentsView saleId={id} />,
+
+    'sale-detail-tabs': sale ? (
+      <SaleDetailTabs
+        payments={sale.paymentsSummary}
+        financing={sale.financing}
+        currency={sale.currency}
+        hasPayments={!!hasPayments}
+        saleId={id}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        canRegisterInstallmentPayment={isADM}
+        isADM={isADM}
+      />
+    ) : null,
+
+    'sale-detail-info': sale ? <SaleDetailInfo sale={sale} /> : null,
+  };
+
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Header - always first, not customizable */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -140,160 +253,39 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
           reservationAmount={sale?.reservationAmount}
           reservationAmountPaid={sale?.reservationAmountPaid}
           reservationAmountPending={sale?.reservationAmountPending}
+          onCustomizeView={() => setIsCustomizeOpen(true)}
         />
       </motion.div>
 
-      {/* Sale Information Card */}
-      {sale && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.05 }}
-        >
-          <SaleInfoCard sale={sale} />
-        </motion.div>
-      )}
-      {/* JVE Actions */}
-      {(canExtendReservation || canDeleteSale) && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-        >
-          <Card className="border-destructive/20 bg-destructive/5">
-            <CardHeader>
-              <CardTitle>Acciones de Gestión</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                {canExtendReservation && (
-                  <Button
-                    onClick={() => setIsExtendReservationModalOpen(true)}
-                    variant="outline"
-                    className="flex-1"
-                  >
-                    <Clock className="mr-2 h-4 w-4" />
-                    Extender Reserva
-                  </Button>
-                )}
+      {/* Dynamic sections based on user layout */}
+      {sections
+        .filter((s) => s.visible)
+        .map((section, i) => {
+          const content = sectionRenderMap[section.id];
+          if (!content) return null;
+          return (
+            <motion.div
+              key={section.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.05 * (i + 1) }}
+            >
+              {content}
+            </motion.div>
+          );
+        })}
 
-                {canDeleteSale && (
-                  <Button
-                    variant="destructive"
-                    onClick={() => setIsDeleteSaleModalOpen(true)}
-                    className="flex-1"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Eliminar Venta
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {/* ADM Financing Actions */}
-      {canViewFinancing && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-        >
-          <Card className="border-primary/20 bg-primary/5">
-            <CardHeader>
-              <CardTitle>Administración de Financiamiento</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                {lotFinancingId && (
-                  <Button asChild variant="outline" className="flex-1">
-                    <Link href={`/ventas/detalle/${id}/financing/${lotFinancingId}`}>
-                      <Landmark className="mr-2 h-4 w-4" />
-                      Financiamiento de Lote
-                    </Link>
-                  </Button>
-                )}
-                {huFinancingId && (
-                  <Button asChild variant="outline" className="flex-1">
-                    <Link href={`/ventas/detalle/${id}/financing/${huFinancingId}`}>
-                      <Building2 className="mr-2 h-4 w-4" />
-                      Financiamiento de HU
-                    </Link>
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {/* VEN Register Payment Action */}
-      {showRegisterPayment && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-        >
-          <Card className="border-green-500/20 bg-green-500/5">
-            <CardHeader>
-              <CardTitle>Registro de Pagos</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Button onClick={() => setIsPaymentModalOpen(true)} className="w-full sm:w-auto">
-                <CreditCard className="mr-2 h-4 w-4" />
-                Registrar Pago
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {/* Payment Summary Header */}
-      {/* <PaymentSummaryHeader
-        totalAmount={sale.totalAmount}
-        totalPaid={totalPaid}
-        pendingAmount={pendingAmount}
-        paymentsCount={sale.paymentsSummary.length}
-        currency={sale.currency}
-        action={
-          showRegisterPayment ? (
-            <Button onClick={() => setIsPaymentModalOpen(true)}>Registrar Pago</Button>
-          ) : undefined
-        }
-      /> */}
-
-      {/* Payment Breakdown */}
-      {/* <PaymentBreakdownCard sale={sale} /> */}
-
-      {/* Financing Installments (COB Role) */}
-      <FinancingInstallmentsView saleId={id} />
-
-      {/* Payments and Installments Tabs */}
-      {sale && (
-        <SaleDetailTabs
-          payments={sale.paymentsSummary}
-          financing={sale.financing}
-          currency={sale.currency}
-          hasPayments={!!hasPayments}
-          saleId={id}
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          canRegisterInstallmentPayment={isADM}
-          isADM={isADM}
-        />
-      )}
-
-      {/* Sale Information */}
-      {sale && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-        >
-          <SaleDetailInfo sale={sale} />
-        </motion.div>
-      )}
+      {/* Customization Sheet */}
+      <ViewCustomizationSheet
+        open={isCustomizeOpen}
+        onOpenChange={setIsCustomizeOpen}
+        sections={sections}
+        sectionDefinitions={sectionDefinitions}
+        onReorder={reorderSections}
+        onToggleVisibility={toggleVisibility}
+        onReset={resetToDefault}
+        isCustomized={isCustomized}
+      />
 
       {/* Register Payment Modal */}
       {showRegisterPayment && sale && (

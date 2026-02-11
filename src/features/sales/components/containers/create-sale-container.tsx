@@ -99,6 +99,11 @@ export function CreateSaleContainer() {
                 }
                 saleType={formData.step2.saleType}
                 selectedLot={formData.step1.selectedLot!}
+                projectCurrency={
+                  (formData.step1.selectedLot?.projectCurrency ||
+                    formData.step1.projectCurrency ||
+                    'PEN') as 'USD' | 'PEN'
+                }
                 reservationAmount={formData.step2.reservationAmount}
                 onNext={handleStep3Next}
                 onBack={handleBack}

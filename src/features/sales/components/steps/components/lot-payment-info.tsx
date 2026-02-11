@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { formatCurrency } from '@/shared/utils/currency-formatter';
+import { formatCurrency, getCurrencySymbol } from '@/shared/utils/currency-formatter';
 import { RequestEditModal } from '../../dialogs/request-edit-modal';
 import type { ProjectLotResponse } from '../../../types';
 
@@ -16,6 +16,7 @@ interface LotPaymentInfoProps {
   lotPrice: number;
   urbanizationPrice: number;
   hasUrbanization: boolean;
+  currency: 'USD' | 'PEN';
   isEditEnabled?: boolean;
   onEditEnabledChange?: (enabled: boolean) => void;
   onLotPriceChange?: (price: number) => void;
@@ -27,13 +28,14 @@ export function LotPaymentInfo({
   lotPrice,
   urbanizationPrice,
   hasUrbanization,
+  currency,
   isEditEnabled = false,
   onEditEnabledChange,
   onLotPriceChange,
   onUrbanizationPriceChange,
 }: LotPaymentInfoProps) {
   const [requestEditModalOpen, setRequestEditModalOpen] = useState(false);
-  const currencyType = selectedLot.projectCurrency === 'USD' ? 'USD' : 'PEN';
+  const currencyType = currency;
 
   const handleEditSuccess = () => {
     onEditEnabledChange?.(true);
@@ -121,7 +123,7 @@ export function LotPaymentInfo({
                         className="h-9 pl-8 font-mono font-bold"
                       />
                       <span className="text-muted-foreground absolute top-2.5 left-3 text-xs">
-                        $
+                        {getCurrencySymbol(currencyType)}
                       </span>
                     </div>
                   ) : (
@@ -159,7 +161,7 @@ export function LotPaymentInfo({
                           className="h-9 pl-8 font-mono font-bold"
                         />
                         <span className="text-muted-foreground absolute top-2.5 left-3 text-xs">
-                          $
+                          {getCurrencySymbol(currencyType)}
                         </span>
                       </div>
                     ) : (
