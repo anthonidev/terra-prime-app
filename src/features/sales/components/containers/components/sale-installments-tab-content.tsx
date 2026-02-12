@@ -77,7 +77,7 @@ export function SaleInstallmentsTabContent({
   const [isLateFeeModalOpen, setIsLateFeeModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [singlePayment, setSinglePayment] = useState<{
-    installmentId: string;
+    installmentIds: string[];
     pendingAmount: number;
     mode: 'installment' | 'late-fee';
   } | null>(null);
@@ -157,6 +157,36 @@ export function SaleInstallmentsTabContent({
       );
     },
     [selectedIds, updateParkingStatus]
+  );
+
+  // Calculate total pending for selected installments
+  const selectedPendingTotal = useMemo(() => {
+    return installments
+      .filter((inst) => selectedIds.has(inst.id))
+      .reduce((sum, inst) => sum + parseNumeric(inst.coutePending), 0);
+  }, [selectedIds, installments]);
+
+  // Calculate total pending late fees for selected installments
+  const selectedLateFeePendingTotal = useMemo(() => {
+    return installments
+      .filter((inst) => selectedIds.has(inst.id))
+      .reduce((sum, inst) => sum + parseNumeric(inst.lateFeeAmountPending), 0);
+  }, [selectedIds, installments]);
+
+  // Check if any selected installment has pending amount
+  const hasSelectedPending = selectedPendingTotal > 0;
+  // Check if any selected installment has pending late fees
+  const hasSelectedLateFee = selectedLateFeePendingTotal > 0;
+
+  const handleBulkPayment = useCallback(
+    (mode: 'installment' | 'late-fee') => {
+      const ids = Array.from(selectedIds);
+      const pendingAmount =
+        mode === 'installment' ? selectedPendingTotal : selectedLateFeePendingTotal;
+      setSinglePayment({ installmentIds: ids, pendingAmount, mode });
+      setIsSinglePaymentModalOpen(true);
+    },
+    [selectedIds, selectedPendingTotal, selectedLateFeePendingTotal]
   );
 
   const handleIndividualParkingToggle = useCallback(
@@ -310,7 +340,7 @@ export function SaleInstallmentsTabContent({
                     disabled={coutePending <= 0}
                     onClick={() => {
                       setSinglePayment({
-                        installmentId: inst.id,
+                        installmentIds: [inst.id],
                         pendingAmount: coutePending,
                         mode: 'installment',
                       });
@@ -332,7 +362,7 @@ export function SaleInstallmentsTabContent({
                       className="h-8 w-8 text-red-600"
                       onClick={() => {
                         setSinglePayment({
-                          installmentId: inst.id,
+                          installmentIds: [inst.id],
                           pendingAmount: lateFeePending,
                           mode: 'late-fee',
                         });
@@ -608,6 +638,22 @@ export function SaleInstallmentsTabContent({
                   {selectedIds.size > 1 ? 's' : ''}
                 </span>
                 <div className="flex gap-2">
+                  {canRegisterPayment && hasSelectedPending && (
+                    <Button size="sm" onClick={() => handleBulkPayment('installment')}>
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      Pagar Cuotas
+                    </Button>
+                  )}
+                  {canRegisterPayment && hasSelectedLateFee && (
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleBulkPayment('late-fee')}
+                    >
+                      <AlertTriangle className="mr-2 h-4 w-4" />
+                      Pagar Moras
+                    </Button>
+                  )}
                   <Button
                     size="sm"
                     variant="outline"
@@ -690,9 +736,12 @@ export function SaleInstallmentsTabContent({
           open={isSinglePaymentModalOpen}
           onOpenChange={(open) => {
             setIsSinglePaymentModalOpen(open);
-            if (!open) setSinglePayment(null);
+            if (!open) {
+              setSinglePayment(null);
+              setSelectedIds(new Set());
+            }
           }}
-          installmentId={singlePayment.installmentId}
+          installmentIds={singlePayment.installmentIds}
           saleId={saleId}
           currency={currency}
           pendingAmount={singlePayment.pendingAmount}

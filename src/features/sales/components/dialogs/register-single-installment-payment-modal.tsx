@@ -28,7 +28,7 @@ import { getTodayDateInputValue } from '@/shared/utils/date-formatter';
 interface RegisterSingleInstallmentPaymentModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  installmentId: string;
+  installmentIds: string[];
   saleId: string;
   currency?: string;
   pendingAmount: number;
@@ -49,7 +49,7 @@ const initialVoucherData: VoucherFormData = {
 export function RegisterSingleInstallmentPaymentModal({
   open,
   onOpenChange,
-  installmentId,
+  installmentIds,
   saleId,
   currency = 'PEN',
   pendingAmount,
@@ -68,14 +68,25 @@ export function RegisterSingleInstallmentPaymentModal({
 
   const currencySymbol = currency === 'USD' ? '$' : 'S/';
 
+  const isBulk = installmentIds.length > 1;
   const defaultTitle =
-    mode === 'installment' ? 'Registrar Pago de Cuota' : 'Registrar Pago de Mora';
+    mode === 'installment'
+      ? isBulk
+        ? `Registrar Pago de ${installmentIds.length} Cuotas`
+        : 'Registrar Pago de Cuota'
+      : isBulk
+        ? `Registrar Pago de Mora de ${installmentIds.length} Cuotas`
+        : 'Registrar Pago de Mora';
   const resolvedTitle = title || defaultTitle;
 
   const description =
     mode === 'installment'
-      ? 'Registre un pago para esta cuota específica. Este pago será aprobado automáticamente.'
-      : 'Registre un pago para la mora de esta cuota. Este pago será aprobado automáticamente.';
+      ? isBulk
+        ? `Registre un pago para las ${installmentIds.length} cuotas seleccionadas. Este pago será aprobado automáticamente.`
+        : 'Registre un pago para esta cuota específica. Este pago será aprobado automáticamente.'
+      : isBulk
+        ? `Registre un pago de mora para las ${installmentIds.length} cuotas seleccionadas. Este pago será aprobado automáticamente.`
+        : 'Registre un pago para la mora de esta cuota. Este pago será aprobado automáticamente.';
 
   const pendingLabel = mode === 'installment' ? 'Monto Pendiente de Cuota' : 'Mora Pendiente';
 
@@ -212,6 +223,11 @@ export function RegisterSingleInstallmentPaymentModal({
         formData.append('observation', observation.trim());
       }
 
+      // Installment IDs
+      installmentIds.forEach((id) => {
+        formData.append('installmentIds[]', id);
+      });
+
       // Payments (vouchers)
       vouchers.forEach((voucher, index) => {
         formData.append(`payments[${index}][amount]`, voucher.amount);
@@ -228,8 +244,8 @@ export function RegisterSingleInstallmentPaymentModal({
 
       const url =
         mode === 'installment'
-          ? `/api/sales/financing/installment/paid-approved/${installmentId}`
-          : `/api/sales/financing/installment/late-fee/paid-approved/${installmentId}`;
+          ? '/api/sales/financing/installments/paid-approved-specific'
+          : '/api/sales/financing/installments/late-fee/paid-approved-specific';
 
       await apiClient.post(url, formData, {
         headers: {
@@ -239,8 +255,12 @@ export function RegisterSingleInstallmentPaymentModal({
 
       const successMsg =
         mode === 'installment'
-          ? 'Pago de cuota registrado exitosamente'
-          : 'Pago de mora registrado exitosamente';
+          ? isBulk
+            ? `Pago de ${installmentIds.length} cuotas registrado exitosamente`
+            : 'Pago de cuota registrado exitosamente'
+          : isBulk
+            ? `Pago de mora de ${installmentIds.length} cuotas registrado exitosamente`
+            : 'Pago de mora registrado exitosamente';
       toast.success(successMsg);
       // Invalidate sale detail query to refresh data
       queryClient.invalidateQueries({ queryKey: ['sale-detail', saleId] });
@@ -250,8 +270,8 @@ export function RegisterSingleInstallmentPaymentModal({
       console.error(error);
       const defaultMsg =
         mode === 'installment'
-          ? 'Error al registrar el pago de cuota'
-          : 'Error al registrar el pago de mora';
+          ? 'Error al registrar el pago de cuota(s)'
+          : 'Error al registrar el pago de mora(s)';
       let message = defaultMsg;
       if (error instanceof AxiosError && error.response?.data) {
         const data = error.response.data as { message?: string };
