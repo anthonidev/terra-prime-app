@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
 import { DOCUMENT_TYPES, MARITAL_STATUS_OPTIONS } from '../../constants';
+import type { CompanionFormData } from '../../hooks/use-lead-form-state';
 import type { DocumentType, LeadSource } from '../../types';
 
 interface SummaryStepProps {
@@ -27,10 +28,7 @@ interface SummaryStepProps {
   provinceName: string;
   districtName: string;
   interestProjects: string[];
-  hasCompanion: boolean;
-  companionFullName: string;
-  companionDni: string;
-  companionRelationship: string;
+  companions: CompanionFormData[];
   estadoCivil: string;
   tieneTarjetasCredito: boolean;
   cantidadTarjetasCredito: string;
@@ -61,10 +59,7 @@ export function SummaryStep({
   provinceName,
   districtName,
   interestProjects,
-  hasCompanion,
-  companionFullName,
-  companionDni,
-  companionRelationship,
+  companions,
   estadoCivil,
   tieneTarjetasCredito,
   cantidadTarjetasCredito,
@@ -203,37 +198,52 @@ export function SummaryStep({
 
         {/* Right Column */}
         <div className="space-y-6">
-          {/* Companion */}
-          {hasCompanion && (
+          {/* Companions */}
+          {companions.length > 0 && (
             <Card className="border-none shadow-sm">
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-2">
                   <div className="bg-accent/10 flex h-8 w-8 items-center justify-center rounded-lg">
                     <Users className="text-accent h-4 w-4" />
                   </div>
-                  <CardTitle className="text-base">Acompañante</CardTitle>
+                  <CardTitle className="text-base">
+                    {companions.length === 1 ? 'Acompañante' : 'Acompañantes'}
+                  </CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
-                  <div className="space-y-1 sm:col-span-2">
-                    <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
-                      Nombre
-                    </span>
-                    <span className="font-medium">{companionFullName}</span>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
-                      DNI
-                    </span>
-                    <span className="font-medium">{companionDni}</span>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
-                      Parentesco
-                    </span>
-                    <span className="font-medium">{companionRelationship}</span>
-                  </div>
+                <div className="space-y-4">
+                  {companions.map((companion, index) => (
+                    <div
+                      key={index}
+                      className={companions.length > 1 ? 'border-muted rounded-md border p-3' : ''}
+                    >
+                      <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+                        <div className="space-y-1 sm:col-span-2">
+                          <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                            Nombre
+                          </span>
+                          <span className="font-medium">{companion.fullName}</span>
+                        </div>
+                        {companion.dni && (
+                          <div className="space-y-1">
+                            <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                              DNI
+                            </span>
+                            <span className="font-medium">{companion.dni}</span>
+                          </div>
+                        )}
+                        {companion.relationship && (
+                          <div className="space-y-1">
+                            <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                              Parentesco
+                            </span>
+                            <span className="font-medium">{companion.relationship}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>

@@ -33,7 +33,10 @@ export function PaymentSummaryCard({
     },
     {
       label: 'Tasa de Interés',
-      value: `${step3.interestRate}% anual`,
+      value:
+        step3.interestRateSections?.length === 1
+          ? `${step3.interestRateSections[0].interestRate}% mensual`
+          : `${step3.interestRateSections?.length ?? 0} tramos`,
       show: isFinanced,
     },
     {

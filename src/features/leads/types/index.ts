@@ -79,6 +79,12 @@ export interface ParticipantResponseActive {
   participantType: ParticipantType;
 }
 
+export interface Companion {
+  fullName: string;
+  dni?: string | null;
+  relationship?: string | null;
+}
+
 export interface LeadVisit {
   id: string;
   arrivalTime: string;
@@ -86,6 +92,7 @@ export interface LeadVisit {
   observations: string | null;
   createdAt: string;
   reportPdfUrl: string | null;
+  companions: Companion[] | null;
   linerParticipant: Participant | null;
   telemarketingSupervisor: Participant | null;
   telemarketingConfirmer: Participant | null;
@@ -140,9 +147,6 @@ export interface Lead {
   isInOffice: boolean;
   fullName?: string;
   interestProjects?: string[];
-  companionFullName?: string | null;
-  companionDni?: string | null;
-  companionRelationship?: string | null;
   metadata?: LeadMetadata | null;
   vendor?: LeadVendor | null;
 }
@@ -183,9 +187,7 @@ export interface CreateUpdateLeadInput {
   observations?: string;
   isNewLead?: boolean;
   interestProjects?: string[];
-  companionFullName?: string;
-  companionDni?: string;
-  companionRelationship?: string;
+  companions?: Companion[];
   metadata?: LeadMetadata;
 }
 

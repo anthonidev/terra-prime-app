@@ -3,6 +3,12 @@
 import { useState } from 'react';
 import type { DocumentType, Lead, LeadMetadata } from '../types';
 
+export interface CompanionFormData {
+  fullName: string;
+  dni: string;
+  relationship: string;
+}
+
 export interface LeadFormData {
   // Step 1
   documentType: DocumentType;
@@ -22,10 +28,7 @@ export interface LeadFormData {
   provinceId: string;
   districtId: string;
   interestProjects: string[];
-  hasCompanion: boolean;
-  companionFullName: string;
-  companionDni: string;
-  companionRelationship: string;
+  companions: CompanionFormData[];
 
   // Metadata
   estadoCivil: string;
@@ -55,10 +58,7 @@ const initialFormData: LeadFormData = {
   provinceId: '',
   districtId: '',
   interestProjects: [],
-  hasCompanion: false,
-  companionFullName: '',
-  companionDni: '',
-  companionRelationship: '',
+  companions: [],
   estadoCivil: '',
   tieneTarjetasCredito: false,
   cantidadTarjetasCredito: '',
@@ -79,6 +79,14 @@ export function useLeadFormState() {
   };
 
   const prefillFromExistingLead = (lead: Lead) => {
+    const lastVisit = lead.visits?.length ? lead.visits[lead.visits.length - 1] : null;
+    const companions: CompanionFormData[] =
+      lastVisit?.companions?.map((c) => ({
+        fullName: c.fullName,
+        dni: c.dni || '',
+        relationship: c.relationship || '',
+      })) || [];
+
     setFormData({
       documentType: lead.documentType,
       document: lead.document,
@@ -93,10 +101,7 @@ export function useLeadFormState() {
       provinceId: lead.provinceId?.toString() || '',
       districtId: lead.ubigeo?.id?.toString() || '',
       interestProjects: lead.interestProjects || [],
-      hasCompanion: !!lead.companionFullName,
-      companionFullName: lead.companionFullName || '',
-      companionDni: lead.companionDni || '',
-      companionRelationship: lead.companionRelationship || '',
+      companions,
       estadoCivil: lead.metadata?.estadoCivil || '',
       tieneTarjetasCredito: lead.metadata?.tieneTarjetasCredito || false,
       cantidadTarjetasCredito: lead.metadata?.cantidadTarjetasCredito?.toString() || '',
@@ -107,6 +112,27 @@ export function useLeadFormState() {
       ingresoPromedioFamiliar: lead.metadata?.ingresoPromedioFamiliar?.toString() || '',
       observations: '',
     });
+  };
+
+  const addCompanion = () => {
+    setFormData((prev) => ({
+      ...prev,
+      companions: [...prev.companions, { fullName: '', dni: '', relationship: '' }],
+    }));
+  };
+
+  const removeCompanion = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      companions: prev.companions.filter((_, i) => i !== index),
+    }));
+  };
+
+  const updateCompanion = (index: number, field: keyof CompanionFormData, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      companions: prev.companions.map((c, i) => (i === index ? { ...c, [field]: value } : c)),
+    }));
   };
 
   const buildMetadata = (): LeadMetadata => {
@@ -149,5 +175,8 @@ export function useLeadFormState() {
     prefillFromExistingLead,
     buildMetadata,
     resetForm,
+    addCompanion,
+    removeCompanion,
+    updateCompanion,
   };
 }

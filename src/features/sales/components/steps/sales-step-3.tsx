@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { usePaymentConfigForm } from '../../hooks/use-payment-config-form';
 import { LotPaymentInfo } from './components/lot-payment-info';
 import { FinancedPaymentFields } from './components/financed-payment-fields';
+import { InterestRateSectionsConfig } from './components/interest-rate-sections-config';
 import { UrbanizationConfig } from './components/urbanization-config';
 import { AmortizationTable } from './components/amortization-table';
 import { SaleType, type ProjectLotResponse, type Step3Data } from '../../types';
@@ -43,6 +44,9 @@ export function SalesStep3({
     urbanizationPrice,
     isLocked,
     isEditEnabled,
+    quantitySaleCoutes,
+    interestRateSections,
+    setInterestRateSections,
     editableAmortization,
     handleGenerateAmortization,
     handleClearAmortization,
@@ -120,6 +124,16 @@ export function SalesStep3({
             isLocked={isLocked}
           />
         </div>
+      )}
+
+      {/* Interest Rate Sections */}
+      {!isDirectPayment && quantitySaleCoutes > 0 && (
+        <InterestRateSectionsConfig
+          sections={interestRateSections}
+          totalInstallments={quantitySaleCoutes}
+          isLocked={isLocked}
+          onSectionsChange={setInterestRateSections}
+        />
       )}
 
       {/* Urbanization Configuration */}

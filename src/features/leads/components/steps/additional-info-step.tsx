@@ -8,7 +8,9 @@ import {
   Heart,
   Info,
   MapPin,
+  Plus,
   Target,
+  Trash2,
   Users,
 } from 'lucide-react';
 
@@ -26,6 +28,7 @@ import {
 } from '@/components/ui/select';
 
 import { MARITAL_STATUS_OPTIONS } from '../../constants';
+import type { CompanionFormData } from '../../hooks/use-lead-form-state';
 import type { LeadSource, UbigeoItem } from '../../types';
 import type { Project } from '@/features/sales/types';
 
@@ -51,12 +54,11 @@ interface AdditionalInfoStepProps {
   projects: Project[] | undefined;
   onProjectToggle: (projectName: string) => void;
 
-  // Companion
-  hasCompanion: boolean;
-  companionFullName: string;
-  companionDni: string;
-  companionRelationship: string;
-  onCompanionToggle: (checked: boolean) => void;
+  // Companions
+  companions: CompanionFormData[];
+  onAddCompanion: () => void;
+  onRemoveCompanion: (index: number) => void;
+  onUpdateCompanion: (index: number, field: keyof CompanionFormData, value: string) => void;
   onFieldChange: (field: string, value: string | boolean) => void;
 
   // Metadata
@@ -90,11 +92,10 @@ export function AdditionalInfoStep({
   interestProjects,
   projects,
   onProjectToggle,
-  hasCompanion,
-  companionFullName,
-  companionDni,
-  companionRelationship,
-  onCompanionToggle,
+  companions,
+  onAddCompanion,
+  onRemoveCompanion,
+  onUpdateCompanion,
   onFieldChange,
   estadoCivil,
   tieneTarjetasCredito,
@@ -259,72 +260,89 @@ export function AdditionalInfoStep({
 
         {/* Right Column */}
         <div className="space-y-6">
-          {/* Companion */}
+          {/* Companions */}
           <Card className="border-none shadow-sm">
             <CardHeader className="pb-3">
-              <div className="flex items-center gap-2">
-                <div className="bg-accent/10 flex h-8 w-8 items-center justify-center rounded-lg">
-                  <Users className="text-accent h-4 w-4" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="bg-accent/10 flex h-8 w-8 items-center justify-center rounded-lg">
+                    <Users className="text-accent h-4 w-4" />
+                  </div>
+                  <CardTitle className="text-base">Acompañantes</CardTitle>
                 </div>
-                <CardTitle className="text-base">Acompañante</CardTitle>
+                <Button type="button" variant="outline" size="sm" onClick={onAddCompanion}>
+                  <Plus className="mr-1 h-3.5 w-3.5" />
+                  Agregar
+                </Button>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-2 rounded-md border p-3">
-                  <Checkbox
-                    id="hasCompanion"
-                    checked={hasCompanion}
-                    onCheckedChange={onCompanionToggle}
-                  />
-                  <label htmlFor="hasCompanion" className="cursor-pointer text-sm font-medium">
-                    ¿Viene acompañado?
-                  </label>
+              {companions.length === 0 ? (
+                <p className="text-muted-foreground py-4 text-center text-sm">
+                  No se han agregado acompañantes
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {companions.map((companion, index) => (
+                    <div key={index} className="border-muted space-y-3 rounded-md border p-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground text-xs font-medium">
+                          Acompañante {index + 1}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive h-7 w-7"
+                          onClick={() => onRemoveCompanion(index)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`companion-name-${index}`}>Nombre Completo</Label>
+                        <Input
+                          id={`companion-name-${index}`}
+                          value={companion.fullName}
+                          onChange={(e) => onUpdateCompanion(index, 'fullName', e.target.value)}
+                          placeholder="Nombre del acompañante"
+                          className="h-10"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label htmlFor={`companion-dni-${index}`}>DNI</Label>
+                          <Input
+                            id={`companion-dni-${index}`}
+                            value={companion.dni}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (/^\d*$/.test(value)) {
+                                onUpdateCompanion(index, 'dni', value);
+                              }
+                            }}
+                            placeholder="DNI"
+                            className="h-10"
+                            maxLength={8}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor={`companion-rel-${index}`}>Parentesco</Label>
+                          <Input
+                            id={`companion-rel-${index}`}
+                            value={companion.relationship}
+                            onChange={(e) =>
+                              onUpdateCompanion(index, 'relationship', e.target.value)
+                            }
+                            placeholder="Ej: Esposo/a"
+                            className="h-10"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-
-                {hasCompanion && (
-                  <div className="border-muted ml-2 space-y-4 border-l-2 pl-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="companionFullName">Nombre Completo</Label>
-                      <Input
-                        id="companionFullName"
-                        value={companionFullName}
-                        onChange={(e) => onFieldChange('companionFullName', e.target.value)}
-                        placeholder="Nombre del acompañante"
-                        className="h-10"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="companionDni">DNI</Label>
-                      <Input
-                        id="companionDni"
-                        value={companionDni}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          if (/^\d*$/.test(value)) {
-                            onFieldChange('companionDni', value);
-                          }
-                        }}
-                        placeholder="DNI del acompañante"
-                        className="h-10"
-                        maxLength={8}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="companionRelationship">Parentesco</Label>
-                      <Input
-                        id="companionRelationship"
-                        value={companionRelationship}
-                        onChange={(e) => onFieldChange('companionRelationship', e.target.value)}
-                        placeholder="Ej: Esposo/a, Hijo/a"
-                        className="h-10"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
+              )}
             </CardContent>
           </Card>
 

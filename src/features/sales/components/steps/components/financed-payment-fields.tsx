@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Wallet, Percent, Calendar, Hash, Receipt, Lock } from 'lucide-react';
+import { Wallet, Calendar, Hash, Receipt, Lock } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -36,17 +36,6 @@ export function FinancedPaymentFields({
       min: '0.01',
       placeholder: 'Ej: 5000.00',
       description: 'Monto inicial que el cliente pagará (debe ser mayor a 0)',
-      required: true,
-    },
-    {
-      id: 'interestRate',
-      label: 'Tasa de Interés Anual (%)',
-      icon: Percent,
-      type: 'number',
-      step: '0.01',
-      min: '0',
-      placeholder: 'Ej: 12.00',
-      description: 'Tasa de interés aplicada al financiamiento',
       required: true,
     },
     {

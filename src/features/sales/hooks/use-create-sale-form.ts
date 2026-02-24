@@ -101,8 +101,8 @@ export function useCreateSaleForm() {
             initialAmount: formData.step3.initialAmount,
           }),
         ...(formData.step2.saleType === SaleType.FINANCED &&
-          formData.step3.interestRate !== undefined && {
-            interestRate: formData.step3.interestRate,
+          formData.step3.interestRateSections && {
+            interestRateSections: formData.step3.interestRateSections,
           }),
         ...(formData.step2.saleType === SaleType.FINANCED &&
           formData.step3.quantitySaleCoutes !== undefined && {

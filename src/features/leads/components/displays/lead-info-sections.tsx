@@ -206,20 +206,29 @@ export function LeadInfoSections({ lead }: LeadInfoSectionsProps) {
               )}
             </div>
 
-            {/* Acompañante - Full width si existe */}
-            {(lead.companionFullName || lead.companionDni || lead.companionRelationship) && (
-              <div className="mt-6 border-t pt-4">
-                <h3 className="text-foreground mb-3 flex items-center gap-2 text-xs font-semibold tracking-wider uppercase">
-                  <Users className="text-primary h-3.5 w-3.5" />
-                  Acompañante
-                </h3>
-                <div className="grid gap-x-8 gap-y-2 md:grid-cols-3">
-                  <InfoItem label="Nombre Completo" value={lead.companionFullName} />
-                  <InfoItem label="DNI" value={lead.companionDni} />
-                  <InfoItem label="Relación" value={lead.companionRelationship} />
+            {/* Acompañantes - Full width si existen */}
+            {(() => {
+              const lastVisit = lead.visits?.length ? lead.visits[lead.visits.length - 1] : null;
+              const companions = lastVisit?.companions;
+              if (!companions || companions.length === 0) return null;
+              return (
+                <div className="mt-6 border-t pt-4">
+                  <h3 className="text-foreground mb-3 flex items-center gap-2 text-xs font-semibold tracking-wider uppercase">
+                    <Users className="text-primary h-3.5 w-3.5" />
+                    {companions.length === 1 ? 'Acompañante' : 'Acompañantes'}
+                  </h3>
+                  <div className="space-y-3">
+                    {companions.map((companion, index) => (
+                      <div key={index} className="grid gap-x-8 gap-y-2 md:grid-cols-3">
+                        <InfoItem label="Nombre Completo" value={companion.fullName} />
+                        <InfoItem label="DNI" value={companion.dni} />
+                        <InfoItem label="Relación" value={companion.relationship} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </CardContent>
         </CollapsibleContent>
       </Card>

@@ -202,13 +202,19 @@ export interface CreatedSaleResponse {
   };
 }
 
+// Interest rate sections for amortization
+export interface InterestRateSection {
+  startInstallment: number;
+  endInstallment: number;
+  interestRate: number;
+}
+
 // Input types for mutations
 export interface CalculateAmortizationInput {
   totalAmount: number; // monto del precio del lote
   initialAmount: number; // pago inicial
   reservationAmount?: number; // monto de la reserva (default: 0)
-  interestRate: number; // tasa de interés anual
-  numberOfPayments: number; // número de pagos mensuales
+  interestRateSections: InterestRateSection[]; // tramos de tasa de interés
   firstPaymentDate: string; // fecha del primer pago
   includeDecimals?: boolean; // si el cálculo debe incluir decimales (default: false)
   totalAmountHu?: number; // monto del precio de HU del lote
@@ -264,7 +270,7 @@ export interface CreateSaleInput {
   metadata?: Record<string, unknown>;
   notes?: string;
   initialAmount?: number;
-  interestRate?: number;
+  interestRateSections?: InterestRateSection[];
   quantitySaleCoutes?: number;
   reservationAmount?: number;
   maximumHoldPeriod?: number;
@@ -295,7 +301,7 @@ export interface Step3Data {
   totalAmount: number;
   totalAmountUrbanDevelopment: number;
   initialAmount?: number;
-  interestRate?: number;
+  interestRateSections?: InterestRateSection[];
   quantitySaleCoutes?: number;
   firstPaymentDate?: string;
   initialAmountUrbanDevelopment?: number;
@@ -359,6 +365,7 @@ export interface MySale {
   financing?: {
     quantityCoutes: string;
     interestRate: string;
+    interestRateSections?: InterestRateSection[] | null;
     initialAmount: string;
     initialAmountPaid: number;
     initialAmountPending: number;
@@ -478,6 +485,7 @@ export interface SaleDetailFinancingItem {
   initialAmountPaid: number;
   initialAmountPending: number;
   interestRate: number;
+  interestRateSections?: InterestRateSection[] | null;
   quantityCoutes: number;
   totalCouteAmount: number;
   totalPaid: number;
@@ -741,6 +749,7 @@ export interface FinancingDetail {
   initialAmountPaid: number;
   initialAmountPending: number;
   interestRate: number;
+  interestRateSections?: InterestRateSection[] | null;
   quantityCoutes: number;
   totalCouteAmount: number;
   totalPaid: number;

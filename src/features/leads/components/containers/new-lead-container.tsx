@@ -42,6 +42,9 @@ export function NewLeadContainer() {
     prefillFromExistingLead,
     buildMetadata,
     resetForm,
+    addCompanion,
+    removeCompanion,
+    updateCompanion,
   } = useLeadFormState();
 
   const {
@@ -113,6 +116,15 @@ export function NewLeadContainer() {
   };
 
   const handleSubmit = () => {
+    const companions =
+      formData.companions.length > 0
+        ? formData.companions.map((c) => ({
+            fullName: c.fullName,
+            dni: c.dni || undefined,
+            relationship: c.relationship || undefined,
+          }))
+        : undefined;
+
     const payload = {
       documentType: formData.documentType,
       document: formData.document,
@@ -126,9 +138,7 @@ export function NewLeadContainer() {
       ubigeoId: parseInt(formData.districtId),
       interestProjects:
         formData.interestProjects.length > 0 ? formData.interestProjects : undefined,
-      companionFullName: formData.hasCompanion ? formData.companionFullName : undefined,
-      companionDni: formData.hasCompanion ? formData.companionDni : undefined,
-      companionRelationship: formData.hasCompanion ? formData.companionRelationship : undefined,
+      companions,
       metadata: buildMetadata(),
       observations: formData.observations || undefined,
     };
@@ -196,11 +206,10 @@ export function NewLeadContainer() {
           interestProjects={formData.interestProjects}
           projects={projects}
           onProjectToggle={handleProjectToggle}
-          hasCompanion={formData.hasCompanion}
-          companionFullName={formData.companionFullName}
-          companionDni={formData.companionDni}
-          companionRelationship={formData.companionRelationship}
-          onCompanionToggle={(checked) => updateFormData({ hasCompanion: checked })}
+          companions={formData.companions}
+          onAddCompanion={addCompanion}
+          onRemoveCompanion={removeCompanion}
+          onUpdateCompanion={updateCompanion}
           onFieldChange={handleFieldChange}
           estadoCivil={formData.estadoCivil}
           tieneTarjetasCredito={formData.tieneTarjetasCredito}
@@ -231,10 +240,7 @@ export function NewLeadContainer() {
           provinceName={provinceName}
           districtName={districtName}
           interestProjects={formData.interestProjects}
-          hasCompanion={formData.hasCompanion}
-          companionFullName={formData.companionFullName}
-          companionDni={formData.companionDni}
-          companionRelationship={formData.companionRelationship}
+          companions={formData.companions}
           estadoCivil={formData.estadoCivil}
           tieneTarjetasCredito={formData.tieneTarjetasCredito}
           cantidadTarjetasCredito={formData.cantidadTarjetasCredito}

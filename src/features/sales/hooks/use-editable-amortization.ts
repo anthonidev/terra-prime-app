@@ -20,15 +20,15 @@ const toFixedNumber = (value: Decimal): number => {
 };
 
 interface UseEditableAmortizationProps {
-  interestRate: number;
+  allRatesZero: boolean;
 }
 
-export function useEditableAmortization({ interestRate }: UseEditableAmortizationProps) {
+export function useEditableAmortization({ allRatesZero }: UseEditableAmortizationProps) {
   const [installments, setInstallments] = useState<EditableInstallment[]>([]);
   const [initialized, setInitialized] = useState(false);
   const [originalMeta, setOriginalMeta] = useState<AmortizationMeta | null>(null);
 
-  const canAddDelete = interestRate === 0;
+  const canAddDelete = allRatesZero;
 
   // Expected totals from the original API meta
   const expectedLotTotal = originalMeta?.lotTotalAmount ?? 0;
