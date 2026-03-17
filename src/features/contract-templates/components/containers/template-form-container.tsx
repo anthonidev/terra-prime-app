@@ -28,7 +28,6 @@ export function TemplateFormContainer({ templateId }: TemplateFormContainerProps
     isPending,
     isDirty,
     initialContent,
-    handleSubmit,
     handleSave,
     templateName,
     templateDescription,
