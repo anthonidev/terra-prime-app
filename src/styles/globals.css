@@ -364,3 +364,52 @@
     @apply bg-background text-foreground font-sans font-light;
   }
 }
+
+/* Tiptap table styles (editor + preview) */
+.tiptap-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.75em 0;
+}
+
+.tiptap-content table td,
+.tiptap-content table th {
+  border: 1px solid var(--border);
+  padding: 0.4em 0.6em;
+  min-width: 40px;
+  vertical-align: top;
+}
+
+.tiptap-content table th {
+  background-color: var(--muted);
+  font-weight: 600;
+}
+
+.tiptap-content table td.selectedCell,
+.tiptap-content table th.selectedCell {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  opacity: 0.15;
+}
+
+.tiptap-content table .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: var(--primary);
+  cursor: col-resize;
+}
+
+/* Tiptap image styles */
+.tiptap-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.tiptap-content img.ProseMirror-selectednode {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}

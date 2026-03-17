@@ -2,6 +2,7 @@ import {
   BarChart2,
   Briefcase,
   CreditCard,
+  FileText,
   FolderKanban,
   FolderPlus,
   Handshake,
@@ -10,6 +11,7 @@ import {
   LandPlot,
   MapPin,
   RadioTower,
+  ScrollText,
   ShoppingBag,
   ShoppingCart,
   User,
@@ -40,6 +42,10 @@ export const ICON_MAPPING = {
   'lote-available': LandPlot, // Lotes
   lote: FolderPlus, // Nuevo Proyecto
   project: FolderKanban,
+
+  // Contracts
+  'g-contratos': ScrollText,
+  plantillas: FileText,
 
   // Sales
   vendedores: Briefcase,
@@ -100,6 +106,17 @@ export const MENU_ITEMS = [
       },
       { name: 'Mis Ventas', icon: 'ventas', url: '/ventas/mis-ventas' },
       { name: 'Ventas Admin', icon: 'ventas', url: '/ventas/admin' },
+    ],
+  },
+  {
+    name: 'Contratos',
+    icon: 'g-contratos',
+    children: [
+      {
+        name: 'Plantillas',
+        icon: 'plantillas',
+        url: '/contratos/plantillas',
+      },
     ],
   },
   { name: 'Perfil', icon: 'profile', url: '/perfil' },
