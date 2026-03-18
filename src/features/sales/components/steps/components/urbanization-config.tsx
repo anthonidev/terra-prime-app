@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/shared/lib/utils';
-import { formatCurrency } from '@/shared/utils/currency-formatter';
+import { formatCurrency, getCurrencySymbol } from '@/shared/utils/currency-formatter';
 import type { Step3DirectPaymentFormData, Step3FinancedFormData } from '../../../lib/validation';
 
 interface UrbanizationConfigProps {
@@ -42,7 +42,7 @@ export function UrbanizationConfig({ form, urbanizationPrice, currency }: Urbani
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Monto de Habilitación Urbana (readonly) */}
+          {/* Monto de Habilitación Urbana */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -56,16 +56,35 @@ export function UrbanizationConfig({ form, urbanizationPrice, currency }: Urbani
               <Home className="text-primary h-4 w-4" />
               Monto de Habilitación Urbana
             </Label>
-            <Input
-              id="totalAmountUrbanDevelopment"
-              type="text"
-              value={formatCurrency(urbanizationPrice, currencyType)}
-              readOnly
-              disabled
-              className="bg-muted text-foreground cursor-not-allowed font-semibold"
-            />
+            <div className="relative">
+              <Input
+                id="totalAmountUrbanDevelopment"
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="Ej: 5000"
+                {...form.register('totalAmountUrbanDevelopment', { valueAsNumber: true })}
+                className={cn(
+                  'pl-9 font-semibold transition-all',
+                  form.formState.errors.totalAmountUrbanDevelopment &&
+                    'border-destructive focus-visible:ring-destructive'
+                )}
+              />
+              <span className="text-muted-foreground absolute top-2.5 left-3 text-xs">
+                {getCurrencySymbol(currencyType)}
+              </span>
+            </div>
+            {form.formState.errors.totalAmountUrbanDevelopment && (
+              <motion.p
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-destructive text-xs"
+              >
+                {form.formState.errors.totalAmountUrbanDevelopment.message as string}
+              </motion.p>
+            )}
             <p className="text-muted-foreground text-xs">
-              Monto de habilitación urbana (no editable)
+              Valor base: {formatCurrency(urbanizationPrice, currencyType)}
             </p>
           </motion.div>
 

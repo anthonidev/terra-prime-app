@@ -150,25 +150,19 @@ export function LotPaymentInfo({
                     Habilitación Urbana
                   </Label>
                   <div className="bg-muted/30 rounded-lg p-3">
-                    {isEditEnabled ? (
-                      <div className="relative">
-                        <Input
-                          id="urbanizationPrice"
-                          type="number"
-                          step="0.01"
-                          value={urbanizationPrice}
-                          onChange={(e) => handleUrbanizationPriceChange(e.target.value)}
-                          className="h-9 pl-8 font-mono font-bold"
-                        />
-                        <span className="text-muted-foreground absolute top-2.5 left-3 text-xs">
-                          {getCurrencySymbol(currencyType)}
-                        </span>
-                      </div>
-                    ) : (
-                      <p className="text-foreground text-xl font-bold">
-                        {formatCurrency(urbanizationPrice, currencyType)}
-                      </p>
-                    )}
+                    <div className="relative">
+                      <Input
+                        id="urbanizationPrice"
+                        type="number"
+                        step="0.01"
+                        value={urbanizationPrice}
+                        onChange={(e) => handleUrbanizationPriceChange(e.target.value)}
+                        className="h-9 pl-8 font-mono font-bold"
+                      />
+                      <span className="text-muted-foreground absolute top-2.5 left-3 text-xs">
+                        {getCurrencySymbol(currencyType)}
+                      </span>
+                    </div>
                   </div>
                 </motion.div>
               )}
