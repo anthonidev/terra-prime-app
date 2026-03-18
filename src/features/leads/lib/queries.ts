@@ -65,8 +65,6 @@ export async function getUbigeos(): Promise<UbigeoItem[]> {
 
 export async function getLeadDetail(id: string): Promise<Lead> {
   const response = await apiClient.get<LeadDetailResponse>(`/api/leads/${id}`);
-  console.log('=== RAW API RESPONSE (lead detail) ===', JSON.stringify(response.data, null, 2));
-  console.log('=== VISITS FROM API ===', JSON.stringify(response.data.data?.visits, null, 2));
   return response.data.data;
 }
 
