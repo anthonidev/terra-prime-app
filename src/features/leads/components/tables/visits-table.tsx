@@ -149,7 +149,7 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
                 <TableBody>
                   {visits.map((visit) => {
                     const hasParticipants = !!(
-                      visit.linerParticipant ||
+                      visit.liner ||
                       visit.telemarketer ||
                       visit.telemarketingSupervisor ||
                       visit.telemarketingConfirmer ||

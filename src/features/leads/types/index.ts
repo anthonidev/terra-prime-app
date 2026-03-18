@@ -93,7 +93,7 @@ export interface LeadVisit {
   createdAt: string;
   reportPdfUrl: string | null;
   companions: Companion[] | null;
-  linerParticipant: Participant | null;
+  liner: Participant | null;
   telemarketingSupervisor: Participant | null;
   telemarketingConfirmer: Participant | null;
   telemarketer: Participant | null;

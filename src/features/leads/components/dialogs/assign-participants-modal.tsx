@@ -96,8 +96,24 @@ export function AssignParticipantsModal({
   // Load current participants when visit changes
   useEffect(() => {
     if (visit && isOpen) {
-      form.reset({
-        linerParticipantId: visit.linerParticipant?.id || undefined,
+      console.log('=== VISIT DATA ===', JSON.stringify(visit, null, 2));
+      console.log('=== PARTICIPANT IDs ===', {
+        liner: visit.liner,
+        telemarketingSupervisor: visit.telemarketingSupervisor,
+        telemarketingConfirmer: visit.telemarketingConfirmer,
+        telemarketer: visit.telemarketer,
+        fieldManager: visit.fieldManager,
+        fieldSupervisor: visit.fieldSupervisor,
+        fieldSeller: visit.fieldSeller,
+        salesManager: visit.salesManager,
+        salesGeneralManager: visit.salesGeneralManager,
+        postSale: visit.postSale,
+        closer: visit.closer,
+        generalDirector: visit.generalDirector,
+      });
+
+      const resetValues = {
+        linerParticipantId: visit.liner?.id || undefined,
         telemarketingSupervisorId: visit.telemarketingSupervisor?.id || undefined,
         telemarketingConfirmerId: visit.telemarketingConfirmer?.id || undefined,
         telemarketerId: visit.telemarketer?.id || undefined,
@@ -109,7 +125,10 @@ export function AssignParticipantsModal({
         postSaleId: visit.postSale?.id || undefined,
         closerId: visit.closer?.id || undefined,
         generalDirectorId: visit.generalDirector?.id || undefined,
-      });
+      };
+      console.log('=== RESET VALUES ===', resetValues);
+
+      form.reset(resetValues);
     }
   }, [visit, isOpen, form]);
 

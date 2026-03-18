@@ -46,7 +46,7 @@ export function VisitCard({
   };
 
   const hasParticipants = !!(
-    visit.linerParticipant ||
+    visit.liner ||
     visit.telemarketer ||
     visit.telemarketingSupervisor ||
     visit.telemarketingConfirmer ||
