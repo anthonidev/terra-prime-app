@@ -225,7 +225,7 @@ export function InterestRateSectionsConfig({
 
                 {/* Rate */}
                 <div className="space-y-1.5">
-                  <Label className="text-muted-foreground text-xs">Tasa mensual (%)</Label>
+                  <Label className="text-muted-foreground text-xs">Tasa anual (%)</Label>
                   <div className="relative">
                     <Input
                       type="number"
