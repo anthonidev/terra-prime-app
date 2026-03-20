@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, ViewTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Pencil, ScrollText, ToggleLeft, ToggleRight, Trash2 } from 'lucide-react';
 
@@ -47,84 +47,88 @@ export function TemplateDetailContainer({ templateId }: TemplateDetailContainerP
   const badge = STATUS_BADGE[template.status];
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title={template.name}
-        description={template.description || 'Sin descripción'}
-        icon={ScrollText}
-        onTitleClick={() => setInfoDialogOpen(true)}
-      >
-        <div className="flex items-center gap-2">
-          <Badge variant={badge.variant}>{badge.label}</Badge>
+    <ViewTransition name={`template-${template.id}`}>
+      <div className="space-y-6">
+        <PageHeader
+          title={template.name}
+          description={template.description || 'Sin descripción'}
+          icon={ScrollText}
+          onTitleClick={() => setInfoDialogOpen(true)}
+        >
+          <div className="flex items-center gap-2">
+            <Badge variant={badge.variant}>{badge.label}</Badge>
 
-          <Button variant="outline" onClick={() => router.push('/contratos/plantillas')}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver
-          </Button>
-
-          {isDraft && (
-            <Button
-              variant="outline"
-              onClick={() => router.push(`/contratos/plantillas/editar/${template.id}`)}
-            >
-              <Pencil className="mr-2 h-4 w-4" />
-              Editar
+            <Button variant="outline" onClick={() => router.push('/contratos/plantillas')}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Volver
             </Button>
-          )}
 
-          {isDraft && (
-            <Button onClick={handlePublish}>
-              <ToggleRight className="mr-2 h-4 w-4" />
-              Publicar
+            {isDraft && (
+              <Button
+                variant="outline"
+                onClick={() => router.push(`/contratos/plantillas/editar/${template.id}`)}
+              >
+                <Pencil className="mr-2 h-4 w-4" />
+                Editar
+              </Button>
+            )}
+
+            {isDraft && (
+              <Button onClick={handlePublish}>
+                <ToggleRight className="mr-2 h-4 w-4" />
+                Publicar
+              </Button>
+            )}
+
+            {isActive && (
+              <Button variant="outline" onClick={handleUnpublish}>
+                <ToggleLeft className="mr-2 h-4 w-4" />
+                Despublicar
+              </Button>
+            )}
+
+            <Button variant="destructive" onClick={handleDelete}>
+              <Trash2 className="mr-2 h-4 w-4" />
+              Eliminar
             </Button>
-          )}
+          </div>
+        </PageHeader>
 
-          {isActive && (
-            <Button variant="outline" onClick={handleUnpublish}>
-              <ToggleLeft className="mr-2 h-4 w-4" />
-              Despublicar
-            </Button>
-          )}
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="bg-card rounded-lg border p-4">
+            <p className="text-muted-foreground text-xs">Proyecto</p>
+            <p className="font-medium">{template.project?.name || '-'}</p>
+          </div>
+          <div className="bg-card rounded-lg border p-4">
+            <p className="text-muted-foreground text-xs">Variables personalizadas</p>
+            <p className="font-medium">{template.customVariables?.length || 0}</p>
+          </div>
+          <div className="bg-card rounded-lg border p-4">
+            <p className="text-muted-foreground text-xs">Última actualización</p>
+            <p className="font-medium">
+              {new Date(template.updatedAt).toLocaleDateString('es-PE')}
+            </p>
+          </div>
+        </div>
 
-          <Button variant="destructive" onClick={handleDelete}>
-            <Trash2 className="mr-2 h-4 w-4" />
-            Eliminar
-          </Button>
+        <div>
+          <h2 className="mb-3 text-lg font-semibold">Vista previa</h2>
+          <TemplatePreview content={template.content} />
         </div>
-      </PageHeader>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="bg-card rounded-lg border p-4">
-          <p className="text-muted-foreground text-xs">Proyecto</p>
-          <p className="font-medium">{template.project?.name || '-'}</p>
-        </div>
-        <div className="bg-card rounded-lg border p-4">
-          <p className="text-muted-foreground text-xs">Variables personalizadas</p>
-          <p className="font-medium">{template.customVariables?.length || 0}</p>
-        </div>
-        <div className="bg-card rounded-lg border p-4">
-          <p className="text-muted-foreground text-xs">Última actualización</p>
-          <p className="font-medium">{new Date(template.updatedAt).toLocaleDateString('es-PE')}</p>
-        </div>
+        <ConfirmationDialog />
+        <EditTemplateInfoDialog
+          open={infoDialogOpen}
+          onOpenChange={setInfoDialogOpen}
+          name={template.name}
+          description={template.description || ''}
+          isPending={isUpdating}
+          onSave={(data) => {
+            handleUpdateInfo(data);
+            setInfoDialogOpen(false);
+          }}
+        />
       </div>
-
-      <div>
-        <h2 className="mb-3 text-lg font-semibold">Vista previa</h2>
-        <TemplatePreview content={template.content} />
-      </div>
-
-      <ConfirmationDialog />
-      <EditTemplateInfoDialog
-        open={infoDialogOpen}
-        onOpenChange={setInfoDialogOpen}
-        name={template.name}
-        description={template.description || ''}
-        isPending={isUpdating}
-        onSave={(data) => {
-          handleUpdateInfo(data);
-          setInfoDialogOpen(false);
-        }}
-      />
-    </div>
+    </ViewTransition>
   );
 }

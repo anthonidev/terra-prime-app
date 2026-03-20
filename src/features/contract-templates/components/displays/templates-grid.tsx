@@ -1,7 +1,7 @@
 'use client';
 
-import { useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useMemo, ViewTransition } from 'react';
+import Link from 'next/link';
 import {
   Calendar,
   Eye,
@@ -24,8 +24,10 @@ import { TableRow } from '@tiptap/extension-table-row';
 import { TableCell } from '@tiptap/extension-table-cell';
 import { TableHeader } from '@tiptap/extension-table-header';
 import Image from '@tiptap/extension-image';
+import { mergeAttributes, Node } from '@tiptap/core';
 
 import { Badge } from '@/components/ui/badge';
+
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -58,7 +60,78 @@ const extensions = [
   TableRow,
   TableCell,
   TableHeader,
-  Image.configure({ allowBase64: true }),
+  Node.create({
+    name: 'variableChip',
+    group: 'inline',
+    inline: true,
+    atom: true,
+    marks: '_',
+    addAttributes() {
+      return {
+        variableKey: {
+          default: null,
+          parseHTML: (element) => element.getAttribute('data-variable-key'),
+          renderHTML: (attributes) => ({ 'data-variable-key': attributes.variableKey }),
+        },
+        variableLabel: {
+          default: null,
+          parseHTML: (element) => element.getAttribute('data-variable-label'),
+          renderHTML: (attributes) => ({ 'data-variable-label': attributes.variableLabel }),
+        },
+      };
+    },
+    parseHTML() {
+      return [{ tag: 'span[data-variable-key]' }];
+    },
+    renderHTML({ HTMLAttributes }) {
+      return [
+        'span',
+        mergeAttributes(HTMLAttributes, {
+          style:
+            'display: inline-flex; align-items: center; gap: 2px; background: hsl(var(--primary) / 0.1); color: hsl(var(--primary)); border: 1px solid hsl(var(--primary) / 0.2); border-radius: 4px; padding: 0 6px; font-size: 0.75rem; font-family: monospace; white-space: nowrap;',
+        }),
+        ['span', { style: 'opacity: 0.6; font-size: 0.65rem;' }, '{ }'],
+        ['span', {}, HTMLAttributes['data-variable-label'] || HTMLAttributes['data-variable-key']],
+      ];
+    },
+  }),
+  Image.extend({
+    addAttributes() {
+      return {
+        ...this.parent?.(),
+        width: {
+          default: null,
+          parseHTML: (element) => {
+            const width = element.getAttribute('width') || element.style.width;
+            return width ? parseInt(width, 10) || null : null;
+          },
+          renderHTML: (attributes) => {
+            if (!attributes.width) return {};
+            return { width: attributes.width };
+          },
+        },
+        textAlign: {
+          default: null,
+          parseHTML: (element) => element.getAttribute('data-text-align'),
+          renderHTML: (attributes) => {
+            if (!attributes.textAlign) return {};
+            return { 'data-text-align': attributes.textAlign };
+          },
+        },
+      };
+    },
+    renderHTML({ HTMLAttributes }) {
+      const { textAlign, width, ...rest } = HTMLAttributes;
+      const styles: string[] = ['display: block'];
+      if (width) styles.push(`width: ${width}px`);
+      if (textAlign === 'center') {
+        styles.push('margin-left: auto', 'margin-right: auto');
+      } else if (textAlign === 'right') {
+        styles.push('margin-left: auto', 'margin-right: 0');
+      }
+      return ['img', { ...rest, style: styles.join('; ') }];
+    },
+  }).configure({ allowBase64: true }),
 ];
 
 function getPreviewHtml(contentPreview: Record<string, unknown>): string {
@@ -77,20 +150,17 @@ interface TemplatesGridProps {
 }
 
 export function TemplatesGrid({ data, onPublish, onUnpublish, onDelete }: TemplatesGridProps) {
-  const router = useRouter();
-
   return (
     <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
       {data.map((template) => (
-        <TemplateCard
-          key={template.id}
-          template={template}
-          onView={() => router.push(`/contratos/plantillas/${template.id}`)}
-          onEdit={() => router.push(`/contratos/plantillas/editar/${template.id}`)}
-          onPublish={() => onPublish(template.id)}
-          onUnpublish={() => onUnpublish(template.id)}
-          onDelete={() => onDelete(template.id)}
-        />
+        <ViewTransition key={template.id} name={`template-${template.id}`}>
+          <TemplateCard
+            template={template}
+            onPublish={() => onPublish(template.id)}
+            onUnpublish={() => onUnpublish(template.id)}
+            onDelete={() => onDelete(template.id)}
+          />
+        </ViewTransition>
       ))}
     </div>
   );
@@ -98,21 +168,12 @@ export function TemplatesGrid({ data, onPublish, onUnpublish, onDelete }: Templa
 
 interface TemplateCardProps {
   template: ContractTemplateListItem;
-  onView: () => void;
-  onEdit: () => void;
   onPublish: () => void;
   onUnpublish: () => void;
   onDelete: () => void;
 }
 
-function TemplateCard({
-  template,
-  onView,
-  onEdit,
-  onPublish,
-  onUnpublish,
-  onDelete,
-}: TemplateCardProps) {
+function TemplateCard({ template, onPublish, onUnpublish, onDelete }: TemplateCardProps) {
   const badge = STATUS_BADGE[template.status];
   const isDraft = template.status === TemplateStatus.DRAFT;
   const isActive = template.status === TemplateStatus.ACTIVE;
@@ -123,9 +184,9 @@ function TemplateCard({
   );
 
   return (
-    <div
+    <Link
+      href={`/contratos/plantillas/${template.id}`}
       className="bg-card group flex cursor-pointer flex-col overflow-hidden rounded-xl border shadow-sm transition-all hover:shadow-lg"
-      onClick={onView}
     >
       {/* A4 Preview */}
       <div className="bg-muted/30 relative overflow-hidden border-b" style={{ height: 220 }}>
@@ -171,14 +232,18 @@ function TemplateCard({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={onView}>
-                  <Eye className="mr-2 h-4 w-4" />
-                  Ver detalle
+                <DropdownMenuItem asChild>
+                  <Link href={`/contratos/plantillas/${template.id}`}>
+                    <Eye className="mr-2 h-4 w-4" />
+                    Ver detalle
+                  </Link>
                 </DropdownMenuItem>
                 {isDraft && (
-                  <DropdownMenuItem onClick={onEdit}>
-                    <Pencil className="mr-2 h-4 w-4" />
-                    Editar
+                  <DropdownMenuItem asChild>
+                    <Link href={`/contratos/plantillas/editar/${template.id}`}>
+                      <Pencil className="mr-2 h-4 w-4" />
+                      Editar
+                    </Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
@@ -216,6 +281,6 @@ function TemplateCard({
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
