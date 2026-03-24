@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { User, Mail, Phone, FileText, CreditCard, Calendar } from 'lucide-react';
+import { User, Mail, Phone, FileText, CreditCard, Calendar, MapPin } from 'lucide-react';
 
 import {
   Form,
@@ -24,6 +24,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { FormDialog } from '@/shared/components/form-dialog';
 
+import { ARRIVAL_PLACE_OPTIONS } from '../../constants';
 import { useUpdateLead } from '../../hooks/use-update-lead';
 import { updateLeadSchema, type UpdateLeadFormData } from '../../lib/validation';
 import type { Lead } from '../../types';
@@ -48,6 +49,8 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
       phone: '',
       phone2: '',
       age: undefined,
+      admissionDate: '',
+      arrivalPlace: undefined,
       observations: '',
     },
   });
@@ -64,7 +67,9 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
         phone: lead.phone || '',
         phone2: lead.phone2 || '',
         age: lead.age || undefined,
-        observations: '', // Observations usually not prefilled for editing unless specific requirement
+        admissionDate: lead.admissionDate || '',
+        arrivalPlace: lead.arrivalPlace || undefined,
+        observations: lead.observations || '',
       });
     }
   }, [lead, isOpen, form]);
@@ -279,6 +284,56 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
               </FormItem>
             )}
           />
+          {/* Admission Date */}
+          <FormField
+            control={form.control}
+            name="admissionDate"
+            render={({ field }) => (
+              <FormItem className="space-y-1.5">
+                <FormLabel className="text-foreground flex items-center gap-1.5 text-sm font-medium">
+                  <Calendar className="h-3.5 w-3.5" />
+                  Fecha de Admisión
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="date"
+                    className="focus-visible:ring-primary/30 h-9 transition-all"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Arrival Place */}
+          <FormField
+            control={form.control}
+            name="arrivalPlace"
+            render={({ field }) => (
+              <FormItem className="space-y-1.5">
+                <FormLabel className="text-foreground flex items-center gap-1.5 text-sm font-medium">
+                  <MapPin className="h-3.5 w-3.5" />
+                  Lugar de Llegada
+                </FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ''}>
+                  <FormControl>
+                    <SelectTrigger className="focus:ring-primary/30 h-9 transition-all">
+                      <SelectValue placeholder="Seleccionar lugar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {ARRIVAL_PLACE_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         {/* Observations */}
@@ -295,6 +350,7 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
                 <Textarea
                   placeholder="Ingrese observaciones adicionales"
                   className="focus-visible:ring-primary/30 min-h-[100px] transition-all"
+                  maxLength={500}
                   {...field}
                 />
               </FormControl>

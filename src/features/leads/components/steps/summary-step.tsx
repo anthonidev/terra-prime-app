@@ -8,9 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-import { DOCUMENT_TYPES, MARITAL_STATUS_OPTIONS } from '../../constants';
+import { ARRIVAL_PLACE_OPTIONS, DOCUMENT_TYPES, MARITAL_STATUS_OPTIONS } from '../../constants';
 import type { CompanionFormData } from '../../hooks/use-lead-form-state';
-import type { DocumentType, LeadSource } from '../../types';
+import type { ArrivalPlace, DocumentType, LeadSource } from '../../types';
 
 interface SummaryStepProps {
   // Form data
@@ -24,6 +24,8 @@ interface SummaryStepProps {
   age: string;
   sourceId: string;
   sources: LeadSource[] | undefined;
+  admissionDate: string;
+  arrivalPlace: ArrivalPlace | '';
   departmentName: string;
   provinceName: string;
   districtName: string;
@@ -55,6 +57,8 @@ export function SummaryStep({
   age,
   sourceId,
   sources,
+  admissionDate,
+  arrivalPlace,
   departmentName,
   provinceName,
   districtName,
@@ -77,6 +81,8 @@ export function SummaryStep({
   const documentTypeLabel =
     DOCUMENT_TYPES.find((dt) => dt.value === documentType)?.label || documentType;
   const sourceName = sources?.find((s) => s.id.toString() === sourceId)?.name || '-';
+  const arrivalPlaceLabel =
+    ARRIVAL_PLACE_OPTIONS.find((ap) => ap.value === arrivalPlace)?.label || '';
   const maritalStatusLabel =
     MARITAL_STATUS_OPTIONS.find((ms) => ms.value === estadoCivil)?.label || estadoCivil;
 
@@ -176,6 +182,22 @@ export function SummaryStep({
                       {districtName}, {provinceName}, {departmentName}
                     </span>
                   </div>
+                  {admissionDate && (
+                    <div className="space-y-1">
+                      <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                        Fecha de Admisión
+                      </span>
+                      <span className="font-medium">{admissionDate}</span>
+                    </div>
+                  )}
+                  {arrivalPlaceLabel && (
+                    <div className="space-y-1">
+                      <span className="text-muted-foreground block text-xs font-medium tracking-wider uppercase">
+                        Lugar de Llegada
+                      </span>
+                      <span className="font-medium">{arrivalPlaceLabel}</span>
+                    </div>
+                  )}
                 </div>
                 {selectedProjects.length > 0 && (
                   <div className="space-y-2">

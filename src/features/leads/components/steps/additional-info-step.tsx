@@ -27,9 +27,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { MARITAL_STATUS_OPTIONS } from '../../constants';
+import { ARRIVAL_PLACE_OPTIONS, MARITAL_STATUS_OPTIONS } from '../../constants';
 import type { CompanionFormData } from '../../hooks/use-lead-form-state';
-import type { LeadSource, UbigeoItem } from '../../types';
+import type { ArrivalPlace, LeadSource, UbigeoItem } from '../../types';
 import type { Project } from '@/features/sales/types';
 
 interface AdditionalInfoStepProps {
@@ -37,6 +37,12 @@ interface AdditionalInfoStepProps {
   sourceId: string;
   sources: LeadSource[] | undefined;
   onSourceChange: (value: string) => void;
+
+  // Admission
+  admissionDate: string;
+  arrivalPlace: ArrivalPlace | '';
+  onAdmissionDateChange: (value: string) => void;
+  onArrivalPlaceChange: (value: string) => void;
 
   // Ubigeo
   departmentId: string;
@@ -80,6 +86,10 @@ export function AdditionalInfoStep({
   sourceId,
   sources,
   onSourceChange,
+  admissionDate,
+  arrivalPlace,
+  onAdmissionDateChange,
+  onArrivalPlaceChange,
   departmentId,
   provinceId,
   districtId,
@@ -142,6 +152,34 @@ export function AdditionalInfoStep({
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="admissionDate">Fecha de Admisión</Label>
+                  <Input
+                    id="admissionDate"
+                    type="date"
+                    value={admissionDate}
+                    onChange={(e) => onAdmissionDateChange(e.target.value)}
+                    className="h-10"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="arrivalPlace">Lugar de Llegada</Label>
+                  <Select value={arrivalPlace} onValueChange={onArrivalPlaceChange}>
+                    <SelectTrigger id="arrivalPlace" className="h-10">
+                      <SelectValue placeholder="Seleccione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ARRIVAL_PLACE_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </CardContent>
           </Card>

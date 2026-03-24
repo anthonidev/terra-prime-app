@@ -136,6 +136,8 @@ export function NewLeadContainer() {
       age: formData.age ? parseInt(formData.age) : undefined,
       sourceId: parseInt(formData.sourceId),
       ubigeoId: parseInt(formData.districtId),
+      admissionDate: formData.admissionDate || undefined,
+      arrivalPlace: formData.arrivalPlace || undefined,
       interestProjects:
         formData.interestProjects.length > 0 ? formData.interestProjects : undefined,
       companions,
@@ -194,6 +196,10 @@ export function NewLeadContainer() {
           sourceId={formData.sourceId}
           sources={sources}
           onSourceChange={(value) => updateFormData({ sourceId: value })}
+          admissionDate={formData.admissionDate}
+          arrivalPlace={formData.arrivalPlace}
+          onAdmissionDateChange={(value) => updateFormData({ admissionDate: value })}
+          onArrivalPlaceChange={(value) => updateFormData({ arrivalPlace: value as '' })}
           departmentId={formData.departmentId}
           provinceId={formData.provinceId}
           districtId={formData.districtId}
@@ -236,6 +242,8 @@ export function NewLeadContainer() {
           age={formData.age}
           sourceId={formData.sourceId}
           sources={sources}
+          admissionDate={formData.admissionDate}
+          arrivalPlace={formData.arrivalPlace}
           departmentName={departmentName}
           provinceName={provinceName}
           districtName={districtName}

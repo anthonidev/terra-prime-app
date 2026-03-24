@@ -36,7 +36,9 @@ export const updateLeadSchema = z.object({
     .optional()
     .or(z.literal('')),
   age: z.number().int().positive({ message: 'La edad debe ser un número positivo' }).optional(),
-  observations: z.string().optional(),
+  admissionDate: z.string().optional().or(z.literal('')),
+  arrivalPlace: z.enum(['OFICINA', 'CAMPO', 'EVENTO', 'OTROS']).optional(),
+  observations: z.string().max(500, { message: 'Máximo 500 caracteres' }).optional(),
 });
 
 export type LeadSourceFormData = z.infer<typeof leadSourceSchema>;

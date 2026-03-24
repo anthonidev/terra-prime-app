@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { type ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Building2, Download, Eye, Home, Users } from 'lucide-react';
+import { Building2, Download, Eye, Home, MapPin, Users } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import { DataTablePagination } from '@/shared/components/data-table/data-table-p
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { UserInfo } from '@/shared/components/user-info';
 
+import { ARRIVAL_PLACE_OPTIONS } from '../../constants';
 import { LeadCard } from '../cards/lead-card';
 import type { DocumentType, Lead } from '../../types';
 import type { PaginationMeta } from '@/shared/types/pagination';
@@ -66,15 +67,41 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
           {row.original.isInOffice ? (
             <Badge className="bg-success/10 text-success hover:bg-success/20 border-success/20 shadow-none">
               <Building2 className="mr-1 h-3 w-3" />
-              En Oficina
+              En línea
             </Badge>
           ) : (
             <Badge variant="outline" className="text-muted-foreground shadow-none">
               <Home className="mr-1 h-3 w-3" />
-              Fuera
+              Fuera de línea
             </Badge>
           )}
         </div>
+      ),
+    },
+    {
+      accessorKey: 'arrivalPlace',
+      header: 'Lugar',
+      cell: ({ row }) => {
+        const place = row.original.arrivalPlace;
+        if (!place) return <span className="text-muted-foreground text-xs">-</span>;
+        const label = ARRIVAL_PLACE_OPTIONS.find((o) => o.value === place)?.label || place;
+        return (
+          <Badge variant="outline" className="text-xs shadow-none">
+            <MapPin className="mr-1 h-3 w-3" />
+            {label}
+          </Badge>
+        );
+      },
+    },
+    {
+      accessorKey: 'admissionDate',
+      header: 'Admisión',
+      cell: ({ row }) => (
+        <span className="text-muted-foreground text-xs">
+          {row.original.admissionDate
+            ? format(new Date(row.original.admissionDate), 'dd/MM/yyyy', { locale: es })
+            : '-'}
+        </span>
       ),
     },
     {

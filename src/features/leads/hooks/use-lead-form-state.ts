@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { DocumentType, Lead, LeadMetadata } from '../types';
+import type { ArrivalPlace, DocumentType, Lead, LeadMetadata } from '../types';
 
 export interface CompanionFormData {
   fullName: string;
@@ -27,6 +27,8 @@ export interface LeadFormData {
   departmentId: string;
   provinceId: string;
   districtId: string;
+  admissionDate: string;
+  arrivalPlace: ArrivalPlace | '';
   interestProjects: string[];
   companions: CompanionFormData[];
 
@@ -57,6 +59,8 @@ const initialFormData: LeadFormData = {
   departmentId: '',
   provinceId: '',
   districtId: '',
+  admissionDate: '',
+  arrivalPlace: '',
   interestProjects: [],
   companions: [],
   estadoCivil: '',
@@ -100,6 +104,8 @@ export function useLeadFormState() {
       departmentId: lead.departmentId?.toString() || '',
       provinceId: lead.provinceId?.toString() || '',
       districtId: lead.ubigeo?.id?.toString() || '',
+      admissionDate: '',
+      arrivalPlace: '',
       interestProjects: lead.interestProjects || [],
       companions,
       estadoCivil: lead.metadata?.estadoCivil || '',

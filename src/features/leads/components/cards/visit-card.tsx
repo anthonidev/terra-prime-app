@@ -9,6 +9,7 @@ import {
   ExternalLink,
   FileText,
   LogOut,
+  MapPin,
   RefreshCw,
   Users,
   XCircle,
@@ -18,6 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
+import { ARRIVAL_PLACE_OPTIONS } from '../../constants';
 import type { LeadVisit } from '../../types';
 
 interface VisitCardProps {
@@ -110,6 +112,35 @@ export function VisitCard({
               )}
             </div>
           </div>
+
+          {/* Admission info */}
+          {(visit.admissionDate || visit.arrivalPlace) && (
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {visit.admissionDate && (
+                <div>
+                  <div className="text-muted-foreground mb-1 flex items-center gap-1.5">
+                    <Calendar className="h-3.5 w-3.5" />
+                    <span className="font-medium">Admisión</span>
+                  </div>
+                  <p className="text-foreground">
+                    {format(new Date(visit.admissionDate), 'dd/MM/yyyy', { locale: es })}
+                  </p>
+                </div>
+              )}
+              {visit.arrivalPlace && (
+                <div>
+                  <div className="text-muted-foreground mb-1 flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5" />
+                    <span className="font-medium">Lugar</span>
+                  </div>
+                  <p className="text-foreground">
+                    {ARRIVAL_PLACE_OPTIONS.find((o) => o.value === visit.arrivalPlace)?.label ||
+                      visit.arrivalPlace}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Report status */}
           {visit.reportPdfUrl && (

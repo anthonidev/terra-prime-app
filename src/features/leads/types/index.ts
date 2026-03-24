@@ -33,6 +33,7 @@ export interface LeadSourceResponse {
 
 // Lead Types
 export type DocumentType = 'DNI' | 'CE' | 'PASSPORT' | 'RUC';
+export type ArrivalPlace = 'OFICINA' | 'CAMPO' | 'EVENTO' | 'OTROS';
 
 export interface UbigeoItem {
   id: number;
@@ -89,6 +90,8 @@ export interface LeadVisit {
   id: string;
   arrivalTime: string;
   departureTime: string | null;
+  admissionDate: string | null;
+  arrivalPlace: ArrivalPlace | null;
   observations: string | null;
   createdAt: string;
   reportPdfUrl: string | null;
@@ -136,6 +139,9 @@ export interface Lead {
   phone2: string | null;
   reportPdfUrl: string | null;
   age: number | null;
+  admissionDate: string | null;
+  arrivalPlace: ArrivalPlace | null;
+  observations: string | null;
   ubigeo?: UbigeoItem;
   source?: LeadSource;
   visits?: LeadVisit[];
@@ -184,6 +190,8 @@ export interface CreateUpdateLeadInput {
   age?: number;
   sourceId?: number;
   ubigeoId?: number;
+  admissionDate?: string;
+  arrivalPlace?: ArrivalPlace;
   observations?: string;
   isNewLead?: boolean;
   interestProjects?: string[];
@@ -212,6 +220,8 @@ export interface UpdateLeadInput {
   phone?: string;
   phone2?: string;
   age?: number;
+  admissionDate?: string;
+  arrivalPlace?: ArrivalPlace;
   observations?: string;
 }
 

@@ -1,4 +1,12 @@
-import type { DocumentType } from '../types';
+import type { ArrivalPlace, DocumentType } from '../types';
+
+export const ARRIVAL_PLACE_OPTIONS: Array<{ value: ArrivalPlace; label: string }> = [
+  { value: 'OFICINA', label: 'Oficina' },
+  { value: 'CAMPO', label: 'Campo' },
+  { value: 'EVENTO', label: 'Evento' },
+  { value: 'OTROS', label: 'Otros' },
+];
+
 export enum EstadoCivil {
   Soltero = 'Soltero',
   Casado = 'Casado',
