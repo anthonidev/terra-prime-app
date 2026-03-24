@@ -136,7 +136,7 @@ export function NewLeadContainer() {
       age: formData.age ? parseInt(formData.age) : undefined,
       sourceId: parseInt(formData.sourceId),
       ubigeoId: parseInt(formData.districtId),
-      admissionDate: formData.admissionDate || undefined,
+      admissionDate: formData.admissionDate ? `${formData.admissionDate}T12:00:00` : undefined,
       arrivalPlace: formData.arrivalPlace || undefined,
       interestProjects:
         formData.interestProjects.length > 0 ? formData.interestProjects : undefined,

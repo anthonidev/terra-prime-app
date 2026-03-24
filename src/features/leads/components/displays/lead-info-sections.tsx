@@ -9,13 +9,16 @@ import {
   Users,
   Info,
   ChevronDown,
+  ClipboardList,
   CreditCard,
 } from 'lucide-react';
+import { formatDateOnly } from '@/shared/utils/date-formatter';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { ARRIVAL_PLACE_OPTIONS } from '../../constants';
 import type { Lead } from '../../types';
 
 interface LeadInfoSectionsProps {
@@ -137,6 +140,35 @@ export function LeadInfoSections({ lead }: LeadInfoSectionsProps) {
                     </>
                   ) : (
                     <p className="text-muted-foreground text-xs italic">Sin fuente registrada</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Admisión */}
+              <div className="space-y-3">
+                <h3 className="text-foreground flex items-center gap-2 border-b pb-2 text-xs font-semibold tracking-wider uppercase">
+                  <ClipboardList className="text-primary h-3.5 w-3.5" />
+                  Admisión
+                </h3>
+                <div className="space-y-0.5">
+                  <InfoItem
+                    label="Fecha de Admisión"
+                    value={
+                      lead.admissionDate ? formatDateOnly(lead.admissionDate, 'dd/MM/yyyy') : null
+                    }
+                  />
+                  <InfoItem
+                    label="Lugar de Llegada"
+                    value={
+                      ARRIVAL_PLACE_OPTIONS.find((o) => o.value === lead.arrivalPlace)?.label ||
+                      null
+                    }
+                  />
+                  <InfoItem label="Observaciones" value={lead.observations} />
+                  {!lead.admissionDate && !lead.arrivalPlace && !lead.observations && (
+                    <p className="text-muted-foreground text-xs italic">
+                      Sin datos de admisión registrados
+                    </p>
                   )}
                 </div>
               </div>

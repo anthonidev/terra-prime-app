@@ -2,7 +2,7 @@
 
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Clock, ExternalLink, FileText, LogOut, MapPin, RefreshCw, Users } from 'lucide-react';
+import { Clock, ExternalLink, FileText, LogOut, RefreshCw, Users } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -17,8 +17,6 @@ import {
 } from '@/components/ui/table';
 import { useConfirmation } from '@/shared/hooks/use-confirmation';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
-
-import { ARRIVAL_PLACE_OPTIONS } from '../../constants';
 
 import { VisitCard } from '../cards/visit-card';
 import { useGenerateReport } from '../../hooks/use-generate-report';
@@ -142,8 +140,6 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
                   <TableRow className="bg-muted/50 hover:bg-muted/50">
                     <TableHead className="text-xs font-medium">Llegada</TableHead>
                     <TableHead className="text-xs font-medium">Salida</TableHead>
-                    <TableHead className="text-xs font-medium">Admisión</TableHead>
-                    <TableHead className="text-xs font-medium">Lugar</TableHead>
                     <TableHead className="text-xs font-medium">Estado</TableHead>
                     <TableHead className="text-xs font-medium">Reporte</TableHead>
                     <TableHead className="text-xs font-medium">Participantes</TableHead>
@@ -182,25 +178,6 @@ export function VisitsTable({ visits, leadId, onAssignParticipants }: VisitsTabl
                             >
                               En curso
                             </Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-xs">
-                          {visit.admissionDate
-                            ? format(new Date(visit.admissionDate), 'dd/MM/yyyy', { locale: es })
-                            : '-'}
-                        </TableCell>
-                        <TableCell className="text-xs">
-                          {visit.arrivalPlace ? (
-                            <Badge
-                              variant="outline"
-                              className="text-[10px] font-medium shadow-none"
-                            >
-                              <MapPin className="mr-1 h-3 w-3" />
-                              {ARRIVAL_PLACE_OPTIONS.find((o) => o.value === visit.arrivalPlace)
-                                ?.label || visit.arrivalPlace}
-                            </Badge>
-                          ) : (
-                            '-'
                           )}
                         </TableCell>
                         <TableCell>

@@ -5,6 +5,7 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Building2, Download, Eye, Home, MapPin, Users } from 'lucide-react';
+import { formatDateOnly } from '@/shared/utils/date-formatter';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -99,7 +100,7 @@ export function LeadsTable({ leads, meta, onPageChange }: LeadsTableProps) {
       cell: ({ row }) => (
         <span className="text-muted-foreground text-xs">
           {row.original.admissionDate
-            ? format(new Date(row.original.admissionDate), 'dd/MM/yyyy', { locale: es })
+            ? formatDateOnly(row.original.admissionDate, 'dd/MM/yyyy')
             : '-'}
         </span>
       ),

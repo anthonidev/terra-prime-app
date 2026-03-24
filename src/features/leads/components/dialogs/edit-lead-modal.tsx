@@ -24,6 +24,8 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { FormDialog } from '@/shared/components/form-dialog';
 
+import { formatIsoToDateInputValue } from '@/shared/utils/date-formatter';
+
 import { ARRIVAL_PLACE_OPTIONS } from '../../constants';
 import { useUpdateLead } from '../../hooks/use-update-lead';
 import { updateLeadSchema, type UpdateLeadFormData } from '../../lib/validation';
@@ -67,7 +69,7 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
         phone: lead.phone || '',
         phone2: lead.phone2 || '',
         age: lead.age || undefined,
-        admissionDate: lead.admissionDate || '',
+        admissionDate: formatIsoToDateInputValue(lead.admissionDate),
         arrivalPlace: lead.arrivalPlace || undefined,
         observations: lead.observations || '',
       });
@@ -81,6 +83,11 @@ export function EditLeadModal({ lead, isOpen, onClose }: EditLeadModalProps) {
     const filteredData = Object.fromEntries(
       Object.entries(data).filter(([, value]) => value !== undefined && value !== '')
     ) as Partial<UpdateLeadFormData>;
+
+    // Send admissionDate with noon time to avoid timezone day shift
+    if (filteredData.admissionDate) {
+      filteredData.admissionDate = `${filteredData.admissionDate}T12:00:00`;
+    }
 
     await updateLead.mutateAsync(filteredData);
     onClose();
