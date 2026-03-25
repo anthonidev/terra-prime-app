@@ -2,13 +2,21 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { useProject } from './use-project';
 import { useProjectLots } from './use-project-lots';
+import { useParkings } from '@/features/parking/hooks/use-parkings';
 import type { Block, Lot, LotStatus, Stage } from '../types';
+import type { Parking, ParkingStatus } from '@/features/parking/types';
 
 interface LotsFiltersState {
   search: string;
   stageId: string;
   blockId: string;
   status: LotStatus | 'all';
+  page: number;
+}
+
+interface ParkingsFiltersState {
+  search: string;
+  status: ParkingStatus | 'all';
   page: number;
 }
 
@@ -25,6 +33,8 @@ export function useProjectDetailContainer(projectId: string) {
   const [lotDialogOpen, setLotDialogOpen] = useState(false);
   const [selectedLot, setSelectedLot] = useState<Lot | null>(null);
   const [selectedBlockForLot, setSelectedBlockForLot] = useState<Block | null>(null);
+  const [parkingDialogOpen, setParkingDialogOpen] = useState(false);
+  const [selectedParking, setSelectedParking] = useState<Parking | null>(null);
 
   const [lotsFilters, setLotsFilters] = useState<LotsFiltersState>({
     search: '',
@@ -50,6 +60,28 @@ export function useProjectDetailContainer(projectId: string) {
     projectId,
     lotsQueryParams,
     activeTab === 'lots'
+  );
+
+  const [parkingsFilters, setParkingsFilters] = useState<ParkingsFiltersState>({
+    search: '',
+    status: 'all',
+    page: 1,
+  });
+
+  const parkingsQueryParams = useMemo(
+    () => ({
+      term: parkingsFilters.search || undefined,
+      projectId,
+      status: parkingsFilters.status !== 'all' ? parkingsFilters.status : undefined,
+      page: parkingsFilters.page,
+      limit: 10,
+    }),
+    [parkingsFilters, projectId]
+  );
+
+  const { data: parkingsData, isLoading: parkingsLoading } = useParkings(
+    parkingsQueryParams,
+    activeTab === 'parkings'
   );
 
   const projectInitials = project?.name
@@ -201,6 +233,53 @@ export function useProjectDetailContainer(projectId: string) {
     }));
   }, []);
 
+  // Parking handlers
+  const openCreateParkingDialog = useCallback(() => {
+    setSelectedParking(null);
+    setParkingDialogOpen(true);
+  }, []);
+
+  const openEditParkingDialog = useCallback((parking: Parking) => {
+    setSelectedParking(parking);
+    setParkingDialogOpen(true);
+  }, []);
+
+  const handleParkingDialogChange = useCallback((open: boolean) => {
+    setParkingDialogOpen(open);
+    if (!open) {
+      setSelectedParking(null);
+    }
+  }, []);
+
+  const handleParkingStatusFilterChange = useCallback((status: ParkingStatus | 'all') => {
+    setParkingsFilters((prev) => ({
+      ...prev,
+      status,
+      page: 1,
+    }));
+  }, []);
+
+  const handleParkingSearchChange = useCallback((search: string) => {
+    setParkingsFilters((prev) => ({
+      ...prev,
+      search,
+    }));
+  }, []);
+
+  const handleParkingSearchSubmit = useCallback(() => {
+    setParkingsFilters((prev) => ({
+      ...prev,
+      page: 1,
+    }));
+  }, []);
+
+  const handleParkingsPageChange = useCallback((page: number) => {
+    setParkingsFilters((prev) => ({
+      ...prev,
+      page,
+    }));
+  }, []);
+
   return {
     project,
     projectInitials,
@@ -237,5 +316,17 @@ export function useProjectDetailContainer(projectId: string) {
     handleSearchSubmit,
     handleLotsPageChange,
     canCreateLot,
+    parkingDialogOpen,
+    selectedParking,
+    openCreateParkingDialog,
+    openEditParkingDialog,
+    handleParkingDialogChange,
+    parkingsFilters,
+    parkingsData,
+    parkingsLoading,
+    handleParkingStatusFilterChange,
+    handleParkingSearchChange,
+    handleParkingSearchSubmit,
+    handleParkingsPageChange,
   };
 }

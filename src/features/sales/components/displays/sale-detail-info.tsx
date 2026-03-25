@@ -17,14 +17,14 @@ interface SaleDetailInfoProps {
 export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
   return (
     <div className="grid gap-6 md:grid-cols-2">
-      {/* Información del Lote */}
+      {/* Información del Lote / Cochera */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-lg">
               <Building2 className="text-primary h-4 w-4" />
             </div>
-            Información del Lote
+            {sale.parking && !sale.lot ? 'Información de la Cochera' : 'Información del Lote'}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -33,16 +33,18 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
               <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
                 Proyecto
               </p>
-              <p className="font-semibold">{sale.lot.project}</p>
+              <p className="font-semibold">{sale.lot?.project || sale.parking?.project || 'N/A'}</p>
             </div>
             <div className="space-y-1">
               <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-                Ubicación
+                {sale.parking && !sale.lot ? 'Cochera' : 'Ubicación'}
               </p>
               <div className="flex items-center gap-1.5">
                 <MapPin className="text-muted-foreground h-3.5 w-3.5" />
                 <span className="font-medium">
-                  {sale.lot.stage} - {sale.lot.block} - {sale.lot.name}
+                  {sale.lot
+                    ? `${sale.lot.stage} - ${sale.lot.block} - ${sale.lot.name}`
+                    : sale.parking?.name || 'N/A'}
                 </span>
               </div>
             </div>
@@ -53,12 +55,12 @@ export function SaleDetailInfo({ sale }: SaleDetailInfoProps) {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1">
               <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-                Precio del Lote
+                {sale.parking && !sale.lot ? 'Precio de la Cochera' : 'Precio del Lote'}
               </p>
               <div className="flex items-center gap-1.5">
                 <DollarSign className="text-muted-foreground h-3.5 w-3.5" />
                 <span className="font-medium">
-                  {formatCurrency(sale.lot.lotPrice, sale.currency)}
+                  {formatCurrency(sale.lot?.lotPrice ?? sale.parking?.price ?? 0, sale.currency)}
                 </span>
               </div>
             </div>

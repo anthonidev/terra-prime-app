@@ -14,6 +14,9 @@ import type {
   AdminSalesQueryParams,
   FinancingDetailResponse,
   SaleFile,
+  AvailableParking,
+  AvailableParkingsQueryParams,
+  AvailableParkingForSale,
 } from '../types';
 
 // Get active projects
@@ -158,5 +161,34 @@ export async function getFinancingDetail(
 // Get sale files
 export async function getSaleFiles(saleId: string): Promise<SaleFile[]> {
   const response = await apiClient.get<SaleFile[]>(`/api/sale-files/sale/${saleId}`);
+  return response.data;
+}
+
+// Get project parkings for sale (no pagination, only active)
+export async function getProjectParkingsForSale(
+  projectId: string
+): Promise<AvailableParkingForSale[]> {
+  const response = await apiClient.get<{ items: AvailableParkingForSale[] }>('/api/parkings', {
+    params: {
+      projectId,
+      status: 'Activo',
+      hasPagination: false,
+    },
+  });
+  return response.data.items;
+}
+
+// Get available parkings for a project (only active)
+export async function getAvailableParkings(
+  projectId: string,
+  params: AvailableParkingsQueryParams = {}
+): Promise<PaginatedResponse<AvailableParking>> {
+  const response = await apiClient.get<PaginatedResponse<AvailableParking>>('/api/parkings', {
+    params: {
+      projectId,
+      status: 'Activo',
+      ...params,
+    },
+  });
   return response.data;
 }

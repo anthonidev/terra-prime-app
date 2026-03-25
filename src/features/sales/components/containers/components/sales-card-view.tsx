@@ -83,8 +83,12 @@ export function SalesCardView({
                       <Building2 className="text-primary h-5 w-5" />
                     </div>
                     <div>
-                      <p className="leading-none font-semibold">{sale.lot.name}</p>
-                      <p className="text-muted-foreground mt-1 text-xs">{sale.lot.project}</p>
+                      <p className="leading-none font-semibold">
+                        {sale.lot?.name || sale.parking?.name}
+                      </p>
+                      <p className="text-muted-foreground mt-1 text-xs">
+                        {sale.lot?.project || sale.parking?.project}
+                      </p>
                     </div>
                   </div>
                   <Badge variant={statusConfig[sale.status].variant}>
@@ -110,7 +114,11 @@ export function SalesCardView({
                   <MapPin className="text-muted-foreground mt-0.5 h-4 w-4" />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm">
-                      {sale.lot.stage} - {sale.lot.block}
+                      {sale.lot
+                        ? `${sale.lot.stage} - ${sale.lot.block}`
+                        : sale.parking
+                          ? 'Cochera'
+                          : '-'}
                     </p>
                   </div>
                 </div>

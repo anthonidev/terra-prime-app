@@ -18,6 +18,7 @@ interface SalesStep3Props {
   selectedLot: ProjectLotResponse;
   projectCurrency: 'USD' | 'PEN';
   reservationAmount?: number;
+  isParking?: boolean;
   onNext: (data: Step3Data) => void;
   onBack: () => void;
 }
@@ -28,6 +29,7 @@ export function SalesStep3({
   selectedLot,
   projectCurrency,
   reservationAmount,
+  isParking = false,
   onNext,
   onBack,
 }: SalesStep3Props) {
@@ -101,7 +103,7 @@ export function SalesStep3({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div ref={topRef} />
-      {/* Lot Payment Info */}
+      {/* Lot/Parking Payment Info */}
       <LotPaymentInfo
         selectedLot={selectedLot}
         lotPrice={lotPrice}
@@ -112,6 +114,7 @@ export function SalesStep3({
         onEditEnabledChange={setIsEditEnabled}
         onLotPriceChange={setEditableLotPrice}
         onUrbanizationPriceChange={setEditableUrbanizationPrice}
+        title={isParking ? 'Resumen de la Cochera' : 'Resumen del Lote'}
       />
 
       {/* Financed Payment Fields */}

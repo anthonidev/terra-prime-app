@@ -62,8 +62,8 @@ export function SaleSuccessModal({ open, onOpenChange, sale }: SaleSuccessModalP
               {sale.client.firstName} {sale.client.lastName}
             </div>
 
-            <div className="text-muted-foreground">Lote:</div>
-            <div className="font-medium">{sale.lot.name}</div>
+            <div className="text-muted-foreground">{sale.parking ? 'Cochera:' : 'Lote:'}</div>
+            <div className="font-medium">{sale.lot?.name || sale.parking?.name}</div>
 
             <div className="text-muted-foreground">Monto Total:</div>
             <div className="font-medium">

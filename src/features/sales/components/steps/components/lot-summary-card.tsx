@@ -1,19 +1,96 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Building2 } from 'lucide-react';
+import { Building2, Car } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@/shared/utils/currency-formatter';
-import type { ProjectLotResponse } from '../../../types';
+import type { ProjectLotResponse, AvailableParkingForSale } from '../../../types';
 
 interface LotSummaryCardProps {
-  selectedLot: ProjectLotResponse;
+  selectedLot?: ProjectLotResponse;
+  selectedParking?: AvailableParkingForSale | null;
+  isParking?: boolean;
   currencyType: 'USD' | 'PEN';
 }
 
-export function LotSummaryCard({ selectedLot, currencyType }: LotSummaryCardProps) {
+export function LotSummaryCard({
+  selectedLot,
+  selectedParking,
+  isParking = false,
+  currencyType,
+}: LotSummaryCardProps) {
+  if (isParking && selectedParking) {
+    const price = parseFloat(selectedParking.price);
+
+    const parkingInfo = [
+      { label: 'Proyecto', value: selectedParking.projectName },
+      { label: 'Cochera', value: selectedParking.name },
+      { label: 'Área', value: `${selectedParking.area} m²` },
+    ];
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <div className="bg-primary/10 flex h-9 w-9 items-center justify-center rounded-lg">
+                <Car className="text-primary h-5 w-5" />
+              </div>
+              Detalles del Proyecto y Cochera
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+              {parkingInfo.map((info, index) => (
+                <motion.div
+                  key={info.label}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <p className="text-muted-foreground text-sm">{info.label}</p>
+                  <p className="font-medium">{info.value}</p>
+                </motion.div>
+              ))}
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.15 }}
+              >
+                <p className="text-muted-foreground text-sm">Estado</p>
+                <Badge variant="outline">{selectedParking.status}</Badge>
+              </motion.div>
+            </div>
+
+            <Separator className="my-4" />
+
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <p className="text-muted-foreground text-sm">Precio</p>
+                <p className="text-primary text-lg font-semibold">
+                  {formatCurrency(price, currencyType)}
+                </p>
+              </motion.div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    );
+  }
+
+  // Default: lot view
+  if (!selectedLot) return null;
+
   const lotInfo = [
     { label: 'Proyecto', value: selectedLot.projectName },
     { label: 'Etapa', value: selectedLot.stageName },

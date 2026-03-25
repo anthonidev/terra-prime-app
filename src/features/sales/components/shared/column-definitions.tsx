@@ -27,7 +27,14 @@ type SaleCommonFields = {
     project: string;
     block: string;
     stage: string;
-  };
+  } | null;
+  parking?: {
+    id: string;
+    name: string;
+    area: number;
+    price: number;
+    project: string | null;
+  } | null;
   totalAmount: number | string;
   totalAmountPaid?: number | null;
   totalAmountPending?: number | null;
@@ -102,14 +109,34 @@ export function createClientColumn<T extends SaleCommonFields>(): ColumnDef<T> {
   };
 }
 
-// Lot Column
+// Lot/Parking Column
 export function createLotColumn<T extends SaleCommonFields>(): ColumnDef<T> {
   return {
     accessorKey: 'lot',
     enableHiding: false,
-    header: 'Lote',
+    header: 'Lote / Cochera',
     cell: ({ row }) => {
       const lot = row.original.lot;
+      const parking = row.original.parking;
+
+      if (parking && !lot) {
+        return (
+          <div className="flex flex-col gap-0.5">
+            <span className="text-sm leading-none font-semibold">{parking.name}</span>
+            <span className="text-muted-foreground text-[11px] leading-none">
+              {parking.project}
+            </span>
+            <div className="mt-0.5">
+              <Badge variant="outline" className="h-4 px-1 text-[10px] font-normal">
+                Cochera
+              </Badge>
+            </div>
+          </div>
+        );
+      }
+
+      if (!lot) return <span className="text-muted-foreground text-xs">-</span>;
+
       return (
         <div className="flex flex-col gap-0.5">
           <span className="text-sm leading-none font-semibold">{lot.name}</span>

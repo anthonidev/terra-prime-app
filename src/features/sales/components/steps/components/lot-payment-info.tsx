@@ -21,6 +21,7 @@ interface LotPaymentInfoProps {
   onEditEnabledChange?: (enabled: boolean) => void;
   onLotPriceChange?: (price: number) => void;
   onUrbanizationPriceChange?: (price: number) => void;
+  title?: string;
 }
 
 export function LotPaymentInfo({
@@ -33,6 +34,7 @@ export function LotPaymentInfo({
   onEditEnabledChange,
   onLotPriceChange,
   onUrbanizationPriceChange,
+  title = 'Resumen del Lote',
 }: LotPaymentInfoProps) {
   const [requestEditModalOpen, setRequestEditModalOpen] = useState(false);
   const currencyType = currency;
@@ -70,7 +72,7 @@ export function LotPaymentInfo({
                   <Receipt className="text-primary h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold">Resumen del Lote</h3>
+                  <h3 className="text-lg font-semibold">{title}</h3>
                   <p className="text-muted-foreground text-sm">Información base para el cálculo</p>
                 </div>
               </div>

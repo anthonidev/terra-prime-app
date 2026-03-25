@@ -76,12 +76,15 @@ export function useCreateSaleForm() {
         await createGuarantorClientMutation.mutateAsync(guarantorClientInput);
 
       // Step 2: Create sale
+      const isParking = formData.step1.saleTarget === 'parking';
       const saleInput: CreateSaleInput = {
-        lotId: formData.step1.selectedLot!.id,
+        ...(isParking
+          ? { parkingId: formData.step1.selectedParking!.id }
+          : { lotId: formData.step1.selectedLot!.id }),
         saleType: formData.step2.saleType,
         clientId: guarantorClientResult.clientId,
         totalAmount: formData.step3.totalAmount,
-        totalAmountUrbanDevelopment: formData.step3.totalAmountUrbanDevelopment,
+        totalAmountUrbanDevelopment: isParking ? 0 : formData.step3.totalAmountUrbanDevelopment,
         initialAmountUrbanDevelopment: 0, // Siempre 0 según especificación de la API
         ...(guarantorClientResult.guarantorId && {
           guarantorId: guarantorClientResult.guarantorId,
@@ -112,13 +115,15 @@ export function useCreateSaleForm() {
           formData.step3.combinedInstallments && {
             combinedInstallments: formData.step3.combinedInstallments,
           }),
-        // Campos de HU (para ambos tipos de venta si tienen urbanización)
-        ...(formData.step3.quantityHuCuotes !== undefined && {
-          quantityHuCuotes: formData.step3.quantityHuCuotes,
-        }),
-        ...(formData.step3.firstPaymentDateHu && {
-          firstPaymentDateHu: formData.step3.firstPaymentDateHu,
-        }),
+        // Campos de HU (para ambos tipos de venta si tienen urbanización, no aplica para cocheras)
+        ...(!isParking &&
+          formData.step3.quantityHuCuotes !== undefined && {
+            quantityHuCuotes: formData.step3.quantityHuCuotes,
+          }),
+        ...(!isParking &&
+          formData.step3.firstPaymentDateHu && {
+            firstPaymentDateHu: formData.step3.firstPaymentDateHu,
+          }),
       };
 
       const saleResult = await createSaleMutation.mutateAsync(saleInput);

@@ -5,13 +5,17 @@ import { useActiveProjects } from './use-active-projects';
 import { useProjectStages } from './use-project-stages';
 import { useStageBlocks } from './use-stage-blocks';
 import { useBlockLots } from './use-block-lots';
-import type { ProjectLotResponse, Step1Data } from '../types';
+import { useProjectParkingsForSale } from './use-project-parkings-for-sale';
+import type { ProjectLotResponse, AvailableParkingForSale, Step1Data } from '../types';
 
 interface UseLotSelectionProps {
   initialData?: Step1Data;
 }
 
 export function useLotSelection({ initialData }: UseLotSelectionProps = {}) {
+  // Sale target state
+  const [saleTarget, setSaleTarget] = useState<'lot' | 'parking'>(initialData?.saleTarget || 'lot');
+
   // State for selections
   const [projectId, setProjectId] = useState<string>(initialData?.projectId || '');
   const [projectName, setProjectName] = useState<string>(initialData?.projectName || '');
@@ -25,14 +29,34 @@ export function useLotSelection({ initialData }: UseLotSelectionProps = {}) {
   const [selectedLot, setSelectedLot] = useState<ProjectLotResponse | null>(
     initialData?.selectedLot || null
   );
+  const [selectedParking, setSelectedParking] = useState<AvailableParkingForSale | null>(
+    initialData?.selectedParking || null
+  );
 
   // Data queries
   const { data: projects, isLoading: isLoadingProjects } = useActiveProjects();
   const { data: stages, isLoading: isLoadingStages } = useProjectStages(projectId);
   const { data: blocks, isLoading: isLoadingBlocks } = useStageBlocks(stageId);
   const { data: lots, isLoading: isLoadingLots } = useBlockLots(blockId);
+  const { data: parkings, isLoading: isLoadingParkings } = useProjectParkingsForSale(
+    saleTarget === 'parking' ? projectId : ''
+  );
 
   // Handlers
+  const handleSaleTargetChange = (target: 'lot' | 'parking') => {
+    setSaleTarget(target);
+    // Reset all selections
+    setProjectId('');
+    setProjectName('');
+    setProjectCurrency('');
+    setStageId('');
+    setStageName('');
+    setBlockId('');
+    setBlockName('');
+    setSelectedLot(null);
+    setSelectedParking(null);
+  };
+
   const handleProjectChange = (value: string) => {
     const selected = projects?.find((p) => p.id === value);
     setProjectId(value);
@@ -44,6 +68,7 @@ export function useLotSelection({ initialData }: UseLotSelectionProps = {}) {
     setBlockId('');
     setBlockName('');
     setSelectedLot(null);
+    setSelectedParking(null);
   };
 
   const handleStageChange = (value: string) => {
@@ -68,7 +93,12 @@ export function useLotSelection({ initialData }: UseLotSelectionProps = {}) {
     setSelectedLot(lot);
   };
 
+  const handleSelectParking = (parking: AvailableParkingForSale) => {
+    setSelectedParking(parking);
+  };
+
   const getFormData = (): Step1Data => ({
+    saleTarget,
     projectId,
     projectName,
     projectCurrency,
@@ -77,12 +107,14 @@ export function useLotSelection({ initialData }: UseLotSelectionProps = {}) {
     blockId,
     blockName,
     selectedLot,
+    selectedParking,
   });
 
-  const canProceed = !!selectedLot;
+  const canProceed = saleTarget === 'lot' ? !!selectedLot : !!selectedParking;
 
   return {
     // State
+    saleTarget,
     projectId,
     projectName,
     projectCurrency,
@@ -91,24 +123,29 @@ export function useLotSelection({ initialData }: UseLotSelectionProps = {}) {
     blockId,
     blockName,
     selectedLot,
+    selectedParking,
 
     // Data
     projects,
     stages,
     blocks,
     lots,
+    parkings,
 
     // Loading states
     isLoadingProjects,
     isLoadingStages,
     isLoadingBlocks,
     isLoadingLots,
+    isLoadingParkings,
 
     // Handlers
+    handleSaleTargetChange,
     handleProjectChange,
     handleStageChange,
     handleBlockChange,
     handleSelectLot,
+    handleSelectParking,
 
     // Utilities
     getFormData,

@@ -72,14 +72,16 @@ function PaymentCard({ payment, index }: { payment: Payment; index: number }) {
 
           <Separator />
 
-          {/* Lot Info */}
+          {/* Lot/Parking Info */}
           {lot?.name && (
             <div className="flex items-start gap-3">
               <div className="bg-muted/50 rounded-md p-2">
                 <Building2 className="text-muted-foreground h-4 w-4" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium">Lote {lot.name}</p>
+                <p className="text-sm font-medium">
+                  {!lot.block && !lot.stage ? lot.name : `Lote ${lot.name}`}
+                </p>
                 {lot.stage && <p className="text-muted-foreground text-xs">{lot.stage}</p>}
                 {lot.project && <p className="text-muted-foreground text-xs">{lot.project}</p>}
               </div>

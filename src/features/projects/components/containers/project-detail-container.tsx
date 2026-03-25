@@ -7,11 +7,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, Edit } from 'lucide-react';
 import Link from 'next/link';
+import { ParkingFormDialog } from '@/features/parking/components/dialogs/parking-form-dialog';
 import { useProjectDetailContainer } from '../../hooks/use-project-detail-container';
 import { EditProjectDialog } from '../dialogs/edit-project-dialog';
 import { LotFormDialog } from '../dialogs/lot-form-dialog';
 import { BlockFormDialog, StageFormDialog } from '../dialogs/stage-block-dialogs';
 import { ProjectLotsTab } from '../tabs/project-lots-tab';
+import { ProjectParkingsTab } from '../tabs/project-parkings-tab';
 import { ProjectStagesTab } from '../tabs/project-stages-tab';
 
 interface ProjectDetailContainerProps {
@@ -55,6 +57,18 @@ export function ProjectDetailContainer({ projectId }: ProjectDetailContainerProp
     handleSearchSubmit,
     handleLotsPageChange,
     canCreateLot,
+    parkingDialogOpen,
+    selectedParking,
+    openCreateParkingDialog,
+    openEditParkingDialog,
+    handleParkingDialogChange,
+    parkingsFilters,
+    parkingsData,
+    parkingsLoading,
+    handleParkingStatusFilterChange,
+    handleParkingSearchChange,
+    handleParkingSearchSubmit,
+    handleParkingsPageChange,
   } = useProjectDetailContainer(projectId);
 
   if (isLoading) {
@@ -132,6 +146,12 @@ export function ProjectDetailContainer({ projectId }: ProjectDetailContainerProp
             >
               Lotes
             </TabsTrigger>
+            <TabsTrigger
+              value="parkings"
+              className="text-muted-foreground hover:bg-muted/50 hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground dark:data-[state=active]:border-primary/20 relative rounded-none border-b-2 border-transparent bg-transparent px-6 py-3 font-semibold shadow-none transition-all data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+            >
+              Cocheras
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -167,6 +187,25 @@ export function ProjectDetailContainer({ projectId }: ProjectDetailContainerProp
             onCreateLot={openCreateLotDialog}
             onEditLot={openEditLotDialog}
             canCreateLot={canCreateLot}
+          />
+        </TabsContent>
+
+        {/* Tab Content: Cocheras */}
+        <TabsContent value="parkings" className="mt-6">
+          <ProjectParkingsTab
+            currency={project.currency}
+            parkingsData={parkingsData}
+            parkingsLoading={parkingsLoading}
+            filters={{
+              search: parkingsFilters.search,
+              status: parkingsFilters.status,
+            }}
+            onStatusChange={handleParkingStatusFilterChange}
+            onSearchChange={handleParkingSearchChange}
+            onSearchSubmit={handleParkingSearchSubmit}
+            onPageChange={handleParkingsPageChange}
+            onCreateParking={openCreateParkingDialog}
+            onEditParking={openEditParkingDialog}
           />
         </TabsContent>
       </Tabs>
@@ -206,6 +245,13 @@ export function ProjectDetailContainer({ projectId }: ProjectDetailContainerProp
           lot={selectedLot}
         />
       )}
+
+      <ParkingFormDialog
+        open={parkingDialogOpen}
+        onOpenChange={handleParkingDialogChange}
+        projectId={projectId}
+        parking={selectedParking}
+      />
     </div>
   );
 }

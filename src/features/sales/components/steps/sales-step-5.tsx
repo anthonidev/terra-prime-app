@@ -42,9 +42,11 @@ export function SalesStep5({ formData, onSubmit, onBack, isSubmitting }: SalesSt
         </Card>
       </motion.div>
 
-      {/* Lot Summary */}
+      {/* Lot/Parking Summary */}
       <LotSummaryCard
-        selectedLot={summary.step1.selectedLot!}
+        selectedLot={summary.isParking ? undefined : summary.step1.selectedLot!}
+        selectedParking={summary.isParking ? summary.step1.selectedParking : undefined}
+        isParking={summary.isParking}
         currencyType={summary.currencyType}
       />
 

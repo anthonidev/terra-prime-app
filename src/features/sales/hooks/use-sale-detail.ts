@@ -13,14 +13,15 @@ export function useSaleDetail(id: string) {
     queryFn: async () => {
       const data = await getSaleDetail(id);
 
-      // Validate that we have essential data
-      if (!data || !data.lot || !data.client) {
+      // Validate that we have essential data (lot OR parking must exist)
+      if (!data || (!data.lot && !data.parking) || !data.client) {
         console.error('⚠️ BACKEND ERROR: API returned incomplete data:', {
           hasData: !!data,
           hasLot: !!data?.lot,
+          hasParking: !!data?.parking,
           hasClient: !!data?.client,
         });
-        throw new Error('Incomplete data received from API - missing lot or client');
+        throw new Error('Incomplete data received from API - missing lot/parking or client');
       }
 
       return data;
@@ -30,7 +31,7 @@ export function useSaleDetail(id: string) {
     enabled: !!id, // Only fetch if id exists
     // Smart placeholder: only use previous data if it's valid
     placeholderData: (previousData) => {
-      if (previousData && previousData.lot && previousData.client) {
+      if (previousData && (previousData.lot || previousData.parking) && previousData.client) {
         return previousData as SaleDetail;
       }
       return undefined;
@@ -42,7 +43,11 @@ export function useSaleDetail(id: string) {
 
   // Validate data even when coming from cache
   useEffect(() => {
-    if (result.data && (!result.data.lot || !result.data.client) && !result.isFetching) {
+    if (
+      result.data &&
+      ((!result.data.lot && !result.data.parking) || !result.data.client) &&
+      !result.isFetching
+    ) {
       console.warn('🔄 Detected corrupted cache data, auto-refreshing...');
       queryClient.invalidateQueries({ queryKey: ['sale-detail', id] });
     }

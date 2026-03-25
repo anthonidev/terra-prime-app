@@ -48,16 +48,27 @@ export function FinancingSaleInfo({ sale, currency }: FinancingSaleInfoProps) {
             </p>
           </div>
 
-          {/* Lot Info */}
+          {/* Lot/Parking Info */}
           <div className="space-y-1">
             <div className="text-muted-foreground flex items-center gap-1 text-sm">
               <Building2 className="h-4 w-4" />
-              Lote
+              {sale.parking && !sale.lot ? 'Cochera' : 'Lote'}
             </div>
-            <p className="font-medium">Lote {sale.lot.name}</p>
-            <p className="text-muted-foreground text-sm">
-              {sale.lot.project} - {sale.lot.stage} - Mz. {sale.lot.block}
-            </p>
+            {sale.lot ? (
+              <>
+                <p className="font-medium">Lote {sale.lot.name}</p>
+                <p className="text-muted-foreground text-sm">
+                  {sale.lot.project} - {sale.lot.stage} - Mz. {sale.lot.block}
+                </p>
+              </>
+            ) : sale.parking ? (
+              <>
+                <p className="font-medium">{sale.parking.name}</p>
+                <p className="text-muted-foreground text-sm">{sale.parking.project}</p>
+              </>
+            ) : (
+              <p className="font-medium">N/A</p>
+            )}
           </div>
 
           {/* Contract Date */}

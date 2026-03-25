@@ -53,6 +53,27 @@ export interface LotsQueryParams {
   term?: string;
 }
 
+// Available parking types
+export interface AvailableParking {
+  id: string;
+  name: string;
+  area: string;
+  price: string;
+  status: string;
+  projectId: string;
+  projectName: string;
+  projectCurrency: 'USD' | 'PEN';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AvailableParkingsQueryParams {
+  page?: number;
+  limit?: number;
+  order?: 'ASC' | 'DESC';
+  term?: string;
+}
+
 // Enums for sales creation
 export enum DocumentType {
   DNI = 'DNI',
@@ -199,7 +220,14 @@ export interface CreatedSaleResponse {
     block: string;
     stage: string;
     project: string;
-  };
+  } | null;
+  parking?: {
+    id: string;
+    name: string;
+    area: number;
+    price: number;
+    project: string;
+  } | null;
 }
 
 // Interest rate sections for amortization
@@ -256,7 +284,8 @@ export interface CreateGuarantorClientInput {
 }
 
 export interface CreateSaleInput {
-  lotId: string;
+  lotId?: string;
+  parkingId?: string;
   saleType: SaleType;
   clientId: number;
   totalAmount: number;
@@ -278,8 +307,21 @@ export interface CreateSaleInput {
   combinedInstallments?: CombinedInstallment[];
 }
 
+// Available parking for sale (no pagination)
+export interface AvailableParkingForSale {
+  id: string;
+  name: string;
+  area: string;
+  price: string;
+  status: string;
+  projectId: string;
+  projectName: string;
+  projectCurrency: 'USD' | 'PEN';
+}
+
 // Form data interfaces for multi-step form
 export interface Step1Data {
+  saleTarget: 'lot' | 'parking';
   projectId: string;
   projectName: string;
   projectCurrency: string;
@@ -288,6 +330,7 @@ export interface Step1Data {
   blockId: string;
   blockName: string;
   selectedLot: ProjectLotResponse | null;
+  selectedParking?: AvailableParkingForSale | null;
 }
 
 export interface Step2Data {
@@ -359,7 +402,14 @@ export interface MySale {
     block: string;
     stage: string;
     project: string;
-  };
+  } | null;
+  parking?: {
+    id: string;
+    name: string;
+    area: number;
+    price: number;
+    project: string | null;
+  } | null;
   radicationPdfUrl: string | null;
   paymentAcordPdfUrl: string | null;
   financing?: {
@@ -561,7 +611,14 @@ export interface SaleDetail {
     block: string;
     stage: string;
     project: string;
-  };
+  } | null;
+  parking?: {
+    id: string;
+    name: string;
+    area: number;
+    price: number;
+    project: string;
+  } | null;
   radicationPdfUrl: string | null;
   paymentAcordPdfUrl: string | null;
   guarantor: PersonInfo;
@@ -725,7 +782,14 @@ export interface FinancingDetailSale {
     block: string;
     stage: string;
     project: string;
-  };
+  } | null;
+  parking?: {
+    id: string;
+    name: string;
+    area: number;
+    price: number;
+    project: string;
+  } | null;
 }
 
 export interface AmendmentHistoryItem {

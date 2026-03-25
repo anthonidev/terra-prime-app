@@ -59,7 +59,7 @@ export function createClientColumn<T extends Payment>(): ColumnDef<T> {
 export function createLotColumn<T extends Payment>(): ColumnDef<T> {
   return {
     accessorKey: 'lot',
-    header: 'Lote',
+    header: 'Lote / Cochera',
     cell: ({ row }) => {
       const lot = row.original.lot;
 
@@ -67,17 +67,25 @@ export function createLotColumn<T extends Payment>(): ColumnDef<T> {
         return <span className="text-muted-foreground text-sm">Sin información</span>;
       }
 
+      const isParking = !lot.block && !lot.stage;
+
       return (
         <div className="flex items-center gap-2">
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
               <span className="text-foreground text-sm leading-none font-semibold">
-                Lote {lot.name}
+                {isParking ? lot.name : `Lote ${lot.name}`}
               </span>
-              {lot.block && (
+              {isParking ? (
                 <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-medium">
-                  {lot.block}
+                  Cochera
                 </Badge>
+              ) : (
+                lot.block && (
+                  <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-medium">
+                    {lot.block}
+                  </Badge>
+                )
               )}
             </div>
             {lot.stage && (

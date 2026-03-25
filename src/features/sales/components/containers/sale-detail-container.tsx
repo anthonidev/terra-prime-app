@@ -125,13 +125,13 @@ export function SaleDetailContainer({ id }: SaleDetailContainerProps) {
   } = useSaleDetailLayout(user?.id ?? '', user?.role.code ?? '');
 
   // Loading state - show skeleton if no data available, fetching, or data is invalid while fetching
-  if (isPending || (isFetching && (!sale || !sale.lot || !sale.client))) {
+  if (isPending || (isFetching && (!sale || (!sale.lot && !sale.parking) || !sale.client))) {
     return <SaleDetailSkeleton />;
   }
 
   // Error state - show error only if there's an actual error and NOT fetching
   // This prevents showing error during auto-retry after detecting corrupted cache
-  if (!isFetching && (isError || !sale || !sale.lot || !sale.client)) {
+  if (!isFetching && (isError || !sale || (!sale.lot && !sale.parking) || !sale.client)) {
     return <SaleDetailErrorState />;
   }
 
