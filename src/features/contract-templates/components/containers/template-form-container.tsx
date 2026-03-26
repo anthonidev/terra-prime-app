@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Globe, GlobeLock, Save, ScrollText } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { PageHeader } from '@/shared/components/common/page-header';
 import { useConfirmation } from '@/shared/hooks/use-confirmation';
 import { useTemplateFormContainer } from '../../hooks/use-template-form-container';
@@ -71,46 +72,63 @@ export function TemplateFormContainer({ templateId }: TemplateFormContainerProps
         icon={ScrollText}
         onTitleClick={() => setInfoDialogOpen(true)}
       >
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => router.push('/contratos/plantillas')}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver
-          </Button>
-          <Button variant="outline" onClick={handleSave} disabled={isPending} className="relative">
-            {isPending ? (
-              <span className="flex items-center gap-2">
-                <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                Guardando...
-              </span>
-            ) : (
-              <>
-                <Save className="mr-2 h-4 w-4" />
-                Guardar
-                <kbd className="text-muted-foreground bg-muted ml-1.5 rounded px-1 py-0.5 font-mono text-[10px]">
-                  Ctrl+S
-                </kbd>
-              </>
-            )}
-            {isDirty && !isPending && (
-              <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-amber-500" />
-            )}
-          </Button>
-          {isActive ? (
+        <TooltipProvider delayDuration={300}>
+          <div className="flex gap-2">
             <Button
-              variant="destructive"
-              onClick={handleUnpublish}
-              disabled={unpublishMutation.isPending}
+              variant="outline"
+              size="sm"
+              onClick={() => router.push('/contratos/plantillas')}
             >
-              <GlobeLock className="mr-2 h-4 w-4" />
-              Despublicar
+              <ArrowLeft className="mr-1.5 h-4 w-4" />
+              <span className="hidden sm:inline">Volver</span>
             </Button>
-          ) : (
-            <Button onClick={handlePublish} disabled={publishMutation.isPending}>
-              <Globe className="mr-2 h-4 w-4" />
-              Publicar
-            </Button>
-          )}
-        </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSave}
+                  disabled={isPending}
+                  className="relative"
+                >
+                  {isPending ? (
+                    <span className="flex items-center gap-1.5">
+                      <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      <span className="hidden sm:inline">Guardando...</span>
+                    </span>
+                  ) : (
+                    <>
+                      <Save className="mr-1.5 h-4 w-4" />
+                      Guardar
+                    </>
+                  )}
+                  {isDirty && !isPending && (
+                    <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-amber-500" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">
+                <kbd className="font-mono">Ctrl+S</kbd>
+              </TooltipContent>
+            </Tooltip>
+            {isActive ? (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleUnpublish}
+                disabled={unpublishMutation.isPending}
+              >
+                <GlobeLock className="mr-1.5 h-4 w-4" />
+                <span className="hidden sm:inline">Despublicar</span>
+              </Button>
+            ) : (
+              <Button size="sm" onClick={handlePublish} disabled={publishMutation.isPending}>
+                <Globe className="mr-1.5 h-4 w-4" />
+                <span className="hidden sm:inline">Publicar</span>
+              </Button>
+            )}
+          </div>
+        </TooltipProvider>
       </PageHeader>
 
       <TemplateForm form={form} initialContent={initialContent} onSave={handleSave} />

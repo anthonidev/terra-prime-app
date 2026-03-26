@@ -27,6 +27,9 @@ import Image from '@tiptap/extension-image';
 import { mergeAttributes, Node } from '@tiptap/core';
 
 import { Badge } from '@/components/ui/badge';
+import { FontSize } from '../editor/font-size';
+import { Indent } from '../editor/indent';
+import { LineHeight } from '../editor/line-height';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -60,6 +63,9 @@ const extensions = [
   TableRow,
   TableCell,
   TableHeader,
+  FontSize,
+  Indent,
+  LineHeight,
   Node.create({
     name: 'variableChip',
     group: 'inline',

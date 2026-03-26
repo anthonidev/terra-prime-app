@@ -14,6 +14,9 @@ import { TableCell } from '@tiptap/extension-table-cell';
 import { TableHeader } from '@tiptap/extension-table-header';
 import type { JSONContent } from '@tiptap/react';
 
+import { FontSize } from '../editor/font-size';
+import { Indent } from '../editor/indent';
+import { LineHeight } from '../editor/line-height';
 import { VariableChip } from '../editor/variable-node';
 import { ResizableImage } from '../editor/resizable-image';
 
@@ -46,6 +49,9 @@ export function TemplatePreview({ content }: TemplatePreviewProps) {
       TableCell,
       TableHeader,
       ResizableImage.configure({ allowBase64: true }),
+      FontSize,
+      Indent,
+      LineHeight,
       VariableChip,
     ],
     content: parsedContent,

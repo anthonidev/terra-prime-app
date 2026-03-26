@@ -100,7 +100,7 @@ export function VariableSidebar({
   const totalVars = predefinedVariables.length + customVariables.length;
 
   return (
-    <div className="bg-card flex w-[280px] shrink-0 flex-col overflow-hidden border-l">
+    <div className="bg-card flex w-full shrink-0 flex-col overflow-hidden border-l xl:w-[280px]">
       {/* Header */}
       <div className="space-y-2.5 border-b px-3 py-3">
         <div className="flex items-center justify-between">

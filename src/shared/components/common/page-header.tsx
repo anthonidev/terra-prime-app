@@ -18,20 +18,20 @@ export function PageHeader({
 }: PageHeaderProps) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <div className="flex items-center gap-3">
+      <div className="flex min-w-0 items-center gap-3">
         {Icon && (
-          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+          <div className="bg-primary/10 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
             <Icon className="text-primary h-5 w-5" />
           </div>
         )}
-        <div>
+        <div className="min-w-0">
           {onTitleClick ? (
             <button
               type="button"
               onClick={onTitleClick}
-              className="hover:text-primary flex items-center gap-1.5 text-2xl font-bold tracking-tight transition-colors"
+              className="hover:text-primary flex max-w-full items-center gap-1.5 text-2xl font-bold tracking-tight transition-colors"
             >
-              {title}
+              <span className="truncate">{title}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -48,9 +48,9 @@ export function PageHeader({
               </svg>
             </button>
           ) : (
-            <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+            <h1 className="truncate text-2xl font-bold tracking-tight">{title}</h1>
           )}
-          {description && <p className="text-muted-foreground text-sm">{description}</p>}
+          {description && <p className="text-muted-foreground truncate text-sm">{description}</p>}
         </div>
       </div>
       {children && <div className="flex items-center gap-2">{children}</div>}
